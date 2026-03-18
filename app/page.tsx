@@ -37,6 +37,36 @@ export default function RandomDrawApp() {
   const [history, setHistory] = React.useState<{ id: string; timestamp: Date; results: string[] }[]>([])
   const [showUI, setShowUI] = React.useState<boolean>(true)
 
+  // Auto-hide logic for idle
+  React.useEffect(() => {
+    if (!showUI || !autoHide || isDrawing) return
+
+    let timer: NodeJS.Timeout
+    
+    const startTimer = () => {
+      timer = setTimeout(() => {
+        setShowUI(false)
+      }, 8000) // 8 seconds of inactivity
+    }
+
+    const resetTimer = () => {
+      clearTimeout(timer)
+      startTimer()
+    }
+
+    startTimer()
+    window.addEventListener("mousemove", resetTimer)
+    window.addEventListener("keydown", resetTimer)
+    window.addEventListener("touchstart", resetTimer)
+
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener("mousemove", resetTimer)
+      window.removeEventListener("keydown", resetTimer)
+      window.removeEventListener("touchstart", resetTimer)
+    }
+  }, [showUI, autoHide, isDrawing])
+
   // Format a number based on rules
   const formatNumber = React.useCallback(
     (num: number) => {
@@ -139,6 +169,19 @@ export default function RandomDrawApp() {
           {showUI ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
       </div>
+
+      {/* Mobile Backdrop */}
+      <AnimatePresence>
+        {showUI && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowUI(false)}
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
 
       {/* Settings Panel (Sidebar) */}
       <div id="sidebar-panel" className={cn(
@@ -268,10 +311,15 @@ export default function RandomDrawApp() {
       </div>
 
       {/* Main Display Area */}
-      <div id="main-display" className={cn(
-        "flex-1 flex flex-col items-center justify-center relative transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
-        showUI ? "ml-0 lg:ml-[400px] opacity-20 lg:opacity-100 pointer-events-none lg:pointer-events-auto" : "ml-0"
-      )}>
+      <div id="main-display" 
+        className={cn(
+          "flex-1 flex flex-col items-center justify-center relative transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+          showUI ? "ml-0 lg:ml-[400px] opacity-20 lg:opacity-100 pointer-events-none lg:pointer-events-auto" : "ml-0"
+        )}
+        onClick={() => {
+          if (showUI) setShowUI(false)
+        }}
+      >
         {/* Background decorative elements */}
         <div className="absolute inset-0 bg-grid-white/10 bg-[size:40px_40px] [mask-image:radial-gradient(white,transparent_80%)] pointer-events-none opacity-20 dark:opacity-10" />
         

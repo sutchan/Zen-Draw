@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0]
+- feat: Advanced sidebar auto-hide logic
+- feat: Add idle timer (8s) to automatically hide sidebar when inactive
+- feat: Add click-outside/backdrop to close sidebar
+- feat: Add mobile backdrop for better focus when settings are open
+- ux: Improve sidebar interaction and focus
+
 ## [2.0.0]
 - feat: Implement sidebar auto-hide feature (automatically hides when drawing starts)
 - feat: Add "Auto-hide Sidebar" toggle in settings panel
