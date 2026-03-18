@@ -1,8 +1,8 @@
-// components/number-roller.tsx v1.7.0
+// components/number-roller.tsx v1.9.0
 "use client"
 
 import * as React from "react"
-import { motion, AnimatePresence } from "motion/react"
+import { motion, AnimatePresence, useReducedMotion } from "motion/react"
 import { cn } from "@/lib/utils"
 
 interface NumberRollerProps {
@@ -13,23 +13,26 @@ interface NumberRollerProps {
 
 export function NumberRoller({ value, isDrawing, className }: NumberRollerProps) {
   const characters = value.split("")
+  const shouldReduceMotion = useReducedMotion()
 
   return (
     <div className={cn("flex items-center justify-center tabular-nums", className)}>
       {characters.map((char, index) => (
-        <CharacterSlot key={index} char={char} isDrawing={isDrawing} />
+        <CharacterSlot key={index} index={index} char={char} isDrawing={isDrawing} shouldReduceMotion={shouldReduceMotion} />
       ))}
     </div>
   )
 }
 
-function CharacterSlot({ char, isDrawing }: { char: string; isDrawing: boolean }) {
+function CharacterSlot({ index, char, isDrawing, shouldReduceMotion }: { index: number; char: string; isDrawing: boolean; shouldReduceMotion: boolean | null }) {
   const isDigit = /\d/.test(char)
-  
-  // Common styles for the text to ensure gradient and clipping work
   const textStyles = "bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/70"
 
-  if (!isDigit) {
+  // Vary speed based on index: slower for later digits
+  const baseDuration = 0.1
+  const duration = baseDuration + (index * 0.03)
+
+  if (!isDigit || shouldReduceMotion) {
     return (
       <div className="flex items-center justify-center min-w-[0.3em] px-0.5">
         <span className={cn("inline-block", textStyles)}>{char}</span>
@@ -47,12 +50,11 @@ function CharacterSlot({ char, isDrawing }: { char: string; isDrawing: boolean }
             animate={{ y: "-90%" }}
             transition={{
               repeat: Infinity,
-              duration: 0.12, // Slightly faster for intensity
+              duration: duration,
               ease: "linear",
             }}
             className="flex flex-col w-full"
           >
-            {/* Double the digits to ensure smooth loop */}
             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n, i) => (
               <span key={i} className={cn("h-[1.2em] w-full flex items-center justify-center", textStyles)}>
                 {n}
@@ -67,8 +69,9 @@ function CharacterSlot({ char, isDrawing }: { char: string; isDrawing: boolean }
             exit={{ y: "-100%", opacity: 0 }}
             transition={{
               type: "spring",
-              stiffness: 400,
-              damping: 30,
+              stiffness: 300,
+              damping: 20,
+              mass: 1,
             }}
             className={cn("h-[1.2em] w-full flex items-center justify-center", textStyles)}
           >

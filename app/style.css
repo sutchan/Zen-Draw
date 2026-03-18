@@ -73,6 +73,126 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
+.theme-ocean {
+    --background: oklch(0.98 0.02 220);
+    --foreground: oklch(0.15 0.05 220);
+    --card: oklch(1 0.01 220);
+    --card-foreground: oklch(0.15 0.05 220);
+    --popover: oklch(1 0.01 220);
+    --popover-foreground: oklch(0.15 0.05 220);
+    --primary: oklch(0.5 0.15 220);
+    --primary-foreground: oklch(0.98 0.02 220);
+    --secondary: oklch(0.9 0.05 220);
+    --secondary-foreground: oklch(0.2 0.1 220);
+    --muted: oklch(0.95 0.03 220);
+    --muted-foreground: oklch(0.5 0.05 220);
+    --accent: oklch(0.9 0.05 220);
+    --accent-foreground: oklch(0.2 0.1 220);
+    --border: oklch(0.9 0.05 220);
+    --input: oklch(0.9 0.05 220);
+    --ring: oklch(0.5 0.15 220);
+}
+
+.dark .theme-ocean, .theme-ocean.dark {
+    --background: oklch(0.15 0.05 220);
+    --foreground: oklch(0.98 0.02 220);
+    --card: oklch(0.2 0.05 220);
+    --card-foreground: oklch(0.98 0.02 220);
+    --popover: oklch(0.2 0.05 220);
+    --popover-foreground: oklch(0.98 0.02 220);
+    --primary: oklch(0.6 0.15 220);
+    --primary-foreground: oklch(0.15 0.05 220);
+    --secondary: oklch(0.25 0.08 220);
+    --secondary-foreground: oklch(0.98 0.02 220);
+    --muted: oklch(0.25 0.08 220);
+    --muted-foreground: oklch(0.7 0.05 220);
+    --accent: oklch(0.25 0.08 220);
+    --accent-foreground: oklch(0.98 0.02 220);
+    --border: oklch(0.3 0.1 220);
+    --input: oklch(0.3 0.1 220);
+    --ring: oklch(0.6 0.15 220);
+}
+
+.theme-forest {
+    --background: oklch(0.98 0.02 140);
+    --foreground: oklch(0.15 0.05 140);
+    --card: oklch(1 0.01 140);
+    --card-foreground: oklch(0.15 0.05 140);
+    --popover: oklch(1 0.01 140);
+    --popover-foreground: oklch(0.15 0.05 140);
+    --primary: oklch(0.5 0.15 140);
+    --primary-foreground: oklch(0.98 0.02 140);
+    --secondary: oklch(0.9 0.05 140);
+    --secondary-foreground: oklch(0.2 0.1 140);
+    --muted: oklch(0.95 0.03 140);
+    --muted-foreground: oklch(0.5 0.05 140);
+    --accent: oklch(0.9 0.05 140);
+    --accent-foreground: oklch(0.2 0.1 140);
+    --border: oklch(0.9 0.05 140);
+    --input: oklch(0.9 0.05 140);
+    --ring: oklch(0.5 0.15 140);
+}
+
+.dark .theme-forest, .theme-forest.dark {
+    --background: oklch(0.15 0.05 140);
+    --foreground: oklch(0.98 0.02 140);
+    --card: oklch(0.2 0.05 140);
+    --card-foreground: oklch(0.98 0.02 140);
+    --popover: oklch(0.2 0.05 140);
+    --popover-foreground: oklch(0.98 0.02 140);
+    --primary: oklch(0.6 0.15 140);
+    --primary-foreground: oklch(0.15 0.05 140);
+    --secondary: oklch(0.25 0.08 140);
+    --secondary-foreground: oklch(0.98 0.02 140);
+    --muted: oklch(0.25 0.08 140);
+    --muted-foreground: oklch(0.7 0.05 140);
+    --accent: oklch(0.25 0.08 140);
+    --accent-foreground: oklch(0.98 0.02 140);
+    --border: oklch(0.3 0.1 140);
+    --input: oklch(0.3 0.1 140);
+    --ring: oklch(0.6 0.15 140);
+}
+
+.theme-sunset {
+    --background: oklch(0.98 0.02 40);
+    --foreground: oklch(0.15 0.05 40);
+    --card: oklch(1 0.01 40);
+    --card-foreground: oklch(0.15 0.05 40);
+    --popover: oklch(1 0.01 40);
+    --popover-foreground: oklch(0.15 0.05 40);
+    --primary: oklch(0.6 0.15 40);
+    --primary-foreground: oklch(0.98 0.02 40);
+    --secondary: oklch(0.9 0.05 40);
+    --secondary-foreground: oklch(0.2 0.1 40);
+    --muted: oklch(0.95 0.03 40);
+    --muted-foreground: oklch(0.5 0.05 40);
+    --accent: oklch(0.9 0.05 40);
+    --accent-foreground: oklch(0.2 0.1 40);
+    --border: oklch(0.9 0.05 40);
+    --input: oklch(0.9 0.05 40);
+    --ring: oklch(0.6 0.15 40);
+}
+
+.dark .theme-sunset, .theme-sunset.dark {
+    --background: oklch(0.15 0.05 40);
+    --foreground: oklch(0.98 0.02 40);
+    --card: oklch(0.2 0.05 40);
+    --card-foreground: oklch(0.98 0.02 40);
+    --popover: oklch(0.2 0.05 40);
+    --popover-foreground: oklch(0.98 0.02 40);
+    --primary: oklch(0.6 0.15 40);
+    --primary-foreground: oklch(0.15 0.05 40);
+    --secondary: oklch(0.25 0.08 40);
+    --secondary-foreground: oklch(0.98 0.02 40);
+    --muted: oklch(0.25 0.08 40);
+    --muted-foreground: oklch(0.7 0.05 40);
+    --accent: oklch(0.25 0.08 40);
+    --accent-foreground: oklch(0.98 0.02 40);
+    --border: oklch(0.3 0.1 40);
+    --input: oklch(0.3 0.1 40);
+    --ring: oklch(0.6 0.15 40);
+}
+
 @theme inline {
     --font-sans: var(--font-sans);
     --color-sidebar-ring: var(--sidebar-ring);

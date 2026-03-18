@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.4.0]
+- feat: Add adjustable draw duration (1-30s, default 5s)
+
+## [2.3.0]
+- feat: Set default number display to 3 digits (padding with zeros)
+
+## [2.2.0]
+- feat: Add visual expand hint for new users
+- feat: Pulse animation on menu button when sidebar is hidden for the first time
+- feat: Side-edge "Chevron" hint for quick sidebar expansion on Desktop
+- feat: Force hide sidebar immediately when "Start Draw" is clicked
+- ux: "New" badge in sidebar header for first-time discovery
+
 ## [2.1.0]
 - feat: Advanced sidebar auto-hide logic
 - feat: Add idle timer (8s) to automatically hide sidebar when inactive

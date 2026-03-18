@@ -1,6 +1,6 @@
-// app/layout.tsx v2.1.0
+// app/layout.tsx v2.4.0
 import type {Metadata} from 'next';
-import './globals.css';
+import './style.css';
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-  title: 'ZenDraw | 禅抽 v2.1.0',
+  title: 'ZenDraw | 禅抽 v2.4.0',
   description: 'A professional, full-screen random draw application with customizable rules, history, and multi-language support. Perfect for lucky draws, classroom activities, and games.',
   keywords: ['ZenDraw', '禅抽', 'random draw', 'lucky draw', 'randomizer', '抽签', '随机数', '抽奖', 'roller', 'slot machine'],
   authors: [{ name: 'Sut' }],
