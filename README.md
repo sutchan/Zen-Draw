@@ -1,11 +1,44 @@
-<div align="center">
+# ZenDraw | 禅抽 v1.5.0
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+[中文版本](./README_CN.md)
 
-  <h1>Built with AI Studio</h2>
+ZenDraw is a professional, full-screen random draw application built with Next.js, Tailwind CSS, and Framer Motion. Designed for high-impact visual presentations during lucky draws, classroom activities, or any event requiring a random selection.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## 🚀 Features
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+- **Slot-Machine Roller**: Dynamic rolling animation for draw results.
+- **Full-Screen Display**: Immersive visual experience with large, animated numbers.
+- **Customizable Rules**:
+  - Define range (Min/Max).
+  - Set draw count and toggle duplicates.
+  - Custom padding (digits), prefixes, and suffixes.
+- **Multi-language Support**: Seamlessly switch between English and Simplified Chinese.
+- **Responsive Design**: Optimized for Desktop, Tablet, and Mobile devices.
+- **Dark/Light Mode**: Full support for system themes and manual toggling.
+- **History Tracking**: Keep track of all previous draws in the current session.
+- **GEO Integration**: Displays current coordinates for event context.
 
-</div>
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion (motion/react)
+- **Icons**: Lucide React
+- **Theming**: next-themes
+- **UI Components**: shadcn/ui
+
+## 📦 Installation
+
+1. Clone the repository.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+## 📄 License
+
+MIT License
