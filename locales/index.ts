@@ -1,4 +1,4 @@
-// locales/index.ts v1.3.0
+// locales/index.ts v2.0.0
 export const translations = {
   en: {
     title: "ZenDraw",
@@ -10,6 +10,8 @@ export const translations = {
     maxVal: "Max Value",
     drawCount: "Draw Count",
     allowDup: "Allow Duplicates",
+    autoHide: "Auto-hide Sidebar",
+    autoHideDesc: "Hide sidebar automatically when drawing starts.",
     displayRules: "Display Rules",
     displayDesc: "Customize how numbers appear.",
     minDigits: "Minimum Digits (Padding)",
@@ -38,6 +40,8 @@ export const translations = {
     maxVal: "最大值",
     drawCount: "抽取数量",
     allowDup: "允许重复",
+    autoHide: "自动隐藏侧边栏",
+    autoHideDesc: "开始抽签时自动隐藏侧边栏控制面板。",
     displayRules: "显示规则",
     displayDesc: "自定义数字的显示方式。",
     minDigits: "最小位数 (补零)",

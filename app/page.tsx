@@ -1,4 +1,4 @@
-// app/page.tsx v1.7.0
+// app/page.tsx v2.0.0
 "use client"
 
 import * as React from "react"
@@ -24,6 +24,7 @@ export default function RandomDrawApp() {
   const [max, setMax] = React.useState<number>(100)
   const [count, setCount] = React.useState<number>(1)
   const [allowDuplicates, setAllowDuplicates] = React.useState<boolean>(true)
+  const [autoHide, setAutoHide] = React.useState<boolean>(true)
   
   // Display rules state
   const [digits, setDigits] = React.useState<number>(0) // 0 means no padding
@@ -61,8 +62,9 @@ export default function RandomDrawApp() {
     }
 
     setIsDrawing(true)
-    // Auto hide UI on small screens when drawing
-    if (window.innerWidth < 1024) {
+    
+    // Auto hide UI when drawing starts
+    if (autoHide) {
       setShowUI(false)
     }
 
@@ -188,6 +190,14 @@ export default function RandomDrawApp() {
                 <div className="flex items-center justify-between pt-2">
                   <Label htmlFor="duplicates" className="cursor-pointer">{t.allowDup}</Label>
                   <Switch id="duplicates" checked={allowDuplicates} onCheckedChange={setAllowDuplicates} />
+                </div>
+
+                <div className="flex items-center justify-between pt-2">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="auto-hide" className="cursor-pointer">{t.autoHide}</Label>
+                    <p className="text-[10px] text-muted-foreground leading-none">{t.autoHideDesc}</p>
+                  </div>
+                  <Switch id="auto-hide" checked={autoHide} onCheckedChange={setAutoHide} />
                 </div>
               </div>
 

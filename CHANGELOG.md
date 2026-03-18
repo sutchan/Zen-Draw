@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.0]
+- feat: Implement sidebar auto-hide feature (automatically hides when drawing starts)
+- feat: Add "Auto-hide Sidebar" toggle in settings panel
+- i18n: Add translations for auto-hide feature in English and Chinese
+- refactor: Major version bump for core UX improvement
+
 ## [1.7.0]
 - fix: Enforce strictly fixed width for individual digit slots in NumberRoller to prevent layout jitter
 - style: Further optimize rolling speed for a more intense "slot machine" feel
