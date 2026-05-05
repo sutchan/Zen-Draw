@@ -1,4 +1,4 @@
-// app/page.tsx v2.3.0
+// app/page.tsx v2.6.0
 "use client"
 
 import * as React from "react"
@@ -11,27 +11,42 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 import { translations, Language } from "@/locales"
 import { NumberRoller } from "@/components/number-roller"
+import { useLocalStorage } from "@/hooks/use-local-storage"
+
+// Function to update html lang attribute
+const updateHtmlLang = (lang: Language) => {
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = lang
+  }
+}
 
 export default function RandomDrawApp() {
-  const [lang, setLang] = React.useState<Language>("zh")
+  const [lang, setLang] = useLocalStorage<Language>("zendraw-lang", "zh")
   const t = translations[lang]
   const { theme, setTheme } = useTheme()
 
-  // Settings state
-  const [min, setMin] = React.useState<number>(1)
-  const [max, setMax] = React.useState<number>(100)
-  const [count, setCount] = React.useState<number>(1)
-  const [allowDuplicates, setAllowDuplicates] = React.useState<boolean>(true)
-  const [autoHide, setAutoHide] = React.useState<boolean>(true)
-  const [duration, setDuration] = React.useState<number>(5)
-  const [themePreset, setThemePreset] = React.useState<string>("default")
-  const [fontFamily, setFontFamily] = React.useState<string>("sans")
-  const [customList, setCustomList] = React.useState<string[]>([])
-  const [useCustomList, setUseCustomList] = React.useState<boolean>(false)
+  // Update html lang attribute when language changes
+  React.useEffect(() => {
+    updateHtmlLang(lang)
+  }, [lang])
+
+  // Settings state with localStorage persistence
+  const [min, setMin] = useLocalStorage<number>("zendraw-min", 1)
+  const [max, setMax] = useLocalStorage<number>("zendraw-max", 100)
+  const [count, setCount] = useLocalStorage<number>("zendraw-count", 1)
+  const [allowDuplicates, setAllowDuplicates] = useLocalStorage<boolean>("zendraw-duplicates", true)
+  const [autoHide, setAutoHide] = useLocalStorage<boolean>("zendraw-autohide", true)
+  const [duration, setDuration] = useLocalStorage<number>("zendraw-duration", 5)
+  const [themePreset, setThemePreset] = useLocalStorage<string>("zendraw-theme-preset", "default")
+  const [fontFamily, setFontFamily] = useLocalStorage<string>("zendraw-font-family", "sans")
+  const [customList, setCustomList] = useLocalStorage<string[]>("zendraw-custom-list", [])
+  const [useCustomList, setUseCustomList] = useLocalStorage<boolean>("zendraw-use-custom", false)
   
   // Apply theme and font to body element globally
   React.useEffect(() => {
@@ -52,17 +67,25 @@ export default function RandomDrawApp() {
     body.classList.add(`font-${fontFamily}`);
   }, [themePreset, fontFamily]);
 
-  // Display rules state
-  const [digits, setDigits] = React.useState<number>(3) // Default to 3 digits
-  const [prefix, setPrefix] = React.useState<string>("")
-  const [suffix, setSuffix] = React.useState<string>("")
+  // Display rules state (also persisted)
+  const [digits, setDigits] = useLocalStorage<number>("zendraw-digits", 3)
+  const [prefix, setPrefix] = useLocalStorage<string>("zendraw-prefix", "")
+  const [suffix, setSuffix] = useLocalStorage<string>("zendraw-suffix", "")
 
-  // App state
+  // App state (not persisted)
   const [isDrawing, setIsDrawing] = React.useState<boolean>(false)
   const [currentResults, setCurrentResults] = React.useState<string[]>([])
-  const [history, setHistory] = React.useState<{ id: string; timestamp: Date; results: string[] }[]>([])
   const [showUI, setShowUI] = React.useState<boolean>(true)
   const [hasOpenedOnce, setHasOpenedOnce] = React.useState<boolean>(false)
+
+  // Dialog states
+  const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
+  const [alertMessage, setAlertMessage] = React.useState<string>("")
+  const [importDialogOpen, setImportDialogOpen] = React.useState<boolean>(false)
+  const [importText, setImportText] = React.useState<string>("")
+
+  // History with string timestamps for localStorage serialization
+  const [history, setHistory] = useLocalStorage<{ id: string; timestamp: string; results: string[] }[]>("zendraw-history", [])
 
   // Mark as opened when UI is shown
   React.useEffect(() => {
@@ -78,7 +101,7 @@ export default function RandomDrawApp() {
     const startTimer = () => {
       timer = setTimeout(() => {
         setShowUI(false)
-      }, 8000) // 8 seconds of inactivity
+      }, 8000)
     }
 
     const resetTimer = () => {
@@ -146,15 +169,14 @@ export default function RandomDrawApp() {
 
     setCurrentResults(formattedResults)
     setHistory((prev) => [
-      { id: Math.random().toString(36).substring(7), timestamp: new Date(), results: formattedResults },
+      { id: Math.random().toString(36).substring(7), timestamp: new Date().toISOString(), results: formattedResults },
       ...prev,
     ])
     setIsDrawing(false)
-  }, [min, max, count, allowDuplicates, formatNumber, useCustomList, customList])
+  }, [min, max, count, allowDuplicates, formatNumber, useCustomList, customList, setHistory])
 
   const handleDraw = async () => {
     if (isDrawing) {
-      // Manual stop
       if (animationIntervalRef.current) {
         clearInterval(animationIntervalRef.current)
         animationIntervalRef.current = null
@@ -165,34 +187,35 @@ export default function RandomDrawApp() {
 
     if (useCustomList) {
       if (customList.length === 0) {
-        alert(t.listImportDesc)
+        setAlertMessage(t.listImportDesc)
+        setAlertOpen(true)
         return
       }
       if (!allowDuplicates && count > customList.length) {
-        alert(t.rangeError)
+        setAlertMessage(t.rangeError)
+        setAlertOpen(true)
         return
       }
     } else {
       if (min > max) {
-        alert(t.minMaxError)
+        setAlertMessage(t.minMaxError)
+        setAlertOpen(true)
         return
       }
 
       const range = max - min + 1
       if (!allowDuplicates && count > range) {
-        alert(t.rangeError)
+        setAlertMessage(t.rangeError)
+        setAlertOpen(true)
         return
       }
     }
 
     setIsDrawing(true)
-    
-    // Auto hide UI when drawing starts (Force hide as per user request)
     setShowUI(false)
 
-    // Simulate drawing animation
-    const durationMs = duration * 1000 // Convert seconds to milliseconds
-    const interval = 50 // Update every 50ms
+    const durationMs = duration * 1000
+    const interval = 50
     const steps = durationMs / interval
 
     let currentStep = 0
@@ -221,24 +244,32 @@ export default function RandomDrawApp() {
     }, interval)
   }
 
+  const handleImportSubmit = () => {
+    const items = importText.split('\n').filter(i => i.trim() !== '');
+    if (items.length > 0) {
+      setCustomList(items);
+      setUseCustomList(true);
+    }
+    setImportDialogOpen(false);
+    setImportText("");
+  }
+
   const clearHistory = () => {
     setHistory([])
   }
 
   return (
     <div id="app-root" className="h-screen w-screen overflow-hidden bg-background text-foreground relative flex">
-      {/* Logo and Version */}
       <div id="app-header" className="absolute top-4 left-4 z-50 flex items-center gap-2">
         <div className="bg-primary p-2 rounded-xl">
           <Dices className="h-6 w-6 text-primary-foreground" />
         </div>
         <div>
           <h1 className="text-lg font-bold tracking-tight leading-none">{t.title}</h1>
-          <span className="text-[10px] text-muted-foreground font-mono">v2.4.0</span>
+          <span className="text-[10px] text-muted-foreground font-mono">v2.6.0</span>
         </div>
       </div>
 
-      {/* Floating Controls */}
       <div id="floating-controls" className="absolute top-4 right-4 z-50 flex items-center gap-2 bg-background/50 backdrop-blur-md p-1.5 rounded-2xl border shadow-sm">
         <Button 
           variant="ghost" 
@@ -263,7 +294,6 @@ export default function RandomDrawApp() {
         </Button>
       </div>
 
-      {/* Expand Hint Icon (Right Edge) */}
       <AnimatePresence>
         {!showUI && (
           <motion.div
@@ -285,7 +315,6 @@ export default function RandomDrawApp() {
         )}
       </AnimatePresence>
 
-      {/* Mobile Backdrop */}
       <AnimatePresence>
         {showUI && (
           <motion.div
@@ -298,7 +327,6 @@ export default function RandomDrawApp() {
         )}
       </AnimatePresence>
 
-      {/* Settings Panel (Sidebar) */}
       <div id="sidebar-panel" className={cn(
         "absolute inset-y-0 right-0 z-40 w-full sm:w-[400px] bg-background/95 backdrop-blur-xl border-l shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col",
         showUI ? "translate-x-0" : "translate-x-full"
@@ -391,6 +419,8 @@ export default function RandomDrawApp() {
                       <SelectItem value="ocean">{t.themeOcean}</SelectItem>
                       <SelectItem value="forest">{t.themeForest}</SelectItem>
                       <SelectItem value="sunset">{t.themeSunset}</SelectItem>
+                      <SelectItem value="purple">{t.themePurple}</SelectItem>
+                      <SelectItem value="neon">{t.themeNeon}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -421,12 +451,8 @@ export default function RandomDrawApp() {
 
                 <div className="pt-4 grid grid-cols-2 gap-4">
                   <Button variant="outline" onClick={() => {
-                    const input = prompt(t.listImportDesc);
-                    if (input) {
-                      const items = input.split('\n').filter(i => i.trim() !== '');
-                      setCustomList(items);
-                      setUseCustomList(true);
-                    }
+                    setImportText(customList.join('\n'))
+                    setImportDialogOpen(true)
                   }}>
                     {t.listImport}
                   </Button>
@@ -494,7 +520,7 @@ export default function RandomDrawApp() {
                   history.map((record) => (
                     <div key={record.id} className="p-4 rounded-xl bg-secondary/50 border">
                       <div className="text-xs text-muted-foreground mb-2">
-                        {record.timestamp.toLocaleTimeString()}
+                        {new Date(record.timestamp).toLocaleTimeString()}
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {record.results.map((res, idx) => (
@@ -512,7 +538,49 @@ export default function RandomDrawApp() {
         </div>
       </div>
 
-      {/* Main Display Area */}
+      {/* Custom List Import Dialog */}
+      <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t.listImport}</DialogTitle>
+            <DialogDescription>{t.listImportDesc}</DialogDescription>
+          </DialogHeader>
+          <div className="mt-4">
+            <Textarea
+              placeholder={t.listImportDesc}
+              value={importText}
+              onChange={(e) => setImportText(e.target.value)}
+              className="min-h-[200px]"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setImportDialogOpen(false)}>
+              {lang === 'zh' ? '取消' : 'Cancel'}
+            </Button>
+            <Button onClick={handleImportSubmit}>
+              {lang === 'zh' ? '导入' : 'Import'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Alert Dialog */}
+      <Dialog open={alertOpen} onOpenChange={setAlertOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{lang === 'zh' ? '提示' : 'Notice'}</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm">{alertMessage}</p>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setAlertOpen(false)}>
+              {lang === 'zh' ? '确定' : 'OK'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <div id="main-display" 
         className={cn(
           "flex-1 flex flex-col items-center justify-center relative transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
@@ -522,7 +590,6 @@ export default function RandomDrawApp() {
           if (showUI) setShowUI(false)
         }}
       >
-        {/* Background decorative elements */}
         <div className="absolute inset-0 bg-grid-white/10 bg-[size:40px_40px] [mask-image:radial-gradient(white,transparent_80%)] pointer-events-none opacity-20 dark:opacity-10" />
         
         <div id="results-container" className="z-10 flex-1 flex flex-col items-center justify-center w-full p-4 sm:p-12">
@@ -587,3 +654,4 @@ export default function RandomDrawApp() {
     </div>
   )
 }
+
