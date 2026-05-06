@@ -1,14 +1,16 @@
-// app/layout.tsx v2.4.0
+// app/layout.tsx v2.5.0
 import type {Metadata} from 'next';
 import './style.css';
-import { Geist } from "next/font/google";
+import { Geist, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const jetBrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
+const playfairDisplay = Playfair_Display({subsets:['latin'],variable:'--font-serif'});
 
 export const metadata: Metadata = {
-  title: 'ZenDraw | 禅抽 v2.4.0',
+  title: 'ZenDraw | 禅抽 v2.5.0',
   description: 'A professional, full-screen random draw application with customizable rules, history, and multi-language support. Perfect for lucky draws, classroom activities, and games.',
   keywords: ['ZenDraw', '禅抽', 'random draw', 'lucky draw', 'randomizer', '抽签', '随机数', '抽奖', 'roller', 'slot machine'],
   authors: [{ name: 'Sut' }],
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)} suppressHydrationWarning>
+    <html lang="en" className={cn("font-sans", geist.variable, jetBrainsMono.variable, playfairDisplay.variable)} suppressHydrationWarning>
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -35,3 +37,4 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
     </html>
   );
 }
+
