@@ -1,4 +1,4 @@
-# ZenDraw | 禅抽 v2.4.0
+# ZenDraw | 禅抽 v2.7.0
 
 [中文版本](./README_CN.md)
 
@@ -15,9 +15,11 @@ ZenDraw is a professional, full-screen random draw application built with Next.j
 - **Custom List Import**: Import a custom list of items (names, prizes, etc.) to draw from instead of numbers.
 - **Multi-language Support**: Seamlessly switch between English and Simplified Chinese.
 - **Responsive Design**: Optimized for Desktop, Tablet, and Mobile devices.
-- **Theming & Fonts**: Choose from multiple color presets (Ocean, Forest, Sunset) and font families (Sans, Mono, Serif).
+- **Theming & Fonts**: Choose from multiple color presets (Default, Ocean, Forest, Sunset, Purple, Neon) and font families (Sans, Mono, Serif).
 - **Dark/Light Mode**: Full support for system themes and manual toggling.
 - **History Tracking & Export**: Keep track of all previous draws and export them to a text file.
+- **Settings Persistence**: All user settings are automatically saved to localStorage.
+- **Enhanced UI & Animations**: Improved user interface with smoother animations and better accessibility.
 
 ## 🛠️ Tech Stack
 
