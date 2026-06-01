@@ -1,4 +1,4 @@
-// app/layout.tsx v2.5.0
+// app/layout.tsx v2.7.0
 import type {Metadata} from 'next';
 import './style.css';
 import { Geist, JetBrains_Mono, Playfair_Display } from "next/font/google";
@@ -10,7 +10,7 @@ const jetBrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'})
 const playfairDisplay = Playfair_Display({subsets:['latin'],variable:'--font-serif'});
 
 export const metadata: Metadata = {
-  title: 'ZenDraw | 禅抽 v2.5.0',
+  title: "ZenDraw | 禅抽 v2.7.0",
   description: 'A professional, full-screen random draw application with customizable rules, history, and multi-language support. Perfect for lucky draws, classroom activities, and games.',
   keywords: ['ZenDraw', '禅抽', 'random draw', 'lucky draw', 'randomizer', '抽签', '随机数', '抽奖', 'roller', 'slot machine'],
   authors: [{ name: 'Sut' }],

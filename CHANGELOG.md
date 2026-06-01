@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.7.0]
+- cleanup: Remove redundant locale file
+- chore: Unified version numbers across all files
+- style: UI/UX improvements for better visual experience
+- fix: Minor bug fixes
+
 ## [2.4.0]
 - feat: Add adjustable draw duration (1-30s, default 5s)
 

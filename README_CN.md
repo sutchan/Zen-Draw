@@ -1,8 +1,8 @@
-# ZenDraw | 禅抽 v2.4.0
+# ZenDraw | 禅抽 v2.7.0
 
 [English Version](./README.md)
 
-禅抽 (ZenDraw) 是一款基于 Next.js、Tailwind CSS 和 Framer Motion 构建的专业全屏随机抽签应用。专为抽奖、课堂活动或任何需要随机选择的场景设计，提供极具冲击力的视觉呈现。
+禅抽 (ZenDraw) 是一款基于 Next.js、Tailwind CSS 和 Framer Motion 构建的专业全屏随机抽签应用。专为抽奖、课堂活动或任何需要随机选择的场景设计，提供极具冲击力的视觉呈现。拥有精美的动画效果、可自定义的主题和直观的用户体验。
 
 ## 🚀 功能特性
 

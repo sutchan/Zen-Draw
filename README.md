@@ -1,8 +1,8 @@
-# ZenDraw | 禅抽 v2.4.0
+# ZenDraw | 禅抽 v2.7.0
 
 [中文版本](./README_CN.md)
 
-ZenDraw is a professional, full-screen random draw application built with Next.js, Tailwind CSS, and Framer Motion. Designed for high-impact visual presentations during lucky draws, classroom activities, or any event requiring a random selection.
+ZenDraw is a professional, full-screen random draw application built with Next.js, Tailwind CSS, and Framer Motion. Designed for high-impact visual presentations during lucky draws, classroom activities, or any event requiring a random selection. Features beautiful animations, customizable themes, and an intuitive user experience.
 
 ## 🚀 Features
 

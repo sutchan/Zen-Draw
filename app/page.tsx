@@ -823,6 +823,37 @@ export default function RandomDrawApp() {
         {/* Background decorative elements */}
         <div className="absolute inset-0 bg-grid-white/5 bg-[size:40px_40px] [mask-image:radial-gradient(white,transparent_80%)] pointer-events-none opacity-10 dark:opacity-5" />
         
+        {/* Animated gradient orbs in background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            className="absolute w-96 h-96 rounded-full bg-primary/10 blur-3xl"
+            style={{ top: "20%", left: "10%" }}
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 8, 
+              ease: "easeInOut" 
+            }}
+          />
+          <motion.div
+            className="absolute w-80 h-80 rounded-full bg-primary/5 blur-3xl"
+            style={{ bottom: "10%", right: "15%" }}
+            animate={{ 
+              scale: [1, 1.15, 1],
+              opacity: [0.2, 0.4, 0.2]
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 10, 
+              ease: "easeInOut",
+              delay: 1
+            }}
+          />
+        </div>
+        
         {/* Results Container */}
         <motion.div 
           id="results-container" 
@@ -870,13 +901,25 @@ export default function RandomDrawApp() {
                     }}
                     className="flex items-center justify-center"
                   >
-                    <div className="bg-background/90 text-foreground shadow-2xl rounded-[2rem] px-10 py-8 sm:px-16 sm:py-12 text-center border border-border/30 backdrop-blur-xl min-w-[220px] sm:min-w-[280px]">
+                    <motion.div 
+                      className="bg-background/90 text-foreground shadow-2xl rounded-[2rem] px-10 py-8 sm:px-16 sm:py-12 text-center border border-border/30 backdrop-blur-xl min-w-[220px] sm:min-w-[280px] relative overflow-hidden"
+                      animate={!isDrawing ? {
+                        boxShadow: [
+                          "0 0 0 rgba(0,0,0,0)",
+                          "0 0 30px rgba(139, 92, 246, 0.3)",
+                          "0 0 0 rgba(0,0,0,0)"
+                        ]
+                      } : {}}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      {/* Gradient border effect */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10 pointer-events-none" />
                       <NumberRoller 
                         value={result} 
                         isDrawing={isDrawing} 
                         className="text-7xl sm:text-9xl md:text-[12vw] font-black tracking-tighter tabular-nums leading-none"
                       />
-                    </div>
+                    </motion.div>
                   </motion.div>
                 ))}
               </AnimatePresence>
@@ -895,11 +938,15 @@ export default function RandomDrawApp() {
           <motion.div
             whileHover={isDrawing ? {} : { scale: 1.02 }}
             whileTap={isDrawing ? {} : { scale: 0.98 }}
+            className="relative group"
           >
+            {/* Glow effect for button */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary via-primary/80 to-primary rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300" />
+            
             <Button 
               id="draw-button"
               size="lg" 
-              className="w-full h-20 sm:h-24 text-2xl sm:text-4xl font-black rounded-2xl shadow-2xl transition-all duration-300 hover:shadow-primary/20"
+              className="w-full h-20 sm:h-24 text-2xl sm:text-4xl font-black rounded-2xl shadow-2xl transition-all duration-300 relative bg-gradient-to-br from-primary to-primary/90 hover:from-primary/95 hover:to-primary/85"
               onClick={handleDraw}
               disabled={isDrawing}
             >
