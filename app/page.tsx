@@ -30,11 +30,7 @@ export default function RandomDrawApp() {
   const t = translations[lang]
   const { theme, setTheme } = useTheme()
   const shouldReduceMotion = useReducedMotion()
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = React.useSyncExternalStore(() => () => {}, () => true, () => false)
 
   // Update html lang attribute when language changes
   React.useEffect(() => {
@@ -88,11 +84,6 @@ export default function RandomDrawApp() {
 
   // History with string timestamps for localStorage serialization
   const [history, setHistory] = useLocalStorage<{ id: string; timestamp: string; results: string[] }[]>("zendraw-history", [])
-
-  // Mark as opened when UI is shown
-  React.useEffect(() => {
-    if (showUI) setHasOpenedOnce(true)
-  }, [showUI])
 
   // Auto-hide logic for idle - optimized
   React.useEffect(() => {
@@ -311,7 +302,7 @@ export default function RandomDrawApp() {
         <Button 
           variant={showUI ? "secondary" : "ghost"}
           size="icon" 
-          onClick={() => setShowUI(s => !s)}
+          onClick={() => { const next = !showUI; setShowUI(next); if (next) setHasOpenedOnce(true); }}
           title={t.toggleUI}
           className={cn(
             "rounded-xl transition-all duration-300",
@@ -341,7 +332,7 @@ export default function RandomDrawApp() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setShowUI(true)}
+              onClick={() => { setShowUI(true); setHasOpenedOnce(true); }}
               className="h-12 w-6 rounded-l-xl bg-background/80 backdrop-blur-md border-y border-l shadow-lg hover:bg-primary/10 transition-all group"
               title={t.clickToExpand}
             >
