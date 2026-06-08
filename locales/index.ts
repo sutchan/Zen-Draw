@@ -1,4 +1,4 @@
-// locales/index.ts v2.2.0
+// locales/index.ts v3.0
 export const translations = {
   en: {
     title: "ZenDraw",

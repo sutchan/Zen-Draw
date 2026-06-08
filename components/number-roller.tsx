@@ -1,4 +1,4 @@
-// components/number-roller.tsx v1.9.0
+// components/number-roller.tsx v3.0
 "use client"
 
 import * as React from "react"

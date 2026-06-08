@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZenDraw | 禅抽 - 原型图 v2.7.0</title>
+    <title>ZenDraw | 禅抽 - 原型图 v3.0 (Apple Design)</title>
     <style>
         :root {
-            --primary: #0a0a0a;
-            --primary-foreground: #fafafa;
-            --background: #fafafa;
-            --foreground: #0a0a0a;
-            --muted: #f5f5f5;
-            --muted-foreground: #737373;
-            --border: #e5e5e5;
+            --primary: #000000;
+            --primary-foreground: #ffffff;
+            --background: #ffffff;
+            --foreground: #1d1d1f;
+            --muted: #f5f5f7;
+            --muted-foreground: #86868b;
+            --border: #d2d2d7;
             --card: #ffffff;
-            --card-foreground: #0a0a0a;
-            --radius: 0.75rem;
+            --card-foreground: #1d1d1f;
+            --radius: 18px;
         }
         .dark {
-            --primary: #fafafa;
-            --primary-foreground: #0a0a0a;
-            --background: #0a0a0a;
-            --foreground: #fafafa;
-            --muted: #262626;
-            --muted-foreground: #a3a3a3;
-            --border: #333333;
-            --card: #171717;
-            --card-foreground: #fafafa;
+            --primary: #ffffff;
+            --primary-foreground: #000000;
+            --background: #000000;
+            --foreground: #f5f5f7;
+            --muted: #1d1d1f;
+            --muted-foreground: #86868b;
+            --border: #424245;
+            --card: #1d1d1f;
+            --card-foreground: #f5f5f7;
         }
         * {
             box-sizing: border-box;
@@ -34,141 +34,163 @@
             padding: 0;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: var(--background);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            background: var(--muted);
             color: var(--foreground);
-            line-height: 1.6;
+            line-height: 1.5;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         .prototype-container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 3rem 2rem;
         }
+        /* Header */
         .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem 1.5rem;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: 2rem;
+            text-align: center;
+            padding: 4rem 0 3rem;
         }
         .header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 3.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(180deg, #1d1d1f 0%, #424245 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .dark .header h1 {
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header .subtitle {
+            font-size: 1.25rem;
+            color: var(--muted-foreground);
+            font-weight: 400;
         }
         .header .version {
-            font-size: 0.75rem;
+            font-size: 0.875rem;
             color: var(--muted-foreground);
-            font-family: monospace;
+            margin-top: 0.5rem;
+            font-family: SF Mono, Monaco, monospace;
         }
+        /* Navigation */
         .nav-tabs {
             display: flex;
+            justify-content: center;
             gap: 0.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             flex-wrap: wrap;
         }
         .nav-tab {
-            padding: 0.75rem 1.5rem;
-            background: var(--muted);
+            padding: 0.625rem 1.25rem;
+            background: var(--card);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 980px;
             cursor: pointer;
+            font-size: 0.875rem;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            color: var(--foreground);
         }
         .nav-tab:hover {
-            background: var(--primary);
-            color: var(--primary-foreground);
+            background: var(--muted);
         }
         .nav-tab.active {
             background: var(--primary);
             color: var(--primary-foreground);
+            border-color: var(--primary);
         }
         .section {
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
         .section-title {
-            font-size: 1.25rem;
+            font-size: 2rem;
             font-weight: 600;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--primary);
+            letter-spacing: -0.01em;
+            margin-bottom: 2rem;
+            text-align: center;
         }
+        /* Device Frame */
         .device-frame {
             background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 24px;
             overflow: hidden;
-            margin-bottom: 1rem;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
         }
         .device-label {
-            padding: 0.5rem 1rem;
+            padding: 1rem 1.5rem;
             background: var(--muted);
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-size: 0.75rem;
+            font-weight: 600;
             color: var(--muted-foreground);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             border-bottom: 1px solid var(--border);
         }
-        .mockup {
+        /* Desktop Mockup - Apple Style */
+        .desktop-mockup {
             position: relative;
             width: 100%;
-            height: 600px;
-            background: linear-gradient(135deg, var(--background) 0%, var(--muted) 100%);
+            height: 680px;
+            background: var(--background);
             overflow: hidden;
         }
-        /* Desktop Mockup */
-        .desktop-mockup {
-            height: 700px;
-        }
-        .desktop-mockup .app-header {
+        /* Top Navigation Bar */
+        .desktop-mockup .top-bar {
             position: absolute;
-            top: 1rem;
-            left: 1rem;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--background);
+            border-bottom: 1px solid var(--border);
+            z-index: 10;
+        }
+        .desktop-mockup .brand {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            z-index: 10;
         }
-        .desktop-mockup .logo {
-            width: 44px;
-            height: 44px;
-            background: var(--primary);
-            border-radius: 0.75rem;
+        .desktop-mockup .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--foreground);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .desktop-mockup .logo svg {
-            width: 24px;
-            height: 24px;
-            stroke: var(--primary-foreground);
+        .desktop-mockup .brand-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--background);
         }
-        .desktop-mockup .title {
-            font-size: 1.125rem;
-            font-weight: 700;
+        .desktop-mockup .brand-name {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
         }
-        .desktop-mockup .version-tag {
-            font-size: 0.625rem;
-            color: var(--muted-foreground);
-            font-family: monospace;
-        }
-        .desktop-mockup .floating-controls {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
+        .desktop-mockup .top-controls {
             display: flex;
+            align-items: center;
             gap: 0.5rem;
-            z-index: 10;
         }
         .desktop-mockup .control-btn {
-            width: 40px;
-            height: 40px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 0.75rem;
+            width: 36px;
+            height: 36px;
+            background: var(--muted);
+            border: none;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -176,570 +198,585 @@
             transition: all 0.2s;
         }
         .desktop-mockup .control-btn:hover {
-            background: var(--muted);
+            background: var(--border);
         }
         .desktop-mockup .control-btn svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             stroke: var(--foreground);
         }
-        .desktop-mockup .sidebar {
+        /* Main Content - Centered Focus */
+        .desktop-mockup .main-content {
             position: absolute;
-            top: 0;
+            top: 56px;
+            left: 0;
             right: 0;
-            width: 420px;
-            height: 100%;
-            background: var(--card);
-            border-left: 1px solid var(--border);
+            bottom: 0;
             display: flex;
             flex-direction: column;
-            z-index: 5;
-        }
-        .desktop-mockup .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .desktop-mockup .sidebar-icon {
-            width: 44px;
-            height: 44px;
-            background: var(--muted);
-            border-radius: 0.75rem;
-            display: flex;
             align-items: center;
             justify-content: center;
+            padding: 3rem;
+            transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
-        .desktop-mockup .sidebar-icon svg {
-            width: 24px;
-            height: 24px;
-            stroke: var(--foreground);
-        }
-        .desktop-mockup .sidebar-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        .desktop-mockup .tabs {
-            display: flex;
-            padding: 1rem;
-            gap: 0.25rem;
-            border-bottom: 1px solid var(--border);
-        }
-        .desktop-mockup .tab {
+        /* Centered Display with Dramatic Typography */
+        .desktop-mockup .display-area {
             flex: 1;
-            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px;
+        }
+        .desktop-mockup .dice-large {
+            width: 180px;
+            height: 180px;
+            opacity: 0.15;
+            margin-bottom: 2rem;
+        }
+        .desktop-mockup .dice-large svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--muted-foreground);
+        }
+        .desktop-mockup .ready-state {
             text-align: center;
-            font-size: 0.875rem;
+        }
+        .desktop-mockup .ready-title {
+            font-size: 4rem;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            color: var(--foreground);
+            margin-bottom: 0.5rem;
+        }
+        .desktop-mockup .ready-desc {
+            font-size: 1.125rem;
+            color: var(--muted-foreground);
+            font-weight: 400;
+        }
+        /* Result Card - Apple Style */
+        .desktop-mockup .result-card {
+            background: var(--card);
+            border-radius: 32px;
+            padding: 3rem 5rem;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .desktop-mockup .result-number {
+            font-size: 10rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            color: var(--foreground);
+            font-variant-numeric: tabular-nums;
+        }
+        .desktop-mockup .result-label {
+            font-size: 1rem;
+            color: var(--muted-foreground);
+            margin-top: 1rem;
             font-weight: 500;
-            border-radius: 0.5rem;
+        }
+        /* Action Button - Apple Style Pill */
+        .desktop-mockup .action-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem 0;
+        }
+        .desktop-mockup .action-btn {
+            width: 100%;
+            height: 64px;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: 980px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+        .desktop-mockup .action-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+        }
+        .desktop-mockup .action-btn:active {
+            transform: scale(0.98);
+        }
+        .desktop-mockup .action-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+        /* Settings Panel - Apple Style Sidebar */
+        .desktop-mockup .sidebar {
+            position: absolute;
+            top: 56px;
+            right: 0;
+            width: 380px;
+            height: calc(100% - 56px);
+            background: var(--background);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            z-index: 5;
+        }
+        .desktop-mockup .sidebar.open {
+            transform: translateX(0);
+        }
+        .desktop-mockup .sidebar-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .desktop-mockup .sidebar-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .desktop-mockup .sidebar-tabs {
+            display: flex;
+            padding: 1rem 2rem;
             gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
         }
-        .desktop-mockup .tab.active {
-            background: var(--card);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        .desktop-mockup .sidebar-tab {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 980px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--muted-foreground);
         }
-        .desktop-mockup .tab svg {
-            width: 16px;
-            height: 16px;
+        .desktop-mockup .sidebar-tab.active {
+            background: var(--foreground);
+            color: var(--background);
         }
         .desktop-mockup .sidebar-content {
             flex: 1;
-            padding: 1.5rem;
             overflow-y: auto;
+            padding: 2rem;
         }
-        .desktop-mockup .form-group {
-            margin-bottom: 1.5rem;
+        /* Form Elements - Apple Style */
+        .desktop-mockup .form-section {
+            margin-bottom: 2rem;
+        }
+        .desktop-mockup .form-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--muted-foreground);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        .desktop-mockup .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .desktop-mockup .form-field {
+            flex: 1;
         }
         .desktop-mockup .form-label {
             display: block;
             font-size: 0.875rem;
             font-weight: 500;
+            color: var(--foreground);
             margin-bottom: 0.5rem;
         }
         .desktop-mockup .form-input {
             width: 100%;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            background: var(--card);
-        }
-        .desktop-mockup .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-        .desktop-mockup .section-header {
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border);
-        }
-        .desktop-mockup .section-title {
+            height: 44px;
+            padding: 0 1rem;
+            background: var(--muted);
+            border: none;
+            border-radius: 10px;
             font-size: 1rem;
-            font-weight: 600;
+            color: var(--foreground);
+            transition: all 0.2s;
         }
-        .desktop-mockup .section-desc {
-            font-size: 0.75rem;
-            color: var(--muted-foreground);
+        .desktop-mockup .form-input:focus {
+            outline: none;
+            background: var(--card);
+            box-shadow: 0 0 0 2px var(--primary);
         }
+        .desktop-mockup .form-select {
+            width: 100%;
+            height: 44px;
+            padding: 0 1rem;
+            background: var(--muted);
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: var(--foreground);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+        /* Toggle - Apple Style */
         .desktop-mockup .toggle-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.75rem;
-            background: var(--muted);
-            border-radius: 0.5rem;
-            margin-bottom: 0.75rem;
+            padding: 0.875rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .desktop-mockup .toggle-row:last-child {
+            border-bottom: none;
+        }
+        .desktop-mockup .toggle-label {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--foreground);
+        }
+        .desktop-mockup .toggle-desc {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            margin-top: 0.125rem;
         }
         .desktop-mockup .toggle {
-            width: 44px;
-            height: 24px;
-            background: var(--primary);
-            border-radius: 12px;
+            width: 51px;
+            height: 31px;
+            background: var(--muted-foreground);
+            border-radius: 16px;
             position: relative;
             cursor: pointer;
+            transition: background 0.3s;
+        }
+        .desktop-mockup .toggle.on {
+            background: #34c759;
         }
         .desktop-mockup .toggle::after {
             content: '';
             position: absolute;
             top: 2px;
             left: 2px;
-            width: 20px;
-            height: 20px;
+            width: 27px;
+            height: 27px;
             background: white;
             border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
         }
-        .desktop-mockup .toggle.off {
-            background: var(--border);
+        .desktop-mockup .toggle.on::after {
+            transform: translateX(20px);
         }
-        .desktop-mockup .toggle.off::after {
-            left: 22px;
-        }
-        .desktop-mockup .select {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            background: var(--card);
-            cursor: pointer;
-        }
-        .desktop-mockup .main-area {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 420px;
-            bottom: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-        .desktop-mockup .dice-icon {
-            width: 160px;
-            height: 160px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.3;
-        }
-        .desktop-mockup .dice-icon svg {
-            width: 100%;
-            height: 100%;
-            stroke: var(--muted-foreground);
-        }
-        .desktop-mockup .ready-text {
-            font-size: 1.875rem;
-            color: var(--muted-foreground);
-            font-weight: 500;
-            margin-top: 2rem;
-        }
-        .desktop-mockup .action-btn {
-            position: absolute;
-            bottom: 3rem;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 1rem 3rem;
-            background: var(--primary);
-            color: var(--primary-foreground);
-            border-radius: 1rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .desktop-mockup .action-btn:hover {
-            transform: translateX(-50%) scale(1.02);
-        }
-        .desktop-mockup .action-btn:active {
-            transform: translateX(-50%) scale(0.98);
-        }
-        .desktop-mockup .action-btn svg {
-            width: 32px;
-            height: 32px;
-        }
-        /* Result State */
-        .desktop-mockup.result .result-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 2rem;
-            padding: 2rem 4rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            text-align: center;
-        }
-        .desktop-mockup.result .result-number {
-            font-size: 8rem;
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            line-height: 1;
-            font-variant-numeric: tabular-nums;
-        }
-        /* Mobile Mockup */
-        .mobile-mockup {
-            height: 667px;
-            max-width: 375px;
-            margin: 0 auto;
-            border-radius: 2rem;
-            border: 8px solid var(--foreground);
-            position: relative;
-        }
-        .mobile-mockup .app-header {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            z-index: 10;
-        }
-        .mobile-mockup .logo {
-            width: 36px;
-            height: 36px;
-            background: var(--primary);
-            border-radius: 0.6rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .mobile-mockup .logo svg {
-            width: 20px;
-            height: 20px;
-            stroke: var(--primary-foreground);
-        }
-        .mobile-mockup .title {
-            font-size: 0.875rem;
-            font-weight: 700;
-        }
-        .mobile-mockup .floating-controls {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            display: flex;
-            gap: 0.25rem;
-            z-index: 10;
-        }
-        .mobile-mockup .control-btn {
-            width: 36px;
-            height: 36px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 0.6rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .mobile-mockup .control-btn svg {
-            width: 18px;
-            height: 18px;
-            stroke: var(--foreground);
-        }
-        .mobile-mockup .sidebar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--card);
-            z-index: 5;
-            transform: translateX(100%);
-        }
-        .mobile-mockup .sidebar.open {
-            transform: translateX(0);
-        }
-        .mobile-mockup .main-area {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .mobile-mockup .dice-icon {
-            width: 100px;
-            height: 100px;
-            opacity: 0.3;
-        }
-        .mobile-mockup .dice-icon svg {
-            width: 100%;
-            height: 100%;
-            stroke: var(--muted-foreground);
-        }
-        .mobile-mockup .ready-text {
-            font-size: 1.25rem;
-            color: var(--muted-foreground);
-            margin-top: 1rem;
-        }
-        .mobile-mockup .action-btn {
-            position: absolute;
-            bottom: 3rem;
-            left: 1rem;
-            right: 1rem;
-            height: 80px;
-            background: var(--primary);
-            color: var(--primary-foreground);
-            border-radius: 1rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-        /* Theme Preview */
+        /* Theme Grid - Apple Style */
         .theme-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
         }
         .theme-card {
             padding: 1.5rem;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background: var(--card);
+            background: var(--muted);
+            border-radius: 16px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .theme-card:hover {
+            transform: scale(1.02);
         }
         .theme-preview {
-            height: 100px;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-        }
-        .theme-default { background: linear-gradient(135deg, #fafafa, #e5e5e5); }
-        .theme-ocean { background: linear-gradient(135deg, #0ea5e9, #0369a1); color: white; }
-        .theme-forest { background: linear-gradient(135deg, #22c55e, #15803d); color: white; }
-        .theme-sunset { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
-        .theme-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; }
-        .theme-neon { background: linear-gradient(135deg, #0f0f0f, #1a1a2e); color: #00ff88; }
-        .theme-name {
+            font-size: 1.5rem;
             font-weight: 600;
-            margin-bottom: 0.25rem;
+        }
+        .theme-default { background: linear-gradient(135deg, #f5f5f7, #e5e5e7); color: #1d1d1f; }
+        .theme-ocean { background: linear-gradient(135deg, #0071e3, #0041b8); color: white; }
+        .theme-forest { background: linear-gradient(135deg, #34c759, #248a3d); color: white; }
+        .theme-sunset { background: linear-gradient(135deg, #ff9f0a, #ff3b30); color: white; }
+        .theme-purple { background: linear-gradient(135deg, #af52de, #5856d6); color: white; }
+        .theme-neon { background: linear-gradient(135deg, #1d1d1f, #0a84ff); color: #00ff88; }
+        .theme-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--foreground);
         }
         .theme-desc {
             font-size: 0.75rem;
             color: var(--muted-foreground);
+            margin-top: 0.25rem;
+        }
+        /* Typography Specs */
+        .type-specs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .type-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--muted);
+            border-radius: 16px;
+        }
+        .type-sample {
+            margin-bottom: 1rem;
+        }
+        .type-sample.large {
+            font-size: 3rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+        .type-sample.medium {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        .type-sample.small {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+        .type-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--muted-foreground);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         /* Color Palette */
         .palette-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
         }
         .palette-card {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 16px;
             overflow: hidden;
+            background: var(--muted);
         }
         .palette-swatch {
-            height: 60px;
+            height: 80px;
         }
         .palette-info {
-            padding: 0.75rem;
-            background: var(--card);
+            padding: 1rem;
         }
         .palette-name {
-            font-weight: 600;
             font-size: 0.875rem;
+            font-weight: 600;
         }
         .palette-hex {
             font-size: 0.75rem;
             color: var(--muted-foreground);
-            font-family: monospace;
+            font-family: SF Mono, Monaco, monospace;
         }
-        /* Flowchart */
-        .flowchart {
+        /* Flow - Apple Style */
+        .flow-diagram {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
-            padding: 2rem;
+            gap: 1.5rem;
+            padding: 3rem;
             background: var(--muted);
-            border-radius: var(--radius);
+            border-radius: 24px;
         }
-        .flow-node {
-            padding: 1rem 2rem;
+        .flow-step {
+            padding: 1.5rem 3rem;
             background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 16px;
+            font-size: 1.125rem;
             font-weight: 500;
             text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
         }
-        .flow-node.primary {
+        .flow-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        .flow-step.primary {
             background: var(--primary);
             color: var(--primary-foreground);
-            border-color: var(--primary);
+            font-size: 1.25rem;
         }
         .flow-arrow {
             font-size: 1.5rem;
             color: var(--muted-foreground);
+            opacity: 0.5;
         }
-        /* Component Grid */
-        .component-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-        .component-card {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+        /* Mobile Mockup */
+        .mobile-mockup {
+            height: 640px;
+            max-width: 320px;
+            margin: 0 auto;
+            border-radius: 40px;
+            border: 6px solid var(--foreground);
+            position: relative;
             overflow: hidden;
         }
-        .component-preview {
-            padding: 2rem;
-            background: var(--muted);
+        .mobile-mockup .mobile-content {
+            width: 100%;
+            height: 100%;
+            background: var(--background);
+            display: flex;
+            flex-direction: column;
+        }
+        .mobile-mockup .mobile-header {
+            height: 48px;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-mockup .mobile-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .mobile-mockup .mobile-logo-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--foreground);
+            border-radius: 7px;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 120px;
         }
-        .component-info {
-            padding: 1rem;
-            background: var(--card);
+        .mobile-mockup .mobile-logo-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--background);
         }
-        .component-name {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-        .component-path {
-            font-size: 0.75rem;
-            color: var(--muted-foreground);
-            font-family: monospace;
-        }
-        /* Button variants */
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-        .btn-primary {
-            background: var(--primary);
-            color: var(--primary-foreground);
-        }
-        .btn-secondary {
-            background: var(--muted);
-            color: var(--foreground);
-            border: 1px solid var(--border);
-        }
-        .btn-ghost {
-            background: transparent;
-            color: var(--foreground);
-        }
-        .btn-lg {
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-        }
-        /* Icon placeholders */
-        .icon {
-            width: 20px;
-            height: 20px;
-            stroke: currentColor;
-            stroke-width: 2;
-            fill: none;
-        }
-        /* History item */
-        .history-item {
-            padding: 1rem;
-            background: var(--muted);
-            border-radius: 0.75rem;
-            margin-bottom: 0.75rem;
-        }
-        .history-time {
-            font-size: 0.75rem;
-            color: var(--muted-foreground);
-            margin-bottom: 0.5rem;
-        }
-        .history-results {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .history-tag {
-            padding: 0.375rem 0.75rem;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
+        .mobile-mockup .mobile-logo-text {
             font-size: 0.875rem;
             font-weight: 600;
+        }
+        .mobile-mockup .mobile-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .mobile-mockup .mobile-control {
+            width: 32px;
+            height: 32px;
+            background: var(--muted);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mobile-mockup .mobile-control svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--foreground);
+        }
+        .mobile-mockup .mobile-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .mobile-mockup .mobile-dice {
+            width: 80px;
+            height: 80px;
+            opacity: 0.15;
+            margin-bottom: 1.5rem;
+        }
+        .mobile-mockup .mobile-dice svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--muted-foreground);
+        }
+        .mobile-mockup .mobile-ready {
+            font-size: 1.75rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            text-align: center;
+        }
+        .mobile-mockup .mobile-btn {
+            width: 100%;
+            height: 56px;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: 14px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        .mobile-mockup .mobile-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        /* Animation Demos */
+        .animation-demo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .animation-card {
+            padding: 2rem;
+            background: var(--muted);
+            border-radius: 16px;
+            text-align: center;
+        }
+        .animation-preview {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            border-radius: 20px;
+            margin: 0 auto 1rem;
+        }
+        .animation-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .animation-desc {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            margin-top: 0.25rem;
         }
         /* Footer */
         .footer {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
             color: var(--muted-foreground);
             font-size: 0.875rem;
         }
         /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
-        .anim-pulse {
-            animation: pulse 2s ease-in-out infinite;
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 113, 227, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(0, 113, 227, 0.6); }
         }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .anim-spin {
-            animation: spin 1s linear infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .anim-bounce {
-            animation: bounce 1s ease-in-out infinite;
-        }
+        .anim-float { animation: float 3s ease-in-out infinite; }
+        .anim-pulse { animation: pulse 2s ease-in-out infinite; }
+        .anim-glow { animation: glow 2s ease-in-out infinite; }
     </style>
 </head>
 <body>
     <div class="prototype-container">
         <!-- Header -->
         <header class="header">
-            <div>
-                <h1>ZenDraw | 禅抽</h1>
-                <span class="version">原型图 v2.7.0</span>
-            </div>
-            <div style="display: flex; gap: 1rem; align-items: center;">
-                <span style="font-size: 0.875rem; color: var(--muted-foreground);">最后更新: 2026-06-02</span>
-                <button class="btn btn-primary" onclick="toggleTheme()">切换主题</button>
-            </div>
+            <h1>ZenDraw | 禅抽</h1>
+            <p class="subtitle">专业随机抽奖应用 · Apple 设计风格</p>
+            <p class="version">原型图 v3.0 · 最后更新: 2026-06-08</p>
         </header>
 
         <!-- Navigation -->
@@ -748,58 +785,35 @@
             <button class="nav-tab" onclick="showSection('desktop')">桌面端</button>
             <button class="nav-tab" onclick="showSection('mobile')">移动端</button>
             <button class="nav-tab" onclick="showSection('themes')">主题</button>
-            <button class="nav-tab" onclick="showSection('components')">组件</button>
-            <button class="nav-tab" onclick="showSection('flow')">流程</button>
-            <button class="nav-tab" onclick="showSection('i18n')">国际化</button>
+            <button class="nav-tab" onclick="showSection('design')">设计规范</button>
+            <button class="nav-tab" onclick="showSection('flow')">交互流程</button>
         </nav>
 
         <!-- Overview Section -->
         <section id="overview" class="section">
-            <h2 class="section-title">项目概览</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-                <div class="device-frame">
-                    <div class="device-label">项目信息</div>
-                    <div style="padding: 1.5rem;">
-                        <table style="width: 100%; font-size: 0.875rem;">
-                            <tr><td style="padding: 0.5rem 0; font-weight: 500;">名称</td><td style="text-align: right;">ZenDraw | 禅抽</td></tr>
-                            <tr><td style="padding: 0.5rem 0; font-weight: 500;">版本</td><td style="text-align: right;">v2.7.0</td></tr>
-                            <tr><td style="padding: 0.5rem 0; font-weight: 500;">框架</td><td style="text-align: right;">Next.js 15</td></tr>
-                            <tr><td style="padding: 0.5rem 0; font-weight: 500;">UI库</td><td style="text-align: right;">Tailwind CSS v4</td></tr>
-                            <tr><td style="padding: 0.5rem 0; font-weight: 500;">动画</td><td style="text-align: right;">Framer Motion</td></tr>
-                            <tr><td style="padding: 0.5rem 0; font-weight: 500;">许可证</td><td style="text-align: right;">MIT</td></tr>
-                        </table>
+            <h2 class="section-title">设计理念</h2>
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem;">
+                    <div>
+                        <div style="width: 64px; height: 64px; background: var(--muted); border-radius: 16px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+                        </div>
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">极简布局</h3>
+                        <p style="font-size: 0.875rem; color: var(--muted-foreground);">去除冗余元素，只保留核心功能入口</p>
                     </div>
-                </div>
-                <div class="device-frame">
-                    <div class="device-label">功能列表</div>
-                    <div style="padding: 1rem; font-size: 0.875rem;">
-                        <ul style="list-style: none;">
-                            <li style="padding: 0.375rem 0;">✓ 随机数抽取</li>
-                            <li style="padding: 0.375rem 0;">✓ 自定义名单导入</li>
-                            <li style="padding: 0.375rem 0;">✓ 多语言支持 (EN/ZH)</li>
-                            <li style="padding: 0.375rem 0;">✓ 深色/浅色模式</li>
-                            <li style="padding: 0.375rem 0;">✓ 6种配色方案</li>
-                            <li style="padding: 0.375rem 0;">✓ 3种字体样式</li>
-                            <li style="padding: 0.375rem 0;">✓ 历史记录</li>
-                            <li style="padding: 0.375rem 0;">✓ 本地存储持久化</li>
-                        </ul>
+                    <div>
+                        <div style="width: 64px; height: 64px; background: var(--muted); border-radius: 16px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+                        </div>
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">大图展示</h3>
+                        <p style="font-size: 0.875rem; color: var(--muted-foreground);">突出显示抽奖结果，视觉冲击力更强</p>
                     </div>
-                </div>
-                <div class="device-frame">
-                    <div class="device-label">技术规格</div>
-                    <div style="padding: 1.5rem;">
-                        <div style="margin-bottom: 1rem;">
-                            <div style="font-size: 0.75rem; color: var(--muted-foreground); margin-bottom: 0.25rem;">字体</div>
-                            <div style="font-size: 0.875rem;">Inter, JetBrains Mono, Playfair Display</div>
+                    <div>
+                        <div style="width: 64px; height: 64px; background: var(--muted); border-radius: 16px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg>
                         </div>
-                        <div style="margin-bottom: 1rem;">
-                            <div style="font-size: 0.75rem; color: var(--muted-foreground); margin-bottom: 0.25rem;">断点</div>
-                            <div style="font-size: 0.875rem;">Mobile: &lt;768px | Desktop: ≥768px</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.75rem; color: var(--muted-foreground); margin-bottom: 0.25rem;">侧边栏宽度</div>
-                            <div style="font-size: 0.875rem;">420px</div>
-                        </div>
+                        <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">充足留白</h3>
+                        <p style="font-size: 0.875rem; color: var(--muted-foreground);">呼吸空间让界面更优雅，阅读更舒适</p>
                     </div>
                 </div>
             </div>
@@ -808,94 +822,80 @@
         <!-- Desktop Section -->
         <section id="desktop" class="section" style="display: none;">
             <h2 class="section-title">桌面端界面</h2>
-            <div class="device-frame desktop-mockup">
-                <div class="device-label">桌面端预览 (1440x900)</div>
-                <div class="mockup">
-                    <!-- Header -->
-                    <div class="app-header">
-                        <div class="logo">
-                            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+            <div class="device-frame">
+                <div class="device-label">1440 × 900 · 全屏演示模式</div>
+                <div class="desktop-mockup">
+                    <!-- Top Bar -->
+                    <div class="top-bar">
+                        <div class="brand">
+                            <div class="brand-icon">
+                                <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+                            </div>
+                            <span class="brand-name">禅抽</span>
                         </div>
-                        <div>
-                            <div class="title">禅抽</div>
-                            <div class="version-tag">v2.7.0</div>
-                        </div>
-                    </div>
-                    <!-- Floating Controls -->
-                    <div class="floating-controls">
-                        <div class="control-btn" title="切换语言">
-                            <svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
-                        </div>
-                        <div class="control-btn" title="切换控制面板">
-                            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                        <div class="top-controls">
+                            <button class="control-btn" title="切换语言">
+                                <svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+                            </button>
+                            <button class="control-btn" title="设置">
+                                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                            </button>
                         </div>
                     </div>
-                    <!-- Sidebar -->
-                    <div class="sidebar">
+                    <!-- Main Content -->
+                    <div class="main-content">
+                        <div class="display-area">
+                            <div class="dice-large anim-float">
+                                <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+                            </div>
+                            <div class="ready-state">
+                                <div class="ready-title">准备就绪</div>
+                                <div class="ready-desc">设置参数后，点击开始抽奖</div>
+                            </div>
+                        </div>
+                        <div class="action-container">
+                            <button class="action-btn">
+                                <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+                                开始抽奖
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Settings Sidebar -->
+                    <div class="sidebar open">
                         <div class="sidebar-header">
-                            <div class="sidebar-icon">
-                                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                            </div>
-                            <div class="sidebar-title">设置</div>
+                            <h2 class="sidebar-title">设置</h2>
                         </div>
-                        <div class="tabs">
-                            <div class="tab active">
-                                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                                设置
-                            </div>
-                            <div class="tab">
-                                <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 00-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0013 21a9 9 0 000-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
-                                历史
-                            </div>
+                        <div class="sidebar-tabs">
+                            <span class="sidebar-tab active">设置</span>
+                            <span class="sidebar-tab">历史</span>
                         </div>
                         <div class="sidebar-content">
-                            <!-- Range Section -->
-                            <div class="form-group">
-                                <div class="section-header">
-                                    <div class="section-title">范围与数量</div>
-                                    <div class="section-desc">定义抽取数字的范围。</div>
-                                </div>
-                                <div class="form-grid">
-                                    <div>
+                            <div class="form-section">
+                                <div class="form-section-title">抽奖设置</div>
+                                <div class="form-row">
+                                    <div class="form-field">
                                         <label class="form-label">最小值</label>
                                         <input type="number" class="form-input" value="1">
                                     </div>
-                                    <div>
+                                    <div class="form-field">
                                         <label class="form-label">最大值</label>
                                         <input type="number" class="form-input" value="100">
                                     </div>
                                 </div>
-                                <div style="margin-top: 1rem;">
+                                <div class="form-field" style="margin-top: 1rem;">
                                     <label class="form-label">抽取数量</label>
                                     <input type="number" class="form-input" value="1">
                                 </div>
-                                <div style="margin-top: 1rem;">
-                                    <label class="form-label">抽签时长 (秒)</label>
+                                <div class="form-field" style="margin-top: 1rem;">
+                                    <label class="form-label">抽奖时长（秒）</label>
                                     <input type="number" class="form-input" value="5">
                                 </div>
-                                <div class="toggle-row">
-                                    <span class="form-label" style="margin: 0;">允许重复</span>
-                                    <div class="toggle"></div>
-                                </div>
-                                <div class="toggle-row">
-                                    <div>
-                                        <div class="form-label" style="margin: 0;">自动隐藏侧边栏</div>
-                                        <div class="section-desc">开始抽签或长时间无操作时自动隐藏。</div>
-                                    </div>
-                                    <div class="toggle"></div>
-                                </div>
                             </div>
-                            <!-- Appearance Section -->
-                            <div class="form-group" style="padding-top: 1rem; border-top: 1px solid var(--border);">
-                                <label class="form-label">深浅模式</label>
-                                <select class="select">
-                                    <option>跟随系统</option>
-                                    <option>浅色</option>
-                                    <option>深色</option>
-                                </select>
-                                <div style="margin-top: 1rem;">
+                            <div class="form-section">
+                                <div class="form-section-title">外观</div>
+                                <div class="form-field">
                                     <label class="form-label">配色方案</label>
-                                    <select class="select">
+                                    <select class="form-select">
                                         <option>默认</option>
                                         <option>海洋蓝</option>
                                         <option>森林绿</option>
@@ -904,28 +904,62 @@
                                         <option>霓虹</option>
                                     </select>
                                 </div>
-                                <div style="margin-top: 1rem;">
+                                <div class="form-field" style="margin-top: 1rem;">
                                     <label class="form-label">字体样式</label>
-                                    <select class="select">
+                                    <select class="form-select">
                                         <option>无衬线 (Inter)</option>
                                         <option>等宽 (JetBrains)</option>
                                         <option>衬线 (Playfair)</option>
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-section">
+                                <div class="form-section-title">选项</div>
+                                <div class="toggle-row">
+                                    <div>
+                                        <div class="toggle-label">允许重复</div>
+                                    </div>
+                                    <div class="toggle on"></div>
+                                </div>
+                                <div class="toggle-row">
+                                    <div>
+                                        <div class="toggle-label">自动隐藏侧边栏</div>
+                                        <div class="toggle-desc">开始抽奖后自动收起</div>
+                                    </div>
+                                    <div class="toggle on"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- Main Area -->
-                    <div class="main-area">
-                        <div class="dice-icon">
-                            <svg viewBox="0 0 24 24" class="anim-bounce"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+                </div>
+            </div>
+            <!-- Result State -->
+            <div style="margin-top: 2rem;">
+                <div class="device-frame">
+                    <div class="device-label">抽奖结果状态</div>
+                    <div class="desktop-mockup" style="height: 400px;">
+                        <div class="top-bar" style="position: relative; top: 0;">
+                            <div class="brand">
+                                <div class="brand-icon">
+                                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+                                </div>
+                                <span class="brand-name">禅抽</span>
+                            </div>
                         </div>
-                        <div class="ready-text">准备就绪</div>
-                    </div>
-                    <!-- Action Button -->
-                    <div class="action-btn">
-                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
-                        开始抽签
+                        <div class="main-content" style="top: 56px;">
+                            <div class="display-area">
+                                <div class="result-card">
+                                    <div class="result-number">042</div>
+                                    <div class="result-label">恭喜中奖</div>
+                                </div>
+                            </div>
+                            <div class="action-container">
+                                <button class="action-btn" style="background: var(--muted); color: var(--foreground);">
+                                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+                                    继续抽奖
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -935,50 +969,33 @@
         <section id="mobile" class="section" style="display: none;">
             <h2 class="section-title">移动端界面</h2>
             <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
-                <div class="device-frame mobile-mockup">
-                    <div class="device-label">移动端预览 (375x667)</div>
-                    <div class="mockup" style="position: relative;">
-                        <div class="app-header">
-                            <div class="logo">
-                                <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
-                            </div>
-                            <div class="title">禅抽</div>
-                        </div>
-                        <div class="floating-controls">
-                            <div class="control-btn">
-                                <svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
-                            </div>
-                            <div class="control-btn">
-                                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                            </div>
-                        </div>
-                        <div class="main-area">
-                            <div class="dice-icon">
-                                <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
-                            </div>
-                            <div class="ready-text">准备就绪</div>
-                        </div>
-                        <div class="action-btn">
-                            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
-                            开始抽签
-                        </div>
-                        <!-- Mobile Sidebar Overlay -->
-                        <div style="position: absolute; inset: 0; background: black/30; backdrop-blur-sm; z-index: 4;"></div>
-                        <div class="sidebar open" style="padding: 1rem; overflow-y: auto;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
-                                <div style="width: 40px; height: 40px; background: var(--muted); border-radius: 0.6rem; display: flex; align-items: center; justify-content: center;">
-                                    <svg viewBox="0 0 24 24" width="24" height="24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <div class="mobile-mockup">
+                    <div class="mobile-content">
+                        <div class="mobile-header">
+                            <div class="mobile-logo">
+                                <div class="mobile-logo-icon">
+                                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
                                 </div>
-                                <div style="font-size: 1.25rem; font-weight: 700;">设置</div>
+                                <span class="mobile-logo-text">禅抽</span>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label">最小值</label>
-                                <input type="number" class="form-input" value="1">
-                                <label class="form-label" style="margin-top: 0.75rem;">最大值</label>
-                                <input type="number" class="form-input" value="100">
-                                <label class="form-label" style="margin-top: 0.75rem;">抽取数量</label>
-                                <input type="number" class="form-input" value="1">
+                            <div class="mobile-controls">
+                                <div class="mobile-control">
+                                    <svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04z"/></svg>
+                                </div>
+                                <div class="mobile-control">
+                                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58z"/></svg>
+                                </div>
                             </div>
+                        </div>
+                        <div class="mobile-main">
+                            <div class="mobile-dice anim-float">
+                                <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+                            </div>
+                            <div class="mobile-ready">准备就绪</div>
+                            <button class="mobile-btn">
+                                <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/><rect x="2" y="13" width="9" height="9" rx="1"/><rect x="13" y="13" width="9" height="9" rx="1"/></svg>
+                                开始抽奖
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -991,217 +1008,123 @@
             <div class="theme-grid">
                 <div class="theme-card">
                     <div class="theme-preview theme-default">42</div>
-                    <div class="theme-name">默认 (Default)</div>
-                    <div class="theme-desc">标准中性配色</div>
+                    <div class="theme-name">默认</div>
+                    <div class="theme-desc">简洁中性</div>
                 </div>
                 <div class="theme-card">
                     <div class="theme-preview theme-ocean">42</div>
-                    <div class="theme-name">海洋蓝 (Ocean)</div>
-                    <div class="theme-desc">蓝色渐变主题</div>
+                    <div class="theme-name">海洋蓝</div>
+                    <div class="theme-desc">专业沉稳</div>
                 </div>
                 <div class="theme-card">
                     <div class="theme-preview theme-forest">42</div>
-                    <div class="theme-name">森林绿 (Forest)</div>
-                    <div class="theme-desc">绿色自然主题</div>
+                    <div class="theme-name">森林绿</div>
+                    <div class="theme-desc">自然清新</div>
                 </div>
                 <div class="theme-card">
                     <div class="theme-preview theme-sunset">42</div>
-                    <div class="theme-name">落日橙 (Sunset)</div>
-                    <div class="theme-desc">暖橙渐变主题</div>
+                    <div class="theme-name">落日橙</div>
+                    <div class="theme-desc">活力温暖</div>
                 </div>
                 <div class="theme-card">
                     <div class="theme-preview theme-purple">42</div>
-                    <div class="theme-name">紫罗兰 (Purple)</div>
-                    <div class="theme-desc">紫色优雅主题</div>
+                    <div class="theme-name">紫罗兰</div>
+                    <div class="theme-desc">优雅神秘</div>
                 </div>
                 <div class="theme-card">
                     <div class="theme-preview theme-neon">42</div>
-                    <div class="theme-name">霓虹 (Neon)</div>
-                    <div class="theme-desc">赛博朋克风格</div>
-                </div>
-            </div>
-            <h3 style="font-size: 1rem; font-weight: 600; margin: 2rem 0 1rem;">字体样式</h3>
-            <div class="theme-grid">
-                <div class="device-frame">
-                    <div class="device-label">无衬线 (Sans)</div>
-                    <div style="padding: 2rem; text-align: center;">
-                        <div style="font-size: 2rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">The quick brown fox</div>
-                        <div style="font-size: 0.75rem; color: var(--muted-foreground); margin-top: 0.5rem;">Inter (Geist)</div>
-                    </div>
-                </div>
-                <div class="device-frame">
-                    <div class="device-label">等宽 (Mono)</div>
-                    <div style="padding: 2rem; text-align: center;">
-                        <div style="font-size: 2rem; font-family: 'JetBrains Mono', monospace;">0123456789</div>
-                        <div style="font-size: 0.75rem; color: var(--muted-foreground); margin-top: 0.5rem;">JetBrains Mono</div>
-                    </div>
-                </div>
-                <div class="device-frame">
-                    <div class="device-label">衬线 (Serif)</div>
-                    <div style="padding: 2rem; text-align: center;">
-                        <div style="font-size: 2rem; font-family: 'Playfair Display', serif;">Elegant</div>
-                        <div style="font-size: 0.75rem; color: var(--muted-foreground); margin-top: 0.5rem;">Playfair Display</div>
-                    </div>
+                    <div class="theme-name">霓虹</div>
+                    <div class="theme-desc">赛博朋克</div>
                 </div>
             </div>
         </section>
 
-        <!-- Components Section -->
-        <section id="components" class="section" style="display: none;">
-            <h2 class="section-title">组件库</h2>
-            <div class="component-grid">
-                <div class="component-card">
-                    <div class="component-preview">
-                        <button class="btn btn-primary btn-lg">开始抽签</button>
-                    </div>
-                    <div class="component-info">
-                        <div class="component-name">Button</div>
-                        <div class="component-path">components/ui/button.tsx</div>
-                    </div>
+        <!-- Design Specs Section -->
+        <section id="design" class="section" style="display: none;">
+            <h2 class="section-title">设计规范</h2>
+            <!-- Typography -->
+            <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem;">字体规范</h3>
+            <div class="type-specs">
+                <div class="type-card">
+                    <div class="type-sample large">禅抽</div>
+                    <div class="type-label">标题 / 36-48px / 600</div>
                 </div>
-                <div class="component-card">
-                    <div class="component-preview">
-                        <input type="number" class="form-input" value="100" style="max-width: 150px;">
-                    </div>
-                    <div class="component-info">
-                        <div class="component-name">Input</div>
-                        <div class="component-path">components/ui/input.tsx</div>
-                    </div>
+                <div class="type-card">
+                    <div class="type-sample medium">设置面板</div>
+                    <div class="type-label">副标题 / 20-24px / 500</div>
                 </div>
-                <div class="component-card">
-                    <div class="component-preview">
-                        <select class="select" style="max-width: 150px;">
-                            <option>选项 1</option>
-                            <option>选项 2</option>
-                        </select>
-                    </div>
-                    <div class="component-info">
-                        <div class="component-name">Select</div>
-                        <div class="component-path">components/ui/select.tsx</div>
-                    </div>
+                <div class="type-card">
+                    <div class="type-sample small">设置说明文字</div>
+                    <div class="type-label">正文 / 14-16px / 400</div>
                 </div>
-                <div class="component-card">
-                    <div class="component-preview">
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <span>自动隐藏</span>
-                            <div class="toggle"></div>
-                        </div>
-                    </div>
-                    <div class="component-info">
-                        <div class="component-name">Switch</div>
-                        <div class="component-path">components/ui/switch.tsx</div>
-                    </div>
+            </div>
+            <!-- Spacing -->
+            <h3 style="font-size: 1.5rem; font-weight: 600; margin: 3rem 0 1.5rem;">间距系统</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                <div style="text-align: center; padding: 1.5rem; background: var(--muted); border-radius: 12px;">
+                    <div style="font-size: 2rem; font-weight: 600;">4</div>
+                    <div style="font-size: 0.75rem; color: var(--muted-foreground);">xs</div>
                 </div>
-                <div class="component-card">
-                    <div class="component-preview">
-                        <div style="font-size: 4rem; font-weight: 900;">042</div>
-                    </div>
-                    <div class="component-info">
-                        <div class="component-name">NumberRoller</div>
-                        <div class="component-path">components/number-roller.tsx</div>
-                    </div>
+                <div style="text-align: center; padding: 1.5rem; background: var(--muted); border-radius: 12px;">
+                    <div style="font-size: 2rem; font-weight: 600;">8</div>
+                    <div style="font-size: 0.75rem; color: var(--muted-foreground);">sm</div>
                 </div>
-                <div class="component-card">
-                    <div class="component-preview">
-                        <div class="history-item">
-                            <div class="history-time">2026/6/2 10:30:45</div>
-                            <div class="history-results">
-                                <span class="history-tag">001</span>
-                                <span class="history-tag">042</span>
-                                <span class="history-tag">088</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="component-info">
-                        <div class="component-name">HistoryItem</div>
-                        <div class="component-path">内联于 page.tsx</div>
-                    </div>
+                <div style="text-align: center; padding: 1.5rem; background: var(--muted); border-radius: 12px;">
+                    <div style="font-size: 2rem; font-weight: 600;">16</div>
+                    <div style="font-size: 0.75rem; color: var(--muted-foreground);">md</div>
+                </div>
+                <div style="text-align: center; padding: 1.5rem; background: var(--muted); border-radius: 12px;">
+                    <div style="font-size: 2rem; font-weight: 600;">24</div>
+                    <div style="font-size: 0.75rem; color: var(--muted-foreground);">lg</div>
+                </div>
+            </div>
+            <!-- Animations -->
+            <h3 style="font-size: 1.5rem; font-weight: 600; margin: 3rem 0 1.5rem;">动效规范</h3>
+            <div class="animation-demo">
+                <div class="animation-card">
+                    <div class="animation-preview anim-float"></div>
+                    <div class="animation-name">浮动</div>
+                    <div class="animation-desc">3s / ease-in-out</div>
+                </div>
+                <div class="animation-card">
+                    <div class="animation-preview anim-pulse"></div>
+                    <div class="animation-name">脉冲</div>
+                    <div class="animation-desc">2s / ease-in-out</div>
+                </div>
+                <div class="animation-card">
+                    <div class="animation-preview anim-glow"></div>
+                    <div class="animation-name">发光</div>
+                    <div class="animation-desc">2s / ease-in-out</div>
                 </div>
             </div>
         </section>
 
         <!-- Flow Section -->
         <section id="flow" class="section" style="display: none;">
-            <h2 class="section-title">用户流程</h2>
-            <div class="flowchart">
-                <div class="flow-node primary">打开应用</div>
+            <h2 class="section-title">交互流程</h2>
+            <div class="flow-diagram">
+                <div class="flow-step primary">打开应用</div>
                 <div class="flow-arrow">↓</div>
-                <div class="flow-node">显示主界面 (准备就绪状态)</div>
+                <div class="flow-step">显示主界面（大图 + 居中布局）</div>
                 <div class="flow-arrow">↓</div>
-                <div class="flow-node">用户配置抽取参数</div>
+                <div class="flow-step">点击右上角设置图标</div>
                 <div class="flow-arrow">↓</div>
-                <div class="flow-node">点击"开始抽签"</div>
+                <div class="flow-step">侧边栏滑入（Apple风格动画）</div>
                 <div class="flow-arrow">↓</div>
-                <div class="flow-node">显示滚动动画 + 隐藏UI</div>
+                <div class="flow-step">配置抽奖参数</div>
                 <div class="flow-arrow">↓</div>
-                <div class="flow-node">动画结束，显示结果</div>
+                <div class="flow-step">点击「开始抽奖」</div>
                 <div class="flow-arrow">↓</div>
-                <div class="flow-node">结果保存到历史记录</div>
-            </div>
-            <h3 style="font-size: 1rem; font-weight: 600; margin: 2rem 0 1rem;">状态转换</h3>
-            <div class="device-frame">
-                <div class="device-label">应用状态机</div>
-                <div style="padding: 2rem; display: flex; justify-content: center;">
-                    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                        <div style="padding: 0.75rem 1.5rem; background: var(--muted); border-radius: 0.5rem; font-weight: 500;">Ready</div>
-                        <span style="color: var(--muted-foreground);">→</span>
-                        <div style="padding: 0.75rem 1.5rem; background: var(--primary); color: var(--primary-foreground); border-radius: 0.5rem; font-weight: 500;">Drawing</div>
-                        <span style="color: var(--muted-foreground);">→</span>
-                        <div style="padding: 0.75rem 1.5rem; background: var(--card); border: 2px solid var(--primary); border-radius: 0.5rem; font-weight: 500;">Result</div>
-                        <span style="color: var(--muted-foreground);">→</span>
-                        <div style="padding: 0.75rem 1.5rem; background: var(--muted); border-radius: 0.5rem; font-weight: 500;">Ready</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- i18n Section -->
-        <section id="i18n" class="section" style="display: none;">
-            <h2 class="section-title">国际化</h2>
-            <div class="device-frame">
-                <div class="device-label">支持的翻译键名</div>
-                <div style="padding: 1rem; font-size: 0.875rem;">
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr style="border-bottom: 1px solid var(--border);">
-                                <th style="text-align: left; padding: 0.5rem;">键名</th>
-                                <th style="text-align: left; padding: 0.5rem;">English</th>
-                                <th style="text-align: left; padding: 0.5rem;">简体中文</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">title</td><td style="padding: 0.5rem;">ZenDraw</td><td style="padding: 0.5rem;">禅抽</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">settings</td><td style="padding: 0.5rem;">Settings</td><td style="padding: 0.5rem;">设置</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">history</td><td style="padding: 0.5rem;">History</td><td style="padding: 0.5rem;">历史记录</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">rangeCount</td><td style="padding: 0.5rem;">Range & Count</td><td style="padding: 0.5rem;">范围与数量</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">minVal</td><td style="padding: 0.5rem;">Min Value</td><td style="padding: 0.5rem;">最小值</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">maxVal</td><td style="padding: 0.5rem;">Max Value</td><td style="padding: 0.5rem;">最大值</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">drawCount</td><td style="padding: 0.5rem;">Draw Count</td><td style="padding: 0.5rem;">抽取数量</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">allowDup</td><td style="padding: 0.5rem;">Allow Duplicates</td><td style="padding: 0.5rem;">允许重复</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">autoHide</td><td style="padding: 0.5rem;">Auto-hide Sidebar</td><td style="padding: 0.5rem;">自动隐藏侧边栏</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">drawDuration</td><td style="padding: 0.5rem;">Draw Duration (s)</td><td style="padding: 0.5rem;">抽签时长 (秒)</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">themeMode</td><td style="padding: 0.5rem;">Theme Mode</td><td style="padding: 0.5rem;">深浅模式</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">themePreset</td><td style="padding: 0.5rem;">Theme Preset</td><td style="padding: 0.5rem;">配色方案</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">fontFamily</td><td style="padding: 0.5rem;">Font Family</td><td style="padding: 0.5rem;">字体样式</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">useCustomList</td><td style="padding: 0.5rem;">Use Custom List</td><td style="padding: 0.5rem;">使用自定义名单</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">export</td><td style="padding: 0.5rem;">Export Results</td><td style="padding: 0.5rem;">导出结果</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">displayRules</td><td style="padding: 0.5rem;">Display Rules</td><td style="padding: 0.5rem;">显示规则</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">minDigits</td><td style="padding: 0.5rem;">Minimum Digits</td><td style="padding: 0.5rem;">最小位数</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">prefix</td><td style="padding: 0.5rem;">Prefix</td><td style="padding: 0.5rem;">前缀</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">suffix</td><td style="padding: 0.5rem;">Suffix</td><td style="padding: 0.5rem;">后缀</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">ready</td><td style="padding: 0.5rem;">Ready to draw</td><td style="padding: 0.5rem;">准备就绪</td></tr>
-                            <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 0.5rem; font-family: monospace;">drawing</td><td style="padding: 0.5rem;">Drawing...</td><td style="padding: 0.5rem;">抽取中...</td></tr>
-                            <tr><td style="padding: 0.5rem; font-family: monospace;">startDraw</td><td style="padding: 0.5rem;">START DRAW</td><td style="padding: 0.5rem;">开始抽签</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+                <div class="flow-step">UI自动隐藏 + 滚动动画</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-step primary">展示中奖结果</div>
             </div>
         </section>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>ZenDraw | 禅抽 v2.7.0 - 原型图文档</p>
-            <p style="margin-top: 0.5rem;">最后更新: 2026-06-02</p>
+            <p>ZenDraw | 禅抽 v3.0 原型图 · Apple Design Style</p>
+            <p style="margin-top: 0.5rem;">基于极简主义、大图展示、充足留白的设计理念</p>
         </footer>
     </div>
 
