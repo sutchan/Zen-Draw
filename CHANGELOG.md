@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.0.0] - 2026-06-08
+
+### Design Redesign - Apple Design Style
+
+#### Design Changes
+- Complete top navigation bar redesign with 56px height and frosted glass effect
+- Settings panel width adjusted to 380px with Apple-style grouping
+- Result display area optimized with large centered layout
+- Unified border-radius system: sm uses rounded-xl, lg uses rounded-[2rem]
+- Main action button changed to pill shape (rounded-full)
+- New Apple-style floating animation with softer movement
+
+#### Interaction Optimization
+- Animation curve uses Apple standard cubic-bezier(0.25, 0.1, 0.25, 1)
+- Transition duration adjusted to 300-500ms
+- Tab style change from underline to rounded pill
+- Section labels changed to uppercase for clearer grouping
+
+#### Documentation & Specs
+- Prototype redesign with new design specification page
+- OpenSpec documentation fully updated for v3.0
+- Added Apple HIG design references
+
+## [2.7.0]
+- feat: Add 6 color theme presets (Default, Ocean, Forest, Sunset, Purple, Neon)
+- feat: Add 3 font family options (Sans, Mono, Serif)
+- style: Optimize sidebar animation
+- fix: Fix SSR hydration errors
+- ux: Improve mobile experience
+
 ## [2.4.0]
 - feat: Add adjustable draw duration (1-30s, default 5s)
 
