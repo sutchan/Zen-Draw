@@ -1,59 +1,55 @@
-# ZenDraw | 禅抽
+# ZenDraw | 禅抽 v3.0
 
-一款专业的全屏随机抽奖应用，适用于年会抽奖、课堂互动、抽奖活动等场景。
+[中文版本](./README_CN.md)
 
-## 主要功能
+ZenDraw is a professional, full-screen random draw application with Apple-inspired design. Built with Next.js, Tailwind CSS, and Framer Motion. Designed for high-impact visual presentations during lucky draws, classroom activities, or any event requiring a random selection.
 
-- **滚轮动画**：流畅的老虎机滚动效果，展示抽奖过程
-- **自定义范围**：设置抽奖号码的最小/最大值
-- **自定义数量**：支持单抽或批量抽奖，可选择是否允许重复
-- **自定义格式**：可设置前缀、后缀以及数字位数
-- **名单导入**：支持导入自定义名单（姓名、奖品等），替代随机数字
-- **主题切换**：提供多种配色方案（默认、海洋、森林、夕阳、紫色、霓虹）
-- **深色/浅色模式**：支持跟随系统设置或手动切换
-- **多语言支持**：中文/英文界面
-- **历史记录**：记录所有抽奖结果，支持导出为文本文件
-- **设置保存**：所有设置自动保存到本地存储
+## Design Philosophy
 
-## 快速开始
+This version embraces Apple Design principles:
 
-1. 安装依赖：
+- **Minimal Layout**: Clean interface with only essential elements
+- **Large Display**: Prominent result presentation for visual impact
+- **Generous Whitespace**: Comfortable reading with breathing room
+- **Clear Hierarchy**: Intuitive content structure
+
+## Features
+
+- **Slot-Machine Roller**: Dynamic rolling animation for draw results.
+- **Full-Screen Display**: Immersive visual experience with large, animated numbers.
+- **Customizable Rules**:
+  - Define range (Min/Max).
+  - Set draw count and toggle duplicates.
+  - Custom padding (digits), prefixes, and suffixes.
+- **Custom List Import**: Import a custom list of items (names, prizes, etc.) to draw from instead of numbers.
+- **Multi-language Support**: Seamlessly switch between English and Simplified Chinese.
+- **Responsive Design**: Optimized for Desktop, Tablet, and Mobile devices.
+- **Theming & Fonts**: Choose from multiple color presets (Default, Ocean, Forest, Sunset, Purple, Neon) and font families (Sans, Mono, Serif).
+- **Dark/Light Mode**: Full support for system themes and manual toggling.
+- **History Tracking & Export**: Keep track of all previous draws and export them to a text file.
+- **Settings Persistence**: All user settings are automatically saved to localStorage.
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion (motion/react)
+- **Icons**: Lucide React
+- **Theming**: next-themes
+- **UI Components**: shadcn/ui
+
+## Installation
+
+1. Clone the repository.
+2. Install dependencies:
    ```bash
    npm install
    ```
-
-2. 启动开发服务器：
+3. Run the development server:
    ```bash
    npm run dev
    ```
 
-3. 在浏览器中打开 `http://localhost:3000`
-
-## 使用说明
-
-### 基本抽奖
-
-1. 设置抽奖范围（最小值、最大值）
-2. 选择抽奖人数
-3. 点击"开始抽奖"按钮
-4. 滚动停止后显示中奖结果
-
-### 使用自定义名单
-
-1. 点击"导入名单"按钮
-2. 输入或粘贴名单内容（每行一个）
-3. 点击"开始抽奖"使用名单进行抽奖
-
-### 调整设置
-
-- 点击右上角设置图标打开设置面板
-- 可调整的主题选项：配色方案、字体样式、深色/浅色模式
-- 可调整的抽奖选项：前缀/后缀、数字位数、是否允许重复
-
-## 技术框架
-
-基于 Next.js + Tailwind CSS 构建。
-
-## 开源协议
+## License
 
 MIT License
