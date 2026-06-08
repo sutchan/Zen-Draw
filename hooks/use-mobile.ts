@@ -1,4 +1,4 @@
-// hooks/use-mobile.ts v1.3.0
+// hooks/use-mobile.ts v3.0
 import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768

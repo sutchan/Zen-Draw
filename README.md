@@ -1,10 +1,19 @@
-# ZenDraw | 禅抽 v2.7.0
+# ZenDraw | 禅抽 v3.0
 
 [中文版本](./README_CN.md)
 
-ZenDraw is a professional, full-screen random draw application built with Next.js, Tailwind CSS, and Framer Motion. Designed for high-impact visual presentations during lucky draws, classroom activities, or any event requiring a random selection.
+ZenDraw is a professional, full-screen random draw application with Apple-inspired design. Built with Next.js, Tailwind CSS, and Framer Motion. Designed for high-impact visual presentations during lucky draws, classroom activities, or any event requiring a random selection.
 
-## 🚀 Features
+## Design Philosophy
+
+This version embraces Apple Design principles:
+
+- **Minimal Layout**: Clean interface with only essential elements
+- **Large Display**: Prominent result presentation for visual impact
+- **Generous Whitespace**: Comfortable reading with breathing room
+- **Clear Hierarchy**: Intuitive content structure
+
+## Features
 
 - **Slot-Machine Roller**: Dynamic rolling animation for draw results.
 - **Full-Screen Display**: Immersive visual experience with large, animated numbers.
@@ -19,9 +28,8 @@ ZenDraw is a professional, full-screen random draw application built with Next.j
 - **Dark/Light Mode**: Full support for system themes and manual toggling.
 - **History Tracking & Export**: Keep track of all previous draws and export them to a text file.
 - **Settings Persistence**: All user settings are automatically saved to localStorage.
-- **Enhanced UI & Animations**: Improved user interface with smoother animations and better accessibility.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework**: Next.js 15 (App Router)
 - **Styling**: Tailwind CSS v4
@@ -30,7 +38,7 @@ ZenDraw is a professional, full-screen random draw application built with Next.j
 - **Theming**: next-themes
 - **UI Components**: shadcn/ui
 
-## 📦 Installation
+## Installation
 
 1. Clone the repository.
 2. Install dependencies:
@@ -42,6 +50,6 @@ ZenDraw is a professional, full-screen random draw application built with Next.j
    npm run dev
    ```
 
-## 📄 License
+## License
 
 MIT License

@@ -1,4 +1,4 @@
-// components/theme-toggle.tsx v1.2.0
+// components/theme-toggle.tsx v3.0
 "use client"
 
 import * as React from "react"
