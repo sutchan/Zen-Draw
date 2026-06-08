@@ -155,10 +155,10 @@
 | 名称 | 圆角值 | 适用场景 |
 |------|--------|----------|
 | xs | rounded-lg | 小按钮、标签 |
-| sm | rounded-xl | 输入框、小卡片 |
-| md | rounded-2xl | 中等卡片、对话框 |
+| sm | rounded-xl | 小卡片 |
+| md | rounded-2xl | 输入框、中等卡片、对话框 |
 | lg | rounded-[2rem] | 大型结果卡片 |
-| full | rounded-full / rounded-full | 胶囊按钮 |
+| full | rounded-full / 980px | 胶囊按钮 |
 
 #### 4.1.2 间距系统
 | 名称 | 间距值 | 适用场景 |
@@ -215,20 +215,31 @@ className="h-10 w-10 rounded-xl"
 
 #### 4.3.2 输入框样式
 ```tsx
-className="h-11 rounded-xl bg-muted/50 border-0 
-         focus:ring-2 focus:ring-primary/20 focus:bg-background"
+className="h-11 rounded-2xl bg-muted/40 border border-border/20 
+         focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
 ```
 
 #### 4.3.3 卡片样式
 ```tsx
 // 结果卡片
-className="bg-background/90 rounded-[2rem] px-12 py-10 
-         border border-border/30 backdrop-blur-xl shadow-2xl"
+className="bg-background rounded-[2rem] px-12 py-10 
+         border border-border/15 backdrop-blur-xl 
+         shadow-[0_8px_32px_rgba(0,0,0,0.06)]"
 
 // 历史记录卡片
-className="p-4 rounded-2xl bg-muted/30 hover:bg-muted/50 
-         border border-transparent hover:border-border/50"
+className="p-5 rounded-2xl bg-muted/20 hover:bg-muted/40 
+         border border-transparent hover:border-border/30 transition-colors"
 ```
+
+#### 4.3.4 阴影系统
+| 级别 | 阴影值 | 适用场景 |
+|------|--------|----------|
+| sm | `0 1px 2px rgba(0,0,0,0.04)` | 轻微浮起 |
+| md | `0 8px 32px rgba(0,0,0,0.06)` | 卡片、输入框聚焦 |
+| lg | `0 20px 60px rgba(0,0,0,0.10)` | 大型卡片悬停 |
+| xl | `0 30px 100px rgba(0,0,0,0.12)` | 突出显示结果 |
+| button | `0 8px 30px rgba(0,0,0,0.12)` | 主按钮常态 |
+| button-hover | `0 12px 40px rgba(0,0,0,0.18)` | 主按钮悬停 |
 
 ---
 
@@ -380,16 +391,21 @@ interface HistoryItem {
 **设计重构 - Apple Design Style**
 
 #### 设计变更
-- 顶部导航栏重新设计，56px 高度毛玻璃效果
+- 顶部导航栏重新设计，56px 高度毛玻璃效果，border-border/50 分隔线
 - 设置面板宽度调整为 380px，采用 Apple 风格分组
-- 结果展示区域优化，大尺寸居中布局
-- 圆角系统统一，sm 用 rounded-xl，lg 用 rounded-[2rem]
-- 按钮样式改为胶囊形 (rounded-full)
+- 结果展示区域优化，大尺寸居中布局，圆角统一 rounded-[2rem]
+- 圆角系统统一，输入框 rounded-2xl，卡片 rounded-[2rem]
+- 按钮样式改为胶囊形 (rounded-full)，高度 h-16 / sm:h-[72px]
+- 阴影系统重新定义，4 级阴影变量（sm/md/lg/xl）
+- 数字显示渐变优化，from-foreground to-foreground/80 垂直渐变
+- Ready 状态图标透明度降低至 10%，更柔和不抢视线
 
 #### 交互优化
 - 动画曲线采用 Apple 标准 cubic-bezier(0.25, 0.1, 0.25, 1)
 - 过渡动画时长调整为 300-500ms
-- 浮动动画优化，更柔和的浮动效果
+- 浮动动画优化，4 秒循环，更柔和的浮动效果
+- 按钮阴影随 hover 变化，常态 `0 8px 30px` → hover `0 12px 40px`
+- 输入框增加细边框 border-border/20，聚焦效果更柔和
 
 #### 原型更新
 - 重新设计原型图 prototype.html v3.0
@@ -447,4 +463,4 @@ interface HistoryItem {
 
 ---
 
-*本文档最后更新: v3.0*
+*本文档最后更新: v3.0.1*
