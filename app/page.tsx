@@ -1,4 +1,4 @@
-// app/page.tsx v2.7.0
+// app/page.tsx v3.0 - Apple Design Style
 "use client"
 
 import * as React from "react"
@@ -256,96 +256,56 @@ export default function RandomDrawApp() {
 
   // Memoize static values
   const versionTag = React.useMemo(() => (
-    <span className="text-[10px] text-muted-foreground font-mono">v2.7.0</span>
+    <span className="text-[10px] text-muted-foreground/60 font-mono">v3.0</span>
   ), [])
 
   return (
     <div id="app-root" className="h-screen w-screen overflow-hidden bg-background text-foreground relative flex select-none">
-      {/* App Header */}
-      <motion.div 
+      {/* Top Navigation Bar - Apple Style */}
+      <motion.header 
         id="app-header" 
-        className="absolute top-4 left-4 z-50 flex items-center gap-2"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
+        className="absolute top-0 left-0 right-0 h-14 px-6 flex items-center justify-between z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.1 }}
       >
         <motion.div 
-          className="bg-primary p-2 rounded-xl shadow-lg"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="flex items-center gap-3"
+          whileHover={{ scale: 1.02 }}
         >
-          <Dices className="h-6 w-6 text-primary-foreground" />
+          <div className="w-8 h-8 bg-foreground rounded-[10px] flex items-center justify-center">
+            <Dices className="h-4 w-4 text-background" />
+          </div>
+          <div>
+            <h1 className="text-base font-semibold tracking-tight leading-none">{t.title}</h1>
+            {versionTag}
+          </div>
         </motion.div>
-        <div>
-          <h1 className="text-lg font-bold tracking-tight leading-none">{t.title}</h1>
-          {versionTag}
+
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setLang(l => l === 'en' ? 'zh' : 'en')}
+            title={t.switchLang}
+            className="rounded-xl hover:bg-muted transition-colors"
+          >
+            <Languages className="h-[18px] w-[18px]" />
+          </Button>
+          <Button 
+            variant={showUI ? "secondary" : "ghost"}
+            size="icon" 
+            onClick={() => { const next = !showUI; setShowUI(next); if (next) setHasOpenedOnce(true); }}
+            title={t.toggleUI}
+            className={cn(
+              "rounded-xl transition-all duration-300",
+              !showUI && !hasOpenedOnce && "animate-pulse ring-2 ring-primary/30"
+            )}
+          >
+            {showUI ? <X className="h-[18px] w-[18px]" /> : <Menu className="h-[18px] w-[18px]" />}
+          </Button>
         </div>
-      </motion.div>
-
-      {/* Floating Controls */}
-      <motion.div 
-        id="floating-controls" 
-        className="absolute top-4 right-4 z-50 flex items-center gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-2xl border shadow-lg"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
-      >
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setLang(l => l === 'en' ? 'zh' : 'en')}
-          title={t.switchLang}
-          className="rounded-xl hover:bg-primary/10 transition-colors"
-        >
-          <Languages className="h-5 w-5" />
-        </Button>
-        <Button 
-          variant={showUI ? "secondary" : "ghost"}
-          size="icon" 
-          onClick={() => { const next = !showUI; setShowUI(next); if (next) setHasOpenedOnce(true); }}
-          title={t.toggleUI}
-          className={cn(
-            "rounded-xl transition-all duration-300",
-            !showUI && !hasOpenedOnce && "animate-pulse ring-2 ring-primary/50"
-          )}
-        >
-          <motion.div
-            initial={false}
-            animate={{ rotate: showUI ? 0 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {showUI ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </motion.div>
-        </Button>
-      </motion.div>
-
-      {/* Expand Hint Icon */}
-      <AnimatePresence>
-        {!showUI && (
-          <motion.div
-            initial={{ x: 20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 20, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-50 lg:flex hidden items-center"
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => { setShowUI(true); setHasOpenedOnce(true); }}
-              className="h-12 w-6 rounded-l-xl bg-background/80 backdrop-blur-md border-y border-l shadow-lg hover:bg-primary/10 transition-all group"
-              title={t.clickToExpand}
-            >
-              <motion.div
-                whileHover={{ x: -2 }}
-                transition={{ duration: 0.2 }}
-              >
-                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors rotate-180" />
-              </motion.div>
-            </Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.header>
 
       {/* Mobile Backdrop */}
       <AnimatePresence>
@@ -354,18 +314,18 @@ export default function RandomDrawApp() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             onClick={() => setShowUI(false)}
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-30 lg:hidden"
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden"
           />
         )}
       </AnimatePresence>
 
-      {/* Settings Panel (Sidebar) */}
+      {/* Settings Panel - Apple Style Sidebar */}
       <motion.div 
         id="sidebar-panel" 
         className={cn(
-          "absolute inset-y-0 right-0 z-40 w-full sm:w-[420px] bg-background/98 backdrop-blur-xl border-l shadow-2xl flex flex-col",
+          "absolute inset-y-0 right-0 z-40 w-full sm:w-[380px] bg-background/98 backdrop-blur-xl border-l flex flex-col",
           showUI ? "translate-x-0" : "translate-x-full"
         )}
         initial={false}
@@ -379,49 +339,42 @@ export default function RandomDrawApp() {
       >
         <motion.div 
           id="sidebar-header" 
-          className="p-6 flex items-center gap-3 border-b bg-gradient-to-r from-primary/5 to-transparent"
+          className="p-6 border-b"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
         >
-          <motion.div 
-            className="bg-primary/10 p-2 rounded-xl"
-            whileHover={{ scale: 1.05 }}
-          >
-            <Settings2 className="h-6 w-6 text-primary" />
-          </motion.div>
-          <h2 className="text-2xl font-bold tracking-tight">{t.settings}</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">{t.settings}</h2>
         </motion.div>
 
-        <div id="sidebar-content" className="flex-1 overflow-y-auto p-6 scrollbar-thin">
+        <div id="sidebar-content" className="flex-1 overflow-y-auto">
           <Tabs defaultValue="settings" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/50 rounded-lg p-1">
-              <TabsTrigger value="settings" className="rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                <Settings2 className="h-4 w-4 mr-2" />
+            <TabsList className="w-full flex gap-1 p-1 bg-muted/50 rounded-xl m-4 mb-0">
+              <TabsTrigger value="settings" className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium">
+                <Settings2 className="h-4 w-4 mr-1.5" />
                 {t.settings}
               </TabsTrigger>
-              <TabsTrigger value="history" className="rounded-md data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                <History className="h-4 w-4 mr-2" />
+              <TabsTrigger value="history" className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium">
+                <History className="h-4 w-4 mr-1.5" />
                 {t.history}
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="settings" className="space-y-6 focus-visible:outline-none mt-6">
+            <TabsContent value="settings" className="px-6 pb-6 space-y-8 focus-visible:outline-none">
               {/* Range & Count Section */}
               <motion.div 
                 id="settings-range" 
-                className="space-y-4"
+                className="space-y-5 pt-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">{t.rangeCount}</h3>
-                  <p className="text-sm text-muted-foreground">{t.rangeDesc}</p>
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{lang === 'zh' ? '抽奖设置' : 'Draw Settings'}</p>
                 </div>
                 
                 {!useCustomList && (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-2">
                       <Label htmlFor="min" className="text-sm font-medium">{t.minVal}</Label>
                       <Input 
@@ -429,7 +382,7 @@ export default function RandomDrawApp() {
                         type="number" 
                         value={min} 
                         onChange={(e) => setMin(Number(e.target.value))} 
-                        className="focus:ring-2 focus:ring-primary/20"
+                        className="h-11 rounded-xl bg-muted/50 border-0 focus:ring-2 focus:ring-primary/20 focus:bg-background"
                       />
                     </div>
                     <div className="space-y-2">
@@ -439,7 +392,7 @@ export default function RandomDrawApp() {
                         type="number" 
                         value={max} 
                         onChange={(e) => setMax(Number(e.target.value))} 
-                        className="focus:ring-2 focus:ring-primary/20"
+                        className="h-11 rounded-xl bg-muted/50 border-0 focus:ring-2 focus:ring-primary/20 focus:bg-background"
                       />
                     </div>
                   </div>
@@ -453,7 +406,7 @@ export default function RandomDrawApp() {
                     min={1} 
                     value={count} 
                     onChange={(e) => setCount(Number(e.target.value))} 
-                    className="focus:ring-2 focus:ring-primary/20"
+                    className="h-11 rounded-xl bg-muted/50 border-0 focus:ring-2 focus:ring-primary/20 focus:bg-background"
                   />
                 </div>
 
@@ -466,17 +419,17 @@ export default function RandomDrawApp() {
                     max={30} 
                     value={duration} 
                     onChange={(e) => setDuration(Number(e.target.value))} 
-                    className="focus:ring-2 focus:ring-primary/20"
+                    className="h-11 rounded-xl bg-muted/50 border-0 focus:ring-2 focus:ring-primary/20 focus:bg-background"
                   />
                   <p className="text-xs text-muted-foreground leading-relaxed">{t.drawDurationDesc}</p>
                 </div>
 
-                <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                <div className="flex items-center justify-between py-3 border-b border-border/50">
                   <Label htmlFor="duplicates" className="cursor-pointer text-sm font-medium">{t.allowDup}</Label>
                   <Switch id="duplicates" checked={allowDuplicates} onCheckedChange={setAllowDuplicates} />
                 </div>
 
-                <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                <div className="flex items-center justify-between py-3">
                   <div className="space-y-0.5">
                     <Label htmlFor="auto-hide" className="cursor-pointer text-sm font-medium">{t.autoHide}</Label>
                     <p className="text-xs text-muted-foreground leading-relaxed">{t.autoHideDesc}</p>
@@ -487,16 +440,18 @@ export default function RandomDrawApp() {
 
               {/* Appearance Section */}
               <motion.div 
-                className="space-y-4 pt-4 border-t"
+                className="space-y-5 pt-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{lang === 'zh' ? '外观' : 'Appearance'}</p>
+
                 <div className="space-y-3">
                   <Label htmlFor="theme-mode" className="text-sm font-medium">{t.themeMode}</Label>
                   {mounted ? (
                     <Select value={theme} onValueChange={(value) => setTheme(value ?? "system")}>
-                      <SelectTrigger id="theme-mode" className="w-full">
+                      <SelectTrigger id="theme-mode" className="h-11 rounded-xl bg-muted/50 border-0">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -507,7 +462,7 @@ export default function RandomDrawApp() {
                     </Select>
                   ) : (
                     <Select value="system" onValueChange={() => {}}>
-                      <SelectTrigger id="theme-mode" className="w-full">
+                      <SelectTrigger id="theme-mode" className="h-11 rounded-xl bg-muted/50 border-0">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -523,7 +478,7 @@ export default function RandomDrawApp() {
                   <Label htmlFor="theme-preset" className="text-sm font-medium">{t.themePreset}</Label>
                   {mounted ? (
                     <Select value={themePreset} onValueChange={(value) => setThemePreset(value ?? "default")}>
-                      <SelectTrigger id="theme-preset" className="w-full">
+                      <SelectTrigger id="theme-preset" className="h-11 rounded-xl bg-muted/50 border-0">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -537,7 +492,7 @@ export default function RandomDrawApp() {
                     </Select>
                   ) : (
                     <Select value="default" onValueChange={() => {}}>
-                      <SelectTrigger id="theme-preset" className="w-full">
+                      <SelectTrigger id="theme-preset" className="h-11 rounded-xl bg-muted/50 border-0">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -556,7 +511,7 @@ export default function RandomDrawApp() {
                   <Label htmlFor="font-family" className="text-sm font-medium">{t.fontFamily}</Label>
                   {mounted ? (
                     <Select value={fontFamily} onValueChange={(value) => setFontFamily(value ?? "sans")}>
-                      <SelectTrigger id="font-family" className="w-full">
+                      <SelectTrigger id="font-family" className="h-11 rounded-xl bg-muted/50 border-0">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -567,7 +522,7 @@ export default function RandomDrawApp() {
                     </Select>
                   ) : (
                     <Select value="sans" onValueChange={() => {}}>
-                      <SelectTrigger id="font-family" className="w-full">
+                      <SelectTrigger id="font-family" className="h-11 rounded-xl bg-muted/50 border-0">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -582,16 +537,18 @@ export default function RandomDrawApp() {
 
               {/* Custom List Section */}
               <motion.div 
-                className="space-y-4 pt-4 border-t"
+                className="space-y-5 pt-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{lang === 'zh' ? '自定义' : 'Custom'}</p>
+
+                <div className="flex items-center justify-between py-3 border-b border-border/50">
                   <div className="space-y-0.5">
                     <Label htmlFor="use-custom-list" className="cursor-pointer text-sm font-medium">{t.useCustomList}</Label>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      {customList.length > 0 ? `${customList.length} items loaded` : "No items loaded"}
+                      {customList.length > 0 ? `${customList.length} ${lang === 'zh' ? '项已加载' : 'items loaded'}` : (lang === 'zh' ? '暂未加载' : 'No items loaded')}
                     </p>
                   </div>
                   <Switch id="use-custom-list" checked={useCustomList} onCheckedChange={setUseCustomList} />
@@ -604,7 +561,7 @@ export default function RandomDrawApp() {
                       setImportText(customList.join('\n'))
                       setImportDialogOpen(true)
                     }}
-                    className="hover:bg-primary/5 hover:border-primary/30 transition-all"
+                    className="h-11 rounded-xl hover:bg-muted/50 transition-colors border-border/50"
                   >
                     {t.listImport}
                   </Button>
@@ -619,7 +576,7 @@ export default function RandomDrawApp() {
                       a.download = 'draw-results.txt'
                       a.click()
                     }}
-                    className="hover:bg-primary/5 hover:border-primary/30 transition-all"
+                    className="h-11 rounded-xl hover:bg-muted/50 transition-colors border-border/50"
                   >
                     {t.export}
                   </Button>
@@ -630,15 +587,12 @@ export default function RandomDrawApp() {
               {!useCustomList && (
                 <motion.div 
                   id="settings-display" 
-                  className="space-y-4 pt-4 border-t"
+                  className="space-y-5 pt-4"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
                 >
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold">{t.displayRules}</h3>
-                    <p className="text-sm text-muted-foreground">{t.displayDesc}</p>
-                  </div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{lang === 'zh' ? '显示规则' : 'Display'}</p>
                   
                   <div className="space-y-3">
                     <Label htmlFor="digits" className="text-sm font-medium">{t.minDigits}</Label>
@@ -648,19 +602,19 @@ export default function RandomDrawApp() {
                       min={0} 
                       value={digits} 
                       onChange={(e) => setDigits(Number(e.target.value))} 
-                      className="focus:ring-2 focus:ring-primary/20"
+                      className="h-11 rounded-xl bg-muted/50 border-0 focus:ring-2 focus:ring-primary/20 focus:bg-background"
                     />
                     <p className="text-xs text-muted-foreground leading-relaxed">{t.minDigitsDesc}</p>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-2">
                       <Label htmlFor="prefix" className="text-sm font-medium">{t.prefix}</Label>
                       <Input 
                         id="prefix" 
                         value={prefix} 
                         onChange={(e) => setPrefix(e.target.value)} 
-                        className="focus:ring-2 focus:ring-primary/20"
+                        className="h-11 rounded-xl bg-muted/50 border-0 focus:ring-2 focus:ring-primary/20 focus:bg-background"
                       />
                     </div>
                     <div className="space-y-2">
@@ -669,7 +623,7 @@ export default function RandomDrawApp() {
                         id="suffix" 
                         value={suffix} 
                         onChange={(e) => setSuffix(e.target.value)} 
-                        className="focus:ring-2 focus:ring-primary/20"
+                        className="h-11 rounded-xl bg-muted/50 border-0 focus:ring-2 focus:ring-primary/20 focus:bg-background"
                       />
                     </div>
                   </div>
@@ -677,8 +631,8 @@ export default function RandomDrawApp() {
               )}
             </TabsContent>
             
-            <TabsContent value="history" className="focus-visible:outline-none mt-6">
-              <div id="history-header" className="flex items-center justify-between mb-4">
+            <TabsContent value="history" className="px-6 pb-6 focus-visible:outline-none">
+              <div id="history-header" className="flex items-center justify-between py-4">
                 <div className="space-y-1">
                   <h3 className="text-lg font-semibold">{t.drawHistory}</h3>
                   <p className="text-sm text-muted-foreground">{t.historyDesc}</p>
@@ -701,7 +655,7 @@ export default function RandomDrawApp() {
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="py-12 text-center text-muted-foreground text-sm border-2 border-dashed rounded-xl bg-muted/20"
+                    className="py-12 text-center text-muted-foreground text-sm border-2 border-dashed rounded-2xl bg-muted/30"
                   >
                     {t.noHistory}
                   </motion.div>
@@ -719,7 +673,7 @@ export default function RandomDrawApp() {
                         key={record.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors border border-transparent hover:border-primary/20"
+                        className="p-4 rounded-2xl bg-muted/30 hover:bg-muted/50 transition-colors border border-transparent hover:border-border/50"
                       >
                         <div className="text-xs text-muted-foreground mb-3 font-medium">
                           {new Date(record.timestamp).toLocaleString()}
@@ -731,7 +685,7 @@ export default function RandomDrawApp() {
                               initial={{ scale: 0.8 }}
                               animate={{ scale: 1 }}
                               transition={{ delay: idx * 0.05 }}
-                              className="inline-flex items-center justify-center px-3 py-1.5 rounded-lg bg-background shadow-sm text-sm font-semibold border border-border/50"
+                              className="inline-flex items-center justify-center px-3 py-1.5 rounded-xl bg-background/80 shadow-sm text-sm font-semibold border border-border/30 backdrop-blur-sm"
                             >
                               {res}
                             </motion.span>
@@ -749,9 +703,9 @@ export default function RandomDrawApp() {
 
       {/* Custom List Import Dialog */}
       <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[480px] rounded-2xl">
           <DialogHeader>
-            <DialogTitle className="text-xl">{t.listImport}</DialogTitle>
+            <DialogTitle className="text-xl font-semibold">{t.listImport}</DialogTitle>
             <DialogDescription>{t.listImportDesc}</DialogDescription>
           </DialogHeader>
           <div className="mt-4">
@@ -759,20 +713,20 @@ export default function RandomDrawApp() {
               placeholder={t.listImportDesc}
               value={importText}
               onChange={(e) => setImportText(e.target.value)}
-              className="min-h-[200px] resize-none focus:ring-2 focus:ring-primary/20"
+              className="min-h-[200px] rounded-xl resize-none bg-muted/50 border-0 focus:ring-2 focus:ring-primary/20"
             />
           </div>
-          <DialogFooter className="gap-2">
+          <DialogFooter className="gap-2 sm:gap-0">
             <Button 
               variant="outline" 
               onClick={() => setImportDialogOpen(false)}
-              className="flex-1"
+              className="flex-1 h-11 rounded-xl"
             >
               {lang === 'zh' ? '取消' : 'Cancel'}
             </Button>
             <Button 
               onClick={handleImportSubmit}
-              className="flex-1"
+              className="flex-1 h-11 rounded-xl"
             >
               {lang === 'zh' ? '导入' : 'Import'}
             </Button>
@@ -782,9 +736,9 @@ export default function RandomDrawApp() {
 
       {/* Alert Dialog */}
       <Dialog open={alertOpen} onOpenChange={setAlertOpen}>
-        <DialogContent className="sm:max-w-[400px]">
+        <DialogContent className="sm:max-w-[400px] rounded-2xl">
           <DialogHeader>
-            <DialogTitle className="text-xl">
+            <DialogTitle className="text-xl font-semibold">
               {lang === 'zh' ? '提示' : 'Notice'}
             </DialogTitle>
           </DialogHeader>
@@ -792,57 +746,57 @@ export default function RandomDrawApp() {
             <p className="text-sm leading-relaxed">{alertMessage}</p>
           </div>
           <DialogFooter>
-            <Button onClick={() => setAlertOpen(false)} className="w-full">
+            <Button onClick={() => setAlertOpen(false)} className="w-full h-11 rounded-xl">
               {lang === 'zh' ? '确定' : 'OK'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Main Display Area */}
+      {/* Main Display Area - Apple Style Centered Layout */}
       <motion.div 
         id="main-display" 
         className={cn(
-          "flex-1 flex flex-col items-center justify-center relative",
-          showUI ? "lg:mr-[420px]" : "mr-0"
+          "flex-1 flex flex-col items-center justify-center relative pt-14",
+          showUI ? "lg:pr-[380px]" : "pr-0"
         )}
         onClick={() => {
           if (showUI) setShowUI(false)
         }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: [0.25, 0.1, 0.25, 1] }}
       >
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 bg-grid-white/5 bg-[size:40px_40px] [mask-image:radial-gradient(white,transparent_80%)] pointer-events-none opacity-10 dark:opacity-5" />
-        
-        {/* Results Container */}
+        {/* Results Container - Centered Focus */}
         <motion.div 
           id="results-container" 
-          className="z-10 flex-1 flex flex-col items-center justify-center w-full p-8"
+          className="flex-1 flex flex-col items-center justify-center w-full max-w-4xl px-8 py-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
         >
           {currentResults.length === 0 ? (
             <motion.div 
               className="text-center space-y-8"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
             >
               <motion.div
                 animate={shouldReduceMotion ? {} : { 
-                  rotate: [0, 5, -5, 0],
-                  scale: [1, 1.05, 1]
+                  y: [0, -12, 0],
                 }}
                 transition={{ 
-                  duration: 2,
+                  duration: 3,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
+                className="mx-auto"
               >
-                <Dices className="h-40 w-40 mx-auto text-muted-foreground/30" />
+                <Dices className="h-36 w-36 text-muted-foreground/20 mx-auto" />
               </motion.div>
-              <p className="text-3xl text-muted-foreground font-medium tracking-wide">{t.ready}</p>
+              <div className="space-y-2">
+                <p className="text-4xl md:text-5xl lg:text-6xl text-foreground/80 font-semibold tracking-tight">{t.ready}</p>
+                <p className="text-base text-muted-foreground/60">{lang === 'zh' ? '设置参数后，点击开始抽奖' : 'Configure settings and tap to draw'}</p>
+              </div>
             </motion.div>
           ) : (
             <div className="flex flex-wrap justify-center content-center gap-6 sm:gap-10 w-full h-full">
@@ -861,11 +815,11 @@ export default function RandomDrawApp() {
                     }}
                     className="flex items-center justify-center"
                   >
-                    <div className="bg-background/90 text-foreground shadow-2xl rounded-[2rem] px-10 py-8 sm:px-16 sm:py-12 text-center border border-border/30 backdrop-blur-xl min-w-[220px] sm:min-w-[280px]">
+                    <div className="bg-background/90 text-foreground rounded-[2rem] px-12 py-10 sm:px-16 sm:py-12 text-center border border-border/30 backdrop-blur-xl shadow-2xl min-w-[240px] sm:min-w-[300px]">
                       <NumberRoller 
                         value={result} 
                         isDrawing={isDrawing} 
-                        className="text-7xl sm:text-9xl md:text-[12vw] font-black tracking-tighter tabular-nums leading-none"
+                        className="text-6xl sm:text-7xl md:text-8xl lg:text-[10vw] font-bold tracking-tighter tabular-nums leading-none"
                       />
                     </div>
                   </motion.div>
@@ -875,13 +829,13 @@ export default function RandomDrawApp() {
           )}
         </motion.div>
 
-        {/* Action Button */}
+        {/* Action Button - Apple Style Pill */}
         <motion.div 
           id="action-container" 
-          className="z-20 pb-12 w-full max-w-2xl px-6"
+          className="w-full max-w-md px-6 pb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
         >
           <motion.div
             whileHover={isDrawing ? {} : { scale: 1.02 }}
@@ -890,13 +844,18 @@ export default function RandomDrawApp() {
             <Button 
               id="draw-button"
               size="lg" 
-              className="w-full h-20 sm:h-24 text-2xl sm:text-4xl font-black rounded-2xl shadow-2xl transition-all duration-300 hover:shadow-primary/20"
+              className={cn(
+                "w-full h-16 sm:h-[72px] text-xl sm:text-2xl font-semibold rounded-full shadow-lg transition-all duration-300",
+                currentResults.length > 0 
+                  ? "bg-muted text-foreground hover:bg-muted/80" 
+                  : "bg-foreground text-background hover:shadow-xl"
+              )}
               onClick={handleDraw}
               disabled={isDrawing}
             >
               {isDrawing ? (
                 <motion.div
-                  className="flex items-center gap-4"
+                  className="flex items-center gap-3"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
@@ -904,18 +863,18 @@ export default function RandomDrawApp() {
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                   >
-                    <RefreshCw className="h-8 w-8 sm:h-10 sm:w-10" />
+                    <RefreshCw className="h-6 w-6 sm:h-7 sm:w-7" />
                   </motion.div>
                   <span>{t.drawing}</span>
                 </motion.div>
               ) : (
                 <motion.div
-                  className="flex items-center gap-4"
+                  className="flex items-center gap-3"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  <Dices className="h-8 w-8 sm:h-10 sm:w-10" />
-                  <span>{t.startDraw}</span>
+                  <Dices className="h-6 w-6 sm:h-7 sm:w-7" />
+                  <span>{currentResults.length > 0 ? (lang === 'zh' ? '继续抽奖' : 'Draw Again') : t.startDraw}</span>
                 </motion.div>
               )}
             </Button>

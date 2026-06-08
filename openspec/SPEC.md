@@ -1,14 +1,24 @@
-# ZenDraw | 禅抽 v2.7.0 - 项目规范文档
+# ZenDraw | 禅抽 v3.0 - 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **版本**: v2.7.0
-- **描述**: A professional, full-screen random draw application with customizable rules, history, and multi-language support. Perfect for lucky draws, classroom activities, and games.
+- **版本**: v3.0
+- **描述**: 一款专业的全屏随机抽奖应用，采用 Apple 设计风格，适用于年会抽奖、课堂互动、抽奖活动等场景。
 - **许可证**: MIT License
 
-### 1.2 技术栈
+### 1.2 设计理念
+本版本采用 Apple 设计风格，重新定义了视觉呈现和交互体验：
+
+| 设计原则 | 说明 |
+|----------|------|
+| 极简布局 | 去除冗余元素，只保留核心功能入口 |
+| 大图展示 | 突出显示抽奖结果，视觉冲击力更强 |
+| 充足留白 | 呼吸空间让界面更优雅，阅读更舒适 |
+| 清晰层次 | 明确的内容层级，信息结构一目了然 |
+
+### 1.3 技术栈
 | 类别 | 技术 |
 |------|------|
 | 框架 | Next.js 15 (App Router) |
@@ -20,7 +30,7 @@
 | 组件库 | shadcn/ui |
 | 语言 | TypeScript (strict mode) |
 
-### 1.3 字体配置
+### 1.4 字体配置
 | 名称 | 字体 | 变量名 |
 |------|------|--------|
 | 无衬线 | Inter (Geist) | --font-sans |
@@ -35,7 +45,7 @@
 /workspace
 ├── app/
 │   ├── layout.tsx          # 根布局
-│   ├── page.tsx            # 主页面
+│   ├── page.tsx            # 主页面 (v3.0 Apple Design)
 │   └── style.css           # 全局样式
 ├── components/
 │   ├── ui/                 # shadcn/ui 组件
@@ -61,7 +71,7 @@
 │   └── index.ts            # 国际化翻译
 ├── openspec/               # 规范文档
 │   ├── SPEC.md            # 本文档
-│   └── prototype.html     # 原型图
+│   └── prototype.html     # 原型图 (v3.0 Apple Design)
 ├── .eslintrc.json         # ESLint配置
 ├── .gitignore
 ├── CHANGELOG.md
@@ -99,14 +109,26 @@
 
 ### 3.2 界面功能
 
-#### 3.2.1 主题系统
+#### 3.2.1 顶部导航栏 (v3.0 新增)
+- **极简设计**: 高度 56px (h-14)，半透明背景
+- **毛玻璃效果**: backdrop-blur-xl
+- **品牌标识**: 左侧显示 Logo + 应用名称
+- **控制按钮**: 右侧语言切换 + 设置面板开关
+
+#### 3.2.2 设置面板 (v3.0 优化)
+- **宽度**: 380px (sm:w-[380px])
+- **毛玻璃背景**: backdrop-blur-xl
+- **分组设计**: 使用大写标签区分功能区块
+- **圆角风格**: 统一使用 rounded-xl / rounded-2xl
+
+#### 3.2.3 主题系统
 | 模式 | 描述 |
 |------|------|
 | Light | 浅色模式 |
 | Dark | 深色模式 |
 | System | 跟随系统 |
 
-#### 3.2.2 配色方案
+#### 3.2.4 配色方案
 | ID | 名称 | 描述 |
 |----|------|------|
 | default | 默认 | 标准配色 |
@@ -116,21 +138,103 @@
 | purple | 紫罗兰 | 紫调主题 |
 | neon | 霓虹 | 赛博朋克风格 |
 
-#### 3.2.3 字体样式
+#### 3.2.5 字体样式
 | ID | 名称 | 字体 |
 |----|------|------|
 | sans | 无衬线 | Inter (Geist) |
 | mono | 等宽 | JetBrains Mono |
 | serif | 衬线 | Playfair Display |
 
-#### 3.2.4 侧边栏
-- **自动隐藏**: 支持自动隐藏侧边栏功能
-- **设置面板**: 包含所有配置选项
-- **历史记录**: 显示抽取历史
+---
 
-### 3.3 数据管理
+## 4. 设计规范 (v3.0)
 
-#### 3.3.1 本地存储键名
+### 4.1 视觉规范
+
+#### 4.1.1 圆角系统
+| 名称 | 圆角值 | 适用场景 |
+|------|--------|----------|
+| xs | rounded-lg | 小按钮、标签 |
+| sm | rounded-xl | 输入框、小卡片 |
+| md | rounded-2xl | 中等卡片、对话框 |
+| lg | rounded-[2rem] | 大型结果卡片 |
+| full | rounded-full / rounded-full | 胶囊按钮 |
+
+#### 4.1.2 间距系统
+| 名称 | 间距值 | 适用场景 |
+|------|--------|----------|
+| xs | 4px | 紧凑元素 |
+| sm | 8px | 小间距 |
+| md | 16px | 默认间距 |
+| lg | 24px | 区块间距 |
+| xl | 32px+ | 大区块 |
+
+#### 4.1.3 动画曲线
+```typescript
+// Apple 风格动画曲线
+ease: [0.25, 0.1, 0.25, 1]  // cubic-bezier(0.25, 0.1, 0.25, 1)
+
+// Spring 动画参数
+stiffness: 300
+damping: 30
+mass: 0.8
+```
+
+#### 4.1.4 动画时长
+| 场景 | 时长 |
+|------|------|
+| 快速过渡 | 200-300ms |
+| 标准过渡 | 300-500ms |
+| 强调动画 | 500-800ms |
+
+### 4.2 布局规范
+
+#### 4.2.1 响应式断点
+- **移动端**: < 768px
+- **平板/桌面**: >= 768px
+- **侧边栏宽度**: 380px (sm:w-[380px])
+
+#### 4.2.2 主显示区域
+- **最大宽度**: max-w-4xl (896px)
+- **垂直内边距**: py-12 (48px)
+- **按钮容器**: max-w-md (448px)
+
+### 4.3 组件规范
+
+#### 4.3.1 按钮样式
+```tsx
+// 主要操作按钮 (胶囊形)
+className="h-16 sm:h-[72px] rounded-full font-semibold"
+
+// 次要按钮
+className="h-11 rounded-xl"
+
+// 图标按钮
+className="h-10 w-10 rounded-xl"
+```
+
+#### 4.3.2 输入框样式
+```tsx
+className="h-11 rounded-xl bg-muted/50 border-0 
+         focus:ring-2 focus:ring-primary/20 focus:bg-background"
+```
+
+#### 4.3.3 卡片样式
+```tsx
+// 结果卡片
+className="bg-background/90 rounded-[2rem] px-12 py-10 
+         border border-border/30 backdrop-blur-xl shadow-2xl"
+
+// 历史记录卡片
+className="p-4 rounded-2xl bg-muted/30 hover:bg-muted/50 
+         border border-transparent hover:border-border/50"
+```
+
+---
+
+## 5. 数据管理
+
+### 5.1 本地存储键名
 | 键名 | 类型 | 默认值 | 描述 |
 |------|------|--------|------|
 | zendraw-lang | Language | "zh" | 语言设置 |
@@ -149,7 +253,7 @@
 | zendraw-suffix | string | "" | 后缀 |
 | zendraw-history | HistoryItem[] | [] | 抽取历史 |
 
-#### 3.3.2 历史记录结构
+### 5.2 历史记录结构
 ```typescript
 interface HistoryItem {
   id: string;          // 随机ID
@@ -160,43 +264,13 @@ interface HistoryItem {
 
 ---
 
-## 4. 组件规格
+## 6. 国际化
 
-### 4.1 NumberRoller
-- **用途**: 显示滚动动画的数字
-- **Props**:
-  - `value: string` - 显示的值
-  - `isDrawing: boolean` - 是否正在抽取
-  - `className?: string` - 额外样式类
-
-### 4.2 Dialog
-- **用途**: 模态对话框
-- **Props**:
-  - `open: boolean` - 是否打开
-  - `onOpenChange: (open: boolean) => void` - 打开状态变化回调
-- **子组件**: DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
-
-### 4.3 Textarea
-- **用途**: 多行文本输入
-- **Props**: 继承原生 textarea 属性
-
-### 4.4 ThemeProvider
-- **用途**: 主题上下文提供者
-- **配置**:
-  - `attribute="class"`
-  - `defaultTheme="system"`
-  - `enableSystem`
-  - `disableTransitionOnChange`
-
----
-
-## 5. 国际化
-
-### 5.1 支持语言
+### 6.1 支持语言
 - `en` - English
 - `zh` - 简体中文
 
-### 5.2 翻译键名
+### 6.2 翻译键名
 | 键名 | 英文 | 中文 |
 |------|------|------|
 | title | ZenDraw | 禅抽 |
@@ -253,37 +327,6 @@ interface HistoryItem {
 
 ---
 
-## 6. 样式规格
-
-### 6.1 CSS变量
-```css
-/* 主题颜色由 next-themes 生成 */
-/* 字体变量由 next/font 配置 */
---font-sans: Inter
---font-mono: JetBrains Mono
---font-serif: Playfair Display
-
-/* 自定义主题类 */
-.theme-ocean { ... }
-.theme-forest { ... }
-.theme-sunset { ... }
-.theme-purple { ... }
-.theme-neon { ... }
-```
-
-### 6.2 响应式断点
-- **移动端**: < 768px
-- **平板/桌面**: >= 768px
-- **侧边栏宽度**: 420px (sm:w-[420px])
-
-### 6.3 动画配置
-- **默认过渡时长**: 300ms
-- **侧边栏动画**: spring (stiffness: 300, damping: 30, mass: 0.8)
-- **数字结果动画**: spring (stiffness: 300, damping: 25, mass: 0.8)
-- **自动隐藏延迟**: 8000ms
-
----
-
 ## 7. SEO与元数据
 
 ### 7.1 Viewport
@@ -299,17 +342,11 @@ interface HistoryItem {
 ### 7.2 Metadata
 ```typescript
 {
-  title: 'ZenDraw | 禅抽 v2.7.0',
-  description: 'A professional, full-screen random draw application...',
+  title: 'ZenDraw | 禅抽 v3.0',
+  description: '一款专业的全屏随机抽奖应用，采用 Apple 设计风格...',
   keywords: ['ZenDraw', '禅抽', 'random draw', 'lucky draw', ...],
   authors: [{ name: 'Sut' }]
 }
-```
-
-### 7.3 PWA配置
-```html
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 ```
 
 ---
@@ -339,7 +376,27 @@ interface HistoryItem {
 
 ## 9. 更新日志
 
-### v2.7.0 (当前版本)
+### v3.0 (当前版本)
+**设计重构 - Apple Design Style**
+
+#### 设计变更
+- 顶部导航栏重新设计，56px 高度毛玻璃效果
+- 设置面板宽度调整为 380px，采用 Apple 风格分组
+- 结果展示区域优化，大尺寸居中布局
+- 圆角系统统一，sm 用 rounded-xl，lg 用 rounded-[2rem]
+- 按钮样式改为胶囊形 (rounded-full)
+
+#### 交互优化
+- 动画曲线采用 Apple 标准 cubic-bezier(0.25, 0.1, 0.25, 1)
+- 过渡动画时长调整为 300-500ms
+- 浮动动画优化，更柔和的浮动效果
+
+#### 原型更新
+- 重新设计原型图 prototype.html v3.0
+- 新增设计规范页面（字体、间距、动效）
+- 优化移动端预览展示
+
+### v2.7.0
 - 新增 6 种配色方案
 - 新增 3 种字体样式
 - 优化侧边栏动画
@@ -374,4 +431,20 @@ interface HistoryItem {
 
 ---
 
-*本文档最后更新: v2.7.0*
+## 11. 设计参考
+
+### 11.1 Apple Human Interface Guidelines 关键点
+1. **清晰度**: 内容优先，界面服务于内容
+2. **遵从**: 界面响应自然，符合用户预期
+3. **深度**: 层次分明，过渡自然流畅
+4. **美学**: 整体协调，细节精致
+
+### 11.2 常用 Apple 动画模式
+- **Enter**: opacity 0→1, scale 0.95→1
+- **Exit**: opacity 1→0, scale 1→0.95
+- **Interactive**: scale 1→1.02 hover, scale 1→0.98 active
+- **Panel**: translateX slide with spring physics
+
+---
+
+*本文档最后更新: v3.0*
