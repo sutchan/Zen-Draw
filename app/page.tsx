@@ -335,7 +335,7 @@ export default function RandomDrawApp() {
             <TabsContent value="settings" className="px-6 pb-8 space-y-10 focus-visible:outline-none">
               {/* Draw Settings */}
               <motion.div id="settings-range" className="space-y-5 pt-6" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{lang === 'zh' ? '抽奖设置' : 'Draw Settings'}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t.drawSettings}</p>
                 
                 {!useCustomList && (
                   <div className="grid grid-cols-2 gap-3">
@@ -377,7 +377,7 @@ export default function RandomDrawApp() {
 
               {/* Appearance */}
               <motion.div className="space-y-5 pt-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{lang === 'zh' ? '外观' : 'Appearance'}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t.appearance}</p>
 
                 <div className="space-y-3">
                   <Label htmlFor="theme-mode" className="text-sm font-medium">{t.themeMode}</Label>
@@ -429,13 +429,13 @@ export default function RandomDrawApp() {
 
               {/* Custom List */}
               <motion.div className="space-y-5 pt-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{lang === 'zh' ? '自定义' : 'Custom'}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t.custom}</p>
 
                 <div className="flex items-center justify-between py-3 border-b border-border/30">
                   <div className="space-y-0.5">
                     <Label htmlFor="use-custom-list" className="cursor-pointer text-sm font-medium">{t.useCustomList}</Label>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      {customList.length > 0 ? `${customList.length} ${lang === 'zh' ? '项已加载' : 'items loaded'}` : (lang === 'zh' ? '暂未加载' : 'No items loaded')}
+                      {customList.length > 0 ? `${customList.length} ${t.itemsLoaded}` : t.noItems}
                     </p>
                   </div>
                   <Switch id="use-custom-list" checked={useCustomList} onCheckedChange={setUseCustomList} />
@@ -460,7 +460,7 @@ export default function RandomDrawApp() {
               {/* Display Rules */}
               {!useCustomList && (
                 <motion.div id="settings-display" className="space-y-5 pt-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{lang === 'zh' ? '显示规则' : 'Display'}</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t.display}</p>
                   
                   <div className="space-y-3">
                     <Label htmlFor="digits" className="text-sm font-medium">{t.minDigits}</Label>
@@ -536,10 +536,10 @@ export default function RandomDrawApp() {
           </div>
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setImportDialogOpen(false)} className="flex-1 h-11 rounded-xl border-border/30">
-              {lang === 'zh' ? '取消' : 'Cancel'}
+              {t.cancel}
             </Button>
             <Button onClick={handleImportSubmit} className="flex-1 h-11 rounded-xl">
-              {lang === 'zh' ? '导入' : 'Import'}
+              {t.import_}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -549,14 +549,14 @@ export default function RandomDrawApp() {
       <Dialog open={alertOpen} onOpenChange={setAlertOpen}>
         <DialogContent className="sm:max-w-[400px] rounded-2xl border-border/30">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">{lang === 'zh' ? '提示' : 'Notice'}</DialogTitle>
+            <DialogTitle className="text-xl font-semibold">{t.notice}</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <p className="text-sm leading-relaxed">{alertMessage}</p>
           </div>
           <DialogFooter>
             <Button onClick={() => setAlertOpen(false)} className="w-full h-11 rounded-xl">
-              {lang === 'zh' ? '确定' : 'OK'}
+              {t.ok}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -588,7 +588,7 @@ export default function RandomDrawApp() {
               </motion.div>
               <div className="space-y-3">
                 <p className="text-5xl md:text-6xl lg:text-7xl text-foreground/85 font-semibold tracking-tight">{t.ready}</p>
-                <p className="text-sm text-muted-foreground/50">{lang === 'zh' ? '设置参数后，点击开始抽奖' : 'Configure settings and tap to draw'}</p>
+                <p className="text-sm text-muted-foreground/50">{t.configureHint}</p>
               </div>
             </motion.div>
           ) : (
@@ -648,7 +648,7 @@ export default function RandomDrawApp() {
               ) : (
                 <motion.div className="flex items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                   <Dices className="h-7 w-7" />
-                  <span>{currentResults.length > 0 ? (lang === 'zh' ? '继续抽奖' : 'Draw Again') : t.startDraw}</span>
+                  <span>{currentResults.length > 0 ? t.drawAgain : t.startDraw}</span>
                 </motion.div>
               )}
             </Button>
