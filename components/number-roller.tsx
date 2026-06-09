@@ -26,7 +26,7 @@ export function NumberRoller({ value, isDrawing, className }: NumberRollerProps)
 
 function CharacterSlot({ index, char, isDrawing, shouldReduceMotion }: { index: number; char: string; isDrawing: boolean; shouldReduceMotion: boolean | null }) {
   const isDigit = /\d/.test(char)
-  const textStyles = "bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/70"
+  const textStyles = "bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/80"
 
   // Vary speed based on index: slower for later digits
   const baseDuration = 0.1
