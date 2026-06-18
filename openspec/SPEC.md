@@ -154,7 +154,7 @@
 
 ---
 
-## 4. 设计规范 (v3.0)
+## 4. 设计系统规范 (v3.0)
 
 ### 4.1 视觉规范
 
@@ -195,7 +195,48 @@
 | --muted-foreground | oklch(0.708 0 0) | 次要文字 |
 | --border | oklch(1 0 0 / 10%) | 边框颜色 |
 
-#### 4.1.5 动画曲线
+#### 4.1.5 字体规范
+
+##### 字体层级
+| 类名 | 字号 | 字重 | 字间距 | 行高 | 适用场景 |
+|------|------|------|--------|------|----------|
+| display-1 | 3.5-7rem | 600 | -0.035em | 1.05 | 英雄标题 |
+| display-2 | 2.5rem | 600 | -0.025em | 1.1 | 大标题 |
+| heading-xl | 1.75rem | 600 | -0.022em | 1.2 | 区块标题 |
+| heading-lg | 1.25rem | 600 | -0.018em | 1.25 | 卡片标题 |
+| heading-md | 1rem | 600 | -0.014em | 1.3 | 小标题 |
+| body-text | 1.0625rem | 400 | - | 1.5 | 正文 |
+| caption | 0.875rem | 400 | - | 1.4 | 辅助文字 |
+
+##### 数字展示
+```css
+/* 结果数字样式 */
+.result-number {
+    font-size: clamp(6rem, 12vw, 11rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    background: linear-gradient(180deg, var(--foreground) 0%, var(--foreground)/0.8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+```
+
+#### 4.1.6 图标规范
+| 类型 | 尺寸 | 圆角 | 适用场景 |
+|------|------|------|----------|
+| 图标按钮 | 32×32px / 36×36px | rounded-lg | 顶部导航、控制按钮 |
+| 组合图标 | 28×28px | - | 装饰性图标 |
+| Logo 图标 | 32×32px | rounded-[10px] | 品牌标识 |
+
+##### 图标使用规则
+- 使用 `data-icon` 属性传递图标：`data-icon="inline-start"` 或 `data-icon="inline-end"`
+- 不要在图标上直接设置尺寸类，让组件内部处理
+- 图标作为对象传递：`icon={CheckIcon}`，而非字符串键
+
+#### 4.1.7 动画曲线
 ```typescript
 // Apple 风格动画曲线 - 核心缓动
 ease: [0.25, 0.1, 0.25, 1]  // cubic-bezier(0.25, 0.1, 0.25, 1)
@@ -206,7 +247,7 @@ damping: 30     // 阻尼
 mass: 0.8       // 质量
 ```
 
-#### 4.1.6 动画时长规范
+#### 4.1.8 动画时长规范
 | 场景 | 时长 | 动画类型 |
 |------|------|---------|
 | 快速过渡（悬停、开关） | 200-300ms | ease-out |
@@ -214,7 +255,7 @@ mass: 0.8       // 质量
 | 强调动画（结果展示） | 500-800ms | spring(300, 30, 0.8) |
 | 浮动装饰动画 | 4s | ease-in-out (infinite) |
 
-#### 4.1.7 阴影系统
+#### 4.1.9 阴影系统
 | 级别 | 阴影值 | 适用场景 |
 |------|--------|----------|
 | sm | `0 1px 2px rgba(0,0,0,0.04)` | 轻微浮起、卡片常态 |
@@ -223,6 +264,62 @@ mass: 0.8       // 质量
 | xl | `0 30px 100px rgba(0,0,0,0.12)` | 突出显示结果、模态框 |
 | button | `0 8px 30px rgba(0,0,0,0.12)` | 主按钮常态 |
 | button-hover | `0 12px 40px rgba(0,0,0,0.18)` | 主按钮悬停 |
+
+#### 4.1.10 动效规范
+
+##### 悬停反馈
+```css
+.hover-scale {
+    transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.hover-scale:hover {
+    transform: scale(1.02-1.05);
+}
+```
+
+##### 点击反馈
+```css
+.active-scale:active {
+    transform: scale(0.95);
+    transition-duration: 100ms;
+}
+```
+
+##### 浮动效果
+```css
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+.anim-float { animation: float 4s ease-in-out infinite; }
+```
+
+##### 脉冲效果
+```css
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.95); }
+}
+.anim-pulse { animation: pulse 2s ease-in-out infinite; }
+```
+
+##### 发光效果
+```css
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0); }
+    50% { box-shadow: 0 0 30px 10px rgba(0, 113, 227, 0.3); }
+}
+.anim-glow { animation: glow 2s ease-in-out infinite; }
+```
+
+##### 滑入效果
+```css
+@keyframes slide-in {
+    0% { transform: translateX(-30px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+.anim-slide { animation: slide-in 0.6s cubic-bezier(0.25, 0.1, 0.25, 1); }
+```
 
 ### 4.2 布局规范
 
@@ -247,15 +344,53 @@ mass: 0.8       // 质量
 - **背景**: bg-background - 与页面一致，毛玻璃效果
 - **阴影**: shadow-[0_8px_32px_rgba(0,0,0,0.06)] - 柔和投影
 
-### 4.3 组件规范
+### 4.3 主题预设规范
 
-#### 4.3.1 按钮样式
+#### 4.3.1 默认主题 (Default)
+- **风格**: 黑白极简、高对比度
+- **用途**: 默认推荐，适合正式场合
+- **背景**: 浅灰 (#FBFBFD) / 深黑 (#1D1D1F)
+- **强调色**: 深蓝灰 (#1D1D1F)
+
+#### 4.3.2 海洋蓝主题 (Ocean)
+- **风格**: 清新、专业
+- **背景**: 冷色调蓝灰
+- **强调色**: oklch(0.5 0.15 220) - 明亮蓝色
+- **用途**: 商务活动、企业年会
+
+#### 4.3.3 森林绿主题 (Forest)
+- **风格**: 自然、活力
+- **背景**: 冷色调绿灰
+- **强调色**: oklch(0.5 0.15 140) - 自然绿色
+- **用途**: 户外活动、环保主题
+
+#### 4.3.4 落日橙主题 (Sunset)
+- **风格**: 温暖、活泼
+- **背景**: 暖色调橙灰
+- **强调色**: oklch(0.6 0.15 40) - 温暖橙色
+- **用途**: 庆祝活动、节日抽奖
+
+#### 4.3.5 紫罗兰主题 (Purple)
+- **风格**: 优雅、神秘
+- **背景**: 紫色调灰
+- **强调色**: oklch(0.5 0.2 300) - 优雅紫色
+- **用途**: 品牌活动、创意展示
+
+#### 4.3.6 霓虹主题 (Neon)
+- **风格**: 赛博朋克、高对比
+- **背景**: 深色背景 (#121212)
+- **强调色**: oklch(0.7 0.35 200) - 霓虹青色
+- **用途**: 游戏活动、科技活动
+
+### 4.4 组件规范
+
+#### 4.4.1 按钮样式
 ```tsx
 // 主要操作按钮 (胶囊形) - 开始抽奖按钮
 className="h-16 sm:h-[72px] rounded-full font-semibold 
-           shadow-[0_8px_30px_rgba(0,0,0,0.12)]
-           hover:shadow-[0_12px_40px_rgba(0,0,0,0.18)]
-           transition-all duration-300"
+         shadow-[0_8px_30px_rgba(0,0,0,0.12)]
+         hover:shadow-[0_12px_40px_rgba(0,0,0,0.18)]
+         transition-all duration-300"
 
 // 次要按钮
 className="h-11 rounded-xl border border-border/30 hover:bg-muted/50"
@@ -264,7 +399,7 @@ className="h-11 rounded-xl border border-border/30 hover:bg-muted/50"
 className="h-10 w-10 rounded-xl hover:bg-muted transition-colors"
 ```
 
-#### 4.3.2 输入框样式
+#### 4.4.2 输入框样式
 ```tsx
 // 数字输入框
 className="h-11 rounded-2xl bg-muted/40 border border-border/20 
@@ -276,7 +411,7 @@ className="min-h-[200px] rounded-xl resize-none bg-muted/40 border-0
          focus:ring-2 focus:ring-primary/20"
 ```
 
-#### 4.3.3 卡片样式
+#### 4.4.3 卡片样式
 ```tsx
 // 结果展示卡片
 className="bg-background rounded-[2rem] px-12 py-10 sm:px-16 sm:py-12 
@@ -291,7 +426,7 @@ className="p-5 rounded-2xl bg-muted/20 hover:bg-muted/40
 className="space-y-5 pt-6"
 ```
 
-#### 4.3.4 顶部导航栏
+#### 4.4.4 顶部导航栏
 ```tsx
 // 导航栏容器
 className="absolute top-0 left-0 right-0 h-14 px-6 
@@ -311,7 +446,7 @@ className="flex items-center gap-2"
 // 设置切换: Button variant="secondary/ghost" + Menu/Settings icon
 ```
 
-#### 4.3.5 侧边栏面板
+#### 4.4.5 侧边栏面板
 ```tsx
 // 侧边栏容器
 className="absolute inset-y-0 right-0 z-40 w-full sm:w-[380px] 
@@ -331,7 +466,7 @@ className="flex-1 rounded-lg data-[state=active]:bg-background
          data-[state=active]:shadow-sm text-sm font-medium"
 ```
 
-#### 4.3.6 数字滚动组件 (NumberRoller)
+#### 4.4.6 数字滚动组件 (NumberRoller)
 ```tsx
 // 主容器
 className="flex items-center justify-center tabular-nums"
@@ -351,49 +486,303 @@ className="bg-clip-text text-transparent
 
 ---
 
-## 4.4 主题预设规范
+## 5. 组件库规范 (v3.0)
 
-### 4.4.1 默认主题 (Default)
-- **风格**: 黑白极简、高对比度
-- **用途**: 默认推荐，适合正式场合
-- **背景**: 浅灰 (#FBFBFD) / 深黑 (#1D1D1F)
-- **强调色**: 深蓝灰 (#1D1D1F)
+### 5.1 基础组件
 
-### 4.4.2 海洋蓝主题 (Ocean)
-- **风格**: 清新、专业
-- **背景**: 冷色调蓝灰
-- **强调色**: oklch(0.5 0.15 220) - 明亮蓝色
-- **用途**: 商务活动、企业年会
+#### Button 按钮
+| 变体 | 样式 | 适用场景 |
+|------|------|----------|
+| Primary | `h-16 sm:h-[72px] rounded-full` | 主要操作（开始抽奖） |
+| Secondary | `h-11 rounded-xl border border-border/30` | 次要操作 |
+| Ghost | `h-10 w-10 rounded-xl` | 图标按钮 |
+| Destructive | `bg-red-500 text-white` | 危险操作 |
 
-### 4.4.3 森林绿主题 (Forest)
-- **风格**: 自然、活力
-- **背景**: 冷色调绿灰
-- **强调色**: oklch(0.5 0.15 140) - 自然绿色
-- **用途**: 户外活动、环保主题
+#### Input 输入框
+```tsx
+// 数字输入框
+className="h-11 rounded-2xl bg-muted/40 border border-border/20 
+         focus:ring-2 focus:ring-primary/15 focus:bg-background 
+         transition-all placeholder:text-muted-foreground/50"
 
-### 4.4.4 落日橙主题 (Sunset)
-- **风格**: 温暖、活泼
-- **背景**: 暖色调橙灰
-- **强调色**: oklch(0.6 0.15 40) - 温暖橙色
-- **用途**: 庆祝活动、节日抽奖
+// 自定义名单文本域
+className="min-h-[200px] rounded-xl resize-none bg-muted/40 border-0 
+         focus:ring-2 focus:ring-primary/20"
+```
 
-### 4.4.5 紫罗兰主题 (Purple)
-- **风格**: 优雅、神秘
-- **背景**: 紫色调灰
-- **强调色**: oklch(0.5 0.2 300) - 优雅紫色
-- **用途**: 品牌活动、创意展示
+#### Switch 开关
+```tsx
+className="w-11 h-6 rounded-full bg-primary data-[state=checked]:bg-primary 
+         data-[state=unchecked]:bg-input"
+```
 
-### 4.4.6 霓虹主题 (Neon)
-- **风格**: 赛博朋克、高对比
-- **背景**: 深色背景 (#121212)
-- **强调色**: oklch(0.7 0.35 200) - 霓虹青色
-- **用途**: 游戏活动、科技活动
+#### Select 选择器
+```tsx
+className="h-11 rounded-2xl bg-muted/40 border border-border/20"
+```
+
+### 5.2 复合组件
+
+#### Card 卡片
+```tsx
+// 结果展示卡片
+className="bg-background rounded-[2rem] px-12 py-10 sm:px-16 sm:py-12 
+         text-center border border-border/15 backdrop-blur-xl 
+         shadow-[0_8px_32px_rgba(0,0,0,0.06)] min-w-[240px] sm:min-w-[300px]"
+
+// 历史记录卡片
+className="p-5 rounded-2xl bg-muted/20 hover:bg-muted/40 
+         border border-transparent hover:border-border/30 transition-colors"
+```
+
+#### Tabs 选项卡
+```tsx
+className="w-full flex gap-1 p-1 bg-muted/40 rounded-xl"
+className="flex-1 rounded-lg data-[state=active]:bg-background 
+         data-[state=active]:shadow-sm text-sm font-medium"
+```
+
+#### Alert 提示框
+```tsx
+className="rounded-xl border-l-4 bg-muted/20 p-4"
+```
+
+#### Avatar 头像
+```tsx
+className="size-12 rounded-xl"
+<AvatarFallback className="bg-gradient-to-br from-primary to-primary/60 text-primary-foreground">
+  {initials}
+</AvatarFallback>
+```
+
+#### Badge 徽章
+```tsx
+className="px-3 py-1 rounded-full text-xs font-medium"
+// 变体: default, secondary, outline, destructive
+```
+
+### 5.3 业务组件
+
+#### NumberRoller 数字滚动组件
+```tsx
+// 主容器
+className="flex items-center justify-center tabular-nums"
+
+// 数字大小
+className="text-7xl sm:text-8xl md:text-9xl lg:text-[12vw] 
+         font-bold tracking-tighter leading-none"
+
+// 滚动动画参数
+// 数字滚动: linear duration 0.1s + index * 0.03s
+// 结果出现: spring(300, 20, 1)
+```
+
+#### SidebarPanel 侧边栏面板
+```tsx
+className="absolute inset-y-0 right-0 z-40 w-full sm:w-[380px] 
+         bg-background/92 backdrop-blur-xl 
+         border-l border-border/30 flex flex-col"
+// 动画: animate x: 0 <-> 100%, spring(300, 30, 0.8)
+```
+
+#### TopBar 顶部导航栏
+```tsx
+className="absolute top-0 left-0 right-0 h-14 px-6 
+         flex items-center justify-between z-50 
+         border-b border-border/50 
+         bg-background/80 backdrop-blur-xl"
+```
+
+### 5.4 组件使用规则
+
+#### ✅ 正确做法
+- 使用 `gap-*` 而非 `space-y-*` 进行间距控制
+- 使用 `size-*` 而非 `w-* h-*` 设置等宽高
+- 使用语义化颜色变量：`bg-primary`、`text-muted-foreground`
+- 组合使用现有组件而非重新发明
+- 使用 `cn()` 处理条件类名
+
+#### ❌ 避免做法
+- 手动覆盖组件颜色
+- 使用 raw hex 值如 `bg-blue-500`
+- 手动设置 z-index（Dialog、Sheet 等处理自己的层级）
+- 缺少 AvatarFallback
+
+#### 组件结构规则
+| 规则 | 说明 |
+|------|------|
+| Items 在 Group 内 | `SelectItem` → `SelectGroup` |
+| 使用 asChild/render | 自定义触发器使用 Radix 的 `asChild` |
+| Dialog 需有 Title | `DialogTitle` 或 `className="sr-only"` |
+| Card 完整结构 | `CardHeader`/`CardTitle`/`CardDescription`/`CardContent`/`CardFooter` |
+| Tabs 在 TabsList 内 | `TabsTrigger` 必须包裹在 `TabsList` 中 |
+| Avatar 需 Fallback | 始终包含 `AvatarFallback` |
 
 ---
 
-## 5. 数据管理
+## 6. 交互标准规范 (v3.0)
 
-### 5.1 本地存储键名
+### 6.1 交互模式库
+
+#### 悬停反馈
+```css
+.hover-scale {
+    transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.hover-scale:hover {
+    transform: scale(1.02-1.05);
+}
+```
+
+#### 点击反馈
+```css
+.active-scale:active {
+    transform: scale(0.95);
+    transition-duration: 100ms;
+}
+```
+
+#### 加载状态
+```tsx
+// 使用 Skeleton 而非自定义 animate-pulse divs
+<Skeleton className="h-4 w-[100px] rounded" />
+
+// 加载指示器
+<div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+```
+
+#### Toast 提示
+```tsx
+// 使用 sonner
+import { toast } from 'sonner'
+toast.success('操作成功')
+toast.error('操作失败')
+toast.warning('请检查输入')
+```
+
+### 6.2 交互反馈规范
+
+#### 状态颜色语义化
+| 状态 | 颜色 | 使用场景 |
+|------|------|----------|
+| Success | `#34C759` | 成功反馈、绿色徽章 |
+| Warning | `#FF9F0A` | 警告提示、橙色边框 |
+| Error | `#FF3B30` | 错误提示、红色边框 |
+| Info | `#007AFF` | 信息提示、蓝色强调 |
+
+#### 操作反馈时机
+| 操作类型 | 反馈时机 | 反馈方式 |
+|----------|----------|----------|
+| 表单提交 | 即时 | 禁用按钮 + 显示 spinner |
+| 保存成功 | 即时 | Toast 成功提示 |
+| 保存失败 | 即时 | Toast 错误提示 + 保持表单状态 |
+| 数据加载 | 加载中 | Skeleton 占位 |
+| 网络错误 | 错误时 | Toast + 重试按钮 |
+
+### 6.3 错误处理规范
+
+#### 错误类型与处理
+| 错误类型 | 处理方式 | UI 表现 |
+|----------|----------|---------|
+| 输入验证错误 | 实时校验 | 红色边框 + 错误提示文字 |
+| 范围不足警告 | 实时校验 | 橙色边框 + 警告提示 |
+| 禁用状态 | 条件渲染 | 灰色 + 禁用光标 |
+| 网络错误 | 错误捕获 | Toast + 重试按钮 |
+
+#### 错误提示规范
+```tsx
+// 输入框错误状态
+<div className="data-[invalid]:border-red-500">
+  <input aria-invalid />
+  <p className="text-sm text-red-500">错误信息</p>
+</div>
+
+// Alert 错误提示
+<div className="flex gap-3 p-4 rounded-xl border-l-4 border-red-500 bg-red-50 dark:bg-red-950">
+  <AlertTriangle className="text-red-500" />
+  <div>
+    <p className="font-medium">错误标题</p>
+    <p className="text-sm text-muted-foreground">详细错误信息</p>
+  </div>
+</div>
+```
+
+### 6.4 空状态设计规范
+
+#### 空状态组件
+```tsx
+// 使用 Empty 组件
+<Empty
+  icon={InboxIcon}
+  title="暂无历史记录"
+  description="开始抽奖后结果将显示在这里"
+  action={
+    <Button variant="outline">
+      <PlusIcon data-icon="inline-start" />
+      新建抽奖
+    </Button>
+  }
+/>
+```
+
+#### 空状态场景
+| 场景 | 图标 | 文案建议 |
+|------|------|----------|
+| 无历史记录 | InboxIcon | "暂无历史记录" |
+| 无搜索结果 | SearchIcon | "未找到匹配结果" |
+| 无数据 | DatabaseIcon | "暂无数据" |
+| 无网络 | WifiOffIcon | "网络连接失败" |
+
+### 6.5 表单交互规范
+
+#### 表单结构
+```tsx
+<FieldGroup>
+  <Field>
+    <FieldLabel htmlFor="email">邮箱</FieldLabel>
+    <Input id="email" />
+    <FieldDescription>请输入有效的邮箱地址</FieldDescription>
+  </Field>
+</FieldGroup>
+```
+
+#### 验证状态
+```tsx
+// 错误状态
+<Field data-invalid>
+  <FieldLabel>邮箱</FieldLabel>
+  <Input aria-invalid />
+  <FieldDescription className="text-red-500">请输入有效的邮箱地址</FieldDescription>
+</Field>
+
+// 禁用状态
+<Field data-disabled>
+  <FieldLabel>邮箱</FieldLabel>
+  <Input disabled />
+</Field>
+```
+
+#### 提交处理
+```tsx
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setIsPending(true)
+  try {
+    await saveData()
+    toast.success('保存成功')
+  } catch (error) {
+    toast.error('保存失败')
+  } finally {
+    setIsPending(false)
+  }
+}
+```
+
+---
+
+## 7. 数据管理
+
+### 7.1 本地存储键名
 | 键名 | 类型 | 默认值 | 描述 |
 |------|------|--------|------|
 | zendraw-lang | Language | "zh" | 语言设置 |
@@ -412,7 +801,7 @@ className="bg-clip-text text-transparent
 | zendraw-suffix | string | "" | 后缀 |
 | zendraw-history | HistoryItem[] | [] | 抽取历史 |
 
-### 5.2 历史记录结构
+### 7.2 历史记录结构
 ```typescript
 interface HistoryItem {
   id: string;          // 随机ID
@@ -423,13 +812,13 @@ interface HistoryItem {
 
 ---
 
-## 6. 国际化
+## 8. 国际化
 
-### 6.1 支持语言
+### 8.1 支持语言
 - `en` - English
 - `zh` - 简体中文
 
-### 6.2 翻译键名
+### 8.2 翻译键名
 | 键名 | 英文 | 中文 |
 |------|------|------|
 | title | ZenDraw | 禅抽 |
@@ -486,9 +875,9 @@ interface HistoryItem {
 
 ---
 
-## 7. SEO与元数据
+## 9. SEO与元数据
 
-### 7.1 Viewport
+### 9.1 Viewport
 ```typescript
 {
   width: 'device-width',
@@ -498,7 +887,7 @@ interface HistoryItem {
 }
 ```
 
-### 7.2 Metadata
+### 9.2 Metadata
 ```typescript
 {
   title: 'ZenDraw | 禅抽 v3.0',
@@ -510,22 +899,22 @@ interface HistoryItem {
 
 ---
 
-## 8. 规范要求
+## 10. 规范要求
 
-### 8.1 代码规范
+### 10.1 代码规范
 - 使用 ESLint 进行代码检查
 - TypeScript strict mode
 - React hooks 规范:
   - 不在 useEffect 中同步调用 setState
   - 使用 useCallback/useMemo 优化性能
 
-### 8.2 命名规范
+### 10.2 命名规范
 - 组件名: PascalCase
 - 文件名: kebab-case
 - 变量名: camelCase
 - 常量: UPPER_SNAKE_CASE
 
-### 8.3 提交规范
+### 10.3 提交规范
 遵循 Semantic Versioning:
 - MAJOR: 不兼容的API更改
 - MINOR: 向后兼容的功能添加
@@ -533,7 +922,7 @@ interface HistoryItem {
 
 ---
 
-## 9. 更新日志
+## 11. 更新日志
 
 ### v3.0 (当前版本)
 **设计重构 - Apple Design Style**
@@ -572,9 +961,9 @@ interface HistoryItem {
 
 ---
 
-## 10. 附录
+## 12. 附录
 
-### 10.1 npm scripts
+### 12.1 npm scripts
 | 命令 | 描述 |
 |------|------|
 | npm run dev | 启动开发服务器 |
@@ -583,7 +972,7 @@ interface HistoryItem {
 | npm run lint | 运行 ESLint 检查 |
 | npm run lint:fix | 自动修复 lint 错误 |
 
-### 10.2 依赖版本
+### 12.2 依赖版本
 - next: ^15.x
 - react: ^19.x
 - react-dom: ^19.x
@@ -595,15 +984,15 @@ interface HistoryItem {
 
 ---
 
-## 11. 设计参考
+## 13. 设计参考
 
-### 11.1 Apple Human Interface Guidelines 关键点
+### 13.1 Apple Human Interface Guidelines 关键点
 1. **清晰度**: 内容优先，界面服务于内容
 2. **遵从**: 界面响应自然，符合用户预期
 3. **深度**: 层次分明，过渡自然流畅
 4. **美学**: 整体协调，细节精致
 
-### 11.2 常用 Apple 动画模式
+### 13.2 常用 Apple 动画模式
 - **Enter**: opacity 0→1, scale 0.95→1
 - **Exit**: opacity 1→0, scale 1→0.95
 - **Interactive**: scale 1→1.02 hover, scale 1→0.98 active
