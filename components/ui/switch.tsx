@@ -1,32 +1,95 @@
-"use client"
+// components/ui/switch.tsx v1.0 — 纯 React Switch（无障碍）
+"use client";
 
-import { Switch as SwitchPrimitive } from "@base-ui/react/switch"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
-
-function Switch({
-  className,
-  size = "default",
-  ...props
-}: SwitchPrimitive.Root.Props & {
-  size?: "sm" | "default"
-}) {
-  return (
-    <SwitchPrimitive.Root
-      data-slot="switch"
-      data-size={size}
-      className={cn(
-        "peer group/switch relative inline-flex shrink-0 items-center rounded-full border border-transparent transition-all outline-none after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-[size=default]:h-[18.4px] data-[size=default]:w-[32px] data-[size=sm]:h-[14px] data-[size=sm]:w-[24px] dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:bg-primary data-unchecked:bg-input dark:data-unchecked:bg-input/80 data-disabled:cursor-not-allowed data-disabled:opacity-50",
-        className
-      )}
-      {...props}
-    >
-      <SwitchPrimitive.Thumb
-        data-slot="switch-thumb"
-        className="pointer-events-none block rounded-full bg-background ring-0 transition-transform group-data-[size=default]/switch:size-4 group-data-[size=sm]/switch:size-3 group-data-[size=default]/switch:data-checked:translate-x-[calc(100%-2px)] group-data-[size=sm]/switch:data-checked:translate-x-[calc(100%-2px)] dark:data-checked:bg-primary-foreground group-data-[size=default]/switch:data-unchecked:translate-x-0 group-data-[size=sm]/switch:data-unchecked:translate-x-0 dark:data-unchecked:bg-foreground"
-      />
-    </SwitchPrimitive.Root>
-  )
+export interface SwitchProps extends Omit<React.HTMLAttributes<HTMLButtonElement>, "onChange" | "children"> {
+  checked?: boolean;
+  defaultChecked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  required?: boolean;
+  name?: string;
+  value?: string;
+  id?: string;
 }
 
-export { Switch }
+const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
+  (
+    {
+      className,
+      checked: controlledChecked,
+      defaultChecked,
+      onCheckedChange,
+      disabled,
+      required,
+      name,
+      value,
+      id,
+      ...props
+    },
+    ref
+  ) => {
+    const [internalChecked, setInternalChecked] = React.useState<boolean>(
+      defaultChecked ?? false
+    );
+    const isControlled = controlledChecked !== undefined;
+    const checked = isControlled ? controlledChecked : internalChecked;
+
+    const toggle = React.useCallback(() => {
+      if (disabled) return;
+      const next = !checked;
+      if (!isControlled) setInternalChecked(next);
+      onCheckedChange?.(next);
+    }, [checked, disabled, isControlled, onCheckedChange]);
+
+    return (
+      <button
+        ref={ref}
+        id={id}
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-required={required}
+        disabled={disabled}
+        onClick={toggle}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggle();
+          }
+        }}
+        className={cn(
+          "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 bg-input data-[state=checked]:bg-primary",
+          className
+        )}
+        data-state={checked ? "checked" : "unchecked"}
+        {...props}
+      >
+        <span
+          className={cn(
+            "pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform",
+            checked ? "translate-x-5" : "translate-x-0"
+          )}
+        />
+        {/* 隐藏 input：用于 form 提交 */}
+        {name && (
+          <input
+            type="checkbox"
+            name={name}
+            value={value}
+            checked={checked}
+            onChange={() => {}}
+            hidden
+            disabled={disabled}
+            aria-hidden="true"
+          />
+        )}
+      </button>
+    );
+  }
+);
+Switch.displayName = "Switch";
+
+export { Switch };
