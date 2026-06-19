@@ -1,540 +1,2268 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-theme="light" data-reduced-motion="false">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZenDraw · 动效系统 v3.0</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #ffffff;
-      --bg-elevated: #fafafa;
-      --bg-muted: #f4f4f5;
-      --fg: #0a0a0a;
-      --fg-muted: #52525b;
-      --fg-subtle: #a1a1aa;
-      --border: #e4e4e7;
-      --accent: #2563eb;
-      --accent-soft: rgba(37, 99, 235, 0.1);
-      --success: #16a34a;
-      --warning: #d97706;
-      --danger: #dc2626;
-      --r-md: 10px;
-      --r-lg: 16px;
-      --r-xl: 24px;
-      --r-full: 9999px;
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
-      --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
-      --shadow-lg: 0 12px 24px rgba(0,0,0,0.1);
-      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-      --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      --dur-instant: 50ms;
-      --dur-fast: 150ms;
-      --dur-norm: 250ms;
-      --dur-slow: 400ms;
-      --dur-slower: 600ms;
-      --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
-      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZenDraw · Motion — 动效系统规范 v3.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   CSS Variables — shadcn/ui design tokens (Light / Dark)
+   ============================================================ */
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #18181b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --success: #22c55e;
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
 
-    [data-theme="dark"] {
-      --bg: #09090b;
-      --bg-elevated: #18181b;
-      --bg-muted: #27272a;
-      --fg: #fafafa;
-      --fg-muted: #a1a1aa;
-      --fg-subtle: #71717a;
-      --border: #27272a;
-    }
+  /* Neutral scale */
+  --neutral-50: #fafafa;
+  --neutral-100: #f4f4f5;
+  --neutral-200: #e4e4e7;
+  --neutral-300: #d4d4d8;
+  --neutral-400: #a1a1aa;
+  --neutral-500: #71717a;
+  --neutral-600: #52525b;
+  --neutral-700: #3f3f46;
+  --neutral-800: #27272a;
+  --neutral-900: #18181b;
+  --neutral-950: #0a0a0a;
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font-sans); color: var(--fg); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  /* Doc-specific */
+  --doc-bg: #fafafa;
+  --doc-sample-bg: #ffffff;
+  --doc-elevated-bg: #ffffff;
+  --code-bg: #0b0d10;
+  --code-fg: #e5e7eb;
+  --code-comment: #6b7280;
+  --code-keyword: #c084fc;
+  --code-string: #86efac;
+  --code-tag: #fb7185;
+  --code-attr: #fbbf24;
+  --code-number: #7dd3fc;
+  --code-punc: #9ca3af;
 
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 32px;
-      background: color-mix(in srgb, var(--bg) 80%, transparent);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-brand { display: flex; align-items: center; gap: 12px; font-weight: 700; }
-    .nav-logo { width: 36px; height: 36px; border-radius: 10px; background: var(--fg); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 800; }
-    .theme-btn { width: 36px; height: 36px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 16px; background: var(--bg-muted); cursor: pointer; border: none; transition: background var(--dur-fast); }
-    .theme-btn:hover { background: var(--bg-elevated); }
+  /* Radii */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
 
-    .content { max-width: 1100px; margin: 0 auto; padding: 100px 32px 80px; }
-    .page-header { margin-bottom: 64px; text-align: center; }
-    .page-label { font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
-    .page-title { font-size: 48px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 16px; }
-    .page-desc { font-size: 18px; color: var(--fg-muted); max-width: 600px; margin: 0 auto; }
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.03);
+  --shadow: 0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.06), 0 2px 6px -3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.08), 0 4px 10px -4px rgba(0,0,0,0.04);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.10);
 
-    .section { margin-bottom: 80px; }
-    .section-header { margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-    .section-title { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
-    .section-desc { color: var(--fg-muted); font-size: 15px; }
+  /* Motion Tokens — easing curves */
+  --ease-linear: linear;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    /* Animations */
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-    @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
-    @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(0.98); } }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-    @keyframes ripple { 0% { transform: scale(0); opacity: 0.5; } 100% { transform: scale(4); opacity: 0; } }
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    @keyframes numberPop { 0% { transform: scale(0.5); opacity: 0; } 60% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
-    @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  /* Motion Tokens — durations */
+  --dur-instant: 100ms;
+  --dur-fast: 150ms;
+  --dur-normal: 200ms;
+  --dur-normal-2: 250ms;
+  --dur-slow: 300ms;
+  --dur-slow-2: 400ms;
+  --dur-slower: 500ms;
+  --dur-slower-2: 600ms;
 
-    .demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-    .demo-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
-    .demo-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-    .demo-title { font-weight: 600; font-size: 14px; }
-    .demo-code { font-family: var(--font-mono); font-size: 11px; color: var(--accent); background: var(--accent-soft); padding: 4px 8px; border-radius: 4px; }
-    .demo-body { padding: 32px; display: flex; align-items: center; justify-content: center; min-height: 160px; background: var(--bg-elevated); }
-    .demo-footer { padding: 12px 20px; border-top: 1px solid var(--border); }
-    .demo-hint { font-size: 12px; color: var(--fg-muted); }
+  /* Transitions */
+  --transition: 200ms var(--ease-out);
+  --transition-slow: 300ms var(--ease-in-out);
 
-    .anim-box { width: 80px; height: 80px; border-radius: var(--r-lg); background: var(--accent); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; cursor: pointer; transition: transform var(--dur-fast); }
-    .anim-box:hover { transform: scale(1.05); }
-    .anim-trigger { width: 60px; height: 32px; background: var(--bg-muted); border-radius: var(--r-full); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--fg-muted); cursor: pointer; transition: background var(--dur-fast); }
-    .anim-trigger:hover { background: var(--border); }
+  /* Typography */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --fs-xs: 11px;
+  --fs-sm: 13px;
+  --fs-base: 15px;
+  --fs-lg: 16px;
+  --fs-xl: 18px;
+  --fs-2xl: 22px;
+  --fs-3xl: 28px;
+  --fs-4xl: 36px;
+  --fs-5xl: 48px;
+  --fs-6xl: 64px;
+}
 
-    .demo-btn { padding: 12px 24px; background: var(--primary); color: var(--primary-fg); border-radius: var(--r-full); font-weight: 600; font-size: 14px; border: none; cursor: pointer; transition: all var(--dur-fast) var(--ease-out); }
-    .demo-btn:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #09090b;
+  --card-foreground: #fafafa;
+  --muted: #1f1f23;
+  --muted-foreground: #a1a1aa;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #f87171;
+  --destructive-foreground: #18181b;
+  --success: #4ade80;
+  --success-foreground: #18181b;
+  --warning: #fbbf24;
+  --warning-foreground: #18181b;
+  --info: #60a5fa;
+  --info-foreground: #18181b;
 
-    .demo-number { font-size: 72px; font-weight: 900; letter-spacing: -0.04em; background: linear-gradient(180deg, var(--fg), var(--fg-muted)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  --neutral-50: #0a0a0a;
+  --neutral-100: #18181b;
+  --neutral-200: #27272a;
+  --neutral-300: #3f3f46;
+  --neutral-400: #52525b;
+  --neutral-500: #71717a;
+  --neutral-600: #a1a1aa;
+  --neutral-700: #d4d4d8;
+  --neutral-800: #e4e4e7;
+  --neutral-900: #f4f4f5;
+  --neutral-950: #fafafa;
 
-    .demo-icon { width: 80px; height: 80px; border-radius: var(--r-lg); background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 32px; }
+  --doc-bg: #0a0a0a;
+  --doc-sample-bg: #0f0f12;
+  --doc-elevated-bg: #111114;
 
-    .easing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-    .easing-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
-    .easing-preview { height: 80px; background: var(--bg-elevated); position: relative; overflow: hidden; }
-    .easing-ball { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); position: absolute; left: 0; top: 28px; }
-    .easing-info { padding: 12px 16px; }
-    .easing-name { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
-    .easing-value { font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); }
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.3);
+  --shadow: 0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.5), 0 2px 6px -3px rgba(0,0,0,0.3);
+  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.6), 0 4px 10px -4px rgba(0,0,0,0.4);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.7);
+}
 
-    .duration-grid { display: flex; flex-direction: column; gap: 16px; }
-    .duration-row { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); }
-    .duration-bar { flex: 1; height: 8px; background: var(--bg-muted); border-radius: 4px; overflow: hidden; }
-    .duration-fill { height: 100%; background: var(--accent); border-radius: 4px; }
-    .duration-label { width: 100px; font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); }
-    .duration-time { width: 60px; font-family: var(--font-mono); font-size: 14px; font-weight: 600; text-align: right; }
+/* ============================================================
+   Reduced Motion — honored globally
+   ============================================================ */
+[data-reduced-motion="true"],
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  transition-timing-function: linear !important;
+  scroll-behavior: auto !important;
+}
 
-    .stagger-demo { display: flex; gap: 12px; flex-wrap: wrap; }
-    .stagger-item { width: 60px; height: 60px; border-radius: var(--r-md); background: var(--accent); opacity: 0; transform: translateY(20px); }
+@media (prefers-reduced-motion: reduce) {
+  :root[data-reduced-motion-auto="true"],
+  :root[data-reduced-motion-auto="true"] *,
+  :root[data-reduced-motion-auto="true"] *::before,
+  :root[data-reduced-motion-auto="true"] *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-timing-function: linear !important;
+    scroll-behavior: auto !important;
+  }
+}
 
-    .state-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
-    .state-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px; }
-    .state-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-    .state-dot { width: 12px; height: 12px; border-radius: 50%; }
-    .state-name { font-weight: 600; font-size: 15px; }
-    .state-desc { font-size: 13px; color: var(--fg-muted); margin-bottom: 16px; }
-    .state-demo { height: 80px; background: var(--bg-elevated); border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; }
+/* ============================================================
+   Reset
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { scroll-behavior: smooth; }
 
-    .guides-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-    .guide-card { padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); }
-    .guide-icon { width: 48px; height: 48px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
-    .guide-title { font-weight: 600; font-size: 16px; margin-bottom: 8px; }
-    .guide-desc { font-size: 14px; color: var(--fg-muted); line-height: 1.6; }
+html, body {
+  background: var(--doc-bg);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-slow), color var(--transition-slow);
+}
 
-    .footer { padding: 48px; text-align: center; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 13px; }
+body { min-height: 100vh; }
 
-    /* Animation Classes */
-    .play-fadeIn { animation: fadeIn var(--dur-norm) var(--ease-out) forwards; }
-    .play-fadeInUp { animation: fadeInUp var(--dur-slow) var(--ease-out) forwards; }
-    .play-fadeInScale { animation: fadeInScale var(--dur-norm) var(--ease-spring) forwards; }
-    .play-slideInLeft { animation: slideInLeft var(--dur-slow) var(--ease-out) forwards; }
-    .play-slideInRight { animation: slideInRight var(--dur-slow) var(--ease-out) forwards; }
-    .play-bounce { animation: bounce 0.8s var(--ease-bounce) infinite; }
-    .play-pulse { animation: pulse 1s ease-in-out infinite; }
-    .play-spin { animation: spin 1s linear infinite; }
-    .play-float { animation: float 2s ease-in-out infinite; }
-    .play-numberPop { animation: numberPop 0.5s var(--ease-spring) forwards; }
-  </style>
+h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; color: var(--foreground); }
+h1 { font-size: var(--fs-5xl); }
+h2 { font-size: var(--fs-4xl); }
+h3 { font-size: var(--fs-2xl); }
+h4 { font-size: var(--fs-xl); }
+
+p { color: var(--muted-foreground); font-size: var(--fs-base); }
+a { color: var(--foreground); text-decoration: none; }
+button { font-family: inherit; font-size: inherit; cursor: pointer; }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--muted);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--doc-bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-full); border: 2px solid var(--doc-bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); }
+
+::selection { background: color-mix(in srgb, var(--primary) 20%, transparent); color: var(--foreground); }
+
+/* ============================================================
+   Page Layout
+   ============================================================ */
+.page {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+/* Top Header */
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--doc-bg) 85%, transparent);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--border);
+  grid-column: 1 / -1;
+  transition: background-color var(--transition-slow), border-color var(--transition-slow), height var(--transition), box-shadow var(--transition);
+  will-change: height;
+}
+
+.top-header.is-scrolled {
+  box-shadow: var(--shadow-sm);
+}
+
+.top-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  padding: 0 32px;
+  transition: height var(--transition);
+}
+
+.top-header.is-scrolled .top-header-inner { height: 54px; }
+
+.brand { display: flex; align-items: center; gap: 14px; }
+
+.brand-logo {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--neutral-900) 0%, var(--neutral-700) 50%, var(--neutral-950) 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 15px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  transition: transform var(--transition);
+}
+.brand-logo:hover { transform: rotate(-8deg) scale(1.05); }
+.brand-logo::after {
+  content: ""; position: absolute; inset: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, transparent 0%, transparent 60%, rgba(255,255,255,0.1) 100%);
+  pointer-events: none;
+}
+
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-text strong { font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.01em; }
+.brand-text span { font-size: var(--fs-xs); color: var(--muted-foreground); margin-top: 2px; }
+
+.version-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  margin-left: 8px;
+}
+
+.header-actions { display: flex; align-items: center; gap: 8px; }
+
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  transition: background-color var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--doc-elevated-bg);
+}
+.icon-btn:hover { background: var(--muted); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.icon-btn:active { transform: translateY(0) scale(0.98); }
+.icon-btn svg { transition: transform var(--transition-slow); }
+
+/* Sidebar */
+.sidebar {
+  position: sticky;
+  top: 68px;
+  height: calc(100vh - 68px);
+  overflow-y: auto;
+  padding: 28px 0 48px;
+  border-right: 1px solid var(--border);
+  background: var(--doc-bg);
+  transition: background-color var(--transition-slow), border-color var(--transition-slow);
+}
+
+.sidebar-inner { padding: 0 24px; }
+
+.sidebar-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted-foreground);
+  font-weight: 600;
+  padding: 18px 12px 8px;
+}
+.sidebar-section-label:first-child { padding-top: 0; }
+
+.sidebar-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 12px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition), color var(--transition), transform var(--transition);
+  cursor: pointer;
+  position: relative;
+}
+.sidebar-link .link-num {
+  font-family: var(--font-mono); font-size: 10px; color: var(--border);
+  min-width: 18px; transition: color var(--transition);
+}
+.sidebar-link:hover { background: var(--muted); color: var(--foreground); transform: translateX(2px); }
+.sidebar-link:hover .link-num { color: var(--muted-foreground); }
+.sidebar-link.is-active {
+  background: var(--doc-elevated-bg);
+  color: var(--foreground);
+  font-weight: 500;
+  box-shadow: inset 2px 0 0 var(--foreground);
+}
+.sidebar-link.is-active .link-num { color: var(--foreground); }
+
+/* Reading progress bar at header bottom */
+.reading-progress {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--neutral-400), var(--neutral-900));
+  transition: width 100ms linear;
+  z-index: 1;
+}
+
+/* Main content */
+.content { padding: 64px 80px 120px; max-width: 1180px; margin: 0 auto; width: 100%; }
+
+/* HERO */
+.hero {
+  margin-bottom: 64px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-meta {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--font-mono); font-size: 12px;
+  color: var(--muted-foreground);
+  margin-bottom: 24px; letter-spacing: 0.04em;
+}
+.hero-meta .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted-foreground); opacity: 0.5; }
+.hero h1 {
+  font-size: 72px; font-weight: 700;
+  letter-spacing: -0.035em; line-height: 1.05;
+  margin-bottom: 20px;
+  background: linear-gradient(180deg, var(--foreground) 0%, color-mix(in srgb, var(--foreground) 55%, transparent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero h1 .highlight { background: none; -webkit-text-fill-color: var(--foreground); font-style: italic; font-weight: 500; }
+.hero .lead {
+  font-size: 19px; color: var(--muted-foreground);
+  max-width: 640px; line-height: 1.6;
+}
+.hero-metrics {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 16px; margin-top: 40px; max-width: 720px;
+}
+.hero-metric {
+  padding: 18px 20px;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.hero-metric:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.hero-metric .m-value {
+  font-family: var(--font-mono); font-size: 28px;
+  font-weight: 600; letter-spacing: -0.02em; line-height: 1;
+}
+.hero-metric .m-label {
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted-foreground);
+  margin-top: 8px; font-weight: 500;
+}
+
+/* Section headings */
+.section-intro { margin: 12px 0 40px; color: var(--muted-foreground); max-width: 720px; font-size: 16px; line-height: 1.7; }
+
+.section-head {
+  display: flex; align-items: baseline; gap: 16px;
+  margin-bottom: 12px;
+  padding-top: 80px; margin-top: 80px;
+  border-top: 1px solid var(--border);
+}
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+}
+.section-head h2 { margin: 0; font-size: 40px; letter-spacing: -0.03em; }
+.section-sub { color: var(--muted-foreground); font-size: 14px; margin-top: 4px; }
+
+/* ============================================================
+   §1 — Motion Principles Cards
+   ============================================================ */
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.principle-card {
+  padding: 28px;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.principle-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--foreground) 25%, var(--border));
+  box-shadow: var(--shadow-md);
+}
+.principle-card .p-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+  color: var(--foreground);
+  transition: transform 600ms var(--ease-spring);
+}
+.principle-card:hover .p-icon { transform: rotate(-8deg) scale(1.08); }
+.principle-card h3 { font-size: 20px; margin-bottom: 8px; letter-spacing: -0.01em; }
+.principle-card .p-desc { color: var(--muted-foreground); font-size: 14px; line-height: 1.65; }
+.principle-card .p-label {
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  position: absolute; top: 20px; right: 24px;
+}
+
+/* ============================================================
+   §2 — Easing curves (SVG + ball)
+   ============================================================ */
+.easing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.easing-card {
+  padding: 24px;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.easing-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--foreground) 20%, var(--border));
+  box-shadow: var(--shadow-md);
+}
+.easing-card .curve-track {
+  position: relative;
+  height: 100px;
+  margin-bottom: 20px;
+  border-radius: var(--radius-md);
+  background: var(--muted);
+  overflow: hidden;
+}
+.easing-card svg { width: 100%; height: 100%; display: block; }
+.easing-card .curve-line {
+  fill: none;
+  stroke: var(--foreground);
+  stroke-width: 2;
+}
+.easing-card .curve-control {
+  fill: none;
+  stroke: var(--neutral-400);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+.easing-card .curve-point {
+  fill: var(--foreground);
+}
+.easing-card .ball-track {
+  position: relative;
+  height: 44px;
+  margin-bottom: 16px;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  overflow: hidden;
+}
+.easing-card .ball {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--neutral-700), var(--neutral-900));
+  transform: translateY(-50%) translateX(0);
+  box-shadow: var(--shadow-sm);
+}
+[data-theme="dark"] .easing-card .ball {
+  background: linear-gradient(135deg, var(--neutral-500), var(--neutral-300));
+}
+.easing-card.is-playing .ball {
+  transform: translateY(-50%) translateX(calc(100% - 32px - 12px));
+}
+.easing-card h4 { font-size: 16px; margin-bottom: 4px; font-weight: 600; }
+.easing-card .c-bezier {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  display: block;
+  margin-bottom: 10px;
+  word-break: break-all;
+}
+.easing-card .c-use { font-size: 12px; color: var(--muted-foreground); line-height: 1.55; }
+.easing-card .c-hint {
+  font-family: var(--font-mono);
+  font-size: 10px; color: var(--neutral-400);
+  margin-top: 10px; letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   §3 — Duration tokens
+   ============================================================ */
+.dur-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 32px;
+}
+.dur-card {
+  padding: 20px;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.dur-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--foreground) 20%, var(--border));
+  box-shadow: var(--shadow-md);
+}
+.dur-card .d-ball-track {
+  position: relative;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.dur-card .d-ball {
+  position: absolute;
+  left: 6px; top: 50%;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--neutral-700), var(--neutral-900));
+  transform: translateY(-50%);
+  box-shadow: var(--shadow-sm);
+}
+[data-theme="dark"] .dur-card .d-ball {
+  background: linear-gradient(135deg, var(--neutral-500), var(--neutral-300));
+}
+.dur-card.is-playing .d-ball {
+  transform: translateY(-50%) translateX(calc(100% - 28px - 12px));
+}
+.dur-card .d-token {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.02em;
+}
+.dur-card .d-val {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 2px 0;
+}
+.dur-card .d-label {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+/* Token table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  font-size: 14px;
+}
+.data-table thead {
+  background: var(--muted);
+}
+.data-table th {
+  text-align: left;
+  padding: 14px 20px;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  vertical-align: top;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table td.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+.data-table td .ms-val {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--foreground);
+  margin-right: 6px;
+}
+
+/* ============================================================
+   Shared: preview sample area (for entrances, etc.)
+   ============================================================ */
+.sample-stage {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.sample-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+/* ============================================================
+   §4 — Entrance animations
+   ============================================================ */
+.entrance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.entrance-card {
+  padding: 24px;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.entrance-card:hover {
+  border-color: color-mix(in srgb, var(--foreground) 20%, var(--border));
+  box-shadow: var(--shadow-md);
+}
+.entrance-card .e-stage {
+  position: relative;
+  height: 110px;
+  border-radius: var(--radius-md);
+  background: var(--muted);
+  margin-bottom: 18px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.entrance-card .e-target {
+  padding: 14px 20px;
+  background: linear-gradient(135deg, var(--neutral-800), var(--neutral-950));
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(16px) scale(0.95);
+  box-shadow: var(--shadow-md);
+}
+[data-theme="dark"] .entrance-card .e-target {
+  background: linear-gradient(135deg, var(--neutral-100), var(--neutral-300));
+  color: #18181b;
+}
+/* fade */
+.entrance-card[data-ease-anim="fade-in"] .e-target {
+  opacity: 0;
+  transform: none;
+}
+.entrance-card[data-ease-anim="fade-in"].is-playing .e-target {
+  animation: mFadeIn 500ms var(--ease-out) forwards;
+}
+@keyframes mFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* slide-up */
+.entrance-card[data-ease-anim="slide-up"] .e-target {
+  opacity: 0; transform: translateY(24px);
+}
+.entrance-card[data-ease-anim="slide-up"].is-playing .e-target {
+  animation: mSlideUp 500ms var(--ease-out) forwards;
+}
+@keyframes mSlideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+/* slide-in-right */
+.entrance-card[data-ease-anim="slide-in-right"] .e-target {
+  opacity: 0; transform: translateX(60px);
+}
+.entrance-card[data-ease-anim="slide-in-right"].is-playing .e-target {
+  animation: mSlideInRight 500ms var(--ease-out) forwards;
+}
+@keyframes mSlideInRight { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
+
+/* scale-in */
+.entrance-card[data-ease-anim="scale-in"] .e-target {
+  opacity: 0; transform: scale(0.5);
+}
+.entrance-card[data-ease-anim="scale-in"].is-playing .e-target {
+  animation: mScaleIn 500ms var(--ease-out) forwards;
+}
+@keyframes mScaleIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+
+/* pop / spring */
+.entrance-card[data-ease-anim="pop"] .e-target {
+  opacity: 0; transform: scale(0.5);
+}
+.entrance-card[data-ease-anim="pop"].is-playing .e-target {
+  animation: mPop 700ms var(--ease-spring) forwards;
+}
+@keyframes mPop {
+  0%   { opacity: 0; transform: scale(0.4); }
+  70%  { opacity: 1; transform: scale(1.12); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.entrance-card h4 { font-size: 16px; margin-bottom: 4px; font-weight: 600; }
+.entrance-card .e-meta { font-family: var(--font-mono); font-size: 11px; color: var(--muted-foreground); margin-bottom: 8px; }
+.entrance-card .e-desc { font-size: 13px; color: var(--muted-foreground); line-height: 1.55; }
+.entrance-card .e-hint { font-family: var(--font-mono); font-size: 10px; color: var(--neutral-400); margin-top: 10px; letter-spacing: 0.04em; }
+
+/* ============================================================
+   §5 — Micro-interactions
+   ============================================================ */
+.micro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.micro-card {
+  padding: 24px;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.micro-card h4 { font-size: 16px; margin-bottom: 4px; }
+.micro-card .m-desc { font-size: 13px; color: var(--muted-foreground); line-height: 1.55; margin-bottom: 18px; }
+.micro-card .m-stage {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  align-items: center; justify-content: center;
+  padding: 22px 16px;
+  background: var(--muted);
+  border-radius: var(--radius-md);
+  min-height: 120px;
+}
+
+/* Button hover demo */
+.mi-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  background: var(--foreground);
+  color: var(--background);
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--dur-normal) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-normal) var(--ease-out);
+}
+.mi-btn:hover { box-shadow: var(--shadow-md); }
+.mi-btn:active { transform: scale(0.98); }
+
+/* Secondary button */
+.mi-btn-secondary {
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+.mi-btn-secondary:hover {
+  background: var(--muted);
+  box-shadow: var(--shadow);
+}
+
+/* Card hover */
+.mi-card {
+  padding: 18px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  width: 180px;
+  text-align: left;
+  transition: transform var(--dur-normal) var(--ease-out),
+              box-shadow var(--dur-normal) var(--ease-out),
+              border-color var(--dur-normal) var(--ease-out);
+  cursor: pointer;
+}
+.mi-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--foreground) 20%, var(--border));
+  box-shadow: var(--shadow-md);
+}
+.mi-card .bar {
+  height: 8px;
+  background: var(--muted);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.mi-card .bar.short { width: 60%; }
+
+/* Input focus */
+.mi-input {
+  width: 240px;
+  padding: 10px 14px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--foreground);
+  outline: none;
+  transition: border-color var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+.mi-input:focus {
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--foreground) 15%, transparent);
+}
+
+/* Switch toggle */
+.mi-switch {
+  position: relative;
+  width: 44px; height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--neutral-300);
+  cursor: pointer;
+  transition: background-color var(--dur-normal) var(--ease-out);
+  border: none;
+  padding: 0;
+}
+[data-theme="dark"] .mi-switch { background: var(--neutral-600); }
+.mi-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-normal) var(--ease-out);
+}
+.mi-switch.is-on { background: var(--foreground); }
+.mi-switch.is-on::after { transform: translateX(20px); }
+
+/* ============================================================
+   §6 — State transitions
+   ============================================================ */
+.state-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+.state-card {
+  padding: 24px;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.state-card h4 { font-size: 16px; margin-bottom: 4px; }
+.state-card .s-desc { font-size: 13px; color: var(--muted-foreground); line-height: 1.55; margin-bottom: 18px; }
+.state-card .s-stage {
+  padding: 22px;
+  background: var(--muted);
+  border-radius: var(--radius-md);
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+.state-card .s-trigger {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Loading → success */
+.loader-ring {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top-color: var(--foreground);
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity var(--dur-normal) var(--ease-out), transform var(--dur-normal) var(--ease-out);
+  animation: mSpin 700ms linear infinite;
+}
+@keyframes mSpin { to { transform: rotate(360deg); } }
+.loader-ring.is-hidden { opacity: 0; transform: scale(0.6); animation: none; }
+.success-icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--success);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: scale(0.4);
+  color: #fff;
+  position: absolute;
+  transition: opacity var(--dur-normal) var(--ease-spring), transform var(--dur-slow) var(--ease-spring);
+}
+.success-icon.is-visible { opacity: 1; transform: scale(1); }
+
+/* Empty → content */
+.empty-slot {
+  width: 100%;
+  max-width: 260px;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  padding: 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  transition: opacity var(--dur-normal) var(--ease-out), transform var(--dur-normal) var(--ease-out);
+}
+.empty-slot.is-hidden { opacity: 0; transform: translateY(-8px); pointer-events: none; display: none; }
+.content-slot {
+  width: 100%;
+  max-width: 260px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+.content-slot.is-visible {
+  display: flex;
+  animation: mSlideUp 400ms var(--ease-out) forwards;
+}
+.content-slot .row {
+  height: 12px;
+  background: var(--background);
+  border-radius: 4px;
+}
+.content-slot .row.short { width: 65%; }
+
+/* Collapse/expand */
+.xpand-wrap {
+  width: 100%;
+  max-width: 280px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.xpand-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+.xpand-head span { font-size: 14px; font-weight: 500; }
+.xpand-chevron {
+  transition: transform var(--dur-normal) var(--ease-out);
+  color: var(--muted-foreground);
+}
+.xpand-wrap.is-open .xpand-chevron { transform: rotate(180deg); }
+.xpand-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--dur-slow) var(--ease-out);
+}
+.xpand-body-inner {
+  padding: 0 16px 16px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.xpand-wrap.is-open .xpand-body { max-height: 200px; }
+
+/* Tab switch */
+.tab-bar {
+  display: inline-flex;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  position: relative;
+}
+.tab-bar .tab {
+  position: relative;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  color: var(--muted-foreground);
+  border-radius: calc(var(--radius-md) - 2px);
+  transition: color var(--dur-fast) var(--ease-out);
+  z-index: 1;
+}
+.tab-bar .tab.is-active { color: var(--foreground); }
+.tab-bar .tab-indicator {
+  position: absolute;
+  top: 4px; left: 4px;
+  height: calc(100% - 8px);
+  background: var(--muted);
+  border-radius: calc(var(--radius-md) - 2px);
+  transition: transform var(--dur-normal) var(--ease-out), width var(--dur-normal) var(--ease-out);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ============================================================
+   §7 — Scrolling motion (sticky demo lives in HTML structure)
+   ============================================================ */
+.sticky-demo {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.sticky-demo .sd-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--doc-elevated-bg) 95%, transparent);
+  font-weight: 600;
+  font-size: 14px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.sticky-demo .sd-body {
+  padding: 20px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+.sticky-demo .sd-body p { margin-bottom: 14px; color: var(--muted-foreground); font-size: 14px; }
+
+/* Reveal on scroll */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+}
+.reveal-item.is-visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   §8 — Reduced motion
+   ============================================================ */
+.rm-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.rm-pane {
+  padding: 24px;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.rm-pane h4 { font-size: 16px; margin-bottom: 4px; }
+.rm-pane .rm-desc { font-size: 12px; color: var(--muted-foreground); margin-bottom: 16px; }
+.rm-pane .rm-stage {
+  padding: 22px;
+  background: var(--muted);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+}
+.rm-pane .rm-btn {
+  padding: 12px 22px;
+  background: var(--foreground);
+  color: var(--background);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+}
+.rm-pane.rm-off .rm-btn {
+  transition: background-color var(--dur-normal) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-normal) var(--ease-out);
+}
+.rm-pane.rm-off .rm-btn:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.rm-pane.rm-off .rm-btn:active { transform: scale(0.98); }
+.rm-pane.rm-on .rm-btn { transition: opacity 0.001ms linear; }
+.rm-pane.rm-on .rm-btn:hover { background: color-mix(in srgb, var(--foreground) 85%, transparent); }
+
+.rm-toggle-row {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.rm-toggle-row .rm-label {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+.rm-toggle-row .rm-label strong { color: var(--foreground); font-weight: 600; }
+
+/* ============================================================
+   Generic code block display
+   ============================================================ */
+.code-block {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  margin-top: 16px;
+  position: relative;
+}
+.code-block .tk-k { color: var(--code-keyword); }
+.code-block .tk-s { color: var(--code-string); }
+.code-block .tk-n { color: var(--code-number); }
+.code-block .tk-p { color: var(--code-punc); }
+.code-block .tk-c { color: var(--code-comment); font-style: italic; }
+.code-block .tk-t { color: var(--code-tag); }
+.code-block .tk-a { color: var(--code-attr); }
+
+.code-label {
+  position: absolute;
+  top: 10px; right: 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--neutral-500);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Subtle section divider */
+.section-rule {
+  border: 0;
+  border-top: 1px dashed var(--border);
+  margin: 32px 0;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 900px) {
+  .page { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .content { padding: 40px 24px 80px; }
+  .hero h1 { font-size: 48px; }
+  .hero-metrics { grid-template-columns: repeat(2, 1fr); }
+  .principle-grid { grid-template-columns: 1fr; }
+  .rm-compare { grid-template-columns: 1fr; }
+  .section-head { padding-top: 60px; margin-top: 60px; }
+}
+</style>
 </head>
-<body data-theme="light">
-  <nav class="nav">
-    <div class="nav-brand"><div class="nav-logo">Z</div><span>ZenDraw 动效系统</span></div>
-    <button class="theme-btn" onclick="toggleTheme()">🌙</button>
-  </nav>
+<body>
+<div class="page">
 
-  <div class="content">
-    <div class="page-header">
-      <div class="page-label">Motion</div>
-      <h1 class="page-title">动效系统</h1>
-      <p class="page-desc">精心设计的动画系统，让交互更流畅、体验更愉悦。遵循"有目的、有克制"的原则。</p>
+  <!-- ============================================================
+       Top Header (with sticky-shrink and reading-progress line)
+       ============================================================ -->
+  <header class="top-header" id="topHeader">
+    <div class="top-header-inner">
+      <div class="brand">
+        <div class="brand-logo">Z</div>
+        <div class="brand-text">
+          <strong>ZenDraw · Motion</strong>
+          <span>动效系统规范 · Design System</span>
+        </div>
+        <span class="version-badge">v3.0</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="rmBtn" title="Reduced Motion (减动效)" aria-pressed="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="rmIcon">
+            <path d="M12 2a10 10 0 1 0 10 10"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="themeBtn" title="切换主题" aria-label="Toggle theme">
+          <svg id="sunIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+          <svg id="moonIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
     </div>
+    <div class="reading-progress" id="readingProgress"></div>
+  </header>
 
-    <!-- Entrance Animations -->
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">入场动画</h2>
-        <p class="section-desc">元素出现时的动画效果。</p>
+  <!-- ============================================================
+       Sidebar
+       ============================================================ -->
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <div class="sidebar-section-label">目录 · Contents</div>
+      <a class="sidebar-link is-active" href="#principles"><span class="link-num">01</span>动效原则</a>
+      <a class="sidebar-link" href="#easing"><span class="link-num">02</span>缓动曲线</a>
+      <a class="sidebar-link" href="#duration"><span class="link-num">03</span>时长</a>
+      <a class="sidebar-link" href="#entrance"><span class="link-num">04</span>入场动画</a>
+      <a class="sidebar-link" href="#micro"><span class="link-num">05</span>微交互</a>
+      <a class="sidebar-link" href="#state"><span class="link-num">06</span>状态切换</a>
+      <a class="sidebar-link" href="#scroll"><span class="link-num">07</span>滚动动效</a>
+      <a class="sidebar-link" href="#accessibility"><span class="link-num">08</span>可访问性</a>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       Main Content
+       ============================================================ -->
+  <main class="content">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-meta">
+        <span>MOTION SYSTEM</span>
+        <span class="meta-dot"></span>
+        <span>ZenDraw Design</span>
+        <span class="meta-dot"></span>
+        <span>v3.0 · 2025</span>
       </div>
-
-      <div class="demo-grid">
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-title">Fade In</span>
-            <span class="demo-code">opacity 0→1</span>
-          </div>
-          <div class="demo-body">
-            <div class="anim-box play-fadeIn">Box</div>
-          </div>
-          <div class="demo-footer">
-            <div class="demo-hint">透明度渐变，最基础的动画。</div>
-          </div>
+      <h1>给界面注入 <span class="highlight">呼吸感</span>，<br/>而不是炫技。</h1>
+      <p class="lead">
+        Motion 在 ZenDraw 中承担引导注意力、提供反馈、建立空间关系的职责。
+        每一段动画都遵循统一的缓动曲线与时长令牌，使动效在整个产品中保持一致且克制。
+      </p>
+      <div class="hero-metrics">
+        <div class="hero-metric">
+          <div class="m-value">5</div>
+          <div class="m-label">Easing Curves</div>
         </div>
-
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-title">Fade In Up</span>
-            <span class="demo-code">Y: 20px→0</span>
-          </div>
-          <div class="demo-body">
-            <div class="anim-box play-fadeInUp">Box</div>
-          </div>
-          <div class="demo-footer">
-            <div class="demo-hint">向上滑入，引导视线。</div>
-          </div>
+        <div class="hero-metric">
+          <div class="m-value">8</div>
+          <div class="m-label">Duration Tokens</div>
         </div>
-
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-title">Fade In Scale</span>
-            <span class="demo-code">scale 0.9→1</span>
-          </div>
-          <div class="demo-body">
-            <div class="anim-box play-fadeInScale">Box</div>
-          </div>
-          <div class="demo-footer">
-            <div class="demo-hint">缩放入场，突出元素。</div>
-          </div>
+        <div class="hero-metric">
+          <div class="m-value">12+</div>
+          <div class="m-label">Animations</div>
         </div>
-
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-title">Number Pop</span>
-            <span class="demo-code">spring</span>
-          </div>
-          <div class="demo-body">
-            <div class="demo-number play-numberPop">042</div>
-          </div>
-          <div class="demo-footer">
-            <div class="demo-hint">抽奖结果的弹入效果。</div>
-          </div>
+        <div class="hero-metric">
+          <div class="m-value">A11y</div>
+          <div class="m-label">Reduced Motion</div>
         </div>
       </div>
     </section>
 
-    <!-- Micro Interactions -->
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">微交互动画</h2>
-        <p class="section-desc">悬停、点击等交互的即时反馈。</p>
+    <!-- ============================================================
+         §1 — Motion Principles
+         ============================================================ -->
+    <section id="principles">
+      <div class="section-head">
+        <span class="section-num">01 / PRINCIPLES</span>
       </div>
+      <h2 style="font-size:40px; letter-spacing:-0.03em;">动效原则</h2>
+      <p class="section-intro">
+        动效不是装饰，而是信息。每一段动画都应该回答同一个问题：
+        <em>「我在这里想让用户感知到什么？」</em>
+      </p>
 
-      <div class="demo-grid">
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-title">按钮悬停</span>
-            <span class="demo-code">translateY + shadow</span>
+      <div class="principle-grid">
+        <div class="principle-card">
+          <span class="p-label">PRINCIPLE · 01</span>
+          <div class="p-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
+            </svg>
           </div>
-          <div class="demo-body">
-            <button class="demo-btn">悬停查看</button>
-          </div>
-          <div class="demo-footer">
-            <div class="demo-hint">轻微上浮 + 阴影加深</div>
-          </div>
+          <h3>Purposeful · 有目的</h3>
+          <p class="p-desc">每个动画都应有明确的意图：引导注意力、提供反馈、或建立空间关系。无目的的动效只会分散用户。</p>
         </div>
 
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-title">Bounce</span>
-            <span class="demo-code">Y: 0→-20px</span>
+        <div class="principle-card">
+          <span class="p-label">PRINCIPLE · 02</span>
+          <div class="p-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12h4l3-8 4 16 3-8h4"/>
+            </svg>
           </div>
-          <div class="demo-body">
-            <div class="anim-box play-bounce">弹跳</div>
-          </div>
-          <div class="demo-footer">
-            <div class="demo-hint">吸引注意力的弹跳效果</div>
-          </div>
+          <h3>Natural · 符合物理直觉</h3>
+          <p class="p-desc">动画应模拟现实世界的惯性、弹性与重力。缓入缓出代替匀速，让运动更有重量感。</p>
         </div>
 
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-title">Float</span>
-            <span class="demo-code">Y: 0→-10px</span>
+        <div class="principle-card">
+          <span class="p-label">PRINCIPLE · 03</span>
+          <div class="p-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L3 14h7l-1 8 10-12h-7z"/>
+            </svg>
           </div>
-          <div class="demo-body">
-            <div class="anim-box play-float">浮动</div>
-          </div>
-          <div class="demo-footer">
-            <div class="demo-hint">悠闲的悬浮状态</div>
-          </div>
+          <h3>Fast · 快速响应</h3>
+          <p class="p-desc">用户交互后 100ms 内必须有反馈。所有微交互都应在视觉上即时响应，不拖慢用户。</p>
         </div>
 
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-title">Pulse</span>
-            <span class="demo-code">opacity + scale</span>
+        <div class="principle-card">
+          <span class="p-label">PRINCIPLE · 04</span>
+          <div class="p-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12s4-8 8-8 8 8 8 8-4 8-8 8-8-8-8-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
           </div>
-          <div class="demo-body">
-            <div class="anim-box play-pulse">脉冲</div>
-          </div>
-          <div class="demo-footer">
-            <div class="demo-hint">加载/处理中状态</div>
-          </div>
+          <h3>Subtle · 精致克制</h3>
+          <p class="p-desc">动效应服务内容，不喧宾夺主。过慢、过夸张、过频繁的动画都会将用户的注意力从任务中拉开。</p>
         </div>
       </div>
     </section>
 
-    <!-- Easing -->
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">缓动函数</h2>
-        <p class="section-desc">不同的缓动曲线带来不同的运动质感。</p>
+    <!-- ============================================================
+         §2 — Easing curves
+         ============================================================ -->
+    <section id="easing" style="margin-top: 40px;">
+      <div class="section-head">
+        <span class="section-num">02 / EASING</span>
+      </div>
+      <h2 style="font-size:40px; letter-spacing:-0.03em;">缓动曲线</h2>
+      <p class="section-intro">
+        所有动画都使用标准的 cubic-bezier 曲线。悬停或点击卡片查看小球的实际运动。
+      </p>
+
+      <div class="easing-grid" id="easingGrid">
+
+        <!-- Linear -->
+        <div class="easing-card" data-easing="linear" data-bezier="linear" data-dur="800">
+          <div class="curve-track">
+            <svg viewBox="0 0 200 100" preserveAspectRatio="none">
+              <line x1="10" y1="90" x2="190" y2="10" class="curve-line"/>
+            </svg>
+          </div>
+          <div class="ball-track"><div class="ball" style="transition: transform 800ms linear"></div></div>
+          <h4>Linear · 线性</h4>
+          <span class="c-bezier">linear</span>
+          <p class="c-use">用于持续旋转的加载指示器、循环进度条等匀速运动。</p>
+          <span class="c-hint">点击卡片播放</span>
+        </div>
+
+        <!-- Ease Out -->
+        <div class="easing-card" data-easing="ease-out" data-bezier="cubic-bezier(0.16, 1, 0.3, 1)" data-dur="800">
+          <div class="curve-track">
+            <svg viewBox="0 0 200 100" preserveAspectRatio="none">
+              <circle cx="32" cy="100" r="3" class="curve-point" opacity="0.5"/>
+              <circle cx="60" cy="100" r="3" class="curve-point" opacity="0.5"/>
+              <line x1="10" y1="90" x2="32" y2="100" class="curve-control"/>
+              <line x1="190" y1="10" x2="60" y2="100" class="curve-control"/>
+              <path d="M10 90 C 32 100, 60 10, 190 10" class="curve-line"/>
+            </svg>
+          </div>
+          <div class="ball-track"><div class="ball" style="transition: transform 800ms cubic-bezier(0.16, 1, 0.3, 1)"></div></div>
+          <h4>Ease Out · 快出</h4>
+          <span class="c-bezier">cubic-bezier(0.16, 1, 0.3, 1)</span>
+          <p class="c-use"><strong>默认曲线。</strong> 用于大多数出现动画、入场、展开，给人「快速响应」的印象。</p>
+          <span class="c-hint">点击卡片播放</span>
+        </div>
+
+        <!-- Ease In -->
+        <div class="easing-card" data-easing="ease-in" data-bezier="cubic-bezier(0.4, 0, 1, 1)" data-dur="800">
+          <div class="curve-track">
+            <svg viewBox="0 0 200 100" preserveAspectRatio="none">
+              <line x1="10" y1="90" x2="80" y2="90" class="curve-control"/>
+              <line x1="190" y1="10" x2="200" y2="10" class="curve-control"/>
+              <path d="M10 90 C 80 90, 190 10, 190 10" class="curve-line"/>
+            </svg>
+          </div>
+          <div class="ball-track"><div class="ball" style="transition: transform 800ms cubic-bezier(0.4, 0, 1, 1)"></div></div>
+          <h4>Ease In · 慢出</h4>
+          <span class="c-bezier">cubic-bezier(0.4, 0, 1, 1)</span>
+          <p class="c-use">用于离场、收起、元素消失的动画。让消失显得「有重量」而不突兀。</p>
+          <span class="c-hint">点击卡片播放</span>
+        </div>
+
+        <!-- Ease In Out -->
+        <div class="easing-card" data-easing="ease-in-out" data-bezier="cubic-bezier(0.4, 0, 0.2, 1)" data-dur="800">
+          <div class="curve-track">
+            <svg viewBox="0 0 200 100" preserveAspectRatio="none">
+              <path d="M10 90 C 80 90, 120 10, 190 10" class="curve-line"/>
+            </svg>
+          </div>
+          <div class="ball-track"><div class="ball" style="transition: transform 800ms cubic-bezier(0.4, 0, 0.2, 1)"></div></div>
+          <h4>Ease In Out · 对称</h4>
+          <span class="c-bezier">cubic-bezier(0.4, 0, 0.2, 1)</span>
+          <p class="c-use">用于来回循环的动画：标签切换、轮播、开关在两个状态之间的切换。</p>
+          <span class="c-hint">点击卡片播放</span>
+        </div>
+
+        <!-- Spring -->
+        <div class="easing-card" data-easing="spring" data-bezier="cubic-bezier(0.34, 1.56, 0.64, 1)" data-dur="800">
+          <div class="curve-track">
+            <svg viewBox="0 0 200 100" preserveAspectRatio="none">
+              <path d="M10 90 C 68 156, 128 -56, 190 10" class="curve-line"/>
+            </svg>
+          </div>
+          <div class="ball-track"><div class="ball" style="transition: transform 800ms cubic-bezier(0.34, 1.56, 0.64, 1)"></div></div>
+          <h4>Spring · 弹性</h4>
+          <span class="c-bezier">cubic-bezier(0.34, 1.56, 0.64, 1)</span>
+          <p class="c-use">用于强调「成功」「完成」等正向反馈事件，或需要吸引注意力的弹出。</p>
+          <span class="c-hint">点击卡片播放</span>
+        </div>
       </div>
 
-      <div class="easing-grid">
-        <div class="easing-card">
-          <div class="easing-preview" id="ease-out-demo">
-            <div class="easing-ball" style="transition: left 1s cubic-bezier(0.16, 1, 0.3, 1);"></div>
-          </div>
-          <div class="easing-info">
-            <div class="easing-name">Ease Out</div>
-            <div class="easing-value">cubic-bezier(0.16, 1, 0.3, 1)</div>
-          </div>
-        </div>
-        <div class="easing-card">
-          <div class="easing-preview" id="ease-spring-demo">
-            <div class="easing-ball" style="transition: left 1s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
-          </div>
-          <div class="easing-info">
-            <div class="easing-name">Spring</div>
-            <div class="easing-value">cubic-bezier(0.34, 1.56, 0.64, 1)</div>
-          </div>
-        </div>
-        <div class="easing-card">
-          <div class="easing-preview" id="ease-in-out-demo">
-            <div class="easing-ball" style="transition: left 1s cubic-bezier(0.65, 0, 0.35, 1);"></div>
-          </div>
-          <div class="easing-info">
-            <div class="easing-name">Ease In Out</div>
-            <div class="easing-value">cubic-bezier(0.65, 0, 0.35, 1)</div>
-          </div>
-        </div>
-        <div class="easing-card">
-          <div class="easing-preview" id="linear-demo">
-            <div class="easing-ball" style="transition: left 1s linear;"></div>
-          </div>
-          <div class="easing-info">
-            <div class="easing-name">Linear</div>
-            <div class="easing-value">linear</div>
-          </div>
-        </div>
-      </div>
+      <pre class="code-block"><span class="code-label">CSS · tokens</span>
+<span class="tk-c">/* Easing curves — use these variables everywhere */</span>
+<span class="tk-k">--ease-linear</span>: linear;
+<span class="tk-k">--ease-out</span>: cubic-bezier(<span class="tk-n">0.16</span>, <span class="tk-n">1</span>, <span class="tk-n">0.3</span>, <span class="tk-n">1</span>);        <span class="tk-c">/* default */</span>
+<span class="tk-k">--ease-in</span>: cubic-bezier(<span class="tk-n">0.4</span>, <span class="tk-n">0</span>, <span class="tk-n">1</span>, <span class="tk-n">1</span>);
+<span class="tk-k">--ease-in-out</span>: cubic-bezier(<span class="tk-n">0.4</span>, <span class="tk-n">0</span>, <span class="tk-n">0.2</span>, <span class="tk-n">1</span>);
+<span class="tk-k">--ease-spring</span>: cubic-bezier(<span class="tk-n">0.34</span>, <span class="tk-n">1.56</span>, <span class="tk-n">0.64</span>, <span class="tk-n">1</span>);
 
-      <div style="margin-top: 24px; text-align: center;">
-        <button class="demo-btn" onclick="runEasingDemo()">▶ 运行演示</button>
-      </div>
+<span class="tk-c">/* Usage */</span>
+<span class="tk-t">.btn</span> {
+  <span class="tk-a">transition</span>: background-color <span class="tk-n">200ms</span> <span class="tk-k">var(--ease-out)</span>;
+}
+      </pre>
     </section>
 
-    <!-- Duration -->
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">时长规范</h2>
-        <p class="section-desc">根据动画类型选择合适的时长。</p>
+    <!-- ============================================================
+         §3 — Duration
+         ============================================================ -->
+    <section id="duration" style="margin-top: 40px;">
+      <div class="section-head">
+        <span class="section-num">03 / DURATION</span>
+      </div>
+      <h2 style="font-size:40px; letter-spacing:-0.03em;">时长</h2>
+      <p class="section-intro">
+        时长决定动画的节奏。短则敏捷，长则强调。遵循「距离越长，用时越长」的直觉原则。
+        点击任意卡片播放实际时长的演示。
+      </p>
+
+      <div class="dur-grid" id="durGrid">
+        <div class="dur-card" data-dur="100">
+          <div class="d-ball-track"><div class="d-ball" style="transition: transform 100ms var(--ease-out)"></div></div>
+          <div class="d-token">--dur-fast</div>
+          <div class="d-val">100ms</div>
+          <div class="d-label">悬停反馈、按钮背景色</div>
+        </div>
+        <div class="dur-card" data-dur="150">
+          <div class="d-ball-track"><div class="d-ball" style="transition: transform 150ms var(--ease-out)"></div></div>
+          <div class="d-token">--dur-fast-2</div>
+          <div class="d-val">150ms</div>
+          <div class="d-label">点击反馈、小型位移</div>
+        </div>
+        <div class="dur-card" data-dur="200">
+          <div class="d-ball-track"><div class="d-ball" style="transition: transform 200ms var(--ease-out)"></div></div>
+          <div class="d-token">--dur-normal</div>
+          <div class="d-val">200ms</div>
+          <div class="d-label">大多数状态变化</div>
+        </div>
+        <div class="dur-card" data-dur="250">
+          <div class="d-ball-track"><div class="d-ball" style="transition: transform 250ms var(--ease-out)"></div></div>
+          <div class="d-token">--dur-normal-2</div>
+          <div class="d-val">250ms</div>
+          <div class="d-label">中等组件切换</div>
+        </div>
+        <div class="dur-card" data-dur="300">
+          <div class="d-ball-track"><div class="d-ball" style="transition: transform 300ms var(--ease-out)"></div></div>
+          <div class="d-token">--dur-slow</div>
+          <div class="d-val">300ms</div>
+          <div class="d-label">页面过渡、大型展开</div>
+        </div>
+        <div class="dur-card" data-dur="400">
+          <div class="d-ball-track"><div class="d-ball" style="transition: transform 400ms var(--ease-out)"></div></div>
+          <div class="d-token">--dur-slow-2</div>
+          <div class="d-val">400ms</div>
+          <div class="d-label">大型组件入场</div>
+        </div>
+        <div class="dur-card" data-dur="500">
+          <div class="d-ball-track"><div class="d-ball" style="transition: transform 500ms var(--ease-out)"></div></div>
+          <div class="d-token">--dur-slower</div>
+          <div class="d-val">500ms</div>
+          <div class="d-label">背景变化、主题切换</div>
+        </div>
+        <div class="dur-card" data-dur="600">
+          <div class="d-ball-track"><div class="d-ball" style="transition: transform 600ms var(--ease-out)"></div></div>
+          <div class="d-token">--dur-slower-2</div>
+          <div class="d-val">600ms</div>
+          <div class="d-label">页面级复杂入场</div>
+        </div>
       </div>
 
-      <div class="duration-grid">
-        <div class="duration-row">
-          <span class="duration-label">Instant</span>
-          <div class="duration-bar"><div class="duration-fill" style="width: 10%;"></div></div>
-          <span class="duration-time">50ms</span>
-        </div>
-        <div class="duration-row">
-          <span class="duration-label">Fast</span>
-          <div class="duration-bar"><div class="duration-fill" style="width: 30%;"></div></div>
-          <span class="duration-time">150ms</span>
-        </div>
-        <div class="duration-row">
-          <span class="duration-label">Normal</span>
-          <div class="duration-bar"><div class="duration-fill" style="width: 50%;"></div></div>
-          <span class="duration-time">250ms</span>
-        </div>
-        <div class="duration-row">
-          <span class="duration-label">Slow</span>
-          <div class="duration-bar"><div class="duration-fill" style="width: 80%;"></div></div>
-          <span class="duration-time">400ms</span>
-        </div>
-        <div class="duration-row">
-          <span class="duration-label">Slower</span>
-          <div class="duration-bar"><div class="duration-fill" style="width: 100%;"></div></div>
-          <span class="duration-time">600ms</span>
-        </div>
-      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Value</th>
+            <th>Usage</th>
+            <th>Easing</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">--dur-instant</td>
+            <td><span class="ms-val">100ms</span></td>
+            <td>悬停反馈、颜色变化</td>
+            <td class="mono">--ease-out</td>
+          </tr>
+          <tr>
+            <td class="mono">--dur-fast</td>
+            <td><span class="ms-val">150ms</span></td>
+            <td>点击反馈、按钮 scale</td>
+            <td class="mono">--ease-out</td>
+          </tr>
+          <tr>
+            <td class="mono">--dur-normal</td>
+            <td><span class="ms-val">200ms</span></td>
+            <td>大多数状态变化</td>
+            <td class="mono">--ease-out</td>
+          </tr>
+          <tr>
+            <td class="mono">--dur-normal-2</td>
+            <td><span class="ms-val">250ms</span></td>
+            <td>中等组件切换</td>
+            <td class="mono">--ease-out</td>
+          </tr>
+          <tr>
+            <td class="mono">--dur-slow</td>
+            <td><span class="ms-val">300ms</span></td>
+            <td>页面过渡、大型展开</td>
+            <td class="mono">--ease-in-out</td>
+          </tr>
+          <tr>
+            <td class="mono">--dur-slow-2</td>
+            <td><span class="ms-val">400ms</span></td>
+            <td>大型组件入场 / 列表排序</td>
+            <td class="mono">--eease-out</td>
+          </tr>
+          <tr>
+            <td class="mono">--dur-slower</td>
+            <td><span class="ms-val">500ms</span></td>
+            <td>背景变化、主题切换</td>
+            <td class="mono">--ease-in-out</td>
+          </tr>
+          <tr>
+            <td class="mono">--dur-slower-2</td>
+            <td><span class="ms-val">600ms</span></td>
+            <td>页面级复杂入场</td>
+            <td class="mono">--ease-out</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
-    <!-- State Transitions -->
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">状态过渡</h2>
-        <p class="section-desc">组件在不同状态之间的平滑过渡。</p>
+    <!-- ============================================================
+         §4 — Entrance animations
+         ============================================================ -->
+    <section id="entrance" style="margin-top: 40px;">
+      <div class="section-head">
+        <span class="section-num">04 / ENTRANCE</span>
       </div>
+      <h2 style="font-size:40px; letter-spacing:-0.03em;">入场动画</h2>
+      <p class="section-intro">
+        元素从无到有、从边到中。点击任意卡片可重新播放。
+      </p>
+
+      <div class="entrance-grid" id="entranceGrid">
+        <div class="entrance-card" data-ease-anim="fade-in">
+          <div class="e-stage"><div class="e-target">Fade In</div></div>
+          <h4>Fade In</h4>
+          <div class="e-meta">opacity: 0 → 1 · 500ms</div>
+          <p class="e-desc">最克制的入场，适用于不应干扰阅读的内容，如浮层内容、段落显现。</p>
+          <span class="c-hint">点击重放</span>
+        </div>
+
+        <div class="entrance-card" data-ease-anim="slide-up">
+          <div class="e-stage"><div class="e-target">Slide Up</div></div>
+          <h4>Slide Up</h4>
+          <div class="e-meta">translateY(24px) → 0 · 500ms</div>
+          <p class="e-desc">从下方滑入同时渐显。最通用的卡片/列表项入场方式。</p>
+          <span class="c-hint">点击重放</span>
+        </div>
+
+        <div class="entrance-card" data-ease-anim="slide-in-right">
+          <div class="e-stage"><div class="e-target">Slide In →</div></div>
+          <h4>Slide In Right</h4>
+          <div class="e-meta">translateX(60px) → 0 · 500ms</div>
+          <p class="e-desc">从右侧滑入，用于抽屉、侧栏、消息通知的出现。</p>
+          <span class="c-hint">点击重放</span>
+        </div>
+
+        <div class="entrance-card" data-ease-anim="scale-in">
+          <div class="e-stage"><div class="e-target">Scale In</div></div>
+          <h4>Scale In</h4>
+          <div class="e-meta">scale(0.5) → 1 · 500ms</div>
+          <p class="e-desc">从小放大到正常尺寸。常用于模态框、提示气泡、浮层。</p>
+          <span class="c-hint">点击重放</span>
+        </div>
+
+        <div class="entrance-card" data-ease-anim="pop">
+          <div class="e-stage"><div class="e-target">Pop!</div></div>
+          <h4>Pop (Spring)</h4>
+          <div class="e-meta">scale(0.4) → 1.12 → 1 · Spring</div>
+          <p class="e-desc">轻微过冲的放大效果，用于需要强调的成功事件、推荐项。</p>
+          <span class="c-hint">点击重放</span>
+        </div>
+      </div>
+
+      <pre class="code-block"><span class="code-label">CSS · entrance</span>
+<span class="tk-t">.fade-in</span>  { <span class="tk-a">animation</span>: mFadeIn <span class="tk-n">500ms</span> <span class="tk-k">var(--ease-out)</span> forwards; }
+<span class="tk-t">.slide-up</span> { <span class="tk-a">animation</span>: mSlideUp <span class="tk-n">500ms</span> <span class="tk-k">var(--ease-out)</span> forwards; }
+<span class="tk-t">.scale-in</span>{ <span class="tk-a">animation</span>: mScaleIn <span class="tk-n">500ms</span> <span class="tk-k">var(--ease-out)</span> forwards; }
+<span class="tk-t">.pop</span>      { <span class="tk-a">animation</span>: mPop <span class="tk-n">700ms</span> <span class="tk-k">var(--ease-spring)</span> forwards; }
+
+<span class="tk-k">@keyframes</span> mSlideUp {
+  <span class="tk-n">from</span> { <span class="tk-a">opacity</span>: <span class="tk-n">0</span>; <span class="tk-a">transform</span>: <span class="tk-n">translateY(24px)</span>; }
+  <span class="tk-n">to</span>   { <span class="tk-a">opacity</span>: <span class="tk-n">1</span>; <span class="tk-a">transform</span>: <span class="tk-n">translateY(0)</span>; }
+}
+      </pre>
+    </section>
+
+    <!-- ============================================================
+         §5 — Micro-interactions
+         ============================================================ -->
+    <section id="micro" style="margin-top: 40px;">
+      <div class="section-head">
+        <span class="section-num">05 / MICRO</span>
+      </div>
+      <h2 style="font-size:40px; letter-spacing:-0.03em;">微交互</h2>
+      <p class="section-intro">
+        微交互是每一次用户点击的回声。以下示例都可直接交互。
+      </p>
+
+      <div class="micro-grid">
+        <!-- Button Hover / Active -->
+        <div class="micro-card">
+          <h4>Button · Hover &amp; Active</h4>
+          <p class="m-desc">悬停：阴影加深。点击：<code>scale(0.98)</code>。时长 100–200ms。</p>
+          <div class="m-stage">
+            <button class="mi-btn">Primary</button>
+            <button class="mi-btn mi-btn-secondary">Ghost</button>
+            <button class="mi-btn mi-btn-secondary">Action</button>
+          </div>
+        </div>
+
+        <!-- Card hover -->
+        <div class="micro-card">
+          <h4>Card · Hover lift</h4>
+          <p class="m-desc">悬停：<code>translateY(-2px)</code> + 阴影加深。</p>
+          <div class="m-stage">
+            <div class="mi-card"><div class="bar"></div><div class="bar short"></div><div class="bar" style="width:80%"></div></div>
+            <div class="mi-card"><div class="bar" style="width:50%"></div><div class="bar"></div><div class="bar short"></div></div>
+          </div>
+        </div>
+
+        <!-- Input focus -->
+        <div class="micro-card">
+          <h4>Input · Focus ring</h4>
+          <p class="m-desc">聚焦时边框变色，并显示 <code>0 0 0 3px</code> 的光环。</p>
+          <div class="m-stage">
+            <input class="mi-input" type="text" placeholder="请输入内容…" />
+          </div>
+        </div>
+
+        <!-- Switch toggle -->
+        <div class="micro-card">
+          <h4>Switch · Toggle</h4>
+          <p class="m-desc">平滑的左右滑动 + 背景色变化。点击开关切换。</p>
+          <div class="m-stage" id="switchStage">
+            <button class="mi-switch is-on" role="switch" aria-checked="true"></button>
+            <button class="mi-switch" role="switch" aria-checked="false"></button>
+            <button class="mi-switch" role="switch" aria-checked="false"></button>
+          </div>
+        </div>
+      </div>
+
+      <pre class="code-block"><span class="code-label">CSS · micro</span>
+<span class="tk-t">.btn</span> {
+  <span class="tk-a">transition</span>:
+    background-color <span class="tk-n">200ms</span> <span class="tk-k">var(--ease-out)</span>,
+    transform <span class="tk-n">100ms</span> <span class="tk-k">var(--ease-out)</span>,
+    box-shadow <span class="tk-n">200ms</span> <span class="tk-k">var(--ease-out)</span>;
+}
+<span class="tk-t">.btn</span>:<span class="tk-k">hover</span>  { <span class="tk-a">box-shadow</span>: <span class="tk-k">var(--shadow-md)</span>; }
+<span class="tk-t">.btn</span>:<span class="tk-k">active</span> { <span class="tk-a">transform</span>: <span class="tk-n">scale(0.98)</span>; }
+
+<span class="tk-t">.card</span> {
+  <span class="tk-a">transition</span>: transform <span class="tk-n">200ms</span> <span class="tk-k">var(--ease-out)</span>, box-shadow <span class="tk-n">200ms</span> <span class="tk-k">var(--ease-out)</span>;
+}
+<span class="tk-t">.card</span>:<span class="tk-k">hover</span> {
+  <span class="tk-a">transform</span>: <span class="tk-n">translateY(-2px)</span>;
+  <span class="tk-a">box-shadow</span>: <span class="tk-k">var(--shadow-md)</span>;
+}
+      </pre>
+    </section>
+
+    <!-- ============================================================
+         §6 — State transitions
+         ============================================================ -->
+    <section id="state" style="margin-top: 40px;">
+      <div class="section-head">
+        <span class="section-num">06 / STATE</span>
+      </div>
+      <h2 style="font-size:40px; letter-spacing:-0.03em;">状态切换</h2>
+      <p class="section-intro">
+        组件在不同状态之间平滑过渡。点击下方按钮触发并观察过渡。
+      </p>
 
       <div class="state-grid">
+
+        <!-- Loading → Success -->
         <div class="state-card">
-          <div class="state-header">
-            <div class="state-dot" style="background: var(--success);"></div>
-            <span class="state-name">Idle → Active</span>
+          <h4>Loading → Success</h4>
+          <p class="s-desc">旋转加载环 → 弹性出现的完成图标。</p>
+          <div class="s-stage" style="position: relative;">
+            <div class="loader-ring" id="loaderRing"></div>
+            <div class="success-icon" id="successIcon" style="position: static;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
           </div>
-          <div class="state-desc">按钮从默认状态到按下状态的过渡</div>
-          <div class="state-demo">
-            <button class="demo-btn" style="transform: scale(0.95); box-shadow: none;">Pressed</button>
+          <div class="s-trigger">
+            <button class="mi-btn mi-btn-secondary" onclick="playLoadingSuccess()">切换</button>
+            <button class="mi-btn mi-btn-secondary" onclick="resetLoadingSuccess()">重置</button>
           </div>
         </div>
 
+        <!-- Empty → Content -->
         <div class="state-card">
-          <div class="state-header">
-            <div class="state-dot" style="background: var(--warning);"></div>
-            <span class="state-name">Loading</span>
+          <h4>Empty → Content</h4>
+          <p class="s-desc">空状态消失 → 内容滑入渐显。</p>
+          <div class="s-stage">
+            <div class="empty-slot" id="emptySlot">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:block; margin: 0 auto 8px; opacity:0.5;">
+                <circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/>
+              </svg>
+              暂无内容，点击右侧按钮加载
+            </div>
+            <div class="content-slot" id="contentSlot">
+              <div class="row"></div>
+              <div class="row short"></div>
+              <div class="row"></div>
+              <div class="row short"></div>
+            </div>
           </div>
-          <div class="state-desc">处理中状态的脉动效果</div>
-          <div class="state-demo">
-            <button class="demo-btn play-pulse">处理中...</button>
+          <div class="s-trigger">
+            <button class="mi-btn mi-btn-secondary" onclick="playEmptyToContent()">加载内容</button>
+            <button class="mi-btn mi-btn-secondary" onclick="resetEmptyToContent()">重置</button>
           </div>
         </div>
 
+        <!-- Collapse → Expand -->
         <div class="state-card">
-          <div class="state-header">
-            <div class="state-dot" style="background: var(--danger);"></div>
-            <span class="state-name">Error Shaking</span>
+          <h4>Collapse → Expand</h4>
+          <p class="s-desc">折叠到展开的平滑高度过渡。</p>
+          <div class="s-stage" style="display:block; padding: 0;">
+            <div class="xpand-wrap" id="xpand">
+              <div class="xpand-head" onclick="document.getElementById('xpand').classList.toggle('is-open')">
+                <span>展开查看详情</span>
+                <svg class="xpand-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </div>
+              <div class="xpand-body">
+                <div class="xpand-body-inner">
+                  这里是被隐藏的详细内容。点击头部切换展开/收起。高度过渡平滑，无需显式计算高度，使用 <code>max-height</code> 过渡实现。
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="state-desc">输入错误时的抖动反馈</div>
-          <div class="state-demo">
-            <div style="width: 80px; height: 80px; border-radius: var(--r-lg); background: var(--danger-soft); border: 2px solid var(--danger); display: flex; align-items: center; justify-content: center; font-size: 32px;">✗</div>
+          <div class="s-trigger">
+            <button class="mi-btn mi-btn-secondary" onclick="document.getElementById('xpand').classList.toggle('is-open')">切换</button>
+          </div>
+        </div>
+
+        <!-- Tab switch -->
+        <div class="state-card">
+          <h4>Tab Switch</h4>
+          <p class="s-desc">下划线/高亮指示器在标签间平滑滑动。</p>
+          <div class="s-stage">
+            <div class="tab-bar" id="tabBar">
+              <div class="tab-indicator" id="tabIndicator" style="width: 52px; transform: translateX(0);"></div>
+              <button class="tab is-active" data-tab="0" onclick="switchTab(this)">概览</button>
+              <button class="tab" data-tab="1" onclick="switchTab(this)">活动</button>
+              <button class="tab" data-tab="2" onclick="switchTab(this)">设置</button>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Stagger -->
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">错开动画</h2>
-        <p class="section-desc">列表元素依次入场，创建流畅的瀑布效果。</p>
+    <!-- ============================================================
+         §7 — Scrolling motion
+         ============================================================ -->
+    <section id="scroll" style="margin-top: 40px;">
+      <div class="section-head">
+        <span class="section-num">07 / SCROLLING</span>
       </div>
+      <h2 style="font-size:40px; letter-spacing:-0.03em;">滚动动效</h2>
+      <p class="section-intro">
+        滚动驱动的效果应提升阅读体验，而非影响性能。以下是三类常见的滚动相关动效。
+      </p>
 
-      <div class="demo-card">
-        <div class="demo-header">
-          <span class="demo-title">Stagger Animation</span>
-          <span class="demo-code">animation-delay</span>
-        </div>
-        <div class="demo-body" style="flex-direction: column; gap: 16px;">
-          <button class="demo-btn" onclick="runStagger()">▶ 播放动画</button>
-          <div class="stagger-demo" id="stagger-demo">
-            <div class="stagger-item" style="animation-delay: 0ms;"></div>
-            <div class="stagger-item" style="animation-delay: 100ms;"></div>
-            <div class="stagger-item" style="animation-delay: 200ms;"></div>
-            <div class="stagger-item" style="animation-delay: 300ms;"></div>
-            <div class="stagger-item" style="animation-delay: 400ms;"></div>
-            <div class="stagger-item" style="animation-delay: 500ms;"></div>
+      <div class="sample-grid" style="grid-template-columns: 1fr 1fr;">
+
+        <div class="sample-stage">
+          <h4 style="margin-bottom: 10px;">A · Sticky Header · 滚动收缩</h4>
+          <p class="section-intro" style="margin: 0 0 16px; font-size: 13px;">页面顶部 header 会在向下滚动时略微收缩（见顶部导航）。下方是一个小型容器内的 sticky 头演示：</p>
+          <div class="sticky-demo">
+            <div class="sd-header">📌 始终可见的标题</div>
+            <div class="sd-body">
+              <p>当内部内容滚动时，此标题始终贴在容器顶部，帮助用户保持上下文。</p>
+              <p>在实际应用中，sticky 头常配合高度收缩 + 阴影出现效果，以节约纵向空间。</p>
+              <p>ZenDraw 使用 <code>position: sticky</code> 而非 JS 计算位置，性能更好。</p>
+              <p>关键实现：当 <code>window.scrollY &gt; 0</code> 时给 header 添加 <code>.is-scrolled</code> 类，触发高度与阴影的 CSS 过渡。</p>
+              <p>这样 header 仅通过 CSS 变量计算即可获得「被滚动过」的视觉状态。</p>
+              <p>滚动此区域，你会发现标题始终贴在容器顶部。这是一种低成本的内容锚点。</p>
+              <p>继续填充内容以演示滚动行为：动效需要和内容量匹配，不应在短页面中滚动触发。</p>
+              <p>对于长页面，滚动动效会成为阅读节奏的一部分。</p>
+            </div>
           </div>
         </div>
-        <div class="demo-footer">
-          <div class="demo-hint">每个元素间隔 100ms 依次入场</div>
+
+        <div class="sample-stage">
+          <h4 style="margin-bottom: 10px;">B · Reveal On Scroll · 视口显现</h4>
+          <p class="section-intro" style="margin: 0 0 16px; font-size: 13px;">向下滚动时，以下卡片会以 80ms 为间隔依次滑入。使用 <code>IntersectionObserver</code> 触发。</p>
+
+          <div class="reveal-item" style="background: var(--muted); padding: 18px; border-radius: var(--radius-md); margin-bottom: 10px;">
+            <strong style="display: block; margin-bottom: 4px;">Reveal Card · 01</strong>
+            <p style="font-size:13px; margin: 0;">在用户滚动到视口时，从下方 24px 处渐显向上移动到正常位置。</p>
+          </div>
+          <div class="reveal-item" style="background: var(--muted); padding: 18px; border-radius: var(--radius-md); margin-bottom: 10px;">
+            <strong style="display: block; margin-bottom: 4px;">Reveal Card · 02</strong>
+            <p style="font-size:13px; margin: 0;">列表项建议使用 staggered delay（每项 +80ms）来建立节奏。</p>
+          </div>
+          <div class="reveal-item" style="background: var(--muted); padding: 18px; border-radius: var(--radius-md); margin-bottom: 10px;">
+            <strong style="display: block; margin-bottom: 4px;">Reveal Card · 03</strong>
+            <p style="font-size:13px; margin: 0;">但 delay 不应超过 200ms，否则用户会感觉动画变慢。</p>
+          </div>
+          <div class="reveal-item" style="background: var(--muted); padding: 18px; border-radius: var(--radius-md);">
+            <strong style="display: block; margin-bottom: 4px;">Reveal Card · 04</strong>
+            <p style="font-size:13px; margin: 0;">一旦元素已出现，再次滚动经过时不应重新播放动画，避免闪烁。</p>
+          </div>
         </div>
+      </div>
+
+      <div class="sample-stage" style="margin-top: 16px;">
+        <h4 style="margin-bottom: 10px;">C · Reading Progress · 阅读进度条</h4>
+        <p class="section-intro" style="margin: 0 0 16px; font-size: 13px;">页面顶部 header 的下方有一条细进度线，滚动页面时实时指示当前阅读位置（0–100%）。</p>
+        <p class="section-intro" style="margin: 0; font-size: 13px;">实现方式：监听 <code>scroll</code> 事件 → 计算 <code>window.scrollY / (docHeight - viewportHeight)</code> → 以百分比设置进度条的宽度。使用 <code>rAF</code> 节流避免性能问题。</p>
+      </div>
+
+      <pre class="code-block"><span class="code-label">JS · reveal on scroll</span>
+<span class="tk-k">const</span> io = <span class="tk-k">new</span> <span class="tk-t">IntersectionObserver</span>((entries) =&gt; {
+  entries.forEach((entry, i) =&gt; {
+    <span class="tk-k">if</span> (entry.isIntersecting) {
+      entry.target.classList.add(<span class="tk-s">'is-visible'</span>);
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: <span class="tk-n">0.15</span> });
+
+document.querySelectorAll(<span class="tk-s">'.reveal-item'</span>).forEach(el =&gt; io.observe(el));</pre>
+    </section>
+
+    <!-- ============================================================
+         §8 — Accessibility
+         ============================================================ -->
+    <section id="accessibility" style="margin-top: 40px;">
+      <div class="section-head">
+        <span class="section-num">08 / A11Y</span>
+      </div>
+      <h2 style="font-size:40px; letter-spacing:-0.03em;">可访问性 · Reduced Motion</h2>
+      <p class="section-intro">
+        动效可能触发前庭功能障碍用户（vestibular disorder）的不适。
+        我们必须在系统层面尊重 <code>prefers-reduced-motion: reduce</code>。
+      </p>
+
+      <div class="rm-compare">
+        <div class="rm-pane rm-off">
+          <h4>正常模式 · Motion On</h4>
+          <p class="rm-desc">所有过渡、动画、变换正常播放。悬停按钮观察。</p>
+          <div class="rm-stage">
+            <button class="rm-btn">Normal Motion</button>
+          </div>
+        </div>
+
+        <div class="rm-pane rm-on">
+          <h4>减动效模式 · Reduced</h4>
+          <p class="rm-desc">动画时长设为 0，移除 transform，仅保留必要的 opacity 过渡。</p>
+          <div class="rm-stage">
+            <button class="rm-btn">No Motion</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rm-toggle-row">
+        <button class="mi-switch" id="rmSwitch" role="switch" aria-checked="false"></button>
+        <div class="rm-label">
+          <strong>强制减动效</strong><br/>
+          切换整个页面的动效。若系统设置了 <code>prefers-reduced-motion: reduce</code>，ZenDraw 默认会自动启用此模式。
+        </div>
+      </div>
+
+      <pre class="code-block"><span class="code-label">CSS · reduced motion</span>
+<span class="tk-k">@media</span> (<span class="tk-a">prefers-reduced-motion</span>: reduce) {
+  *, *::before, *::after {
+    <span class="tk-a">animation-duration</span>: <span class="tk-n">0.001ms</span> <span class="tk-p">!important</span>;
+    <span class="tk-a">animation-iteration-count</span>: <span class="tk-n">1</span> <span class="tk-p">!important</span>;
+    <span class="tk-a">transition-duration</span>: <span class="tk-n">0.001ms</span> <span class="tk-p">!important</span>;
+    <span class="tk-a">scroll-behavior</span>: auto <span class="tk-p">!important</span>;
+  }
+}
+
+<span class="tk-c">/* 保留必要的 opacity 过渡，以确保状态切换仍可见，
+   避免依赖动效传达关键信息。 */</span></pre>
+
+      <div class="sample-stage" style="margin-top: 24px;">
+        <h4 style="margin-bottom: 10px;">实践清单</h4>
+        <ul style="color: var(--muted-foreground); font-size: 14px; line-height: 1.8; padding-left: 18px;">
+          <li><strong>永远不要</strong>通过动效来传达关键信息。例如，错误消息必须以文字、颜色等其他方式可见。</li>
+          <li><strong>提供「开关」。</strong>允许用户在应用内关闭动效，并持久化该偏好。</li>
+          <li><strong>尊重系统设置。</strong>检测 <code>window.matchMedia('(prefers-reduced-motion: reduce)')</code> 并默认启用减动效模式。</li>
+          <li><strong>避免闪烁。</strong>超过 3 次/秒的闪烁可能触发癫痫。避免 CSS 闪烁动画。</li>
+          <li><strong>视口内的内容不要自动移动。</strong>轮播、走马灯需要用户手动触发，或提供暂停控制。</li>
+          <li><strong>使用 opacity 而非 display。</strong>当需要隐藏内容时，<code>opacity</code> 的过渡比 <code>display</code> 切换更平滑且易降级。</li>
+        </ul>
       </div>
     </section>
 
-    <!-- Guidelines -->
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">设计指南</h2>
-        <p class="section-desc">动效设计的基本原则。</p>
-      </div>
+    <!-- Footer -->
+    <footer style="margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 13px; text-align: center;">
+      © ZenDraw Design System · Motion v3.0 · Crafted with care
+    </footer>
 
-      <div class="guides-grid">
-        <div class="guide-card">
-          <div class="guide-icon">🎯</div>
-          <div class="guide-title">有目的性</div>
-          <div class="guide-desc">每个动画都应该服务于某个目的：引导注意力、提供反馈、或传达层次关系。不要为动而动。</div>
-        </div>
-        <div class="guide-card">
-          <div class="guide-icon">⚡</div>
-          <div class="guide-title">快速响应</div>
-          <div class="guide-desc">交互反馈应在 100-150ms 内完成。过长的动画会让人觉得迟钝。</div>
-        </div>
-        <div class="guide-card">
-          <div class="guide-icon">🎚️</div>
-          <div class="guide-title">可中断</div>
-          <div class="guide-desc">长时间的动画应该可以被用户操作中断。比如页面跳转时立即停止当前动画。</div>
-        </div>
-        <div class="guide-card">
-          <div class="guide-icon">♿</div>
-          <div class="guide-title">尊重偏好</div>
-          <div class="guide-desc">检测 prefers-reduced-motion，为有动效敏感的用户提供替代方案或关闭动画。</div>
-        </div>
-        <div class="guide-card">
-          <div class="guide-icon">📱</div>
-          <div class="guide-title">性能优先</div>
-          <div class="guide-desc">优先使用 transform 和 opacity（GPU 加速），避免触发布局变化的动画。</div>
-        </div>
-        <div class="guide-card">
-          <div class="guide-icon">🎨</div>
-          <div class="guide-title">一致性</div>
-          <div class="guide-desc">同一类型的交互使用相同的动画模式，让用户形成肌肉记忆和预期。</div>
-        </div>
-      </div>
-    </section>
-  </div>
+  </main>
+</div>
 
-  <footer class="footer">ZenDraw · Design System v3.0</footer>
+<script>
+/* ============================================================
+   Theme toggle
+   ============================================================ */
+(function() {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const sun = document.getElementById('sunIcon');
+  const moon = document.getElementById('moonIcon');
 
-  <script>
-    function toggleTheme() {
-      const body = document.body;
-      const current = body.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      body.setAttribute('data-theme', next);
-      document.querySelector('.theme-btn').textContent = next === 'dark' ? '☀' : '🌙';
+  const stored = localStorage.getItem('zd-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = stored || (prefersDark ? 'dark' : 'light');
+  applyTheme(initial);
+
+  btn.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem('zd-theme', next);
+  });
+
+  function applyTheme(name) {
+    root.setAttribute('data-theme', name);
+    if (name === 'dark') {
+      sun.style.display = 'block';
+      moon.style.display = 'none';
+    } else {
+      sun.style.display = 'none';
+      moon.style.display = 'block';
     }
+  }
+})();
 
-    function runEasingDemo() {
-      const balls = document.querySelectorAll('.easing-ball');
-      balls.forEach(ball => {
-        ball.style.left = '0px';
-        setTimeout(() => {
-          ball.style.left = 'calc(100% - 24px)';
-        }, 50);
-      });
-    }
+/* ============================================================
+   Reduced motion toggle
+   ============================================================ */
+(function() {
+  const root = document.documentElement;
+  const sw = document.getElementById('rmSwitch');
+  const rmBtn = document.getElementById('rmBtn');
+  const systemRM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let on = systemRM;
+  if (systemRM) root.setAttribute('data-reduced-motion-auto', 'true');
 
-    function runStagger() {
-      const items = document.querySelectorAll('.stagger-item');
-      items.forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(20px)';
-        item.style.animation = 'none';
-        setTimeout(() => {
-          item.style.animation = 'fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-        }, 50);
-      });
-    }
+  apply(on);
 
-    // Initial easing demo
-    setTimeout(runEasingDemo, 500);
-  </script>
+  sw.addEventListener('click', () => { on = !on; apply(on); });
+  rmBtn.addEventListener('click', () => { on = !on; apply(on); });
+
+  function apply(state) {
+    root.setAttribute('data-reduced-motion', state ? 'true' : 'false');
+    sw.classList.toggle('is-on', state);
+    sw.setAttribute('aria-checked', state ? 'true' : 'false');
+    rmBtn.setAttribute('aria-pressed', state ? 'true' : 'false');
+  }
+})();
+
+/* ============================================================
+   Sidebar active item on scroll
+   ============================================================ */
+(function() {
+  const links = Array.from(document.querySelectorAll('.sidebar-link'));
+  const sections = links.map(l => document.querySelector(l.getAttribute('href')));
+
+  function onScroll() {
+    const y = window.scrollY + 180;
+    let active = 0;
+    sections.forEach((s, i) => { if (s && s.offsetTop <= y) active = i; });
+    links.forEach((l, i) => l.classList.toggle('is-active', i === active));
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+/* ============================================================
+   Sticky header shrink on scroll + reading progress
+   ============================================================ */
+(function() {
+  const header = document.getElementById('topHeader');
+  const progress = document.getElementById('readingProgress');
+  let raf = null;
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+
+  function update() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      const y = window.scrollY;
+      header.classList.toggle('is-scrolled', y > 8);
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      const pct = max > 0 ? (y / max) * 100 : 0;
+      progress.style.width = Math.min(100, Math.max(0, pct)) + '%';
+    });
+  }
+})();
+
+/* ============================================================
+   §2 — Easing cards: play ball animation
+   ============================================================ */
+(function() {
+  const cards = document.querySelectorAll('.easing-card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.add('is-playing');
+      setTimeout(() => card.classList.remove('is-playing'), 1100);
+    });
+    // hover also triggers a small preview
+    card.addEventListener('mouseenter', () => {
+      if (card.classList.contains('is-playing')) return;
+      card.classList.add('is-playing');
+      setTimeout(() => card.classList.remove('is-playing'), 1100);
+    });
+  });
+})();
+
+/* ============================================================
+   §3 — Duration cards: play ball animation
+   ============================================================ */
+(function() {
+  const cards = document.querySelectorAll('.dur-card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const dur = parseInt(card.getAttribute('data-dur'), 10);
+      card.classList.add('is-playing');
+      setTimeout(() => card.classList.remove('is-playing'), dur + 120);
+    });
+    card.addEventListener('mouseenter', () => {
+      if (card.classList.contains('is-playing')) return;
+      const dur = parseInt(card.getAttribute('data-dur'), 10);
+      card.classList.add('is-playing');
+      setTimeout(() => card.classList.remove('is-playing'), dur + 120);
+    });
+  });
+})();
+
+/* ============================================================
+   §4 — Entrance animations: re-play
+   ============================================================ */
+(function() {
+  const cards = document.querySelectorAll('.entrance-card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      card.classList.remove('is-playing');
+      // force reflow to restart animation
+      void card.offsetWidth;
+      card.classList.add('is-playing');
+      setTimeout(() => card.classList.remove('is-playing'), 1200);
+    });
+  });
+  // Auto-play once on load
+  window.addEventListener('load', () => {
+    cards.forEach((card, i) => {
+      setTimeout(() => {
+        card.classList.remove('is-playing');
+        void card.offsetWidth;
+        card.classList.add('is-playing');
+        setTimeout(() => card.classList.remove('is-playing'), 1200);
+      }, 120 + i * 100);
+    });
+  });
+})();
+
+/* ============================================================
+   Micro-interactions: switches
+   ============================================================ */
+document.querySelectorAll('#switchStage .mi-switch').forEach(sw => {
+  sw.addEventListener('click', () => {
+    const on = !sw.classList.contains('is-on');
+    sw.classList.toggle('is-on', on);
+    sw.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+});
+
+/* ============================================================
+   §6 — Loading → Success
+   ============================================================ */
+function playLoadingSuccess() {
+  const r = document.getElementById('loaderRing');
+  const s = document.getElementById('successIcon');
+  r.classList.add('is-hidden');
+  setTimeout(() => s.classList.add('is-visible'), 250);
+}
+function resetLoadingSuccess() {
+  document.getElementById('loaderRing').classList.remove('is-hidden');
+  document.getElementById('successIcon').classList.remove('is-visible');
+}
+
+/* ============================================================
+   §6 — Empty → Content
+   ============================================================ */
+function playEmptyToContent() {
+  const e = document.getElementById('emptySlot');
+  const c = document.getElementById('contentSlot');
+  e.classList.add('is-hidden');
+  setTimeout(() => {
+    e.style.display = 'none';
+    c.classList.add('is-visible');
+  }, 220);
+}
+function resetEmptyToContent() {
+  const e = document.getElementById('emptySlot');
+  const c = document.getElementById('contentSlot');
+  c.classList.remove('is-visible');
+  e.style.display = '';
+  setTimeout(() => e.classList.remove('is-hidden'), 10);
+}
+
+/* ============================================================
+   §6 — Tab switch (sliding indicator)
+   ============================================================ */
+function switchTab(btn) {
+  const bar = document.getElementById('tabBar');
+  const indicator = document.getElementById('tabIndicator');
+  const tabs = bar.querySelectorAll('.tab');
+  tabs.forEach(t => t.classList.remove('is-active'));
+  btn.classList.add('is-active');
+  const parentRect = bar.getBoundingClientRect();
+  const r = btn.getBoundingClientRect();
+  indicator.style.width = r.width + 'px';
+  indicator.style.transform = `translateX(${r.left - parentRect.left - 4}px)`;
+}
+// initialize
+window.addEventListener('load', () => {
+  const bar = document.getElementById('tabBar');
+  const active = bar.querySelector('.tab.is-active');
+  if (active) switchTab(active);
+});
+
+/* ============================================================
+   §7 — Reveal on scroll via IntersectionObserver
+   ============================================================ */
+(function() {
+  const items = document.querySelectorAll('.reveal-item');
+  if (!('IntersectionObserver' in window)) {
+    items.forEach(el => el.classList.add('is-visible'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const idx = Array.from(items).indexOf(entry.target);
+        setTimeout(() => entry.target.classList.add('is-visible'), idx * 80);
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  items.forEach(el => io.observe(el));
+})();
+</script>
 </body>
 </html>
+</parameter name="file_path" string="true">/workspace/prototype/motion.html

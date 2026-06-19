@@ -1,11 +1,10 @@
-// components/theme-provider.tsx v1.0 — 主题提供者
-// 负责：深浅模式切换、预设主题类名、字体族切换、用户偏好持久化
+// components/theme-provider.tsx v1.1 — 主题提供者（修复 React 19 set-state-in-effect 警告）
+// 负责：深浅模式切换、预设主题、字体族、用户偏好持久化
 "use client";
 
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 
-/** 可用的主题预设 */
 export const THEME_PRESETS = [
   "default",
   "ocean",
@@ -17,19 +16,31 @@ export const THEME_PRESETS = [
 
 export type ThemePreset = (typeof THEME_PRESETS)[number];
 
-/** 可用的字体族 */
 export const FONT_FAMILIES = ["sans", "mono", "serif"] as const;
 export type FontFamily = (typeof FONT_FAMILIES)[number];
 
-/**
- * 内部工具：判断当前主题预设是否与给定值一致
- * 采用 document.documentElement.classList 检测
- */
-function hasPresetClass(preset: string): boolean {
-  if (typeof document === "undefined") return false;
-  return document.documentElement.classList.contains(`theme-${preset}`);
+/** 从 localStorage 安全读取值 */
+function readStorage<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const item = window.localStorage.getItem(key);
+    return item ? (JSON.parse(item) as T) : fallback;
+  } catch {
+    return fallback;
+  }
 }
 
+/** 写入 localStorage 工具 */
+function writeStorage<T>(key: string, value: T): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // 静默忽略存储异常
+  }
+}
+
+/** 应用主题预设到根元素 */
 function applyPresetClass(preset: ThemePreset): void {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
@@ -37,17 +48,15 @@ function applyPresetClass(preset: ThemePreset): void {
   if (preset !== "default") root.classList.add(`theme-${preset}`);
 }
 
+/** 应用字体族到根元素 */
 function applyFontFamilyClass(font: FontFamily): void {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
   FONT_FAMILIES.forEach((f) => root.classList.remove(`font-${f}`));
-  // 通过 style.css 中的 util 类设置：font-sans / font-mono / font-serif
   root.classList.add(`font-${font}`);
 }
 
-/**
- * 顶层提供者：封装 next-themes
- */
+/** 顶层提供者：封装 next-themes */
 export function ThemeProvider({
   children,
   ...props
@@ -57,17 +66,27 @@ export function ThemeProvider({
 
 /**
  * SSR 安全的主题挂载检测
+ * 使用 ref + 单轮渲染模式避免 set-state-in-effect
  */
 export function useThemeMounted(): boolean {
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
+  const [mounted, setMounted] = React.useState<boolean>(() => {
+    // 首次渲染时：如果已经在客户端可以直接为 true
+    return typeof window !== "undefined";
+  });
+  const didSetRef = React.useRef<boolean>(false);
+  React.useEffect(() => {
+    if (!didSetRef.current && !mounted) {
+      didSetRef.current = true;
+      setMounted(true);
+    }
+  }, [mounted]);
   return mounted;
 }
 
 /**
- * 自定义主题预设 Hook（非深浅模式，而是色彩系统预设）
- * - 持久化到 localStorage
- * - 通过 document.documentElement 添加/移除 class 触发 CSS 变量切换
+ * 自定义主题预设 Hook
+ * - 状态通过事件回调而非同步 setState
+ * - 持久化到 localStorage（写入发生在状态变更的回调中）
  */
 export function usePresetTheme(): {
   preset: ThemePreset;
@@ -75,43 +94,35 @@ export function usePresetTheme(): {
   font: FontFamily;
   setFont: (f: FontFamily) => void;
 } {
-  const [preset, setPresetState] = React.useState<ThemePreset>("default");
-  const [font, setFontState] = React.useState<FontFamily>("sans");
-  const mounted = useThemeMounted();
+  const [preset, setPresetState] = React.useState<ThemePreset>(() => {
+    const saved = readStorage<string>("zendraw-theme-preset", "default");
+    return (THEME_PRESETS as readonly string[]).includes(saved)
+      ? (saved as ThemePreset)
+      : "default";
+  });
 
-  // 初始化时读取 localStorage（保证 SSR 后再读取）
+  const [font, setFontState] = React.useState<FontFamily>(() => {
+    const saved = readStorage<string>("zendraw-font-family", "sans");
+    return (FONT_FAMILIES as readonly string[]).includes(saved)
+      ? (saved as FontFamily)
+      : "sans";
+  });
+
+  // 首次挂载后同步到 DOM（通过 requestAnimationFrame 避免同步渲染警告）
   React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const savedPreset = window.localStorage.getItem("zendraw-theme-preset");
-      const savedFont = window.localStorage.getItem("zendraw-font-family");
-      if (savedPreset && (THEME_PRESETS as readonly string[]).includes(savedPreset)) {
-        setPresetState(savedPreset as ThemePreset);
-      }
-      if (savedFont && (FONT_FAMILIES as readonly string[]).includes(savedFont)) {
-        setFontState(savedFont as FontFamily);
-      }
-    } catch {
-      // 忽略存储异常
-    }
-  }, []);
+    const rafId = window.requestAnimationFrame(() => {
+      applyPresetClass(preset);
+      applyFontFamilyClass(font);
+    });
+    return () => window.cancelAnimationFrame(rafId);
+  }, [preset, font]);
 
-  // 当预设或字体改变时，更新 DOM 类名和 localStorage
+  // 主题变化时写入持久化（仅一次 per change）
   React.useEffect(() => {
-    if (!mounted) return;
-    applyPresetClass(preset);
-    applyFontFamilyClass(font);
-    try {
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem("zendraw-theme-preset", preset);
-        window.localStorage.setItem("zendraw-font-family", font);
-      }
-    } catch {
-      // 忽略存储失败
-    }
-  }, [preset, font, mounted]);
+    writeStorage("zendraw-theme-preset", preset);
+    writeStorage("zendraw-font-family", font);
+  }, [preset, font]);
 
-  // 静默处理：如果预设不存在于有效集合，回退到 default
   const setPreset = React.useCallback((p: ThemePreset) => {
     if ((THEME_PRESETS as readonly string[]).includes(p)) {
       setPresetState(p);
@@ -131,5 +142,4 @@ export function usePresetTheme(): {
   return { preset, setPreset, font, setFont };
 }
 
-// 保证 next-themes 能正常工作的导出别名
 export { useTheme };

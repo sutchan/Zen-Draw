@@ -96,10 +96,18 @@ DialogTrigger.displayName = "DialogTrigger";
 
 // ---------- Portal ----------
 function Portal({ children }: { children: React.ReactNode }): React.ReactNode {
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
+  const [mounted, setMounted] = React.useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return typeof document !== "undefined";
+  });
+  const didSetRef = React.useRef<boolean>(false);
+  React.useEffect(() => {
+    if (!didSetRef.current && !mounted) {
+      didSetRef.current = true;
+      setMounted(true);
+    }
+  }, [mounted]);
   if (!mounted) return null;
-  // 在 Next.js SSR 环境下，这里直接 return 子元素 (使用 div 层替代 ReactDOM.createPortal)
   return <>{children}</>;
 }
 

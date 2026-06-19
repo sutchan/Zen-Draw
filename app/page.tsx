@@ -43,7 +43,7 @@ import {
   type ThemePreset,
   type FontFamily,
 } from "@/components/theme-provider";
-import { cn, sanitizeListInput, generateLocalId, secureRandomInt } from "@/lib/utils";
+import { cn, sanitizeListInput, generateLocalId, secureRandomInt, parseFiniteNumber } from "@/lib/utils";
 import { translations, type Language } from "@/locales";
 import { NumberRoller } from "@/components/number-roller";
 import { useLocalStorage } from "@/hooks/use-local-storage";
@@ -427,7 +427,9 @@ function SettingsPanel({
                         id="min"
                         type="number"
                         value={min}
-                        onChange={(e) => setMin(Number(e.target.value))}
+                        onChange={(e) =>
+                          setMin(parseFiniteNumber(e.target.value, 0))
+                        }
                         className="h-11 rounded-2xl bg-muted/40 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                       />
                     </div>
@@ -437,7 +439,9 @@ function SettingsPanel({
                         id="max"
                         type="number"
                         value={max}
-                        onChange={(e) => setMax(Number(e.target.value))}
+                        onChange={(e) =>
+                          setMax(parseFiniteNumber(e.target.value, 0))
+                        }
                         className="h-11 rounded-2xl bg-muted/40 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                       />
                     </div>
@@ -450,8 +454,11 @@ function SettingsPanel({
                     id="count"
                     type="number"
                     min={1}
+                    max={1000}
                     value={count}
-                    onChange={(e) => setCount(Number(e.target.value))}
+                    onChange={(e) =>
+                      setCount(Math.max(1, Math.min(1000, parseFiniteNumber(e.target.value, 1))))
+                    }
                     className="h-11 rounded-2xl bg-muted/40 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                   />
                 </div>
@@ -464,7 +471,9 @@ function SettingsPanel({
                     min={1}
                     max={120}
                     value={duration}
-                    onChange={(e) => setDuration(Number(e.target.value))}
+                    onChange={(e) =>
+                      setDuration(Math.max(1, Math.min(120, parseFiniteNumber(e.target.value, 3))))
+                    }
                     className="h-11 rounded-2xl bg-muted/40 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                   />
                   <p className="text-xs text-muted-foreground leading-relaxed">{t.drawDurationDesc}</p>
@@ -600,8 +609,11 @@ function SettingsPanel({
                       id="digits"
                       type="number"
                       min={0}
+                      max={20}
                       value={digits}
-                      onChange={(e) => setDigits(Number(e.target.value))}
+                      onChange={(e) =>
+                        setDigits(Math.max(0, Math.min(20, parseFiniteNumber(e.target.value, 0))))
+                      }
                       className="h-11 rounded-2xl bg-muted/40 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                     />
                     <p className="text-xs text-muted-foreground leading-relaxed">{t.minDigitsDesc}</p>
@@ -613,7 +625,9 @@ function SettingsPanel({
                       <Input
                         id="prefix"
                         value={prefix}
-                        onChange={(e) => setPrefix(e.target.value.replace(/[\x00-\x1f]/g, ""))}
+                        onChange={(e) =>
+                          setPrefix(e.target.value.replace(/[\x00-\x1f]/g, "").slice(0, 50))
+                        }
                         className="h-11 rounded-2xl bg-muted/40 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                       />
                     </div>
@@ -622,7 +636,9 @@ function SettingsPanel({
                       <Input
                         id="suffix"
                         value={suffix}
-                        onChange={(e) => setSuffix(e.target.value.replace(/[\x00-\x1f]/g, ""))}
+                        onChange={(e) =>
+                          setSuffix(e.target.value.replace(/[\x00-\x1f]/g, "").slice(0, 50))
+                        }
                         className="h-11 rounded-2xl bg-muted/40 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                       />
                     </div>
@@ -767,10 +783,11 @@ export default function RandomDrawApp() {
   // 动画计时器
   const animationIntervalRef = React.useRef<number | null>(null);
 
-  // 更新 html.lang
+  // 更新 html.lang（使用白名单防止任意字符串写入）
   React.useEffect(() => {
     if (typeof document !== "undefined") {
-      document.documentElement.lang = lang;
+      const validLangs: Language[] = ["en", "zh"];
+      document.documentElement.lang = validLangs.includes(lang) ? lang : "en";
     }
   }, [lang]);
 
@@ -836,26 +853,41 @@ export default function RandomDrawApp() {
       return;
     }
 
-    // 输入校验
+    // 安全的输入校验 — 确保所有参数都是有限数字且在合理范围内
+    const safeMin = Number.isFinite(min) ? min : 0;
+    const safeMax = Number.isFinite(max) ? max : 0;
+    const safeCount = Math.max(1, Math.min(1000, Number.isFinite(count) ? count : 1));
+    const safeRange = safeMax - safeMin + 1;
+
     if (useCustomList) {
       if (customList.length === 0) {
         setAlertMessage(t.listImportDesc);
         setAlertOpen(true);
         return;
       }
-      if (!allowDuplicates && count > customList.length) {
+      if (customList.length > 1000) {
+        setAlertMessage(t.rangeError);
+        setAlertOpen(true);
+        return;
+      }
+      if (!allowDuplicates && safeCount > customList.length) {
         setAlertMessage(t.rangeError);
         setAlertOpen(true);
         return;
       }
     } else {
-      if (min > max) {
+      if (!Number.isFinite(safeMin) || !Number.isFinite(safeMax) || safeMin > safeMax) {
         setAlertMessage(t.minMaxError);
         setAlertOpen(true);
         return;
       }
-      const range = max - min + 1;
-      if (!allowDuplicates && count > range) {
+      // 限制范围大小，防止过大范围导致的性能问题
+      if (safeRange <= 0 || safeRange > 10_000_000) {
+        setAlertMessage(t.rangeError);
+        setAlertOpen(true);
+        return;
+      }
+      if (!allowDuplicates && safeCount > safeRange) {
         setAlertMessage(t.rangeError);
         setAlertOpen(true);
         return;

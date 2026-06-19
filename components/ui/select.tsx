@@ -11,6 +11,7 @@ interface SelectContextValue {
   open: boolean;
   setOpen: (open: boolean) => void;
   triggerRef: React.RefObject<HTMLButtonElement | null>;
+  listboxId: string;
 }
 
 const SelectContext = React.createContext<SelectContextValue | null>(null);
@@ -50,6 +51,7 @@ function SelectRoot({
   const value = isControlled ? controlledValue : internalValue;
   const [open, setOpen] = React.useState(false);
   const triggerRef = React.useRef<HTMLButtonElement | null>(null);
+  const listboxId = React.useId();
 
   const setValue = React.useCallback(
     (v: string) => {
@@ -82,7 +84,9 @@ function SelectRoot({
   }, [open]);
 
   return (
-    <SelectContext.Provider value={{ value, setValue, open, setOpen, triggerRef }}>
+    <SelectContext.Provider
+      value={{ value, setValue, open, setOpen, triggerRef, listboxId }}
+    >
       <div
         data-select-root
         data-name={name}
@@ -103,7 +107,7 @@ interface SelectTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
   ({ className, children, ...props }, forwardedRef) => {
-    const { open, setOpen, triggerRef, value } = useSelectContext("Trigger");
+    const { open, setOpen, triggerRef, value, listboxId } = useSelectContext("Trigger");
 
     // 合并 ref
     React.useEffect(() => {
@@ -119,6 +123,7 @@ const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
         ref={triggerRef}
         role="combobox"
         aria-expanded={open}
+        aria-controls={listboxId}
         aria-haspopup="listbox"
         aria-label={typeof children === "string" ? children : "Select an option"}
         onClick={() => setOpen(!open)}
@@ -182,11 +187,12 @@ function SelectContent({
   position = "popper",
   ...props
 }: SelectContentProps): React.ReactNode {
-  const { open } = useSelectContext("Content");
+  const { open, listboxId } = useSelectContext("Content");
   if (!open) return null;
 
   return (
     <div
+      id={listboxId}
       role="listbox"
       className={cn(
         "absolute left-0 right-0 z-50 mt-1 overflow-hidden rounded-md border border-border bg-background text-foreground shadow-lg animate-in fade-in-0 zoom-in-95",

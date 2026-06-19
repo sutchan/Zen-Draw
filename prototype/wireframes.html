@@ -1,1779 +1,2348 @@
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZenDraw · 组件库规范 v3.0</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #ffffff;
-      --bg-elevated: #fafafa;
-      --bg-muted: #f4f4f5;
-      --fg: #0a0a0a;
-      --fg-muted: #52525b;
-      --fg-subtle: #a1a1aa;
-      --border: #e4e4e7;
-      --border-strong: #d4d4d8;
-      --primary: #0a0a0a;
-      --primary-fg: #fafafa;
-      --accent: #2563eb;
-      --accent-soft: rgba(37, 99, 235, 0.1);
-      --success: #16a34a;
-      --success-soft: rgba(22, 163, 74, 0.1);
-      --warning: #d97706;
-      --warning-soft: rgba(217, 119, 6, 0.1);
-      --danger: #dc2626;
-      --danger-soft: rgba(220, 38, 38, 0.1);
-      --info: #0891b2;
-      --info-soft: rgba(8, 145, 178, 0.1);
-      --r-sm: 6px;
-      --r-md: 10px;
-      --r-lg: 16px;
-      --r-xl: 24px;
-      --r-full: 9999px;
-      --s-1: 4px;
-      --s-2: 8px;
-      --s-3: 12px;
-      --s-4: 16px;
-      --s-5: 20px;
-      --s-6: 24px;
-      --s-8: 32px;
-      --s-10: 40px;
-      --s-12: 48px;
-      --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 8px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-      --shadow-lg: 0 12px 24px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.06);
-      --shadow-xl: 0 24px 48px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.08);
-      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-      --dur-fast: 150ms;
-      --dur-norm: 250ms;
-      --dur-slow: 400ms;
-      --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
-      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-    }
-
-    [data-theme="dark"] {
-      --bg: #09090b;
-      --bg-elevated: #18181b;
-      --bg-muted: #27272a;
-      --fg: #fafafa;
-      --fg-muted: #a1a1aa;
-      --fg-subtle: #71717a;
-      --border: #27272a;
-      --border-strong: #3f3f46;
-      --primary: #fafafa;
-      --primary-fg: #0a0a0a;
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.1);
-      --shadow-md: 0 4px 8px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.15);
-      --shadow-lg: 0 12px 24px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.2);
-      --shadow-xl: 0 24px 48px rgba(0,0,0,0.5), 0 8px 16px rgba(0,0,0,0.3);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: var(--font-sans);
-      color: var(--fg);
-      background: var(--bg);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    ::selection { background: var(--accent); color: white; }
-
-    /* Navigation */
-    .nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 32px;
-      background: color-mix(in srgb, var(--bg) 80%, transparent);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-    }
-
-    .nav-logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: var(--primary);
-      color: var(--primary-fg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-    }
-
-    .theme-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: var(--r-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      background: var(--bg-muted);
-      transition: background var(--dur-fast);
-    }
-
-    .theme-btn:hover { background: var(--bg-elevated); }
-
-    /* Main Layout */
-    .main {
-      display: flex;
-      padding-top: 61px;
-    }
-
-    .sidebar {
-      position: fixed;
-      top: 61px;
-      left: 0;
-      width: 260px;
-      height: calc(100vh - 61px);
-      overflow-y: auto;
-      padding: 24px 16px;
-      border-right: 1px solid var(--border);
-      background: var(--bg);
-    }
-
-    .sidebar-section {
-      margin-bottom: 24px;
-    }
-
-    .sidebar-title {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--fg-subtle);
-      padding: 0 12px;
-      margin-bottom: 8px;
-    }
-
-    .sidebar-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--fg-muted);
-      border-radius: var(--r-md);
-      transition: all var(--dur-fast);
-      cursor: pointer;
-    }
-
-    .sidebar-link:hover {
-      color: var(--fg);
-      background: var(--bg-muted);
-    }
-
-    .sidebar-link.active {
-      color: var(--fg);
-      background: var(--bg-elevated);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .sidebar-link-icon {
-      font-size: 16px;
-      width: 20px;
-      text-align: center;
-    }
-
-    .content {
-      flex: 1;
-      margin-left: 260px;
-      padding: 48px;
-      max-width: 1000px;
-    }
-
-    @media (max-width: 1024px) {
-      .sidebar { display: none; }
-      .content { margin-left: 0; padding: 32px 20px; }
-    }
-
-    /* Typography */
-    .page-header {
-      margin-bottom: 48px;
-    }
-
-    .page-label {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-
-    .page-title {
-      font-size: 36px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: 12px;
-    }
-
-    .page-desc {
-      font-size: 16px;
-      color: var(--fg-muted);
-      max-width: 600px;
-    }
-
-    /* Sections */
-    .section {
-      margin-bottom: 64px;
-    }
-
-    .section-title {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 24px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .subsection-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      color: var(--fg-muted);
-    }
-
-    /* Component Grid */
-    .component-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 24px;
-    }
-
-    .component-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-      overflow: hidden;
-    }
-
-    .component-preview {
-      padding: 32px;
-      background: var(--bg-elevated);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      min-height: 120px;
-    }
-
-    .component-preview.centered {
-      align-items: center;
-    }
-
-    .component-info {
-      padding: 20px;
-    }
-
-    .component-name {
-      font-weight: 600;
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-
-    .component-desc {
-      font-size: 13px;
-      color: var(--fg-muted);
-      margin-bottom: 12px;
-    }
-
-    .component-meta {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--fg-subtle);
-      background: var(--bg-muted);
-      padding: 4px 8px;
-      border-radius: 4px;
-      display: inline-block;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: var(--r-full);
-      transition: all var(--dur-fast) var(--ease-out);
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    .btn-primary { background: var(--primary); color: var(--primary-fg); }
-    .btn-primary:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(0); }
-
-    .btn-outline { background: transparent; border: 1.5px solid var(--border-strong); color: var(--fg); }
-    .btn-outline:hover { background: var(--bg-muted); }
-
-    .btn-ghost { background: transparent; color: var(--fg-muted); }
-    .btn-ghost:hover { background: var(--bg-muted); color: var(--fg); }
-
-    .btn-danger { background: var(--danger); color: white; }
-    .btn-danger:hover { opacity: 0.9; }
-
-    .btn-sm { padding: 6px 14px; font-size: 13px; }
-    .btn-lg { padding: 14px 28px; font-size: 16px; }
-    .btn-icon { width: 40px; height: 40px; padding: 0; border-radius: var(--r-md); }
-
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-
-    /* Inputs */
-    .input {
-      width: 100%;
-      height: 44px;
-      padding: 0 16px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-md);
-      background: var(--bg);
-      color: var(--fg);
-      font-size: 15px;
-      font-family: inherit;
-      transition: all var(--dur-fast);
-    }
-
-    .input:hover { border-color: var(--border-strong); }
-    .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-    .input:disabled { opacity: 0.5; cursor: not-allowed; }
-    .input.error { border-color: var(--danger); }
-    .input.error:focus { box-shadow: 0 0 0 3px var(--danger-soft); }
-
-    .input-wrapper { display: flex; flex-direction: column; gap: 8px; }
-    .input-label { font-size: 14px; font-weight: 500; }
-    .input-hint { font-size: 12px; color: var(--fg-subtle); }
-    .input-error { font-size: 12px; color: var(--danger); }
-
-    /* Textarea */
-    .textarea {
-      min-height: 100px;
-      padding: 12px 16px;
-      resize: vertical;
-    }
-
-    /* Select */
-    .select {
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2352525b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 40px;
-    }
-
-    /* Switch */
-    .switch {
-      position: relative;
-      width: 48px;
-      height: 28px;
-      border-radius: var(--r-full);
-      background: var(--border-strong);
-      cursor: pointer;
-      transition: background var(--dur-fast);
-      flex-shrink: 0;
-    }
-
-    .switch::after {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: white;
-      box-shadow: var(--shadow-sm);
-      transition: transform var(--dur-fast) var(--ease-spring);
-    }
-
-    .switch.on { background: var(--primary); }
-    .switch.on::after { transform: translateX(20px); }
-    .switch:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .switch-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .switch-row:last-child { border-bottom: none; }
-
-    .switch-label { font-size: 15px; font-weight: 500; }
-    .switch-desc { font-size: 13px; color: var(--fg-subtle); margin-top: 2px; }
-
-    /* Checkbox & Radio */
-    .checkbox, .radio {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      font-size: 15px;
-    }
-
-    .checkbox-input, .radio-input {
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--border-strong);
-      background: var(--bg);
-      cursor: pointer;
-      transition: all var(--dur-fast);
-      appearance: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .checkbox-input {
-      border-radius: 5px;
-    }
-
-    .radio-input {
-      border-radius: 50%;
-    }
-
-    .checkbox-input:checked {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .checkbox-input:checked::after {
-      content: '✓';
-      color: white;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .radio-input:checked {
-      border-color: var(--accent);
-      background: var(--accent);
-      box-shadow: inset 0 0 0 4px var(--bg);
-    }
-
-    /* Slider */
-    .slider {
-      width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: var(--bg-muted);
-      appearance: none;
-      cursor: pointer;
-    }
-
-    .slider::-webkit-slider-thumb {
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--primary);
-      cursor: pointer;
-      box-shadow: var(--shadow-md);
-      transition: transform var(--dur-fast);
-    }
-
-    .slider::-webkit-slider-thumb:hover {
-      transform: scale(1.1);
-    }
-
-    /* Badge */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      font-size: 12px;
-      font-weight: 500;
-      border-radius: var(--r-full);
-      font-family: var(--font-mono);
-    }
-
-    .badge-default { background: var(--bg-muted); color: var(--fg-muted); }
-    .badge-primary { background: var(--primary); color: var(--primary-fg); }
-    .badge-accent { background: var(--accent-soft); color: var(--accent); }
-    .badge-success { background: var(--success-soft); color: var(--success); }
-    .badge-warning { background: var(--warning-soft); color: var(--warning); }
-    .badge-danger { background: var(--danger-soft); color: var(--danger); }
-    .badge-info { background: var(--info-soft); color: var(--info); }
-
-    /* Alert */
-    .alert {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 16px 20px;
-      border-radius: var(--r-lg);
-      border: 1px solid;
-    }
-
-    .alert-success { background: var(--success-soft); border-color: var(--success); }
-    .alert-warning { background: var(--warning-soft); border-color: var(--warning); }
-    .alert-danger { background: var(--danger-soft); border-color: var(--danger); }
-    .alert-info { background: var(--info-soft); border-color: var(--info); }
-
-    .alert-icon { font-size: 20px; flex-shrink: 0; }
-    .alert-content { flex: 1; }
-    .alert-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
-    .alert-message { font-size: 14px; color: var(--fg-muted); }
-
-    /* Card */
-    .card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      overflow: hidden;
-    }
-
-    .card-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .card-title {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
-
-    .card-body { padding: 24px; }
-    .card-footer {
-      padding: 16px 24px;
-      border-top: 1px solid var(--border);
-      background: var(--bg-elevated);
-      display: flex;
-      gap: 12px;
-      justify-content: flex-end;
-    }
-
-    /* Dialog */
-    .dialog-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all var(--dur-norm);
-    }
-
-    .dialog-overlay.open {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .dialog {
-      background: var(--bg);
-      border-radius: var(--r-xl);
-      box-shadow: var(--shadow-xl);
-      max-width: 480px;
-      width: 90%;
-      transform: scale(0.95);
-      transition: transform var(--dur-norm) var(--ease-spring);
-    }
-
-    .dialog-overlay.open .dialog {
-      transform: scale(1);
-    }
-
-    .dialog-header {
-      padding: 24px 24px 0;
-    }
-
-    .dialog-title {
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .dialog-body {
-      padding: 20px 24px;
-    }
-
-    .dialog-footer {
-      padding: 16px 24px 24px;
-      display: flex;
-      gap: 12px;
-      justify-content: flex-end;
-    }
-
-    /* Tabs */
-    .tabs {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .tab-list {
-      display: flex;
-      gap: 4px;
-    }
-
-    .tab {
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--fg-muted);
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      transition: all var(--dur-fast);
-      cursor: pointer;
-    }
-
-    .tab:hover { color: var(--fg); }
-    .tab.active {
-      color: var(--fg);
-      border-bottom-color: var(--primary);
-    }
-
-    .tab-content {
-      padding: 24px 0;
-      display: none;
-    }
-
-    .tab-content.active { display: block; }
-
-    /* Progress */
-    .progress {
-      width: 100%;
-      height: 8px;
-      background: var(--bg-muted);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 4px;
-      transition: width var(--dur-slow) var(--ease-out);
-    }
-
-    .progress-success .progress-bar { background: var(--success); }
-    .progress-warning .progress-bar { background: var(--warning); }
-    .progress-danger .progress-bar { background: var(--danger); }
-
-    /* Skeleton */
-    .skeleton {
-      background: linear-gradient(90deg, var(--bg-muted) 25%, var(--bg-elevated) 50%, var(--bg-muted) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: var(--r-md);
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    .skeleton-text { height: 16px; margin-bottom: 8px; }
-    .skeleton-text:last-child { width: 60%; }
-    .skeleton-avatar { width: 48px; height: 48px; border-radius: 50%; }
-    .skeleton-button { width: 100px; height: 40px; border-radius: var(--r-full); }
-
-    /* Tooltip */
-    .tooltip {
-      position: relative;
-    }
-
-    .tooltip::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%) translateY(-8px);
-      padding: 8px 12px;
-      background: var(--fg);
-      color: var(--bg);
-      font-size: 13px;
-      border-radius: var(--r-md);
-      white-space: nowrap;
-      opacity: 0;
-      visibility: hidden;
-      transition: all var(--dur-fast);
-      pointer-events: none;
-    }
-
-    .tooltip:hover::after {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(-4px);
-    }
-
-    /* Avatar */
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--accent-soft);
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 16px;
-      overflow: hidden;
-    }
-
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-sm { width: 32px; height: 32px; font-size: 13px; }
-    .avatar-lg { width: 56px; height: 56px; font-size: 22px; }
-
-    /* Tag */
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background: var(--bg-muted);
-      border: 1px solid var(--border);
-      border-radius: var(--r-md);
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .tag-close {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--border-strong);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      cursor: pointer;
-      transition: background var(--dur-fast);
-    }
-
-    .tag-close:hover { background: var(--danger); color: white; }
-
-    /* Divider */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 24px 0;
-    }
-
-    /* Code Block */
-    .code-block {
-      background: var(--bg-inverse, #0a0a0a);
-      color: #fafafa;
-      padding: 20px;
-      border-radius: var(--r-lg);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      line-height: 1.7;
-      overflow-x: auto;
-    }
-
-    .code-keyword { color: #c792ea; }
-    .code-string { color: #c3e88d; }
-    .code-function { color: #82aaff; }
-    .code-comment { color: #546e7a; }
-
-    /* Usage Rules */
-    .rules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-    }
-
-    .rule-card {
-      padding: 24px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-    }
-
-    .rule-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: var(--r-md);
-      background: var(--accent-soft);
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      margin-bottom: 16px;
-    }
-
-    .rule-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .rule-desc {
-      font-size: 14px;
-      color: var(--fg-muted);
-      line-height: 1.6;
-    }
-
-    /* Do Don't */
-    .do-dont {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-
-    @media (max-width: 768px) {
-      .do-dont { grid-template-columns: 1fr; }
-    }
-
-    .do-card, .dont-card {
-      padding: 20px;
-      border-radius: var(--r-lg);
-    }
-
-    .do-card {
-      background: var(--success-soft);
-      border: 1px solid var(--success);
-    }
-
-    .dont-card {
-      background: var(--danger-soft);
-      border: 1px solid var(--danger);
-    }
-
-    .do-dont-title {
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .do-card .do-dont-title { color: var(--success); }
-    .dont-card .do-dont-title { color: var(--danger); }
-
-    .do-dont-list {
-      list-style: none;
-      font-size: 14px;
-      color: var(--fg-muted);
-    }
-
-    .do-dont-list li {
-      padding: 6px 0;
-      padding-left: 20px;
-      position: relative;
-    }
-
-    .do-card .do-dont-list li::before {
-      content: '✓';
-      position: absolute;
-      left: 0;
-      color: var(--success);
-    }
-
-    .dont-card .do-dont-list li::before {
-      content: '✗';
-      position: absolute;
-      left: 0;
-      color: var(--danger);
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZenDraw · Component Library — 组件库规范 v3.0</title>
+<style>
+/* ============================================================
+   CSS Variables — shadcn/ui design tokens (Light / Dark)
+   ============================================================ */
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #18181b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --success: #10b981;
+  --success-foreground: #fafafa;
+  --warning: #f59e0b;
+  --warning-foreground: #18181b;
+  --info: #3b82f6;
+  --info-foreground: #fafafa;
+  --doc-bg: #fafafa;
+  --doc-sample-bg: #ffffff;
+  --code-bg: #0b0d10;
+  --code-fg: #e5e7eb;
+  --code-comment: #6b7280;
+  --code-keyword: #c084fc;
+  --code-string: #86efac;
+  --code-tag: #fb7185;
+  --code-attr: #fbbf24;
+  --code-number: #7dd3fc;
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.03);
+  --shadow: 0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.06), 0 2px 6px -3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.08), 0 4px 10px -4px rgba(0,0,0,0.04);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.10);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition: 200ms var(--ease-out);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --fs-xs: 11px;
+  --fs-sm: 13px;
+  --fs-base: 15px;
+  --fs-lg: 16px;
+  --fs-xl: 18px;
+  --fs-2xl: 22px;
+  --fs-3xl: 28px;
+  --fs-4xl: 36px;
+}
+
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #09090b;
+  --card-foreground: #fafafa;
+  --muted: #1f1f23;
+  --muted-foreground: #a1a1aa;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #f87171;
+  --destructive-foreground: #18181b;
+  --warning: #fbbf24;
+  --warning-foreground: #18181b;
+  --doc-bg: #0a0a0a;
+  --doc-sample-bg: #0f0f12;
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.3);
+  --shadow: 0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.5), 0 2px 6px -3px rgba(0,0,0,0.3);
+  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.6), 0 4px 10px -4px rgba(0,0,0,0.4);
+}
+
+/* ============================================================
+   Reset
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html, body {
+  background: var(--doc-bg);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body { min-height: 100vh; }
+
+h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; color: var(--foreground); }
+h1 { font-size: var(--fs-4xl); }
+h2 { font-size: var(--fs-3xl); margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+h3 { font-size: var(--fs-xl); margin-top: 2rem; }
+h4 { font-size: var(--fs-lg); }
+
+p { color: var(--muted-foreground); font-size: var(--fs-base); }
+
+a { color: var(--foreground); text-decoration: none; }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--muted);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+/* ============================================================
+   Page Layout
+   ============================================================ */
+.page {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+/* Top Header */
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--background) 85%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--border);
+  grid-column: 1 / -1;
+}
+
+.top-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 32px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary) 0%, #52525b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-foreground);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-text strong { font-size: var(--fs-base); font-weight: 600; }
+.brand-text span { font-size: var(--fs-xs); color: var(--muted-foreground); }
+
+.version-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  margin-left: 8px;
+}
+
+.header-actions { display: flex; align-items: center; gap: 8px; }
+
+/* Sidebar nav */
+.sidebar {
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  padding: 32px 24px 48px;
+  border-right: 1px solid var(--border);
+  background: var(--background);
+}
+
+.sidebar-section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+  font-weight: 600;
+  padding: 12px 10px 6px;
+}
+
+.sidebar-section-label:first-child { padding-top: 0; }
+
+.sidebar-link {
+  display: block;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition), color var(--transition);
+  cursor: pointer;
+}
+
+.sidebar-link:hover { background: var(--muted); color: var(--foreground); }
+.sidebar-link.is-active { background: var(--accent); color: var(--accent-foreground); font-weight: 500; }
+
+/* Main content */
+.content {
+  padding: 56px 64px 96px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero {
+  margin-bottom: 48px;
+}
+
+.hero h1 { font-size: 48px; margin-bottom: 16px; }
+.hero .lead { font-size: 18px; color: var(--muted-foreground); max-width: 680px; line-height: 1.65; }
+
+.section-intro {
+  margin: 8px 0 32px;
+  color: var(--muted-foreground);
+  max-width: 640px;
+}
+
+/* Component block */
+.comp-block {
+  padding: 40px 0 0;
+}
+
+.comp-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.comp-title h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.comp-title .comp-anchor {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.comp-desc {
+  color: var(--muted-foreground);
+  margin-bottom: 28px;
+  max-width: 640px;
+}
+
+/* Sample box */
+.sample-box {
+  background: var(--doc-sample-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.sample-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+}
+
+.sample-box-head .dot-row { display: flex; gap: 6px; }
+.sample-box-head .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+.sample-box-head .dot.d1 { background: #ef4444; }
+.sample-box-head .dot.d2 { background: #f59e0b; }
+.sample-box-head .dot.d3 { background: #10b981; }
+
+.sample-area {
+  padding: 40px 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  min-height: 120px;
+}
+
+.sample-area.column { flex-direction: column; align-items: flex-start; }
+.sample-area.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.sample-area.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.sample-area.spaced { gap: 24px; }
+
+.sample-label {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.sample-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 140px;
+}
+
+/* Code block */
+.code-block {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.65;
+  overflow-x: auto;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.code-block .tok-key { color: var(--code-keyword); }
+.code-block .tok-str { color: var(--code-string); }
+.code-block .tok-tag { color: var(--code-tag); }
+.code-block .tok-attr { color: var(--code-attr); }
+.code-block .tok-num { color: var(--code-number); }
+.code-block .tok-com { color: var(--code-comment); font-style: italic; }
+.code-block .tok-punc { color: #9ca3af; }
+
+/* Rules (do/don't) */
+.rules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.rule {
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid var(--border);
+  background: var(--doc-sample-bg);
+}
+
+.rule-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.rule.do .rule-head { color: var(--success); }
+.rule.dont .rule-head { color: var(--destructive); }
+
+.rule-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.rule.do .rule-icon { background: var(--success); }
+.rule.dont .rule-icon { background: var(--destructive); }
+
+.rule p { font-size: 13px; margin: 6px 0; line-height: 1.55; }
+
+/* Accessibility box */
+.a11y-box {
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  margin-bottom: 32px;
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 12px 24px;
+  font-size: 13px;
+}
+
+.a11y-box dt { color: var(--muted-foreground); font-weight: 500; }
+.a11y-box dd { color: var(--foreground); }
+.a11y-box kbd {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  color: var(--foreground);
+  display: inline-block;
+  margin: 0 2px;
+}
+
+/* ============================================================
+   shadcn/ui style components
+   ============================================================ */
+
+/* Button */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition), opacity var(--transition);
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  padding: 0 16px;
+  height: 36px;
+}
+.btn:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 30%, transparent); outline: none; }
+.btn:disabled { pointer-events: none; opacity: 0.5; }
+
+.btn-default, .btn-primary { background: var(--primary); color: var(--primary-foreground); }
+.btn-default:hover, .btn-primary:hover { opacity: 0.9; }
+
+.btn-destructive { background: var(--destructive); color: var(--destructive-foreground); }
+.btn-destructive:hover { opacity: 0.9; }
+
+.btn-outline { background: transparent; color: var(--foreground); border-color: var(--border); }
+.btn-outline:hover { background: var(--accent); color: var(--accent-foreground); }
+
+.btn-secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.btn-secondary:hover { opacity: 0.85; }
+
+.btn-ghost { background: transparent; color: var(--foreground); }
+.btn-ghost:hover { background: var(--accent); color: var(--accent-foreground); }
+
+.btn-link { background: transparent; color: var(--foreground); text-decoration: underline; padding: 0; height: auto; }
+.btn-link:hover { text-decoration: underline; }
+
+.btn-sm { height: 32px; padding: 0 12px; font-size: 13px; border-radius: var(--radius-sm); }
+.btn-lg { height: 44px; padding: 0 24px; font-size: 15px; border-radius: var(--radius-md); }
+.btn-icon { height: 36px; width: 36px; padding: 0; border-radius: var(--radius); }
+
+/* Icon button (header) */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
+  color: var(--foreground);
+  transition: background-color var(--transition);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--background);
+}
+.icon-btn:hover { background: var(--muted); }
+
+/* Input */
+.input {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--background);
+  font-size: 14px;
+  color: var(--foreground);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  width: 280px;
+}
+.input:focus-within { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent); outline: none; }
+.input input { border: none; outline: none; background: transparent; flex: 1; font-size: 14px; color: inherit; }
+.input input::placeholder { color: var(--muted-foreground); }
+.input .inp-icon { color: var(--muted-foreground); flex-shrink: 0; margin-right: 6px; }
+.input.is-disabled { opacity: 0.5; background: var(--muted); cursor: not-allowed; }
+.input.is-invalid { border-color: var(--destructive); }
+.input.is-invalid:focus-within { box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 20%, transparent); }
+
+/* Textarea */
+.textarea {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  min-height: 80px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--background);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--foreground);
+  line-height: 1.55;
+  resize: vertical;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.textarea:focus { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent); outline: none; }
+.textarea::placeholder { color: var(--muted-foreground); }
+
+/* Switch */
+.switch-wrap { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; }
+.switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background-color var(--transition);
+  flex-shrink: 0;
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  transition: transform var(--transition);
+}
+.switch[aria-checked="true"], .switch.is-on { background: var(--primary); border-color: var(--primary); }
+.switch[aria-checked="true"]::after, .switch.is-on::after { transform: translateX(16px); }
+.switch.is-disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Select */
+.select {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--background);
+  font-size: 14px;
+  color: var(--foreground);
+  min-width: 220px;
+  cursor: pointer;
+  justify-content: space-between;
+  gap: 8px;
+}
+.select .chevron { color: var(--muted-foreground); }
+.select.is-open { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent); }
+
+.select-dropdown {
+  margin-top: 4px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px;
+  box-shadow: var(--shadow-lg);
+  min-width: 220px;
+}
+.select-opt {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.select-opt:hover { background: var(--muted); }
+.select-opt.is-selected { background: var(--accent); color: var(--accent-foreground); font-weight: 500; }
+
+/* Label */
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.req-mark { color: var(--destructive); }
+.hint-text { font-size: 12px; color: var(--muted-foreground); margin-top: 4px; }
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.6;
+  border: 1px solid transparent;
+  letter-spacing: 0.02em;
+}
+.badge-default { background: var(--primary); color: var(--primary-foreground); }
+.badge-secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.badge-outline { background: transparent; color: var(--foreground); border-color: var(--border); }
+.badge-destructive { background: var(--destructive); color: var(--destructive-foreground); }
+.badge-success { background: color-mix(in srgb, var(--success) 15%, transparent); color: var(--success); }
+.badge-warning { background: color-mix(in srgb, var(--warning) 15%, transparent); color: var(--warning); }
+.badge-info { background: color-mix(in srgb, var(--info) 15%, transparent); color: var(--info); }
+
+/* Card */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--card-foreground);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  width: 100%;
+  max-width: 420px;
+}
+.card-header { padding: 20px 24px 0; }
+.card-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.card-desc { font-size: 13px; color: var(--muted-foreground); }
+.card-content { padding: 20px 24px; color: var(--foreground); font-size: 14px; }
+.card-footer { padding: 16px 24px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+
+/* Tabs */
+.tabs { width: 100%; max-width: 520px; }
+.tab-list {
+  display: inline-flex;
+  padding: 4px;
+  background: var(--muted);
+  border-radius: var(--radius-md);
+  gap: 2px;
+}
+.tab-trigger {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  background: transparent;
+}
+.tab-trigger:hover { color: var(--foreground); }
+.tab-trigger.is-active { background: var(--background); color: var(--foreground); box-shadow: var(--shadow-sm); }
+.tab-content {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--doc-sample-bg);
+  font-size: 14px;
+}
+
+/* Alert */
+.alert {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--doc-sample-bg);
+  max-width: 520px;
+  width: 100%;
+}
+.alert-icon { font-size: 16px; line-height: 1.5; flex-shrink: 0; }
+.alert-body { flex: 1; }
+.alert-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; color: var(--foreground); }
+.alert-desc { font-size: 13px; color: var(--muted-foreground); line-height: 1.55; }
+
+.alert-success { background: color-mix(in srgb, var(--success) 8%, transparent); border-color: color-mix(in srgb, var(--success) 25%, transparent); }
+.alert-success .alert-icon, .alert-success .alert-title { color: var(--success); }
+
+.alert-error { background: color-mix(in srgb, var(--destructive) 8%, transparent); border-color: color-mix(in srgb, var(--destructive) 25%, transparent); }
+.alert-error .alert-icon, .alert-error .alert-title { color: var(--destructive); }
+
+.alert-warning { background: color-mix(in srgb, var(--warning) 10%, transparent); border-color: color-mix(in srgb, var(--warning) 25%, transparent); }
+.alert-warning .alert-icon, .alert-warning .alert-title { color: var(--warning); }
+
+.alert-info { background: color-mix(in srgb, var(--info) 8%, transparent); border-color: color-mix(in srgb, var(--info) 25%, transparent); }
+.alert-info .alert-icon, .alert-info .alert-title { color: var(--info); }
+
+/* Separator */
+.sep-h { display: block; width: 100%; height: 1px; background: var(--border); margin: 16px 0; }
+.sep-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  width: 100%;
+  max-width: 420px;
+}
+.sep-text::before, .sep-text::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.sep-v { display: inline-block; width: 1px; height: 24px; background: var(--border); margin: 0 8px; vertical-align: middle; }
+
+/* ============================================================
+   Composite Components
+   ============================================================ */
+
+/* Form field */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 360px;
+}
+.form-field .input { width: 100%; }
+.form-field .err-text {
+  font-size: 12px;
+  color: var(--destructive);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Confirmation dialog */
+.dialog-backdrop {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  background: color-mix(in srgb, var(--muted) 70%, transparent);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+.dialog {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 380px;
+}
+.dialog h4 { font-size: 18px; margin-bottom: 8px; }
+.dialog p { font-size: 14px; color: var(--muted-foreground); line-height: 1.6; }
+.dialog-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px; }
+
+/* Settings panel */
+.settings-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 4px 0;
+  width: 100%;
+  max-width: 460px;
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-label { font-size: 14px; font-weight: 500; color: var(--foreground); }
+.setting-hint { font-size: 12px; color: var(--muted-foreground); margin-top: 2px; }
+
+/* Stats card */
+.stats-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  width: 100%;
+  max-width: 260px;
+}
+.stats-label { font-size: 12px; color: var(--muted-foreground); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+.stats-value { font-size: 32px; font-weight: 600; letter-spacing: -0.02em; margin: 6px 0 8px; }
+.stats-trend { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 999px; }
+.trend-up { background: color-mix(in srgb, var(--success) 12%, transparent); color: var(--success); }
+.trend-down { background: color-mix(in srgb, var(--destructive) 12%, transparent); color: var(--destructive); }
+
+/* History item */
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+  max-width: 420px;
+  gap: 12px;
+}
+.history-item:last-child { border-bottom: none; }
+.history-time { font-size: 12px; color: var(--muted-foreground); font-family: var(--font-mono); }
+.history-result { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; }
+.history-num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 4px 10px;
+  background: var(--muted);
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   Business Components
+   ============================================================ */
+
+/* Draw Display */
+.draw-display {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 40px 32px;
+  text-align: center;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-md);
+}
+.draw-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--success);
+  margin-bottom: 16px;
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.draw-number {
+  font-family: var(--font-mono);
+  font-size: 96px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--foreground);
+  margin-bottom: 16px;
+  background: linear-gradient(180deg, var(--foreground) 0%, color-mix(in srgb, var(--foreground) 60%, transparent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.draw-sub { font-size: 14px; color: var(--muted-foreground); margin-bottom: 24px; }
+
+/* Result card */
+.result-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: 440px;
+}
+.result-info h4 { font-size: 14px; margin-bottom: 4px; }
+.result-info .result-time { font-size: 12px; color: var(--muted-foreground); font-family: var(--font-mono); }
+.result-big {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 8px 16px;
+  background: var(--muted);
+  border-radius: var(--radius);
+}
+
+/* History list */
+.history-list {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+}
+.history-list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.history-list-head h4 { font-size: 14px; }
+.history-list-head span { font-size: 12px; color: var(--muted-foreground); }
+
+/* Mobile draw view */
+.mobile-frame {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  padding: 32px 16px 16px;
+  width: 320px;
+  box-shadow: var(--shadow-xl);
+  position: relative;
+}
+.mobile-frame::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+}
+.mobile-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px 16px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+}
+.mobile-body {
+  padding: 8px 8px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.mobile-title { font-size: 13px; color: var(--muted-foreground); }
+.mobile-big {
+  font-family: var(--font-mono);
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  padding: 24px 0;
+}
+
+/* ============================================================
+   Pattern Components
+   ============================================================ */
+
+/* Empty state */
+.empty-state {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px 32px;
+  text-align: center;
+  width: 100%;
+  max-width: 420px;
+}
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+  font-size: 20px;
+}
+.empty-state h4 { font-size: 15px; margin-bottom: 4px; }
+.empty-state p { font-size: 13px; margin-bottom: 16px; }
+
+/* Skeleton */
+.skel {
+  background: linear-gradient(90deg, var(--muted) 25%, color-mix(in srgb, var(--muted) 50%, transparent) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skel-line { height: 14px; width: 100%; margin: 8px 0; }
+.skel-line.w70 { width: 70%; }
+.skel-line.w50 { width: 50%; }
+.skel-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Loading button */
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Pattern layout */
+.pattern-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.pattern-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.pattern-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); font-weight: 600; margin-bottom: 12px; display: block; }
+
+/* Mobile responsive */
+@media (max-width: 960px) {
+  .page { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .content { padding: 32px 20px 64px; }
+  .hero h1 { font-size: 32px; }
+  .rules-grid, .pattern-grid { grid-template-columns: 1fr; }
+  .sample-area.grid-2, .sample-area.grid-3 { grid-template-columns: 1fr; }
+  .top-header-inner { padding: 0 16px; }
+}
+</style>
 </head>
-<body data-theme="light">
-  <!-- Navigation -->
-  <nav class="nav">
-    <div class="nav-brand">
-      <div class="nav-logo">Z</div>
-      <span>ZenDraw 组件库</span>
+<body>
+
+<div class="page">
+
+  <!-- ============ TOP HEADER ============ -->
+  <header class="top-header">
+    <div class="top-header-inner">
+      <div class="brand">
+        <div class="brand-logo">Z</div>
+        <div class="brand-text">
+          <strong>ZenDraw · Component Library</strong>
+          <span>Components &amp; Patterns Reference</span>
+        </div>
+        <span class="version-badge">v3.0.0</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="theme-toggle" title="切换主题" aria-label="切换主题">
+          <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+          </svg>
+        </button>
+      </div>
     </div>
-    <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+  </header>
+
+  <!-- ============ SIDEBAR NAV ============ -->
+  <nav class="sidebar" id="sidebar-nav">
+    <div class="sidebar-section-label">基础组件</div>
+    <a class="sidebar-link" href="#c-button">Button</a>
+    <a class="sidebar-link" href="#c-input">Input</a>
+    <a class="sidebar-link" href="#c-textarea">Textarea</a>
+    <a class="sidebar-link" href="#c-switch">Switch</a>
+    <a class="sidebar-link" href="#c-select">Select</a>
+    <a class="sidebar-link" href="#c-label">Label</a>
+    <a class="sidebar-link" href="#c-badge">Badge</a>
+    <a class="sidebar-link" href="#c-card">Card</a>
+    <a class="sidebar-link" href="#c-tabs">Tabs</a>
+    <a class="sidebar-link" href="#c-alert">Alert</a>
+    <a class="sidebar-link" href="#c-separator">Separator</a>
+
+    <div class="sidebar-section-label">复合组件</div>
+    <a class="sidebar-link" href="#c-formfield">Form Field</a>
+    <a class="sidebar-link" href="#c-dialog">Confirmation Dialog</a>
+    <a class="sidebar-link" href="#c-settings">Settings Panel</a>
+    <a class="sidebar-link" href="#c-stats">Stats Card</a>
+    <a class="sidebar-link" href="#c-historyitem">History Item</a>
+
+    <div class="sidebar-section-label">业务组件</div>
+    <a class="sidebar-link" href="#c-draw">Draw Display</a>
+    <a class="sidebar-link" href="#c-result">Result Card</a>
+    <a class="sidebar-link" href="#c-historylist">History List</a>
+    <a class="sidebar-link" href="#c-mobile">Mobile Draw View</a>
+
+    <div class="sidebar-section-label">设计模式</div>
+    <a class="sidebar-link" href="#p-validation">表单验证</a>
+    <a class="sidebar-link" href="#p-empty">空状态</a>
+    <a class="sidebar-link" href="#p-loading">加载状态</a>
+    <a class="sidebar-link" href="#p-error">错误处理</a>
+    <a class="sidebar-link" href="#p-theme">暗色模式</a>
   </nav>
 
-  <div class="main">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-title">基础组件</div>
-        <div class="sidebar-link active" onclick="scrollTo('buttons')">
-          <span class="sidebar-link-icon">🔘</span>按钮
+  <!-- ============ MAIN CONTENT ============ -->
+  <main class="content">
+
+    <!-- HERO -->
+    <section class="hero">
+      <h1>组件库规范</h1>
+      <p class="lead">
+        一份面向 ZenDraw 开发者与设计师的组件库参考文档。
+        基于 shadcn/ui 的设计语言，包含基础组件、复合组件、业务组件以及常见设计模式。
+        所有组件均支持浅色 / 深色主题切换。
+      </p>
+    </section>
+
+    <!-- ============ 1. BASE COMPONENTS ============ -->
+    <h2 id="section-base">1. 基础组件 · Base Components</h2>
+    <p class="section-intro">不可再分的原子级 UI 元素。所有复合组件均由此构建，保持统一的视觉语言与交互范式。</p>
+
+    <!-- ======= Button ======= -->
+    <div class="comp-block" id="c-button">
+      <div class="comp-title"><h3>Button</h3><span class="comp-anchor">#button</span></div>
+      <p class="comp-desc">触发操作的主要交互元素。支持 6 种视觉变体与 4 种尺寸。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>variants · default sizes</span>
         </div>
-        <div class="sidebar-link" onclick="scrollTo('inputs')">
-          <span class="sidebar-link-icon">📝</span>输入框
-        </div>
-        <div class="sidebar-link" onclick="scrollTo('toggles')">
-          <span class="sidebar-link-icon">🔄</span>开关/选择
-        </div>
-        <div class="sidebar-link" onclick="scrollTo('badges')">
-          <span class="sidebar-link-icon">🏷️</span>标签
+        <div class="sample-area">
+          <button class="btn btn-primary">Primary</button>
+          <button class="btn btn-secondary">Secondary</button>
+          <button class="btn btn-destructive">Destructive</button>
+          <button class="btn btn-outline">Outline</button>
+          <button class="btn btn-ghost">Ghost</button>
+          <button class="btn btn-link">Link</button>
         </div>
       </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">复合组件</div>
-        <div class="sidebar-link" onclick="scrollTo('alerts')">
-          <span class="sidebar-link-icon">⚠️</span>提示框
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>sizes · states</span>
         </div>
-        <div class="sidebar-link" onclick="scrollTo('cards')">
-          <span class="sidebar-link-icon">📇</span>卡片
-        </div>
-        <div class="sidebar-link" onclick="scrollTo('dialogs')">
-          <span class="sidebar-link-icon">📋</span>对话框
-        </div>
-        <div class="sidebar-link" onclick="scrollTo('tabs')">
-          <span class="sidebar-link-icon">📑</span>标签页
+        <div class="sample-area">
+          <div class="sample-group">
+            <span class="sample-label">Size</span>
+            <button class="btn btn-primary btn-sm">Small</button>
+            <button class="btn btn-primary">Default</button>
+            <button class="btn btn-primary btn-lg">Large</button>
+            <button class="btn btn-primary btn-icon" aria-label="icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+          <div class="sample-group">
+            <span class="sample-label">State</span>
+            <button class="btn btn-primary">Default</button>
+            <button class="btn btn-primary" style="box-shadow:0 0 0 3px color-mix(in srgb, var(--ring) 30%, transparent);">Focused</button>
+            <button class="btn btn-primary" disabled>Disabled</button>
+          </div>
         </div>
       </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">反馈组件</div>
-        <div class="sidebar-link" onclick="scrollTo('progress')">
-          <span class="sidebar-link-icon">📊</span>进度条
+
+      <div class="rules-grid">
+        <div class="rule do">
+          <div class="rule-head"><span class="rule-icon">✓</span> Do</div>
+          <p>主操作按钮使用 <code>primary</code>，置于视觉焦点位置。</p>
+          <p>次级操作使用 <code>ghost</code> 或 <code>outline</code>，形成层级。</p>
+          <p>按钮文案使用动词开头，如 "开始抽奖"、"保存设置"。</p>
         </div>
-        <div class="sidebar-link" onclick="scrollTo('skeleton')">
-          <span class="sidebar-link-icon">⏳</span>骨架屏
-        </div>
-        <div class="sidebar-link" onclick="scrollTo('tooltips')">
-          <span class="sidebar-link-icon">💬</span>工具提示
-        </div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-title">业务组件</div>
-        <div class="sidebar-link" onclick="scrollTo('result')">
-          <span class="sidebar-link-icon">🎰</span>结果展示
-        </div>
-        <div class="sidebar-link" onclick="scrollTo('history')">
-          <span class="sidebar-link-icon">📜</span>历史记录
-        </div>
-        <div class="sidebar-link" onclick="scrollTo('settings')">
-          <span class="sidebar-link-icon">⚙️</span>设置面板
+        <div class="rule dont">
+          <div class="rule-head"><span class="rule-icon">✕</span> Don't</div>
+          <p>同一行放置超过 2 个 <code>primary</code> 按钮。</p>
+          <p>使用 <code>destructive</code> 作为常规操作按钮。</p>
+          <p>按钮文案过长超过 10 个汉字。</p>
         </div>
       </div>
-    </aside>
 
-    <!-- Content -->
-    <main class="content">
-      <div class="page-header">
-        <div class="page-label">Component Library</div>
-        <h1 class="page-title">组件库规范</h1>
-        <p class="page-desc">ZenDraw 基于 shadcn/ui 规范的完整组件库，包含基础组件、复合组件和业务组件。所有组件都遵循统一的设计语言和交互规范。</p>
+      <div class="a11y-box">
+        <dt>键盘</dt>
+        <dd><kbd>Tab</kbd> 聚焦 · <kbd>Enter</kbd> / <kbd>Space</kbd> 触发</dd>
+        <dt>ARIA</dt>
+        <dd><code>role="button"</code> · <code>aria-disabled="true"</code>（禁用时）</dd>
+        <dt>焦点</dt>
+        <dd>始终可见 3px 环形轮廓（<code>focus-visible</code>）</dd>
+        <dt>尺寸</dt>
+        <dd>最小点击区域 <code>32×32px</code>（符合 WCAG 2.5.5 Target Size）</dd>
       </div>
 
-      <!-- Buttons -->
-      <section class="section" id="buttons">
-        <h2 class="section-title">按钮 Button</h2>
+      <pre class="code-block"><span class="tok-tag">&lt;Button</span> <span class="tok-attr">variant</span>=<span class="tok-str">"default"</span> <span class="tok-attr">size</span>=<span class="tok-str">"default"</span><span class="tok-tag">&gt;</span>
+  Primary Action
+<span class="tok-tag">&lt;/Button&gt;</span>
 
-        <div class="subsection-title">变体 Variants</div>
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-primary">Primary</button>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Primary</div>
-              <div class="component-desc">主要行动按钮，用于重要操作</div>
-              <code class="component-meta">bg-primary</code>
-            </div>
+<span class="tok-com">// 完整 API</span>
+<span class="tok-tag">&lt;Button</span>
+  <span class="tok-attr">variant</span>={<span class="tok-str">"default" | "destructive" | "outline" | "secondary" | "ghost" | "link"</span>}
+  <span class="tok-attr">size</span>={<span class="tok-str">"sm" | "default" | "lg" | "icon"</span>}
+  <span class="tok-attr">disabled</span>={<span class="tok-keyword">false</span>}
+  <span class="tok-attr">onClick</span>={(e) =&gt; {/* ... */}}
+<span class="tok-tag">&gt;</span>
+  {children}
+<span class="tok-tag">&lt;/Button&gt;</span></pre>
+    </div>
+
+    <!-- ======= Input ======= -->
+    <div class="comp-block" id="c-input">
+      <div class="comp-title"><h3>Input</h3><span class="comp-anchor">#input</span></div>
+      <p class="comp-desc">单行文本输入框。支持图标前缀、禁用与无效状态。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>variants</span>
+        </div>
+        <div class="sample-area column" style="width:100%;">
+          <div class="input"><input type="text" value="这是一个默认输入框" /></div>
+          <div class="input"><input type="text" placeholder="请输入抽奖范围上限" /></div>
+          <div class="input">
+            <svg class="inp-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" placeholder="搜索历史记录..." />
           </div>
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-outline">Outline</button>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Outline</div>
-              <div class="component-desc">次要操作，边界清晰</div>
-              <code class="component-meta">border + transparent</code>
-            </div>
+          <div class="input is-disabled"><input type="text" value="此输入框已禁用" disabled /></div>
+          <div class="input is-invalid"><input type="text" value="请输入有效数值" /></div>
+        </div>
+      </div>
+
+      <div class="rules-grid">
+        <div class="rule do">
+          <div class="rule-head"><span class="rule-icon">✓</span> Do</div>
+          <p>始终为输入框提供清晰的 <code>Label</code> 或占位符。</p>
+          <p>数值输入时配合单位提示，如 "范围 (1 - 100)"。</p>
+          <p>错误状态配合下方错误文案一起展示。</p>
+        </div>
+        <div class="rule dont">
+          <div class="rule-head"><span class="rule-icon">✕</span> Don't</div>
+          <p>仅依赖 placeholder 作为输入说明（会在输入时消失）。</p>
+          <p>混用图标、前缀、后缀使输入框显得拥挤。</p>
+        </div>
+      </div>
+
+      <div class="a11y-box">
+        <dt>键盘</dt>
+        <dd><kbd>Tab</kbd> 聚焦 · <kbd>Esc</kbd> 清除 · 方向键移动光标</dd>
+        <dt>ARIA</dt>
+        <dd><code>aria-label</code> / <code>aria-describedby</code> 关联帮助文本</dd>
+        <dt>错误</dt>
+        <dd>使用 <code>aria-invalid="true"</code> 与 <code>aria-errormessage</code></dd>
+        <dt>标签</dt>
+        <dd>必须使用显式 <code>&lt;label htmlFor&gt;</code>，屏幕阅读器才可正确朗读</dd>
+      </div>
+
+      <pre class="code-block"><span class="tok-tag">&lt;Input</span>
+  <span class="tok-attr">type</span>=<span class="tok-str">"number"</span>
+  <span class="tok-attr">placeholder</span>=<span class="tok-str">"请输入最大值"</span>
+  <span class="tok-attr">value</span>={value}
+  <span class="tok-attr">onChange</span>={onChange}
+  <span class="tok-attr">disabled</span>={<span class="tok-keyword">false</span>}
+<span class="tok-tag">/&gt;</span>
+
+<span class="tok-com">// 带前缀图标</span>
+<span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"input"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;SearchIcon</span> <span class="tok-attr">className</span>=<span class="tok-str">"inp-icon"</span> <span class="tok-tag">/&gt;</span>
+  <span class="tok-tag">&lt;input</span> <span class="tok-attr">placeholder</span>=<span class="tok-str">"搜索..."</span> <span class="tok-tag">/&gt;</span>
+<span class="tok-tag">&lt;/div&gt;</span></pre>
+    </div>
+
+    <!-- ======= Textarea ======= -->
+    <div class="comp-block" id="c-textarea">
+      <div class="comp-title"><h3>Textarea</h3><span class="comp-anchor">#textarea</span></div>
+      <p class="comp-desc">多行文本输入。用于备注、配置描述、批量数字粘贴等场景。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>variants</span>
+        </div>
+        <div class="sample-area column" style="width:100%;">
+          <textarea class="textarea" placeholder="粘贴抽奖名单，每行一个数字或用逗号分隔..."></textarea>
+          <textarea class="textarea" style="min-height: 120px;">本次抽奖用于季度总结会，抽取 3 名幸运员工。范围：1 - 50。</textarea>
+        </div>
+      </div>
+
+      <div class="rules-grid">
+        <div class="rule do">
+          <div class="rule-head"><span class="rule-icon">✓</span> Do</div>
+          <p>允许纵向 <code>resize</code>，方便用户自行调整大小。</p>
+          <p>配合 <code>maxLength</code> 或字符计数器限制输入长度。</p>
+        </div>
+        <div class="rule dont">
+          <div class="rule-head"><span class="rule-icon">✕</span> Don't</div>
+          <p>对于简短输入（< 1 行）使用 Textarea，应改用 Input。</p>
+          <p>在移动端设置过高的默认高度。</p>
+        </div>
+      </div>
+
+      <div class="a11y-box">
+        <dt>键盘</dt>
+        <dd><kbd>Enter</kbd> 换行 · <kbd>Tab</kbd> 切换焦点（可配置为缩进）</dd>
+        <dt>ARIA</dt>
+        <dd>需与 <code>&lt;label&gt;</code> 关联 · <code>aria-multiline="true"</code></dd>
+      </div>
+
+      <pre class="code-block"><span class="tok-tag">&lt;Textarea</span>
+  <span class="tok-attr">placeholder</span>=<span class="tok-str">"粘贴抽奖名单，每行一个..."</span>
+  <span class="tok-attr">rows</span>={<span class="tok-num">5</span>}
+  <span class="tok-attr">maxLength</span>={<span class="tok-num">2000</span>}
+  <span class="tok-attr">onChange</span>={onChange}
+<span class="tok-tag">/&gt;</span></pre>
+    </div>
+
+    <!-- ======= Switch ======= -->
+    <div class="comp-block" id="c-switch">
+      <div class="comp-title"><h3>Switch</h3><span class="comp-anchor">#switch</span></div>
+      <p class="comp-desc">即时生效的开关控件。用于"启用/禁用"类的设置项。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>states</span>
+        </div>
+        <div class="sample-area column" style="width:100%;">
+          <div class="switch-wrap"><span>未启用</span><span class="switch" role="switch" aria-checked="false"></span></div>
+          <div class="switch-wrap"><span>已启用</span><span class="switch is-on" role="switch" aria-checked="true"></span></div>
+          <div class="switch-wrap"><span>禁用 (开)</span><span class="switch is-on is-disabled" role="switch" aria-checked="true"></span></div>
+          <div class="switch-wrap"><span>禁用 (关)</span><span class="switch is-disabled" role="switch" aria-checked="false"></span></div>
+        </div>
+      </div>
+
+      <div class="rules-grid">
+        <div class="rule do">
+          <div class="rule-head"><span class="rule-icon">✓</span> Do</div>
+          <p>用于即时生效的二元设置（如通知、声音）。</p>
+          <p>提供清晰的文本标签说明开关的含义。</p>
+        </div>
+        <div class="rule dont">
+          <div class="rule-head"><span class="rule-icon">✕</span> Don't</div>
+          <p>用于需要额外确认才能保存的选项（使用 Checkbox 替代）。</p>
+          <p>标签过长导致折行，影响视觉一致性。</p>
+        </div>
+      </div>
+
+      <div class="a11y-box">
+        <dt>键盘</dt>
+        <dd><kbd>Space</kbd> 切换 · <kbd>Enter</kbd> 激活</dd>
+        <dt>ARIA</dt>
+        <dd><code>role="switch"</code> · <code>aria-checked="true|false"</code></dd>
+        <dt>焦点</dt>
+        <dd>聚焦时显示环形轮廓，指示当前交互位置</dd>
+      </div>
+
+      <pre class="code-block"><span class="tok-tag">&lt;Switch</span>
+  <span class="tok-attr">checked</span>={checked}
+  <span class="tok-attr">onCheckedChange</span>={setChecked}
+  <span class="tok-attr">disabled</span>={<span class="tok-keyword">false</span>}
+<span class="tok-tag">/&gt;</span></pre>
+    </div>
+
+    <!-- ======= Select ======= -->
+    <div class="comp-block" id="c-select">
+      <div class="comp-title"><h3>Select</h3><span class="comp-anchor">#select</span></div>
+      <p class="comp-desc">下拉选择器。用于在一组预设选项中选择单个值。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>default · open</span>
+        </div>
+        <div class="sample-area column" style="width:100%;">
+          <div class="select">
+            <span>选择抽奖模式</span>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-ghost">Ghost</button>
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <div class="select is-open">
+              <span>单次抽奖</span>
+              <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="transform: rotate(180deg);"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
-            <div class="component-info">
-              <div class="component-name">Ghost</div>
-              <div class="component-desc">最轻量的操作方式</div>
-              <code class="component-meta">transparent</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-danger">Danger</button>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Danger</div>
-              <div class="component-desc">危险操作，如删除</div>
-              <code class="component-meta">bg-danger</code>
+            <div class="select-dropdown">
+              <div class="select-opt is-selected">单次抽奖 <span>✓</span></div>
+              <div class="select-opt">连续抽奖</div>
+              <div class="select-opt">批量抽奖 (不重复)</div>
+              <div class="select-opt">自定义模式</div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="subsection-title">尺寸 Sizes</div>
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-primary btn-sm">Small</button>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Small</div>
-              <code class="component-meta">h-32px</code>
-            </div>
+      <div class="rules-grid">
+        <div class="rule do">
+          <div class="rule-head"><span class="rule-icon">✓</span> Do</div>
+          <p>选项不超过 7 个时使用，过多建议改用 Input + 搜索。</p>
+          <p>选项按逻辑顺序排列（字母/频率/重要性）。</p>
+        </div>
+        <div class="rule dont">
+          <div class="rule-head"><span class="rule-icon">✕</span> Don't</div>
+          <p>选项文本过长超过触发区域宽度。</p>
+          <p>嵌套多层级下拉（使用 Combobox 或 Menu 替代）。</p>
+        </div>
+      </div>
+
+      <div class="a11y-box">
+        <dt>键盘</dt>
+        <dd><kbd>↑</kbd> <kbd>↓</kbd> 导航 · <kbd>Enter</kbd> 选择 · <kbd>Esc</kbd> 关闭</dd>
+        <dt>ARIA</dt>
+        <dd><code>role="combobox"</code> · <code>aria-expanded</code> · <code>aria-activedescendant</code></dd>
+      </div>
+
+      <pre class="code-block"><span class="tok-tag">&lt;Select</span> <span class="tok-attr">onValueChange</span>={setValue} <span class="tok-attr">defaultValue</span>=<span class="tok-str">"single"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;SelectTrigger&gt;</span>
+    <span class="tok-tag">&lt;SelectValue</span> <span class="tok-attr">placeholder</span>=<span class="tok-str">"选择模式"</span> <span class="tok-tag">/&gt;</span>
+  <span class="tok-tag">&lt;/SelectTrigger&gt;</span>
+  <span class="tok-tag">&lt;SelectContent&gt;</span>
+    <span class="tok-tag">&lt;SelectItem</span> <span class="tok-attr">value</span>=<span class="tok-str">"single"</span><span class="tok-tag">&gt;</span>单次抽奖<span class="tok-tag">&lt;/SelectItem&gt;</span>
+    <span class="tok-tag">&lt;SelectItem</span> <span class="tok-attr">value</span>=<span class="tok-str">"continuous"</span><span class="tok-tag">&gt;</span>连续抽奖<span class="tok-tag">&lt;/SelectItem&gt;</span>
+  <span class="tok-tag">&lt;/SelectContent&gt;</span>
+<span class="tok-tag">&lt;/Select&gt;</span></pre>
+    </div>
+
+    <!-- ======= Label ======= -->
+    <div class="comp-block" id="c-label">
+      <div class="comp-title"><h3>Label</h3><span class="comp-anchor">#label</span></div>
+      <p class="comp-desc">表单字段标签。支持必需标记与辅助说明。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>variants</span>
+        </div>
+        <div class="sample-area column" style="width:100%;">
+          <div>
+            <span class="label">抽奖名称</span>
+            <div class="input" style="margin-top:6px;"><input placeholder="例如：季度幸运抽奖" /></div>
           </div>
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-primary">Default</button>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Default</div>
-              <code class="component-meta">h-40px</code>
-            </div>
+          <div>
+            <span class="label">最小值 <span class="req-mark">*</span></span>
+            <div class="input" style="margin-top:6px;"><input type="number" value="1" /></div>
+            <div class="hint-text">必需字段，范围 1 - 9999</div>
           </div>
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-primary btn-lg">Large</button>
+        </div>
+      </div>
+
+      <div class="a11y-box">
+        <dt>ARIA</dt>
+        <dd>使用 <code>htmlFor</code> 与输入框 ID 关联，辅助说明通过 <code>aria-describedby</code> 关联</dd>
+        <dt>必需</dt>
+        <dd>使用 <span style="color:var(--destructive)">*</span> 标记，避免仅依赖颜色传达信息</dd>
+      </div>
+
+      <pre class="code-block"><span class="tok-tag">&lt;Label</span> <span class="tok-attr">htmlFor</span>=<span class="tok-str">"min"</span><span class="tok-tag">&gt;</span>
+  最小值 <span className="req-mark">*</span>
+<span class="tok-tag">&lt;/Label&gt;</span>
+<span class="tok-tag">&lt;Input</span> <span class="tok-attr">id</span>=<span class="tok-str">"min"</span> <span class="tok-attr">required</span> <span class="tok-tag">/&gt;</span>
+<span class="tok-tag">&lt;p</span> <span class="tok-attr">className</span>=<span class="tok-str">"hint-text"</span><span class="tok-tag">&gt;</span>范围 1 - 9999<span class="tok-tag">&lt;/p&gt;</span></pre>
+    </div>
+
+    <!-- ======= Badge ======= -->
+    <div class="comp-block" id="c-badge">
+      <div class="comp-title"><h3>Badge</h3><span class="comp-anchor">#badge</span></div>
+      <p class="comp-desc">状态、分类、数值的小型标记组件。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>variants</span>
+        </div>
+        <div class="sample-area" style="gap:12px;">
+          <span class="badge badge-default">Default</span>
+          <span class="badge badge-secondary">Secondary</span>
+          <span class="badge badge-outline">Outline</span>
+          <span class="badge badge-destructive">Error</span>
+          <span class="badge badge-success">成功</span>
+          <span class="badge badge-warning">警告</span>
+          <span class="badge badge-info">提示</span>
+        </div>
+      </div>
+
+      <div class="rules-grid">
+        <div class="rule do">
+          <div class="rule-head"><span class="rule-icon">✓</span> Do</div>
+          <p>使用 Badge 标记状态（进行中、已完成）或分类。</p>
+          <p>同一区域的 Badge 使用相同变体与尺寸，保持视觉一致。</p>
+        </div>
+        <div class="rule dont">
+          <div class="rule-head"><span class="rule-icon">✕</span> Don't</div>
+          <p>在单个 Badge 中放置过长文本（建议 < 6 字）。</p>
+          <p>使用 Badge 替代 Button 触发操作。</p>
+        </div>
+      </div>
+
+      <pre class="code-block"><span class="tok-tag">&lt;Badge</span> <span class="tok-attr">variant</span>=<span class="tok-str">"success"</span><span class="tok-tag">&gt;</span>已完成<span class="tok-tag">&lt;/Badge&gt;</span>
+<span class="tok-tag">&lt;Badge</span> <span class="tok-attr">variant</span>=<span class="tok-str">"warning"</span><span class="tok-tag">&gt;</span>进行中<span class="tok-tag">&lt;/Badge&gt;</span>
+<span class="tok-tag">&lt;Badge</span> <span class="tok-attr">variant</span>=<span class="tok-str">"destructive"</span><span class="tok-tag">&gt;</span>失败<span class="tok-tag">&lt;/Badge&gt;</span></pre>
+    </div>
+
+    <!-- ======= Card ======= -->
+    <div class="comp-block" id="c-card">
+      <div class="comp-title"><h3>Card</h3><span class="comp-anchor">#card</span></div>
+      <p class="comp-desc">内容分组容器。由 header、content、footer 三部分组成。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>default</span>
+        </div>
+        <div class="sample-area">
+          <div class="card" style="max-width:380px;">
+            <div class="card-header">
+              <div class="card-title">季度幸运抽奖</div>
+              <div class="card-desc">范围 1 - 100，已进行 42 次</div>
             </div>
-            <div class="component-info">
-              <div class="component-name">Large</div>
-              <code class="component-meta">h-48px</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-primary btn-icon">⚙</button>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Icon</div>
-              <code class="component-meta">40×40</code>
+            <div class="card-content">当前最近中奖号码为 <strong>042</strong>，于 2 分钟前产生。历史记录可在下方查看。</div>
+            <div class="card-footer">
+              <button class="btn btn-primary btn-sm">开始抽奖</button>
+              <button class="btn btn-outline btn-sm">查看设置</button>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="subsection-title">状态 States</div>
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-primary">Normal</button>
+      <pre class="code-block"><span class="tok-tag">&lt;Card&gt;</span>
+  <span class="tok-tag">&lt;CardHeader&gt;</span>
+    <span class="tok-tag">&lt;CardTitle&gt;</span>季度幸运抽奖<span class="tok-tag">&lt;/CardTitle&gt;</span>
+    <span class="tok-tag">&lt;CardDescription&gt;</span>范围 1 - 100<span class="tok-tag">&lt;/CardDescription&gt;</span>
+  <span class="tok-tag">&lt;/CardHeader&gt;</span>
+  <span class="tok-tag">&lt;CardContent&gt;</span>当前号码 <span class="tok-tag">&lt;strong&gt;</span>042<span class="tok-tag">&lt;/strong&gt;</span><span class="tok-tag">&lt;/CardContent&gt;</span>
+  <span class="tok-tag">&lt;CardFooter&gt;</span>
+    <span class="tok-tag">&lt;Button&gt;</span>开始抽奖<span class="tok-tag">&lt;/Button&gt;</span>
+  <span class="tok-tag">&lt;/CardFooter&gt;</span>
+<span class="tok-tag">&lt;/Card&gt;</span></pre>
+    </div>
+
+    <!-- ======= Tabs ======= -->
+    <div class="comp-block" id="c-tabs">
+      <div class="comp-title"><h3>Tabs</h3><span class="comp-anchor">#tabs</span></div>
+      <p class="comp-desc">标签页切换组件。用于在同一区域展示多组并列内容。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>interactive — click to switch</span>
+        </div>
+        <div class="sample-area" style="flex-direction:column; align-items:flex-start; width:100%;">
+          <div class="tabs" style="width:100%; max-width:520px;">
+            <div class="tab-list" id="demo-tabs">
+              <button class="tab-trigger is-active" data-tab="overview">概览</button>
+              <button class="tab-trigger" data-tab="history">历史</button>
+              <button class="tab-trigger" data-tab="settings">设置</button>
             </div>
-            <div class="component-info">
-              <div class="component-name">Normal</div>
-              <code class="component-meta">默认状态</code>
+            <div class="tab-content" id="tab-panel-overview">
+              已进行 <strong>42</strong> 次抽奖 · 总时长 <strong>12</strong> 分钟 · 平均间隔 <strong>17</strong> 秒
             </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-primary" disabled>Disabled</button>
+            <div class="tab-content" id="tab-panel-history" style="display:none;">
+              最近 5 次：042, 088, 015, 073, 036 —— 点击"查看全部"了解更多
             </div>
-            <div class="component-info">
-              <div class="component-name">Disabled</div>
-              <code class="component-meta">opacity 0.5</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-primary" style="animation: pulse 1s infinite;">Loading</button>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Loading</div>
-              <code class="component-meta">opacity 0.7 + pulse</code>
+            <div class="tab-content" id="tab-panel-settings" style="display:none;">
+              当前模式：单次抽奖 · 范围：1 - 100 · 声音：开启 · 动画：开启
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Inputs -->
-      <section class="section" id="inputs">
-        <h2 class="section-title">输入框 Input</h2>
+      <div class="rules-grid">
+        <div class="rule do">
+          <div class="rule-head"><span class="rule-icon">✓</span> Do</div>
+          <p>标签数量建议 2 - 5 个，文本简短明确。</p>
+          <p>默认聚焦首个 Tab，保持切换时焦点管理正确。</p>
+        </div>
+        <div class="rule dont">
+          <div class="rule-head"><span class="rule-icon">✕</span> Don't</div>
+          <p>在 Tab 中嵌套另一个 Tab（使用侧栏或分组替代）。</p>
+          <p>使用长文本或图标+长文本混合导致宽度不一致。</p>
+        </div>
+      </div>
 
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <div class="input-wrapper">
-                <label class="input-label">默认</label>
-                <input type="text" class="input" placeholder="请输入内容..." />
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">默认状态</div>
-              <code class="component-meta">border + 1.5px</code>
-            </div>
+      <div class="a11y-box">
+        <dt>键盘</dt>
+        <dd><kbd>←</kbd> <kbd>→</kbd> 切换 · <kbd>Home</kbd>/<kbd>End</kbd> 首尾 · <kbd>Tab</kbd> 进入内容</dd>
+        <dt>ARIA</dt>
+        <dd><code>role="tablist"</code> · <code>role="tab"</code> · <code>aria-selected</code> · <code>aria-controls</code></dd>
+      </div>
+
+      <pre class="code-block"><span class="tok-tag">&lt;Tabs</span> <span class="tok-attr">defaultValue</span>=<span class="tok-str">"overview"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;TabsList&gt;</span>
+    <span class="tok-tag">&lt;TabsTrigger</span> <span class="tok-attr">value</span>=<span class="tok-str">"overview"</span><span class="tok-tag">&gt;</span>概览<span class="tok-tag">&lt;/TabsTrigger&gt;</span>
+    <span class="tok-tag">&lt;TabsTrigger</span> <span class="tok-attr">value</span>=<span class="tok-str">"history"</span><span class="tok-tag">&gt;</span>历史<span class="tok-tag">&lt;/TabsTrigger&gt;</span>
+    <span class="tok-tag">&lt;TabsTrigger</span> <span class="tok-attr">value</span>=<span class="tok-str">"settings"</span><span class="tok-tag">&gt;</span>设置<span class="tok-tag">&lt;/TabsTrigger&gt;</span>
+  <span class="tok-tag">&lt;/TabsList&gt;</span>
+  <span class="tok-tag">&lt;TabsContent</span> <span class="tok-attr">value</span>=<span class="tok-str">"overview"</span><span class="tok-tag">&gt;</span>...<span class="tok-tag">&lt;/TabsContent&gt;</span>
+<span class="tok-tag">&lt;/Tabs&gt;</span></pre>
+    </div>
+
+    <!-- ======= Alert ======= -->
+    <div class="comp-block" id="c-alert">
+      <div class="comp-title"><h3>Alert</h3><span class="comp-anchor">#alert</span></div>
+      <p class="comp-desc">重要信息提示。含 success / error / warning / info 四种变体。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>variants</span>
+        </div>
+        <div class="sample-area column" style="width:100%; gap:16px;">
+          <div class="alert alert-success">
+            <div class="alert-icon">✓</div>
+            <div class="alert-body"><div class="alert-title">抽奖成功</div><div class="alert-desc">号码 042 已成功生成并保存到历史记录。</div></div>
           </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <div class="input-wrapper">
-                <label class="input-label">带提示</label>
-                <input type="text" class="input" value="已输入的内容" />
-                <span class="input-hint">这是一条帮助提示文字</span>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">带提示</div>
-              <code class="component-meta">input-hint</code>
-            </div>
+          <div class="alert alert-error">
+            <div class="alert-icon">!</div>
+            <div class="alert-body"><div class="alert-title">网络错误</div><div class="alert-desc">无法连接到服务器，请检查网络连接后重试。</div></div>
           </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <div class="input-wrapper">
-                <label class="input-label">错误状态</label>
-                <input type="text" class="input error" value="无效输入" />
-                <span class="input-error">输入内容不符合要求</span>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">错误状态</div>
-              <code class="component-meta">border-danger</code>
-            </div>
+          <div class="alert alert-warning">
+            <div class="alert-icon">⚠</div>
+            <div class="alert-body"><div class="alert-title">范围不合法</div><div class="alert-desc">最小值必须小于最大值。请检查输入。</div></div>
           </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <div class="input-wrapper">
-                <label class="input-label">禁用状态</label>
-                <input type="text" class="input" value="不可编辑" disabled />
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">禁用状态</div>
-              <code class="component-meta">disabled</code>
-            </div>
+          <div class="alert alert-info">
+            <div class="alert-icon">i</div>
+            <div class="alert-body"><div class="alert-title">提示</div><div class="alert-desc">按 <kbd>空格</kbd> 可快速触发一次抽奖。</div></div>
           </div>
         </div>
+      </div>
 
-        <div class="subsection-title">变体 Variants</div>
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <input type="number" class="input" placeholder="数字输入" />
-            </div>
-            <div class="component-info">
-              <div class="component-name">Number</div>
-              <code class="component-meta">type="number"</code>
-            </div>
+      <pre class="code-block"><span class="tok-tag">&lt;Alert</span> <span class="tok-attr">variant</span>=<span class="tok-str">"destructive"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;AlertTitle&gt;</span>操作失败<span class="tok-tag">&lt;/AlertTitle&gt;</span>
+  <span class="tok-tag">&lt;AlertDescription&gt;</span>请稍后重试。<span class="tok-tag">&lt;/AlertDescription&gt;</span>
+<span class="tok-tag">&lt;/Alert&gt;</span></pre>
+    </div>
+
+    <!-- ======= Separator ======= -->
+    <div class="comp-block" id="c-separator">
+      <div class="comp-title"><h3>Separator</h3><span class="comp-anchor">#separator</span></div>
+      <p class="comp-desc">视觉分割线。水平、垂直、带文本三种形式。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>horizontal · with text · vertical</span>
+        </div>
+        <div class="sample-area column" style="width:100%; gap:20px;">
+          <div>
+            <div style="font-size:13px; color:var(--muted-foreground); margin-bottom:8px;">上方内容</div>
+            <div class="sep-h"></div>
+            <div style="font-size:13px; color:var(--muted-foreground); margin-top:8px;">下方内容</div>
           </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <textarea class="input textarea" placeholder="多行文本..."></textarea>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Textarea</div>
-              <code class="component-meta">min-height: 100px</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <select class="input select">
-                <option>选项一</option>
-                <option>选项二</option>
-                <option>选项三</option>
-              </select>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Select</div>
-              <code class="component-meta">appearance: none</code>
-            </div>
+          <div class="sep-text">或</div>
+          <div style="display:flex; align-items:center; gap:12px; font-size:14px;">
+            <span>保存</span><span class="sep-v"></span><span>另存为</span><span class="sep-v"></span><span>取消</span>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Toggles -->
-      <section class="section" id="toggles">
-        <h2 class="section-title">开关与选择 Toggle & Selection</h2>
+      <pre class="code-block"><span class="tok-tag">&lt;Separator</span> <span class="tok-attr">orientation</span>=<span class="tok-str">"horizontal"</span> <span class="tok-tag">/&gt;</span>
+<span class="tok-tag">&lt;Separator</span> <span class="tok-attr">orientation</span>=<span class="tok-str">"vertical"</span> <span class="tok-tag">/&gt;</span>
 
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <label class="checkbox">
-                <input type="checkbox" class="checkbox-input" checked />
-                <span>同意服务条款</span>
-              </label>
-              <label class="checkbox">
-                <input type="checkbox" class="checkbox-input" />
-                <span>订阅更新通知</span>
-              </label>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Checkbox</div>
-              <code class="component-meta">border-radius: 5px</code>
-            </div>
+<span class="tok-com">// 带文本的分隔符</span>
+<span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"sep-text"</span><span class="tok-tag">&gt;</span>或<span class="tok-tag">&lt;/div&gt;</span></pre>
+    </div>
+
+    <!-- ============================================================
+         2. 复合组件 · Composite Components
+         ============================================================ -->
+    <h2 id="section-composite">2. 复合组件</h2>
+    <p class="section-intro">由多个基础组件组合而成，解决特定布局或交互模式。</p>
+
+    <!-- Form Field -->
+    <div class="comp-block" id="c-formfield">
+      <div class="comp-title"><h3>Form Field</h3><span class="comp-anchor">#form-field</span></div>
+      <p class="comp-desc">标签 + 输入框 + 辅助说明 + 错误消息的完整表单单元。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>normal · invalid</span>
+        </div>
+        <div class="sample-area" style="flex-direction:column; align-items:flex-start; width:100%; gap:24px;">
+          <div class="form-field" style="max-width:380px;">
+            <span class="label">最小值 <span class="req-mark">*</span></span>
+            <div class="input" style="width:100%;"><input type="number" value="1" /></div>
+            <div class="hint-text">范围 1 - 9999，不能大于最大值</div>
           </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <label class="radio">
-                <input type="radio" name="demo" class="radio-input" checked />
-                <span>选项 A</span>
-              </label>
-              <label class="radio">
-                <input type="radio" name="demo" class="radio-input" />
-                <span>选项 B</span>
-              </label>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Radio</div>
-              <code class="component-meta">border-radius: 50%</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: flex-start; gap: 20px;">
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <div class="switch" onclick="this.classList.toggle('on')"></div>
-                <span>关闭</span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <div class="switch on" onclick="this.classList.toggle('on')"></div>
-                <span>开启</span>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Switch</div>
-              <code class="component-meta">48×28px</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 12px;">
-              <label class="switch-row" style="padding: 0; border: none;">
-                <div>
-                  <div class="switch-label">自动保存</div>
-                  <div class="switch-desc">输入时自动保存到本地</div>
-                </div>
-                <div class="switch on" onclick="this.classList.toggle('on')"></div>
-              </label>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Switch Row</div>
-              <code class="component-meta">label + switch</code>
-            </div>
+          <div class="form-field" style="max-width:380px;">
+            <span class="label">最大值 <span class="req-mark">*</span></span>
+            <div class="input is-invalid" style="width:100%;"><input type="number" value="0" /></div>
+            <div class="err-text">最大值必须大于或等于 1</div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Badges -->
-      <section class="section" id="badges">
-        <h2 class="section-title">标签 Badge & Tag</h2>
+      <pre class="code-block"><span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"form-field"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;Label</span> <span class="tok-attr">htmlFor</span>=<span class="tok-str">"max"</span><span class="tok-tag">&gt;</span>最大值<span class="tok-tag">&lt;/Label&gt;</span>
+  <span class="tok-tag">&lt;Input</span> <span class="tok-attr">id</span>=<span class="tok-str">"max"</span> <span class="tok-attr">aria-invalid</span>={<span class="tok-keyword">true</span>} <span class="tok-tag">/&gt;</span>
+  {error ? (<span class="tok-tag">&lt;ErrorMessage&gt;</span>{error}<span class="tok-tag">&lt;/ErrorMessage&gt;</span>)
+         : (<span class="tok-tag">&lt;HintText&gt;</span>范围 1 - 9999<span class="tok-tag">&lt;/HintText&gt;</span>)}
+<span class="tok-tag">&lt;/div&gt;</span></pre>
+    </div>
 
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview">
-              <span class="badge badge-default">Default</span>
-              <span class="badge badge-primary">Primary</span>
-              <span class="badge badge-accent">Accent</span>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Badge Variants</div>
-              <code class="component-meta">pill-shaped</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview">
-              <span class="badge badge-success">Success</span>
-              <span class="badge badge-warning">Warning</span>
-              <span class="badge badge-danger">Danger</span>
-              <span class="badge badge-info">Info</span>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Status Badges</div>
-              <code class="component-meta">语义色彩</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview">
-              <div class="tag">标签一<span class="tag-close">×</span></div>
-              <div class="tag">标签二</div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Tag</div>
-              <code class="component-meta">可关闭</code>
-            </div>
-          </div>
+    <!-- Confirmation Dialog -->
+    <div class="comp-block" id="c-dialog">
+      <div class="comp-title"><h3>Confirmation Dialog</h3><span class="comp-anchor">#dialog</span></div>
+      <p class="comp-desc">破坏性操作前的二次确认。标题 + 描述 + 取消 + 确认按钮。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>dialog example</span>
         </div>
-      </section>
-
-      <!-- Alerts -->
-      <section class="section" id="alerts">
-        <h2 class="section-title">提示框 Alert</h2>
-
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
-              <div class="alert alert-success">
-                <span class="alert-icon">✓</span>
-                <div class="alert-content">
-                  <div class="alert-title">操作成功</div>
-                  <div class="alert-message">结果已保存到本地文件</div>
-                </div>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Success</div>
-              <code class="component-meta">bg-success-soft</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
-              <div class="alert alert-warning">
-                <span class="alert-icon">⚠</span>
-                <div class="alert-content">
-                  <div class="alert-title">注意事项</div>
-                  <div class="alert-message">请确保输入的数值范围正确</div>
-                </div>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Warning</div>
-              <code class="component-meta">bg-warning-soft</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
-              <div class="alert alert-danger">
-                <span class="alert-icon">✗</span>
-                <div class="alert-content">
-                  <div class="alert-title">输入无效</div>
-                  <div class="alert-message">最小值不能大于最大值</div>
-                </div>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Danger</div>
-              <code class="component-meta">bg-danger-soft</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
-              <div class="alert alert-info">
-                <span class="alert-icon">ℹ</span>
-                <div class="alert-content">
-                  <div class="alert-title">提示信息</div>
-                  <div class="alert-message">这是系统自动保存的草稿</div>
-                </div>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">Info</div>
-              <code class="component-meta">bg-info-soft</code>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Cards -->
-      <section class="section" id="cards">
-        <h2 class="section-title">卡片 Card</h2>
-
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="card" style="max-width: 320px;">
-              <div class="card-header">
-                <div class="card-title">卡片标题</div>
-              </div>
-              <div class="card-body">
-                <p style="color: var(--fg-muted); font-size: 14px;">这是卡片的正文内容，可以包含文字、图片等多种元素。</p>
-              </div>
-              <div class="card-footer">
+        <div class="sample-area">
+          <div class="dialog-backdrop" style="max-width:460px;">
+            <div class="dialog">
+              <h4>清空历史记录？</h4>
+              <p>此操作将删除全部 42 条抽奖历史记录，且无法撤销。请确认是否继续。</p>
+              <div class="dialog-actions">
                 <button class="btn btn-ghost btn-sm">取消</button>
-                <button class="btn btn-primary btn-sm">确认</button>
+                <button class="btn btn-destructive btn-sm">确认清空</button>
               </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">基础卡片</div>
-              <code class="component-meta">header + body + footer</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="card" style="max-width: 320px;">
-              <div class="card-body">
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                  <div class="avatar">Z</div>
-                  <div>
-                    <div style="font-weight: 600;">张三</div>
-                    <div style="font-size: 13px; color: var(--fg-muted);">设计师</div>
-                  </div>
-                </div>
-                <p style="color: var(--fg-muted); font-size: 14px;">ZenDraw 的设计简洁大方，用户体验非常流畅。</p>
-                <div style="margin-top: 16px; display: flex; gap: 8px;">
-                  <span class="badge badge-accent">设计</span>
-                  <span class="badge badge-default">产品</span>
-                </div>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">内容卡片</div>
-              <code class="component-meta">avatar + text + tags</code>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Dialogs -->
-      <section class="section" id="dialogs">
-        <h2 class="section-title">对话框 Dialog</h2>
+      <div class="a11y-box">
+        <dt>键盘</dt>
+        <dd><kbd>Esc</kbd> 取消 · <kbd>Enter</kbd> 触发主按钮 · <kbd>Tab</kbd> 在对话框内循环</dd>
+        <dt>ARIA</dt>
+        <dd><code>role="dialog"</code> · <code>aria-modal="true"</code> · <code>aria-labelledby</code> 指向标题</dd>
+        <dt>焦点</dt>
+        <dd>打开时聚焦到"取消"或最安全的按钮；关闭后焦点返回到触发元素</dd>
+      </div>
 
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="btn btn-primary" onclick="openDialog()">打开对话框</button>
-            </div>
-            <div class="component-info">
-              <div class="component-name">模态对话框</div>
-              <code class="component-meta">backdrop + focus trap</code>
-            </div>
-          </div>
+      <pre class="code-block"><span class="tok-tag">&lt;AlertDialog&gt;</span>
+  <span class="tok-tag">&lt;AlertDialogTrigger&gt;</span>清空记录<span class="tok-tag">&lt;/AlertDialogTrigger&gt;</span>
+  <span class="tok-tag">&lt;AlertDialogContent&gt;</span>
+    <span class="tok-tag">&lt;AlertDialogHeader&gt;</span>
+      <span class="tok-tag">&lt;AlertDialogTitle&gt;</span>清空历史记录？<span class="tok-tag">&lt;/AlertDialogTitle&gt;</span>
+      <span class="tok-tag">&lt;AlertDialogDescription&gt;</span>该操作无法撤销。<span class="tok-tag">&lt;/AlertDialogDescription&gt;</span>
+    <span class="tok-tag">&lt;/AlertDialogHeader&gt;</span>
+    <span class="tok-tag">&lt;AlertDialogFooter&gt;</span>
+      <span class="tok-tag">&lt;AlertDialogCancel&gt;</span>取消<span class="tok-tag">&lt;/AlertDialogCancel&gt;</span>
+      <span class="tok-tag">&lt;AlertDialogAction&gt;</span>确认清空<span class="tok-tag">&lt;/AlertDialogAction&gt;</span>
+    <span class="tok-tag">&lt;/AlertDialogFooter&gt;</span>
+  <span class="tok-tag">&lt;/AlertDialogContent&gt;</span>
+<span class="tok-tag">&lt;/AlertDialog&gt;</span></pre>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="comp-block" id="c-settings">
+      <div class="comp-title"><h3>Settings Panel</h3><span class="comp-anchor">#settings</span></div>
+      <p class="comp-desc">按分组排列的设置项。由标签 + 右侧输入控件组成，适合用户偏好配置。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>settings panel</span>
         </div>
-
-        <div class="dialog-overlay" id="demo-dialog">
-          <div class="dialog">
-            <div class="dialog-header">
-              <div class="dialog-title">确认操作</div>
-            </div>
-            <div class="dialog-body">
-              <p style="color: var(--fg-muted);">确定要清空所有历史记录吗？此操作不可撤销。</p>
-            </div>
-            <div class="dialog-footer">
-              <button class="btn btn-ghost" onclick="closeDialog()">取消</button>
-              <button class="btn btn-danger" onclick="closeDialog()">确认删除</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Tabs -->
-      <section class="section" id="tabs">
-        <h2 class="section-title">标签页 Tabs</h2>
-
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
-              <div class="tabs">
-                <div class="tab-list">
-                  <div class="tab active" onclick="switchTab(this)">选项一</div>
-                  <div class="tab" onclick="switchTab(this)">选项二</div>
-                  <div class="tab" onclick="switchTab(this)">选项三</div>
-                </div>
-              </div>
-              <div class="tab-content active" data-tab="0">
-                <p style="color: var(--fg-muted); font-size: 14px;">这是第一个标签页的内容。</p>
-              </div>
-              <div class="tab-content" data-tab="1">
-                <p style="color: var(--fg-muted); font-size: 14px;">这是第二个标签页的内容。</p>
-              </div>
-              <div class="tab-content" data-tab="2">
-                <p style="color: var(--fg-muted); font-size: 14px;">这是第三个标签页的内容。</p>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">标签页</div>
-              <code class="component-meta">下划线指示器</code>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Progress -->
-      <section class="section" id="progress">
-        <h2 class="section-title">进度条 Progress</h2>
-
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 24px;">
+        <div class="sample-area">
+          <div class="settings-panel" style="max-width:460px; width:100%;">
+            <div class="setting-row">
               <div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
-                  <span>进度</span>
-                  <span style="color: var(--fg-muted);">65%</span>
-                </div>
-                <div class="progress">
-                  <div class="progress-bar" style="width: 65%;"></div>
-                </div>
+                <div class="setting-label">声音反馈</div>
+                <div class="setting-hint">每次抽奖后播放提示音</div>
               </div>
+              <span class="switch is-on" role="switch" aria-checked="true"></span>
+            </div>
+            <div class="setting-row">
               <div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
-                  <span>成功</span>
-                  <span style="color: var(--success);">100%</span>
-                </div>
-                <div class="progress progress-success">
-                  <div class="progress-bar" style="width: 100%;"></div>
-                </div>
+                <div class="setting-label">数字滚动动画</div>
+                <div class="setting-hint">增强抽奖仪式感，约 1 秒</div>
               </div>
+              <span class="switch is-on" role="switch" aria-checked="true"></span>
+            </div>
+            <div class="setting-row">
               <div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
-                  <span>警告</span>
-                  <span style="color: var(--warning);">45%</span>
-                </div>
-                <div class="progress progress-warning">
-                  <div class="progress-bar" style="width: 45%;"></div>
-                </div>
+                <div class="setting-label">不重复抽奖</div>
+                <div class="setting-hint">所有已中奖号码不会再出现</div>
+              </div>
+              <span class="switch" role="switch" aria-checked="false"></span>
+            </div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">显示模式</div>
+                <div class="setting-hint">浅色 / 深色</div>
+              </div>
+              <div class="select" style="min-width:120px; height:32px;">
+                <span>跟随系统</span>
+                <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
               </div>
             </div>
-            <div class="component-info">
-              <div class="component-name">进度条</div>
-              <code class="component-meta">渐变动画</code>
+          </div>
+        </div>
+      </div>
+
+      <pre class="code-block"><span class="tok-tag">&lt;Card&gt;</span>
+  {settings.map((item) =&gt; (
+    <span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"setting-row"</span> <span class="tok-attr">key</span>={item.key}<span class="tok-tag">&gt;</span>
+      <span class="tok-tag">&lt;div&gt;</span>
+        <span class="tok-tag">&lt;Label&gt;</span>{item.label}<span class="tok-tag">&lt;/Label&gt;</span>
+        <span class="tok-tag">&lt;HintText&gt;</span>{item.hint}<span class="tok-tag">&lt;/HintText&gt;</span>
+      <span class="tok-tag">&lt;/div&gt;</span>
+      <span class="tok-tag">&lt;Switch</span> <span class="tok-attr">checked</span>={item.value} <span class="tok-tag">/&gt;</span>
+    <span class="tok-tag">&lt;/div&gt;</span>
+  ))}
+<span class="tok-tag">&lt;/Card&gt;</span></pre>
+    </div>
+
+    <!-- Stats Card -->
+    <div class="comp-block" id="c-stats">
+      <div class="comp-title"><h3>Stats Card</h3><span class="comp-anchor">#stats</span></div>
+      <p class="comp-desc">数值 + 标签 + 趋势指示的数据卡片。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>statistics cards</span>
+        </div>
+        <div class="sample-area" style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; width:100%;">
+          <div class="stats-card">
+            <div class="stats-label">总抽奖次数</div>
+            <div class="stats-value">42</div>
+            <span class="stats-trend trend-up">▲ +12% 本周</span>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">平均间隔</div>
+            <div class="stats-value">17s</div>
+            <span class="stats-trend trend-down">▼ -5% 本月</span>
+          </div>
+          <div class="stats-card">
+            <div class="stats-label">不重复号码</div>
+            <div class="stats-value">37</div>
+            <span class="stats-trend trend-up">▲ 88% 命中率</span>
+          </div>
+        </div>
+      </div>
+
+      <pre class="code-block"><span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"stats-card"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"stats-label"</span><span class="tok-tag">&gt;</span>总抽奖次数<span class="tok-tag">&lt;/div&gt;</span>
+  <span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"stats-value"</span><span class="tok-tag">&gt;</span>{count}<span class="tok-tag">&lt;/div&gt;</span>
+  <span class="tok-tag">&lt;span</span> <span class="tok-attr">className</span>=<span class="tok-str">"stats-trend trend-up"</span><span class="tok-tag">&gt;</span>▲ {trend}<span class="tok-tag">&lt;/span&gt;</span>
+<span class="tok-tag">&lt;/div&gt;</span></pre>
+    </div>
+
+    <!-- History Item -->
+    <div class="comp-block" id="c-historyitem">
+      <div class="comp-title"><h3>History Item</h3><span class="comp-anchor">#history-item</span></div>
+      <p class="comp-desc">时间 + 中奖号码的列表项组件。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>history list items</span>
+        </div>
+        <div class="sample-area" style="flex-direction:column; align-items:stretch; gap:0; width:100%; max-width:440px; padding:24px 32px;">
+          <div class="history-item"><span class="history-time">00:17:32</span><div class="history-result"><span class="history-num">042</span></div></div>
+          <div class="history-item"><span class="history-time">00:16:58</span><div class="history-result"><span class="history-num">088</span></div></div>
+          <div class="history-item"><span class="history-time">00:16:21</span><div class="history-result"><span class="history-num">015</span></div></div>
+          <div class="history-item"><span class="history-time">00:15:49</span><div class="history-result"><span class="history-num">073</span></div></div>
+          <div class="history-item"><span class="history-time">00:15:12</span><div class="history-result"><span class="history-num">036</span></div></div>
+        </div>
+      </div>
+
+      <pre class="code-block">{history.map((h) =&gt; (
+  <span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"history-item"</span> <span class="tok-attr">key</span>={h.id}<span class="tok-tag">&gt;</span>
+    <span class="tok-tag">&lt;span</span> <span class="tok-attr">className</span>=<span class="tok-str">"history-time"</span><span class="tok-tag">&gt;</span>{formatTime(h.time)}<span class="tok-tag">&lt;/span&gt;</span>
+    <span class="tok-tag">&lt;span</span> <span class="tok-attr">className</span>=<span class="tok-str">"history-num"</span><span class="tok-tag">&gt;</span>{h.number}<span class="tok-tag">&lt;/span&gt;</span>
+  <span class="tok-tag">&lt;/div&gt;</span>
+))}</pre>
+    </div>
+
+    <!-- ============================================================
+         3. 业务组件 · Business Components
+         ============================================================ -->
+    <h2 id="section-business">3. 业务组件</h2>
+    <p class="section-intro">针对 ZenDraw 抽奖场景的专用组件，面向产品主界面。</p>
+
+    <!-- Draw Display -->
+    <div class="comp-block" id="c-draw">
+      <div class="comp-title"><h3>Draw Display</h3><span class="comp-anchor">#draw-display</span></div>
+      <p class="comp-desc">中央大号数字显示区，承载主操作按钮与状态指示。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>draw display</span>
+        </div>
+        <div class="sample-area">
+          <div class="draw-display" style="max-width:520px;">
+            <div class="draw-status"><span class="status-dot"></span>在线 · 范围 1 - 100</div>
+            <div class="draw-number">042</div>
+            <div class="draw-sub">2 秒前生成 · 第 42 次抽奖</div>
+            <div style="display:flex; gap:12px; justify-content:center; margin-top:8px;">
+              <button class="btn btn-primary">再次抽奖</button>
+              <button class="btn btn-outline">复制号码</button>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Skeleton -->
-      <section class="section" id="skeleton">
-        <h2 class="section-title">骨架屏 Skeleton</h2>
+      <pre class="code-block"><span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"draw-display"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"draw-status"</span><span class="tok-tag">&gt;</span>
+    <span class="tok-tag">&lt;span</span> <span class="tok-attr">className</span>=<span class="tok-str">"status-dot"</span> <span class="tok-tag">/&gt;</span>
+    在线 · 范围 {min} - {max}
+  <span class="tok-tag">&lt;/div&gt;</span>
+  <span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"draw-number"</span><span class="tok-tag">&gt;</span>
+    {padded(number)}
+  <span class="tok-tag">&lt;/div&gt;</span>
+  <span class="tok-tag">&lt;Button</span> <span class="tok-attr">onClick</span>={onDraw}<span class="tok-tag">&gt;</span>开始抽奖<span class="tok-tag">&lt;/Button&gt;</span>
+<span class="tok-tag">&lt;/div&gt;</span></pre>
+    </div>
 
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <div class="skeleton skeleton-avatar"></div>
-                <div style="flex: 1;">
-                  <div class="skeleton skeleton-text" style="width: 60%;"></div>
-                  <div class="skeleton skeleton-text" style="width: 80%;"></div>
-                </div>
+    <!-- Result Card -->
+    <div class="comp-block" id="c-result">
+      <div class="comp-title"><h3>Result Card</h3><span class="comp-anchor">#result-card</span></div>
+      <p class="comp-desc">显示单次抽奖结果的卡片。适合在界面右侧或列表中展示。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>result cards</span>
+        </div>
+        <div class="sample-area column" style="width:100%; gap:12px;">
+          <div class="result-card">
+            <div class="result-info">
+              <h4>第 42 次抽奖</h4>
+              <div class="result-time">2024-06-12 00:17:32</div>
+            </div>
+            <div class="result-big">042</div>
+          </div>
+          <div class="result-card">
+            <div class="result-info">
+              <h4>第 41 次抽奖</h4>
+              <div class="result-time">2024-06-12 00:16:58</div>
+            </div>
+            <div class="result-big">088</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History List -->
+    <div class="comp-block" id="c-historylist">
+      <div class="comp-title"><h3>History List</h3><span class="comp-anchor">#history-list</span></div>
+      <p class="comp-desc">带标题的完整历史记录列表。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>history list</span>
+        </div>
+        <div class="sample-area" style="width:100%; justify-content:center;">
+          <div class="history-list" style="max-width:440px;">
+            <div class="history-list-head">
+              <h4>抽奖历史</h4>
+              <span>共 42 条</span>
+            </div>
+            <div class="history-item"><span class="history-time">00:17:32</span><div class="history-result"><span class="history-num">042</span></div></div>
+            <div class="history-item"><span class="history-time">00:16:58</span><div class="history-result"><span class="history-num">088</span></div></div>
+            <div class="history-item"><span class="history-time">00:16:21</span><div class="history-result"><span class="history-num">015</span></div></div>
+            <div class="history-item"><span class="history-time">00:15:49</span><div class="history-result"><span class="history-num">073</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Draw View -->
+    <div class="comp-block" id="c-mobile">
+      <div class="comp-title"><h3>Mobile Draw View</h3><span class="comp-anchor">#mobile-view</span></div>
+      <p class="comp-desc">移动端紧凑视图。320 px 参考宽，居中布局。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>mobile · 320 px</span>
+        </div>
+        <div class="sample-area" style="justify-content:center;">
+          <div class="mobile-frame">
+            <div class="mobile-top">
+              <span>9:41</span>
+              <span>100%</span>
+            </div>
+            <div class="mobile-body">
+              <span class="mobile-title">范围 1 - 100 · 第 42 次</span>
+              <span class="mobile-big">042</span>
+              <button class="btn btn-primary" style="width:100%; margin-top:8px;">抽奖</button>
+              <button class="btn btn-ghost btn-sm" style="margin-top:4px;">查看历史</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         4. 设计模式 · Patterns
+         ============================================================ -->
+    <h2 id="section-patterns">4. 设计模式</h2>
+    <p class="section-intro">常见交互场景的参考实现。帮助开发者在不同模块保持一致的用户体验。</p>
+
+    <!-- Form Validation -->
+    <div class="comp-block" id="p-validation">
+      <div class="comp-title"><h3>表单验证</h3><span class="comp-anchor">#form-validation</span></div>
+      <p class="comp-desc">实时验证 (实时反馈) 与 提交验证 (点击提交后统一验证) 两种模式。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>instant vs. on-submit</span>
+        </div>
+        <div class="sample-area" style="display:grid; grid-template-columns:1fr 1fr; gap:20px; width:100%;">
+          <div class="pattern-card" style="padding:20px;">
+            <div class="label">实时验证 · Instant</div>
+            <div class="form-field" style="margin-top:12px;">
+              <span class="label">最小值</span>
+              <div class="input" style="width:100%;"><input value="1" /></div>
+              <div class="hint-text">✓ 数值合法</div>
+            </div>
+            <div class="form-field" style="margin-top:12px;">
+              <span class="label">最大值</span>
+              <div class="input is-invalid" style="width:100%;"><input value="0" /></div>
+              <div class="err-text">必须 ≥ 1</div>
+            </div>
+            <button class="btn btn-primary" style="margin-top:16px; width:100%; opacity:0.5;" disabled>保存</button>
+          </div>
+          <div class="pattern-card" style="padding:20px;">
+            <div class="label">提交验证 · On Submit</div>
+            <div class="form-field" style="margin-top:12px;">
+              <span class="label">最小值</span>
+              <div class="input" style="width:100%;"><input value="1" /></div>
+            </div>
+            <div class="form-field" style="margin-top:12px;">
+              <span class="label">最大值</span>
+              <div class="input" style="width:100%;"><input value="0" /></div>
+            </div>
+            <button class="btn btn-primary" style="margin-top:16px; width:100%;">保存</button>
+            <div class="alert alert-error" style="margin-top:12px; padding:10px 14px; border-radius:6px;">
+              <div class="alert-body">
+                <div class="alert-title" style="font-size:13px;">请修正以下错误</div>
+                <div class="alert-desc" style="font-size:12px;">最大值必须大于或等于 1</div>
               </div>
-              <div class="skeleton skeleton-text"></div>
-              <div class="skeleton skeleton-text"></div>
-              <div class="skeleton skeleton-text" style="width: 70%;"></div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">骨架屏</div>
-              <code class="component-meta">shimmer 动画</code>
-            </div>
-          </div>
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
-              <div class="skeleton" style="height: 120px;"></div>
-              <div class="skeleton skeleton-button" style="align-self: flex-start;"></div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">卡片骨架</div>
-              <code class="component-meta">占位加载</code>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Tooltips -->
-      <section class="section" id="tooltips">
-        <h2 class="section-title">工具提示 Tooltip</h2>
+      <div class="rules-grid">
+        <div class="rule do">
+          <div class="rule-head"><span class="rule-icon">✓</span> Do</div>
+          <p>复杂表单使用实时验证，避免用户在提交时发现大量错误。</p>
+          <p>简单设置类表单使用提交验证，保持界面清爽。</p>
+        </div>
+        <div class="rule dont">
+          <div class="rule-head"><span class="rule-icon">✕</span> Don't</div>
+          <p>两种模式混用，让用户感到困惑。</p>
+          <p>错误消息仅用颜色标识（缺少图标或文本标签）。</p>
+        </div>
+      </div>
+    </div>
 
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview">
-              <button class="tooltip btn btn-outline" data-tooltip="这是提示文字">悬停查看</button>
-            </div>
-            <div class="component-info">
-              <div class="component-name">工具提示</div>
-              <code class="component-meta">data-tooltip</code>
-            </div>
+    <!-- Empty State -->
+    <div class="comp-block" id="p-empty">
+      <div class="comp-title"><h3>空状态</h3><span class="comp-anchor">#empty-state</span></div>
+      <p class="comp-desc">当没有历史记录或数据时的显示方式。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>empty state</span>
+        </div>
+        <div class="sample-area" style="justify-content:center;">
+          <div class="empty-state" style="max-width:420px;">
+            <div class="empty-icon">∅</div>
+            <h4>暂无抽奖记录</h4>
+            <p>点击下方按钮开始第一次抽奖吧</p>
+            <button class="btn btn-primary btn-sm">开始抽奖</button>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Result Component -->
-      <section class="section" id="result">
-        <h2 class="section-title">结果展示 Result Display</h2>
+      <div class="rules-grid">
+        <div class="rule do">
+          <div class="rule-head"><span class="rule-icon">✓</span> Do</div>
+          <p>提供简明的图标 + 标题 + 描述 三段式结构。</p>
+          <p>在合适情况下提供"首次操作"的引导按钮。</p>
+        </div>
+        <div class="rule dont">
+          <div class="rule-head"><span class="rule-icon">✕</span> Don't</div>
+          <p>仅用空白区域代替空状态，让用户感到困惑。</p>
+          <p>使用过多文案或夸张的插画。</p>
+        </div>
+      </div>
+    </div>
 
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview centered">
-              <div style="text-align: center; padding: 40px;">
-                <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fg-subtle); margin-bottom: 12px;">Lucky Number</div>
-                <div style="font-size: 72px; font-weight: 900; letter-spacing: -0.04em; background: linear-gradient(180deg, var(--fg), var(--fg-muted)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">042</div>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">抽奖结果</div>
-              <code class="component-meta">渐变文字 + pop 动画</code>
-            </div>
+    <!-- Loading State -->
+    <div class="comp-block" id="p-loading">
+      <div class="comp-title"><h3>加载状态</h3><span class="comp-anchor">#loading-state</span></div>
+      <p class="comp-desc">按钮 loading 状态与骨架屏占位。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>loading button · skeleton</span>
+        </div>
+        <div class="sample-area" style="display:grid; grid-template-columns:1fr 1fr; gap:20px; width:100%; align-items:start;">
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div class="label">按钮加载</div>
+            <button class="btn btn-primary"><span class="spinner"></span>&nbsp;抽奖中...</button>
+            <button class="btn btn-destructive" disabled><span class="spinner"></span>&nbsp;处理中...</button>
+            <button class="btn btn-outline" disabled>加载更多</button>
           </div>
-          <div class="component-card">
-            <div class="component-preview centered">
-              <div style="text-align: center; padding: 40px;">
-                <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;">📋</div>
-                <div style="color: var(--fg-muted); margin-bottom: 16px;">暂无历史记录</div>
-                <button class="btn btn-primary btn-sm">开始抽奖</button>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">空状态</div>
-              <code class="component-meta">图标 + 文案 + CTA</code>
-            </div>
+          <div class="skel-card" style="padding:20px;">
+            <div class="skel skel-line" style="width:60%; height:22px; margin-bottom:12px;"></div>
+            <div class="skel-line"></div>
+            <div class="skel-line w70"></div>
+            <div class="skel-line w50"></div>
+            <div class="skel-line" style="width:40%; margin-top:8px;"></div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- History -->
-      <section class="section" id="history">
-        <h2 class="section-title">历史记录 History</h2>
+      <pre class="code-block"><span class="tok-com">// 按钮 loading</span>
+<span class="tok-tag">&lt;Button</span> <span class="tok-attr">disabled</span>={loading}<span class="tok-tag">&gt;</span>
+  {loading ? <span class="tok-tag">&lt;Spinner</span> <span class="tok-tag">/&gt;</span> : <span class="tok-str">"开始抽奖"</span>}
+<span class="tok-tag">&lt;/Button&gt;</span>
 
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-muted); border-radius: var(--r-md) var(--r-md) 0 0; font-size: 13px; font-weight: 500;">最近记录</div>
-              <div style="border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--r-md) var(--r-md); overflow: hidden;">
-                <div style="display: flex; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border);">
-                  <span style="font-family: var(--font-mono); font-size: 12px; color: var(--fg-subtle);">02:14:32</span>
-                  <span style="font-family: var(--font-mono); font-size: 16px; font-weight: 700;">077</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border);">
-                  <span style="font-family: var(--font-mono); font-size: 12px; color: var(--fg-subtle);">01:45:18</span>
-                  <span style="font-family: var(--font-mono); font-size: 16px; font-weight: 700;">042</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; padding: 12px 16px;">
-                  <span style="font-family: var(--font-mono); font-size: 12px; color: var(--fg-subtle);">00:32:07</span>
-                  <span style="font-family: var(--font-mono); font-size: 16px; font-weight: 700;">015</span>
-                </div>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">历史列表</div>
-              <code class="component-meta">时间 + 数字</code>
-            </div>
-          </div>
+<span class="tok-com">// 骨架屏</span>
+<span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"skel-card"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"skel-line"</span> <span class="tok-tag">/&gt;</span>
+  <span class="tok-tag">&lt;div</span> <span class="tok-attr">className</span>=<span class="tok-str">"skel-line w70"</span> <span class="tok-tag">/&gt;</span>
+<span class="tok-tag">&lt;/div&gt;</span></pre>
+    </div>
+
+    <!-- Error Handling -->
+    <div class="comp-block" id="p-error">
+      <div class="comp-title"><h3>错误处理</h3><span class="comp-anchor">#error-handling</span></div>
+      <p class="comp-desc">输入错误、网络错误、系统错误等不同场景的反馈方式。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>field error · inline alert · full-screen</span>
         </div>
-      </section>
-
-      <!-- Settings -->
-      <section class="section" id="settings">
-        <h2 class="section-title">设置面板 Settings Panel</h2>
-
-        <div class="component-grid">
-          <div class="component-card">
-            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
-              <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 18px;">⚙</span>
-                <span style="font-weight: 600;">抽奖设置</span>
-              </div>
-              <div style="padding: 16px 20px;">
-                <div style="margin-bottom: 16px;">
-                  <label style="font-size: 13px; font-weight: 500; color: var(--fg-muted); display: block; margin-bottom: 8px;">范围设置</label>
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <input type="number" class="input" value="1" />
-                    <input type="number" class="input" value="99" />
-                  </div>
-                </div>
-                <div class="switch-row" style="padding: 12px 0; border-top: 1px solid var(--border);">
-                  <div>
-                    <div class="switch-label">允许重复</div>
-                    <div class="switch-desc">抽过的数字可以再次抽出</div>
-                  </div>
-                  <div class="switch" onclick="this.classList.toggle('on')"></div>
-                </div>
-              </div>
-            </div>
-            <div class="component-info">
-              <div class="component-name">设置面板</div>
-              <code class="component-meta">表单 + 开关组合</code>
+        <div class="sample-area column" style="width:100%; gap:20px;">
+          <div class="alert alert-error" style="max-width:520px;">
+            <div class="alert-icon">!</div>
+            <div class="alert-body">
+              <div class="alert-title">网络连接失败</div>
+              <div class="alert-desc">无法连接到服务器，请检查网络后重试。</div>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- Usage Rules -->
-      <section class="section">
-        <h2 class="section-title">组件使用规范</h2>
-
-        <div class="rules-grid">
-          <div class="rule-card">
-            <div class="rule-icon">✓</div>
-            <div class="rule-title">语义化使用</div>
-            <div class="rule-desc">根据操作的重要性和类型选择合适的组件变体。主要操作用 Primary，破坏性操作用 Danger，轻量操作用 Ghost。</div>
+          <div class="form-field" style="max-width:380px;">
+            <span class="label">最大值</span>
+            <div class="input is-invalid" style="width:100%;"><input value="0" /></div>
+            <div class="err-text">✕ 必须大于或等于 1</div>
           </div>
-          <div class="rule-card">
-            <div class="rule-icon">📏</div>
-            <div class="rule-title">尺寸一致性</div>
-            <div class="rule-desc">同一条交互路径上的组件应保持尺寸一致。按钮高度统一为 40px，输入框高度统一为 44px。</div>
-          </div>
-          <div class="rule-card">
-            <div class="rule-icon">🎯</div>
-            <div class="rule-title">状态完整</div>
-            <div class="rule-desc">每个组件都需要定义所有状态的样式：Normal、Hover、Active、Focus、Disabled、Loading、Error。</div>
-          </div>
-          <div class="rule-card">
-            <div class="rule-icon">♿</div>
-            <div class="rule-title">无障碍优先</div>
-            <div class="rule-desc">所有交互元素必须支持键盘操作，焦点状态必须可见，使用正确的 ARIA 属性标注。</div>
+          <div class="empty-state" style="max-width:460px; padding:32px;">
+            <div class="empty-icon" style="color:var(--destructive);">!</div>
+            <h4>出现系统错误</h4>
+            <p>我们已记录错误，您可以重新加载页面或稍后再试。</p>
+            <button class="btn btn-outline btn-sm">重新加载</button>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="subsection-title" style="margin-top: 48px;">Do & Don't</div>
-        <div class="do-dont">
-          <div class="do-card">
-            <div class="do-dont-title"><span>✓</span> 推荐做法</div>
-            <ul class="do-dont-list">
-              <li>按钮文字清晰表达操作意图</li>
-              <li>错误提示给出明确的解决方案</li>
-              <li>使用加载状态告知用户进度</li>
-              <li>保持按钮组的视觉一致性</li>
-              <li>在表单中使用内联验证</li>
-            </ul>
-          </div>
-          <div class="dont-card">
-            <div class="do-dont-title"><span>✗</span> 避免做法</div>
-            <ul class="do-dont-list">
-              <li>使用模糊的按钮文字如"提交"</li>
-              <li>仅用颜色传递信息（加上图标或文字）</li>
-              <li>没有加载状态的长时间操作</li>
-              <li>混用不同尺寸的同类型组件</li>
-              <li>禁用了操作但没有说明原因</li>
-            </ul>
+    <!-- Dark Mode -->
+    <div class="comp-block" id="p-theme">
+      <div class="comp-title"><h3>暗色模式</h3><span class="comp-anchor">#dark-mode</span></div>
+      <p class="comp-desc">浅色/深色主题切换。所有组件均基于 CSS 变量，自动响应主题切换。</p>
+
+      <div class="sample-box">
+        <div class="sample-box-head">
+          <div class="dot-row"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div>
+          <span>theme switcher — click to try</span>
+        </div>
+        <div class="sample-area" style="justify-content:center; width:100%;">
+          <div style="display:flex; align-items:center; gap:24px; padding:16px 32px; border-radius:12px; background:var(--muted);">
+            <button id="btn-theme-light" class="btn btn-outline">☀ 浅色</button>
+            <span class="sep-v" style="height:20px;"></span>
+            <button id="btn-theme-dark" class="btn btn-outline">☾ 深色</button>
+            <span class="sep-v" style="height:20px;"></span>
+            <button id="btn-theme-toggle" class="btn btn-primary">⇄ 切换</button>
           </div>
         </div>
-      </section>
-    </main>
-  </div>
+      </div>
 
-  <script>
-    function toggleTheme() {
-      const body = document.body;
-      const current = body.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      body.setAttribute('data-theme', next);
-      document.querySelector('.theme-btn').textContent = next === 'dark' ? '☀' : '🌙';
-    }
+      <pre class="code-block"><span class="tok-com">// CSS 变量驱动，切换只需修改 data-theme</span>
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  <span class="tok-com">/* 更多变量... */</span>
+}
+[data-theme=<span class="tok-str">"dark"</span>] {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+}
 
-    function scrollTo(id) {
-      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-      document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-      event.target.closest('.sidebar-link').classList.add('active');
-    }
+<span class="tok-com">// React</span>
+document.documentElement.setAttribute(<span class="tok-str">"data-theme"</span>, theme);</pre>
+    </div>
 
-    function openDialog() {
-      document.getElementById('demo-dialog').classList.add('open');
-    }
+    <!-- Footer -->
+    <div style="margin-top:80px; padding:32px 0; border-top:1px solid var(--border); text-align:center; color:var(--muted-foreground); font-size:13px;">
+      ZenDraw Component Library · v3.0.0 · 基于 shadcn/ui 设计语言
+    </div>
+  </main>
+</div>
 
-    function closeDialog() {
-      document.getElementById('demo-dialog').classList.remove('open');
-    }
+<!-- ============================================================
+     交互脚本
+     ============================================================ -->
+<script>
+(function(){
+  // 主题切换
+  var root = document.documentElement;
+  function setTheme(theme){
+    root.setAttribute('data-theme', theme);
+    try { localStorage.setItem('zendraw-theme', theme); } catch(e){}
+  }
+  // 初始主题（保留已保存或默认 light）
+  var saved = null;
+  try { saved = localStorage.getItem('zendraw-theme'); } catch(e){}
+  if (saved) { root.setAttribute('data-theme', saved); }
+  else { root.setAttribute('data-theme', 'light'); }
 
-    function switchTab(tab) {
-      const tabs = tab.parentElement.querySelectorAll('.tab');
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+  document.getElementById('theme-toggle').addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme') || 'light';
+    setTheme(cur === 'light' ? 'dark' : 'light');
+  });
 
-      const contents = tab.closest('.tabs').parentElement.querySelectorAll('.tab-content');
-      contents.forEach(c => c.classList.remove('active'));
-      const index = Array.from(tabs).indexOf(tab);
-      contents[index].classList.add('active');
-    }
+  var b1 = document.getElementById('btn-theme-light');
+  var b2 = document.getElementById('btn-theme-dark');
+  var b3 = document.getElementById('btn-theme-toggle');
+  if (b1) b1.addEventListener('click', function(){ setTheme('light'); });
+  if (b2) b2.addEventListener('click', function(){ setTheme('dark'); });
+  if (b3) b3.addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme') || 'light';
+    setTheme(cur === 'light' ? 'dark' : 'light');
+  });
 
-    // Close dialog on overlay click
-    document.getElementById('demo-dialog').addEventListener('click', function(e) {
-      if (e.target === this) closeDialog();
+  // Switch 点击切换
+  document.querySelectorAll('.switch').forEach(function(sw){
+    sw.addEventListener('click', function(){
+      var on = this.classList.contains('is-on');
+      if (this.classList.contains('is-disabled')) return;
+      if (on) {
+        this.classList.remove('is-on');
+        this.setAttribute('aria-checked', 'false');
+      } else {
+        this.classList.add('is-on');
+        this.setAttribute('aria-checked', 'true');
+      }
     });
-  </script>
+    sw.style.cursor = 'pointer';
+  });
+
+  // Tabs 示例切换
+  var tabs = document.querySelectorAll('#demo-tabs .tab-trigger');
+  tabs.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = this.getAttribute('data-tab');
+      tabs.forEach(function(b){ b.classList.remove('is-active'); });
+      this.classList.add('is-active');
+      ['overview','history','settings'].forEach(function(name){
+        var panel = document.getElementById('tab-panel-' + name);
+        if (panel) {
+          if (name === target) panel.style.display = 'block';
+          else panel.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // 侧边导航锚点高亮：监听滚动，标记当前小节
+  var navLinks = document.querySelectorAll('.sidebar-link');
+  var blocks = [];
+  navLinks.forEach(function(link){
+    var id = link.getAttribute('href').replace('#', '');
+    var el = document.getElementById(id);
+    if (el) blocks.push({ link: link, el: el });
+  });
+
+  function updateActive(){
+    var scrollY = window.scrollY + 140;
+    var current = null;
+    for (var i = 0; i < blocks.length; i++){
+      if (blocks[i].el.offsetTop <= scrollY) current = blocks[i].link;
+    }
+    navLinks.forEach(function(l){ l.classList.remove('is-active'); });
+    if (current) current.classList.add('is-active');
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+  updateActive();
+
+  // 锚点点击平滑滚动
+  navLinks.forEach(function(link){
+    link.addEventListener('click', function(e){
+      var href = this.getAttribute('href');
+      if (href && href.charAt(0) === '#'){
+        var el = document.getElementById(href.substring(1));
+        if (el){
+          e.preventDefault();
+          window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
+        }
+      }
+    });
+  });
+
+  // 按钮 hover 点击反馈 - 给主要按钮加上微动效
+  document.querySelectorAll('.btn').forEach(function(btn){
+    btn.addEventListener('mousedown', function(){
+      if (btn.disabled) return;
+      btn.style.transform = 'scale(0.97)';
+    });
+    btn.addEventListener('mouseup', function(){ btn.style.transform = ''; });
+    btn.addEventListener('mouseleave', function(){ btn.style.transform = ''; });
+  });
+})();
+</script>
 </body>
 </html>

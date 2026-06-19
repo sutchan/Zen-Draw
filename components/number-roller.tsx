@@ -20,7 +20,8 @@ interface NumberRollerProps {
  */
 export function NumberRoller({ value, isDrawing, className }: NumberRollerProps): React.ReactNode {
   const shouldReduceMotion = useReducedMotion();
-  const chars = value.length > 0 ? Array.from(value) : [];
+  // 限制字符数上限 200，防止超长内容触发性能 DoS
+  const chars = value.length > 0 ? Array.from(value).slice(0, 200) : [];
 
   if (chars.length === 0) {
     return null;

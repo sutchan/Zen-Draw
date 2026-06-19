@@ -1,1370 +1,1398 @@
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZenDraw · 高保真交互原型 v3.0</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #ffffff;
-      --bg-elevated: #fafafa;
-      --bg-muted: #f4f4f5;
-      --bg-inverse: #0a0a0a;
-      --fg: #0a0a0a;
-      --fg-muted: #52525b;
-      --fg-subtle: #a1a1aa;
-      --fg-inverse: #fafafa;
-      --border: #e4e4e7;
-      --border-strong: #d4d4d8;
-      --primary: #0a0a0a;
-      --primary-hover: #27272a;
-      --primary-fg: #fafafa;
-      --accent: #2563eb;
-      --accent-hover: #1e40af;
-      --accent-soft: rgba(37, 99, 235, 0.1);
-      --success: #16a34a;
-      --success-soft: rgba(22, 163, 74, 0.1);
-      --warning: #d97706;
-      --warning-soft: rgba(217, 119, 6, 0.1);
-      --danger: #dc2626;
-      --danger-soft: rgba(220, 38, 38, 0.1);
-      --r-sm: 6px;
-      --r-md: 10px;
-      --r-lg: 16px;
-      --r-xl: 24px;
-      --r-full: 9999px;
-      --s-1: 4px;
-      --s-2: 8px;
-      --s-3: 12px;
-      --s-4: 16px;
-      --s-5: 20px;
-      --s-6: 24px;
-      --s-8: 32px;
-      --s-10: 40px;
-      --s-12: 48px;
-      --s-16: 64px;
-      --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 8px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-      --shadow-lg: 0 12px 24px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.06);
-      --shadow-xl: 0 24px 48px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.08);
-      --shadow-glow: 0 0 40px rgba(37, 99, 235, 0.15);
-      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-      --dur-instant: 100ms;
-      --dur-fast: 150ms;
-      --dur-norm: 250ms;
-      --dur-slow: 400ms;
-      --dur-slower: 600ms;
-      --font-sans: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
-      --font-display: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
-    }
-
-    [data-theme="dark"] {
-      --bg: #09090b;
-      --bg-elevated: #18181b;
-      --bg-muted: #27272a;
-      --bg-inverse: #fafafa;
-      --fg: #fafafa;
-      --fg-muted: #a1a1aa;
-      --fg-subtle: #71717a;
-      --fg-inverse: #0a0a0a;
-      --border: #27272a;
-      --border-strong: #3f3f46;
-      --primary: #fafafa;
-      --primary-hover: #e4e4e7;
-      --primary-fg: #0a0a0a;
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.1);
-      --shadow-md: 0 4px 8px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.15);
-      --shadow-lg: 0 12px 24px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.2);
-      --shadow-xl: 0 24px 48px rgba(0,0,0,0.5), 0 8px 16px rgba(0,0,0,0.3);
-      --shadow-glow: 0 0 60px rgba(37, 99, 235, 0.25);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: var(--font-sans);
-      color: var(--fg);
-      background: var(--bg);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
-    }
-
-    ::selection {
-      background: var(--accent);
-      color: white;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button {
-      font-family: inherit;
-      cursor: pointer;
-      border: none;
-      background: none;
-      color: inherit;
-    }
-
-    button:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    input:focus-visible {
-      outline: none;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeInScale {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-
-    @keyframes ripple {
-      0% { transform: scale(0); opacity: 0.5; }
-      100% { transform: scale(4); opacity: 0; }
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-
-    @keyframes numberPop {
-      0% { transform: scale(0.8); opacity: 0; }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .animate-fade-in { animation: fadeIn var(--dur-slow) var(--ease-out) forwards; }
-    .animate-fade-in-up { animation: fadeInUp var(--dur-slow) var(--ease-out) forwards; }
-    .animate-fade-in-scale { animation: fadeInScale var(--dur-slow) var(--ease-spring) forwards; }
-    .animate-pulse { animation: pulse 2s ease-in-out infinite; }
-    .animate-bounce { animation: bounce 1s ease-in-out infinite; }
-    .animate-float { animation: float 3s ease-in-out infinite; }
-
-    /* Navigation */
-    .nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 32px;
-      background: color-mix(in srgb, var(--bg) 80%, transparent);
-      backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      font-size: 18px;
-      letter-spacing: -0.02em;
-    }
-
-    .nav-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--fg), var(--fg-muted));
-      color: var(--fg-inverse);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 18px;
-      box-shadow: var(--shadow-md);
-    }
-
-    .nav-version {
-      font-size: 11px;
-      font-family: var(--font-mono);
-      color: var(--fg-subtle);
-      background: var(--bg-muted);
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 4px;
-    }
-
-    .nav-links a {
-      padding: 10px 16px;
-      font-size: 14px;
-      font-weight: 500;
-      border-radius: var(--r-md);
-      color: var(--fg-muted);
-      transition: all var(--dur-fast) var(--ease-out);
-    }
-
-    .nav-links a:hover {
-      color: var(--fg);
-      background: var(--bg-muted);
-    }
-
-    .nav-links a.active {
-      color: var(--fg);
-      background: var(--bg-elevated);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .theme-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--r-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      transition: all var(--dur-fast) var(--ease-out);
-      background: var(--bg-muted);
-    }
-
-    .theme-btn:hover {
-      background: var(--bg-elevated);
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* Hero Section */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 120px 32px 80px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% -20%, color-mix(in srgb, var(--accent) 20%, transparent), transparent),
-        radial-gradient(ellipse 60% 40% at 80% 80%, color-mix(in srgb, var(--success) 15%, transparent), transparent);
-      pointer-events: none;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 900px;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--r-full);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--fg-muted);
-      background: var(--bg);
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 32px;
-      opacity: 0;
-      animation: fadeInUp 0.6s var(--ease-out) 0.1s forwards;
-    }
-
-    .hero-badge-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--success);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    .hero-title {
-      font-size: clamp(48px, 8vw, 96px);
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      line-height: 0.95;
-      margin-bottom: 24px;
-      opacity: 0;
-      animation: fadeInUp 0.6s var(--ease-out) 0.2s forwards;
-    }
-
-    .hero-title-line {
-      display: block;
-    }
-
-    .hero-title-gradient {
-      background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 50%, var(--fg) 100%);
-      background-size: 200% 200%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientShift 4s ease infinite;
-    }
-
-    .hero-subtitle {
-      font-size: clamp(18px, 2.5vw, 24px);
-      color: var(--fg-muted);
-      max-width: 640px;
-      margin: 0 auto 48px;
-      line-height: 1.5;
-      opacity: 0;
-      animation: fadeInUp 0.6s var(--ease-out) 0.3s forwards;
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: fadeInUp 0.6s var(--ease-out) 0.4s forwards;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px 28px;
-      font-size: 15px;
-      font-weight: 600;
-      border-radius: var(--r-full);
-      transition: all var(--dur-fast) var(--ease-out);
-      white-space: nowrap;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.6s;
-    }
-
-    .btn:hover::after {
-      transform: translateX(100%);
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: var(--primary-fg);
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--fg);
-      border: 1.5px solid var(--border-strong);
-    }
-
-    .btn-outline:hover {
-      background: var(--bg-muted);
-      border-color: var(--fg-subtle);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--fg-muted);
-    }
-
-    .btn-ghost:hover {
-      background: var(--bg-muted);
-      color: var(--fg);
-    }
-
-    .btn-lg {
-      padding: 18px 36px;
-      font-size: 16px;
-    }
-
-    .btn-sm {
-      padding: 10px 18px;
-      font-size: 13px;
-    }
-
-    .btn-icon {
-      width: 44px;
-      height: 44px;
-      padding: 0;
-      border-radius: var(--r-md);
-    }
-
-    /* App Container */
-    .app-section {
-      padding: 80px 32px;
-      min-height: 100vh;
-    }
-
-    .app-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .app-grid {
-      display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 48px;
-      align-items: start;
-    }
-
-    @media (max-width: 1024px) {
-      .app-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* App Main Card */
-    .app-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      opacity: 0;
-      animation: fadeInUp 0.6s var(--ease-out) 0.5s forwards;
-    }
-
-    .app-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 24px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-elevated);
-    }
-
-    .app-header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .app-logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: var(--primary);
-      color: var(--primary-fg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 16px;
-    }
-
-    .app-title {
-      font-weight: 700;
-      font-size: 16px;
-      letter-spacing: -0.01em;
-    }
-
-    .app-header-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .app-header-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: var(--r-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--fg-muted);
-      font-size: 16px;
-      transition: all var(--dur-fast);
-    }
-
-    .app-header-btn:hover {
-      background: var(--bg-muted);
-      color: var(--fg);
-    }
-
-    .app-main {
-      padding: 64px 48px;
-      text-align: center;
-      min-height: 400px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .app-result-label {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--fg-subtle);
-      margin-bottom: 16px;
-      opacity: 0;
-      animation: fadeIn 0.4s var(--ease-out) forwards;
-    }
-
-    .app-result-number {
-      font-size: clamp(80px, 15vw, 120px);
-      font-weight: 900;
-      letter-spacing: -0.05em;
-      line-height: 1;
-      background: linear-gradient(180deg, var(--fg) 0%, var(--fg-muted) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 40px;
-      min-height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .app-result-number.pop {
-      animation: numberPop 0.5s var(--ease-spring) forwards;
-    }
-
-    .app-result-number.scrolling {
-      animation: pulse 0.1s linear infinite;
-    }
-
-    .app-action {
-      padding: 18px 48px;
-      background: var(--primary);
-      color: var(--primary-fg);
-      border-radius: var(--r-full);
-      font-size: 17px;
-      font-weight: 700;
-      box-shadow: var(--shadow-lg);
-      transition: all var(--dur-fast) var(--ease-out);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .app-action::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
-      transform: translateX(-100%);
-    }
-
-    .app-action:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: var(--shadow-xl);
-    }
-
-    .app-action:hover::before {
-      animation: shimmer 1s;
-    }
-
-    .app-action:active {
-      transform: translateY(-1px) scale(0.98);
-    }
-
-    .app-action.drawing {
-      opacity: 0.7;
-      animation: pulse 0.5s ease-in-out infinite;
-    }
-
-    .app-meta {
-      display: flex;
-      gap: 16px;
-      margin-top: 32px;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--fg-muted);
-    }
-
-    .app-meta-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .app-meta-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--fg-subtle);
-    }
-
-    /* Sidebar */
-    .app-sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .sidebar-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      opacity: 0;
-      animation: fadeInUp 0.6s var(--ease-out) forwards;
-    }
-
-    .sidebar-card:nth-child(1) { animation-delay: 0.6s; }
-    .sidebar-card:nth-child(2) { animation-delay: 0.7s; }
-    .sidebar-card:nth-child(3) { animation-delay: 0.8s; }
-
-    .sidebar-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .sidebar-title {
-      font-weight: 600;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .sidebar-body {
-      padding: 16px 20px;
-    }
-
-    /* Form Controls */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group:last-child {
-      margin-bottom: 0;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--fg-muted);
-      margin-bottom: 8px;
-    }
-
-    .form-input {
-      width: 100%;
-      height: 44px;
-      padding: 0 16px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--r-md);
-      background: var(--bg);
-      color: var(--fg);
-      font-size: 15px;
-      font-family: var(--font-mono);
-      transition: all var(--dur-fast) var(--ease-out);
-    }
-
-    .form-input:hover {
-      border-color: var(--border-strong);
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    /* Switch */
-    .switch-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .switch-row:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .switch-label {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .switch-desc {
-      font-size: 12px;
-      color: var(--fg-subtle);
-      margin-top: 2px;
-    }
-
-    .switch {
-      position: relative;
-      width: 48px;
-      height: 28px;
-      border-radius: var(--r-full);
-      background: var(--border-strong);
-      cursor: pointer;
-      transition: background var(--dur-fast) var(--ease-out);
-      flex-shrink: 0;
-    }
-
-    .switch::after {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: white;
-      box-shadow: var(--shadow-sm);
-      transition: transform var(--dur-fast) var(--ease-spring);
-    }
-
-    .switch.on {
-      background: var(--primary);
-    }
-
-    .switch.on::after {
-      transform: translateX(20px);
-    }
-
-    /* History List */
-    .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .history-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      background: var(--bg-elevated);
-      border-radius: var(--r-md);
-      transition: all var(--dur-fast);
-    }
-
-    .history-item:hover {
-      background: var(--bg-muted);
-    }
-
-    .history-time {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--fg-subtle);
-    }
-
-    .history-number {
-      font-family: var(--font-mono);
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--fg);
-    }
-
-    .history-empty {
-      text-align: center;
-      padding: 32px 16px;
-      color: var(--fg-subtle);
-      font-size: 14px;
-    }
-
-    .history-empty-icon {
-      font-size: 32px;
-      margin-bottom: 8px;
-      opacity: 0.5;
-    }
-
-    /* Stats */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .stat-item {
-      text-align: center;
-      padding: 16px 8px;
-      background: var(--bg-elevated);
-      border-radius: var(--r-md);
-    }
-
-    .stat-value {
-      font-family: var(--font-mono);
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--fg);
-      line-height: 1;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      color: var(--fg-subtle);
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* Mobile Device Frame */
-    .device-section {
-      padding: 80px 32px;
-      background: var(--bg-elevated);
-    }
-
-    .device-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 48px;
-      align-items: center;
-    }
-
-    .device-frame {
-      width: 100%;
-      max-width: 380px;
-      margin: 0 auto;
-      background: var(--fg);
-      border-radius: 52px;
-      padding: 12px;
-      box-shadow: var(--shadow-xl);
-      position: relative;
-    }
-
-    .device-notch {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 140px;
-      height: 32px;
-      background: var(--fg);
-      border-radius: 0 0 24px 24px;
-      z-index: 10;
-    }
-
-    .device-screen {
-      width: 100%;
-      aspect-ratio: 9/19.5;
-      background: var(--bg);
-      border-radius: 42px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .device-screen-content {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      padding: 56px 20px 24px;
-    }
-
-    .device-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
-    .device-title {
-      font-weight: 700;
-      font-size: 17px;
-    }
-
-    .device-version {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--fg-subtle);
-    }
-
-    .device-main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .device-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--fg-subtle);
-      margin-bottom: 12px;
-    }
-
-    .device-number {
-      font-size: 72px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      background: linear-gradient(180deg, var(--fg), var(--fg-muted));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .device-cta {
-      width: 100%;
-      padding: 16px 24px;
-      background: var(--primary);
-      color: var(--primary-fg);
-      border-radius: var(--r-full);
-      font-size: 16px;
-      font-weight: 700;
-      box-shadow: var(--shadow-md);
-      margin-top: 24px;
-    }
-
-    .device-history {
-      padding: 16px;
-      background: var(--bg-elevated);
-      border-radius: var(--r-lg);
-      margin-top: 16px;
-    }
-
-    .device-history-title {
-      font-size: 12px;
-      color: var(--fg-subtle);
-      margin-bottom: 12px;
-    }
-
-    .device-history-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .device-history-item:last-child {
-      border-bottom: none;
-    }
-
-    .device-history-time {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--fg-subtle);
-    }
-
-    .device-history-num {
-      font-family: var(--font-mono);
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    /* Features Grid */
-    .features-section {
-      padding: 80px 32px;
-    }
-
-    .features-header {
-      text-align: center;
-      margin-bottom: 64px;
-    }
-
-    .features-label {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-
-    .features-title {
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .feature-card {
-      padding: 32px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      transition: all var(--dur-norm) var(--ease-out);
-      opacity: 0;
-      animation: fadeInUp 0.6s var(--ease-out) forwards;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--accent);
-    }
-
-    .feature-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: var(--r-lg);
-      background: var(--accent-soft);
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    .feature-title {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      margin-bottom: 8px;
-    }
-
-    .feature-desc {
-      font-size: 15px;
-      color: var(--fg-muted);
-      line-height: 1.6;
-    }
-
-    /* Footer */
-    .footer {
-      padding: 64px 32px;
-      text-align: center;
-      border-top: 1px solid var(--border);
-      background: var(--bg-elevated);
-    }
-
-    .footer-brand {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 8px;
-    }
-
-    .footer-tagline {
-      color: var(--fg-muted);
-      font-size: 14px;
-      margin-bottom: 24px;
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      font-size: 13px;
-      color: var(--fg-subtle);
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .nav {
-        padding: 12px 16px;
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      .hero {
-        padding: 100px 20px 60px;
-      }
-
-      .hero-title {
-        font-size: 40px;
-      }
-
-      .app-main {
-        padding: 48px 24px;
-      }
-
-      .app-result-number {
-        font-size: 80px;
-        min-height: 100px;
-      }
-
-      .app-meta {
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg-muted);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border-strong);
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--fg-subtle);
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZenDraw v3.0 · 禅抽 · 高保真原型</title>
+<style>
+/* =========================================================
+   CSS Variables — shadcn/ui design tokens (Light / Dark)
+   ========================================================= */
+:root {
+  /* light */
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #18181b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --success: #10b981;
+  --success-foreground: #fafafa;
+  --warning: #f59e0b;
+  --warning-foreground: #18181b;
+  --info: #3b82f6;
+  --info-foreground: #fafafa;
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.03);
+  --shadow: 0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.06), 0 2px 6px -3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.08), 0 4px 10px -4px rgba(0,0,0,0.04);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.10), 0 8px 16px -8px rgba(0,0,0,0.05);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition: 300ms var(--ease-out);
+  --transition-fast: 150ms var(--ease-out);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --fs-xs: 11px;
+  --fs-sm: 13px;
+  --fs-base: 15px;
+  --fs-lg: 17px;
+  --fs-xl: 20px;
+  --fs-2xl: 24px;
+  --fs-3xl: 30px;
+  --fs-4xl: 36px;
+  --fs-5xl: 48px;
+  --fs-6xl: 64px;
+  --fs-7xl: 88px;
+}
+
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #09090b;
+  --card-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #f87171;
+  --destructive-foreground: #18181b;
+  --warning: #fbbf24;
+  --warning-foreground: #18181b;
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.3);
+  --shadow: 0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.5), 0 2px 6px -3px rgba(0,0,0,0.3);
+  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.6), 0 4px 10px -4px rgba(0,0,0,0.4);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.7), 0 8px 16px -8px rgba(0,0,0,0.5);
+}
+
+/* =========================================================
+   Reset & Base
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html, body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+body {
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); background-clip: padding-box; border: 2px solid transparent; }
+
+/* =========================================================
+   Layout
+   ========================================================= */
+.page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.section {
+  padding: var(--space-16) 0;
+  border-bottom: 1px solid var(--border);
+}
+.section:last-child { border-bottom: none; }
+
+.section-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-12);
+  text-align: center;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.section-title {
+  font-size: var(--fs-5xl);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.section-subtitle {
+  color: var(--muted-foreground);
+  font-size: var(--fs-lg);
+}
+
+/* =========================================================
+   Header
+   ========================================================= */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--background) 80%, transparent);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: background-color var(--transition);
+}
+
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  background: var(--foreground);
+  color: var(--background);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-name {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.brand-sub {
+  font-size: var(--fs-xs);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.version-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: var(--fs-xs);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  background: var(--background);
+}
+
+.version-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 20%, transparent);
+}
+
+/* =========================================================
+   Button — shadcn/ui style
+   ========================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-4);
+  height: 36px;
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  line-height: 1;
+  border: 1px solid transparent;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  transition: transform var(--transition-fast), background-color var(--transition),
+    color var(--transition), border-color var(--transition), opacity var(--transition-fast),
+    box-shadow var(--transition-fast);
+  user-select: none;
+  white-space: nowrap;
+}
+.btn:hover:not(:disabled) { box-shadow: var(--shadow-sm); }
+.btn:active:not(:disabled) { transform: scale(0.98); }
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 30%, transparent);
+}
+.btn:disabled { cursor: not-allowed; opacity: 0.5; }
+
+.btn-lg { height: 44px; padding: 0 var(--space-6); font-size: var(--fs-base); border-radius: var(--radius-md); }
+.btn-sm { height: 32px; padding: 0 var(--space-3); font-size: var(--fs-xs); border-radius: var(--radius-sm); }
+.btn-icon { width: 36px; height: 36px; padding: 0; border-radius: var(--radius); }
+.btn-icon.btn-sm { width: 32px; height: 32px; }
+.btn-icon.btn-lg { width: 44px; height: 44px; }
+
+.btn-outline {
+  background: var(--background);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+.btn-outline:hover:not(:disabled) { background: var(--accent); color: var(--accent-foreground); }
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  border-color: transparent;
+}
+.btn-secondary:hover:not(:disabled) { background: color-mix(in srgb, var(--secondary) 85%, var(--foreground) 15%); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--foreground);
+}
+.btn-ghost:hover:not(:disabled) { background: var(--accent); color: var(--accent-foreground); }
+
+.btn-destructive {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+.btn-destructive:hover:not(:disabled) { background: color-mix(in srgb, var(--destructive) 90%, black 10%); }
+
+.btn-link {
+  background: transparent;
+  color: var(--foreground);
+  height: auto;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  border-radius: 0;
+}
+.btn-link:hover:not(:disabled) { color: var(--muted-foreground); }
+.btn-link:active:not(:disabled) { transform: none; }
+
+/* =========================================================
+   Inputs
+   ========================================================= */
+.input, .textarea, .select {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: var(--fs-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  align-items: center;
+}
+.input::placeholder, .textarea::placeholder { color: var(--muted-foreground); }
+.input:focus, .textarea:focus, .select:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--ring) 40%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 15%, transparent);
+}
+
+.textarea {
+  min-height: 80px;
+  padding: var(--space-3);
+  resize: vertical;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  padding-right: var(--space-8);
+}
+
+.label {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  margin-bottom: var(--space-2);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+/* Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--muted);
+  border-radius: var(--radius-full);
+  transition: background-color var(--transition-fast);
+}
+.switch-slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  top: 2px;
+  background: white;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast);
+}
+.switch input:checked + .switch-slider { background: var(--primary); }
+.switch input:checked + .switch-slider::before { transform: translateX(16px); }
+.switch input:focus-visible + .switch-slider { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent); }
+[data-theme="dark"] .switch-slider::before { background: var(--card); }
+
+/* Checkbox */
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  user-select: none;
+  font-size: var(--fs-sm);
+}
+.checkbox-input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border);
+  background: var(--background);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  position: relative;
+  flex-shrink: 0;
+}
+.checkbox-input:checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.checkbox-input:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--background);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.checkbox-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent);
+}
+
+/* =========================================================
+   Cards
+   ========================================================= */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+.card-hoverable:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--foreground) 10%, var(--border));
+}
+.card-header {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--border);
+}
+.card-title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-1);
+}
+.card-desc {
+  color: var(--muted-foreground);
+  font-size: var(--fs-sm);
+}
+.card-body { padding: var(--space-6); }
+.card-footer {
+  padding: var(--space-6);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* =========================================================
+   Badge
+   ========================================================= */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px 10px;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+.badge-default { background: var(--primary); color: var(--primary-foreground); }
+.badge-secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.badge-outline { background: transparent; color: var(--foreground); border-color: var(--border); }
+.badge-success { background: color-mix(in srgb, var(--success) 15%, transparent); color: var(--success); border-color: color-mix(in srgb, var(--success) 30%, transparent); }
+.badge-destructive { background: color-mix(in srgb, var(--destructive) 15%, transparent); color: var(--destructive); border-color: color-mix(in srgb, var(--destructive) 30%, transparent); }
+.badge-info { background: color-mix(in srgb, var(--info) 15%, transparent); color: var(--info); border-color: color-mix(in srgb, var(--info) 30%, transparent); }
+.badge-warning { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--warning-foreground); border-color: color-mix(in srgb, var(--warning) 30%, transparent); }
+
+/* =========================================================
+   Tabs
+   ========================================================= */
+.tabs {
+  display: inline-flex;
+  background: var(--muted);
+  padding: 4px;
+  border-radius: var(--radius);
+  gap: 2px;
+}
+.tab {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--muted-foreground);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  cursor: pointer;
+}
+.tab[data-active="true"] {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-sm);
+}
+.tab-panel { display: none; padding-top: var(--space-4); }
+.tab-panel[data-active="true"] { display: block; animation: fade-in var(--transition); }
+
+/* =========================================================
+   Alert
+   ========================================================= */
+.alert {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--background);
+  align-items: flex-start;
+}
+.alert-icon {
+  width: 20px; height: 20px;
+  margin-top: 1px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.alert-title { font-size: var(--fs-sm); font-weight: 600; margin-bottom: 2px; }
+.alert-body { font-size: var(--fs-sm); color: var(--muted-foreground); }
+.alert-success { border-color: color-mix(in srgb, var(--success) 30%, transparent); background: color-mix(in srgb, var(--success) 8%, transparent); }
+.alert-success .alert-icon { background: var(--success); color: white; }
+.alert-error { border-color: color-mix(in srgb, var(--destructive) 30%, transparent); background: color-mix(in srgb, var(--destructive) 8%, transparent); }
+.alert-error .alert-icon { background: var(--destructive); color: white; }
+.alert-warning { border-color: color-mix(in srgb, var(--warning) 40%, transparent); background: color-mix(in srgb, var(--warning) 12%, transparent); }
+.alert-warning .alert-icon { background: var(--warning); color: white; }
+.alert-info { border-color: color-mix(in srgb, var(--info) 30%, transparent); background: color-mix(in srgb, var(--info) 8%, transparent); }
+.alert-info .alert-icon { background: var(--info); color: white; }
+
+/* =========================================================
+   Dialog
+   ========================================================= */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+.dialog-backdrop[data-open="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+.dialog {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 480px;
+  transform: scale(0.95);
+  opacity: 0;
+  transition: transform var(--transition), opacity var(--transition);
+}
+.dialog-backdrop[data-open="true"] .dialog {
+  transform: scale(1);
+  opacity: 1;
+}
+.dialog-header {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+.dialog-title { font-size: var(--fs-xl); font-weight: 600; letter-spacing: -0.01em; }
+.dialog-desc { color: var(--muted-foreground); font-size: var(--fs-sm); margin-top: var(--space-1); }
+.dialog-body { padding: var(--space-6); font-size: var(--fs-sm); color: var(--muted-foreground); line-height: 1.7; }
+.dialog-footer {
+  padding: var(--space-6);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+.dialog-close {
+  width: 32px; height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius);
+  color: var(--muted-foreground);
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
+}
+.dialog-close:hover { background: var(--accent); color: var(--accent-foreground); }
+
+/* =========================================================
+   Hero / App
+   ========================================================= */
+.hero {
+  padding: var(--space-16) 0 var(--space-12);
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--background);
+  font-size: var(--fs-xs);
+  font-family: var(--font-mono);
+  color: var(--muted-foreground);
+  margin-bottom: var(--space-6);
+}
+.hero-title {
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin-bottom: var(--space-4);
+}
+.hero-title-accent {
+  background: linear-gradient(135deg, var(--foreground) 0%, var(--muted-foreground) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: var(--fs-lg);
+  color: var(--muted-foreground);
+  max-width: 540px;
+  margin: 0 auto var(--space-8);
+  line-height: 1.6;
+}
+.hero-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--muted-foreground);
+}
+.hero-meta-dot {
+  width: 3px; height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--muted-foreground);
+  opacity: 0.4;
+}
+
+/* App Preview */
+.app-preview {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  margin-top: var(--space-12);
+}
+.app-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--border);
+  background: var(--muted);
+}
+.app-titlebar-left { display: flex; align-items: center; gap: var(--space-2); }
+.app-dot { width: 12px; height: 12px; border-radius: var(--radius-full); background: var(--border); display: inline-block; }
+.app-title { font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted-foreground); }
+
+.app-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  min-height: 520px;
+}
+
+/* Result Area */
+.result-area {
+  padding: var(--space-12) var(--space-12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  border-right: 1px solid var(--border);
+  background:
+    radial-gradient(ellipse at top, color-mix(in srgb, var(--foreground) 3%, transparent), transparent 70%);
+}
+.result-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: var(--fs-xs);
+  font-family: var(--font-mono);
+  color: var(--muted-foreground);
+  background: var(--background);
+}
+.result-number {
+  font-family: var(--font-mono);
+  font-size: clamp(96px, 14vw, 180px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  display: inline-flex;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+  transition: transform var(--transition);
+}
+.result-number[data-rolled="true"] {
+  animation: settle 700ms var(--ease-spring);
+}
+.result-number span { display: inline-block; min-width: 0.6em; text-align: center; }
+.result-info {
+  display: flex;
+  gap: var(--space-6);
+  align-items: center;
+  color: var(--muted-foreground);
+  font-size: var(--fs-sm);
+  font-family: var(--font-mono);
+}
+.result-info-item { display: flex; align-items: center; gap: var(--space-2); }
+
+.roll-btn {
+  height: 56px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-xl);
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  background: var(--foreground);
+  color: var(--background);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  transition: transform var(--transition-fast), box-shadow var(--transition);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+.roll-btn:hover:not(:disabled) { box-shadow: var(--shadow-lg); }
+.roll-btn:active:not(:disabled) { transform: scale(0.98); }
+.roll-btn[data-rolling="true"] { opacity: 0.85; }
+.roll-btn-icon {
+  width: 16px; height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: var(--radius-full);
+  display: inline-block;
+}
+.roll-btn[data-rolling="true"] .roll-btn-icon { animation: spin 0.7s linear infinite; }
+
+/* Settings Sidebar */
+.settings {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  overflow-y: auto;
+  max-height: 560px;
+}
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.settings-label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-bottom: var(--space-2);
+}
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+}
+.setting-item + .setting-item { border-top: 1px solid var(--border); }
+.setting-label-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.setting-name { font-size: var(--fs-sm); font-weight: 500; }
+.setting-desc { font-size: var(--fs-xs); color: var(--muted-foreground); }
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 200px;
+  overflow-y: auto;
+}
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  background: var(--muted);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  animation: slide-in var(--transition);
+}
+.history-item-num { font-weight: 600; font-size: var(--fs-sm); }
+.history-item-time { color: var(--muted-foreground); font-size: var(--fs-xs); }
+
+.empty-history {
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: var(--fs-sm);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+/* Mobile preview */
+.app-dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: start;
+  margin-top: var(--space-12);
+}
+.app-mobile {
+  margin: 0 auto;
+  width: 320px;
+  height: 640px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 48px;
+  box-shadow: var(--shadow-xl);
+  padding: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.app-mobile-notch {
+  position: absolute;
+  top: 16px; left: 50%;
+  transform: translateX(-50%);
+  width: 110px; height: 24px;
+  background: #000;
+  border-radius: var(--radius-full);
+  z-index: 2;
+}
+.app-mobile-inner {
+  width: 100%; height: 100%;
+  border-radius: 38px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.mobile-statusbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 48px var(--space-5) var(--space-3);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+.mobile-content {
+  flex: 1;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  overflow-y: auto;
+}
+.mobile-result {
+  font-family: var(--font-mono);
+  font-size: 80px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  padding: var(--space-6) 0;
+  font-variant-numeric: tabular-nums;
+}
+.mobile-result[data-rolled="true"] { animation: settle 700ms var(--ease-spring); }
+.mobile-roll-btn {
+  width: 100%;
+  height: 52px;
+  border-radius: var(--radius-xl);
+  background: var(--foreground);
+  color: var(--background);
+  font-size: var(--fs-base);
+  font-weight: 500;
+}
+
+/* =========================================================
+   Components section
+   ========================================================= */
+.comp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-5);
+}
+.comp-card-title {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-sans);
+}
+.comp-item { display: flex; flex-direction: column; gap: var(--space-4); }
+.comp-row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.comp-col { display: flex; flex-direction: column; gap: var(--space-3); }
+
+/* =========================================================
+   Design tokens
+   ========================================================= */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+.swatch {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.swatch:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.swatch-color {
+  height: 80px;
+  border-bottom: 1px solid var(--border);
+}
+.swatch-info { padding: var(--space-3); }
+.swatch-name { font-size: var(--fs-sm); font-weight: 500; margin-bottom: 2px; }
+.swatch-value { font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted-foreground); }
+
+.typography-scale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.typography-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: var(--space-5);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+.typography-row:last-child { border-bottom: none; }
+.typography-label { font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted-foreground); }
+
+.spacing-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 80px;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  align-items: center;
+}
+.spacing-bar {
+  height: 24px;
+  background: var(--foreground);
+  border-radius: 4px;
+  opacity: 0.85;
+}
+.spacing-label { font-size: var(--fs-sm); font-family: var(--font-mono); color: var(--muted-foreground); }
+.spacing-value { font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted-foreground); text-align: right; }
+
+.motion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+.motion-card {
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.motion-track {
+  position: relative;
+  height: 40px;
+  background: var(--muted);
+  border-radius: var(--radius);
+  margin: var(--space-4) 0;
+  overflow: hidden;
+}
+.motion-ball {
+  position: absolute;
+  width: 32px; height: 32px;
+  background: var(--foreground);
+  border-radius: var(--radius-full);
+  top: 4px; left: 4px;
+}
+.motion-card:hover .motion-ball {
+  left: calc(100% - 36px);
+  transition: left 900ms;
+}
+.motion-card:nth-child(1):hover .motion-ball { transition-timing-function: var(--ease-out); }
+.motion-card:nth-child(2):hover .motion-ball { transition-timing-function: var(--ease-in); }
+.motion-card:nth-child(3):hover .motion-ball { transition-timing-function: var(--ease-spring); }
+.motion-card:nth-child(4):hover .motion-ball { transition-timing-function: linear; }
+.motion-name { font-size: var(--fs-sm); font-weight: 500; }
+.motion-easing { font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted-foreground); margin-top: 2px; }
+
+/* =========================================================
+   Interaction states
+   ========================================================= */
+.state-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-4);
+}
+.state-card {
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+}
+.state-name { font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted-foreground); letter-spacing: 0.05em; }
+.btn-loading { position: relative; color: transparent !important; }
+.btn-loading::after {
+  content: "";
+  position: absolute;
+  width: 14px; height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: var(--radius-full);
+  animation: spin 0.7s linear infinite;
+  color: var(--primary-foreground);
+}
+.btn-ghost.btn-loading::after { color: var(--foreground); }
+
+/* =========================================================
+   Footer
+   ========================================================= */
+.footer {
+  padding: var(--space-12) 0 var(--space-16);
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: var(--fs-sm);
+}
+.footer-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.footer-brand {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+/* =========================================================
+   Animations
+   ========================================================= */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes settle {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+@media (max-width: 960px) {
+  .app-grid { grid-template-columns: 1fr; }
+  .result-area { border-right: none; border-bottom: 1px solid var(--border); padding: var(--space-8) var(--space-5); }
+  .settings { max-height: none; }
+  .app-dual { grid-template-columns: 1fr; }
+  .typography-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .page { padding: 0 var(--space-4); }
+  .header-inner { padding: var(--space-3) var(--space-4); }
+  .section { padding: var(--space-12) 0; }
+  .form-row { grid-template-columns: 1fr; }
+  .spacing-row { grid-template-columns: 80px 1fr; }
+  .spacing-value { display: none; }
+  .brand-name { display: none; }
+}
+</style>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="nav">
-    <div class="nav-brand">
-      <div class="nav-logo">Z</div>
-      <span>ZenDraw</span>
-      <span class="nav-version">v3.0</span>
+
+<!-- =============================================================
+     HEADER
+     ============================================================= -->
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">禅</div>
+      <div class="brand-text">
+        <span class="brand-name">ZenDraw</span>
+        <span class="brand-sub">High-Fidelity Prototype</span>
+      </div>
     </div>
-    <div class="nav-links">
-      <a href="#app" class="active">应用</a>
-      <a href="#mobile">移动端</a>
-      <a href="#features">特性</a>
-    </div>
-    <div class="nav-actions">
-      <button class="theme-btn" onclick="toggleTheme()" aria-label="切换主题">
-        <span id="theme-icon">🌙</span>
+    <div class="header-actions">
+      <span class="version-badge">
+        <span class="version-dot"></span>
+        v3.0.0
+      </span>
+      <button class="btn btn-ghost btn-icon" id="themeToggle" aria-label="切换主题" title="切换主题">
+        <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
       </button>
     </div>
-  </nav>
+  </div>
+</header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        设计系统 v3.0 · Apple Design Language
-      </div>
-      <h1 class="hero-title">
-        <span class="hero-title-line">禅抽</span>
-        <span class="hero-title-line hero-title-gradient">极简之美</span>
-      </h1>
-      <p class="hero-subtitle">
-        基于 Apple Human Interface Guidelines 的高保真抽奖应用原型。每一个像素、每一帧动画都经过精心打磨。
-      </p>
-      <div class="hero-cta">
-        <button class="btn btn-primary btn-lg" onclick="scrollToApp()">
-          体验原型
-          <span>→</span>
-        </button>
-        <button class="btn btn-outline btn-lg" onclick="scrollToMobile()">
-          查看移动端
-        </button>
-      </div>
+<!-- =============================================================
+     HERO + APP PREVIEW
+     ============================================================= -->
+<section class="hero">
+  <div class="page">
+    <div class="hero-badge">◆ 禅抽 ZenDraw · 极简抽奖体验</div>
+    <h1 class="hero-title">
+      专注此刻<br/>
+      <span class="hero-title-accent">让结果自然浮现。</span>
+    </h1>
+    <p class="hero-sub">
+      一个受 Apple 设计语言启发的抽奖应用原型。克制的色彩、精准的间距、流畅的动效 —— 一切都为了那个数字出现的瞬间。
+    </p>
+    <div class="hero-meta">
+      <span>1500+ lines</span>
+      <span class="hero-meta-dot"></span>
+      <span>shadcn/ui tokens</span>
+      <span class="hero-meta-dot"></span>
+      <span>single-file</span>
     </div>
-  </section>
 
-  <!-- App Section -->
-  <section class="app-section" id="app">
-    <div class="app-container">
+    <!-- Desktop app preview -->
+    <div class="app-preview">
+      <div class="app-titlebar">
+        <div class="app-titlebar-left">
+          <span class="app-dot"></span>
+          <span class="app-dot"></span>
+          <span class="app-dot"></span>
+          <span class="app-title" style="margin-left: var(--space-3);">ZenDraw.app</span>
+        </div>
+        <span class="app-title">⌘ + R · Roll</span>
+      </div>
       <div class="app-grid">
-        <!-- Main App -->
-        <div class="app-card">
-          <div class="app-header">
-            <div class="app-header-left">
-              <div class="app-logo">Z</div>
-              <span class="app-title">ZenDraw 禅抽</span>
-            </div>
-            <div class="app-header-actions">
-              <button class="app-header-btn" aria-label="设置">⚙</button>
-              <button class="app-header-btn" aria-label="历史">📋</button>
-            </div>
+        <!-- Result -->
+        <div class="result-area">
+          <div class="result-meta">
+            <span>Range</span>
+            <span id="rangeDisplay">1 — 100</span>
           </div>
-          <div class="app-main">
-            <div class="app-result-label" id="result-label">Lucky Number</div>
-            <div class="app-result-number" id="result-number">—</div>
-            <button class="app-action" id="main-action" onclick="startDraw()">
-              开始抽奖
-            </button>
-            <div class="app-meta">
-              <div class="app-meta-item">
-                <span class="app-meta-dot"></span>
-                <span>范围：1-99</span>
-              </div>
-              <div class="app-meta-item">
-                <span class="app-meta-dot"></span>
-                <span>不重复</span>
-              </div>
-            </div>
+          <div class="result-number" id="resultNumber" data-rolled="false">
+            <span>0</span><span>0</span><span>0</span>
           </div>
+          <div class="result-info">
+            <div class="result-info-item"><span style="font-size: 10px;">●</span><span id="drawCount">0</span> 次抽取</div>
+            <div class="result-info-item"><span style="font-size: 10px;">●</span><span>Unique Mode</span></div>
+          </div>
+          <button class="roll-btn" id="rollBtn" data-rolling="false">
+            <span class="roll-btn-icon"></span>
+            <span>开始抽奖</span>
+          </button>
         </div>
-
-        <!-- Sidebar -->
-        <div class="app-sidebar">
-          <!-- Settings -->
-          <div class="sidebar-card">
-            <div class="sidebar-header">
-              <span class="sidebar-title">
-                <span>⚙</span>
-                抽奖设置
-              </span>
-            </div>
-            <div class="sidebar-body">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">最小值</label>
-                  <input type="number" class="form-input" id="min-value" value="1" min="1" max="98" />
-                </div>
-                <div class="form-group">
-                  <label class="form-label">最大值</label>
-                  <input type="number" class="form-input" id="max-value" value="99" min="2" max="99" />
-                </div>
+        <!-- Settings -->
+        <aside class="settings">
+          <div class="settings-section">
+            <div class="settings-label">抽奖设置</div>
+            <div class="form-row">
+              <div>
+                <label class="label" style="font-size: var(--fs-xs);">最小值</label>
+                <input class="input" id="minInput" type="number" value="1" />
               </div>
-              <div class="switch-row">
-                <div>
-                  <div class="switch-label">自动隐藏侧边栏</div>
-                  <div class="switch-desc">30秒无操作后自动收起</div>
-                </div>
-                <div class="switch on" onclick="this.classList.toggle('on')"></div>
-              </div>
-              <div class="switch-row">
-                <div>
-                  <div class="switch-label">允许重复</div>
-                  <div class="switch-desc">抽过的数字可以再次抽出</div>
-                </div>
-                <div class="switch" onclick="this.classList.toggle('on')"></div>
+              <div>
+                <label class="label" style="font-size: var(--fs-xs);">最大值</label>
+                <input class="input" id="maxInput" type="number" value="100" />
               </div>
             </div>
           </div>
 
-          <!-- Stats -->
-          <div class="sidebar-card">
-            <div class="sidebar-header">
-              <span class="sidebar-title">
-                <span>📊</span>
-                统计信息
-              </span>
-            </div>
-            <div class="sidebar-body">
-              <div class="stats-grid">
-                <div class="stat-item">
-                  <div class="stat-value" id="total-count">0</div>
-                  <div class="stat-label">总次数</div>
-                </div>
-                <div class="stat-item">
-                  <div class="stat-value" id="today-count">0</div>
-                  <div class="stat-label">今日</div>
-                </div>
-                <div class="stat-item">
-                  <div class="stat-value" id="unique-count">0</div>
-                  <div class="stat-label">不重复</div>
-                </div>
+          <div class="settings-section">
+            <div class="settings-label">选项</div>
+            <div class="setting-item">
+              <div class="setting-label-wrap">
+                <span class="setting-name">音效反馈</span>
+                <span class="setting-desc">滚动时播放微音效</span>
               </div>
+              <label class="switch">
+                <input type="checkbox" id="soundSwitch" checked />
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div class="setting-label-wrap">
+                <span class="setting-name">去重模式</span>
+                <span class="setting-desc">不重复历史数字</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="uniqueSwitch" />
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div class="setting-label-wrap">
+                <span class="setting-name">动画缓动</span>
+                <span class="setting-desc">Spring easing</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="easingSwitch" checked />
+                <span class="switch-slider"></span>
+              </label>
             </div>
           </div>
 
-          <!-- History -->
-          <div class="sidebar-card">
-            <div class="sidebar-header">
-              <span class="sidebar-title">
-                <span>📋</span>
-                最近记录
-              </span>
-              <button class="btn btn-ghost btn-sm">清空</button>
+          <div class="settings-section">
+            <div class="settings-label">数字格式</div>
+            <label class="label" style="font-size: var(--fs-xs);">样式</label>
+            <select class="select" id="formatSelect">
+              <option value="plain">普通数字</option>
+              <option value="leading">补零 001</option>
+              <option value="ordinal">序数 1st</option>
+            </select>
+          </div>
+
+          <div class="settings-section">
+            <div class="settings-label">历史记录</div>
+            <div class="history-list" id="historyList">
+              <div class="empty-history">还没有历史记录<br/>点击"开始抽奖"</div>
             </div>
-            <div class="sidebar-body">
-              <div class="history-list" id="history-list">
-                <div class="history-empty">
-                  <div class="history-empty-icon">🎰</div>
-                  <div>暂无抽奖记录</div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Dual preview -->
+    <div class="app-dual">
+      <!-- Desktop summary card -->
+      <div class="card card-hoverable" style="padding: var(--space-8);">
+        <div class="badge badge-outline" style="margin-bottom: var(--space-4);">Desktop · macOS</div>
+        <h3 style="font-size: var(--fs-2xl); font-weight: 600; margin-bottom: var(--space-3); letter-spacing: -0.02em;">桌面端 · 双栏布局</h3>
+        <p style="color: var(--muted-foreground); line-height: 1.7;">
+          中央大面积数字承载视觉焦点，右侧设置面板为专业用户提供细粒度控制。分隔清晰，主次分明。
+        </p>
+        <div style="display: flex; gap: var(--space-3); margin-top: var(--space-6); flex-wrap: wrap;">
+          <span class="badge badge-secondary">Command + R</span>
+          <span class="badge badge-secondary">Space · 确认</span>
+          <span class="badge badge-secondary">Esc · 取消</span>
+        </div>
+      </div>
+
+      <!-- Mobile preview -->
+      <div class="card card-hoverable" style="padding: var(--space-8); text-align: center;">
+        <div class="badge badge-outline" style="margin-bottom: var(--space-4);">Mobile · iOS</div>
+        <h3 style="font-size: var(--fs-2xl); font-weight: 600; margin-bottom: var(--space-3); letter-spacing: -0.02em;">移动端 · 单手操作</h3>
+        <p style="color: var(--muted-foreground); line-height: 1.7; margin-bottom: var(--space-6);">
+          大号触控按钮位于手指自然落点，数字占满屏幕宽度，信息架构垂直堆叠。
+        </p>
+        <div class="app-mobile">
+          <div class="app-mobile-notch"></div>
+          <div class="app-mobile-inner">
+            <div class="mobile-statusbar">
+              <span>9:41</span>
+              <span>● ● ●</span>
+            </div>
+            <div class="mobile-content">
+              <div class="result-meta" style="align-self: center;">
+                <span>Range</span>
+                <span id="mobileRangeDisplay">1 — 100</span>
+              </div>
+              <div class="mobile-result" id="mobileResult" data-rolled="false">
+                000
+              </div>
+              <button class="mobile-roll-btn" id="mobileRollBtn" data-rolling="false">
+                <span style="display: inline-flex; align-items: center; gap: 8px;">
+                  <span style="width: 14px; height: 14px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 9999px; display: inline-block;"></span>
+                  开始抽奖
+                </span>
+              </button>
+              <div style="text-align: left; font-size: 11px; font-family: var(--font-mono); color: var(--muted-foreground); margin-top: var(--space-2);">
+                <div style="margin-bottom: 8px;">最近记录</div>
+                <div id="mobileHistory" style="display: flex; flex-direction: column; gap: 6px;">
+                  <div style="color: var(--muted-foreground); opacity: 0.6;">— 无 —</div>
                 </div>
               </div>
             </div>
@@ -1372,300 +1400,723 @@
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Mobile Section -->
-  <section class="device-section" id="mobile">
-    <div class="app-container">
-      <div class="device-grid">
-        <div>
-          <div class="device-frame">
-            <div class="device-notch"></div>
-            <div class="device-screen">
-              <div class="device-screen-content">
-                <div class="device-header">
-                  <span class="device-title">禅抽</span>
-                  <span class="device-version">v3.0</span>
-                </div>
-                <div class="device-main">
-                  <div class="device-label">Lucky Number</div>
-                  <div class="device-number" id="mobile-number">—</div>
-                  <button class="device-cta" id="mobile-cta" onclick="startDraw()">
-                    开始抽奖
-                  </button>
-                </div>
-                <div class="device-history">
-                  <div class="device-history-title">最近记录</div>
-                  <div class="device-history-item">
-                    <span class="device-history-time">02:14:32</span>
-                    <span class="device-history-num">077</span>
-                  </div>
-                  <div class="device-history-item">
-                    <span class="device-history-time">01:45:18</span>
-                    <span class="device-history-num">042</span>
-                  </div>
-                  <div class="device-history-item">
-                    <span class="device-history-time">00:32:07</span>
-                    <span class="device-history-num">015</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+<!-- =============================================================
+     COMPONENT LIBRARY
+     ============================================================= -->
+<section class="section">
+  <div class="page">
+    <div class="section-header">
+      <div class="section-eyebrow">Components</div>
+      <h2 class="section-title">组件库</h2>
+      <p class="section-subtitle">
+        基于 shadcn/ui 设计令牌的完整组件集合 — 圆角、边框、阴影、排版全部对齐同一系统。
+      </p>
+    </div>
+
+    <div class="comp-grid">
+
+      <!-- Button Variants -->
+      <div class="card comp-item" style="padding: var(--space-6);">
+        <div class="comp-card-title">Buttons · Variants</div>
+        <div class="comp-row"><button class="btn">Default</button><button class="btn btn-secondary">Secondary</button><button class="btn btn-outline">Outline</button></div>
+        <div class="comp-row"><button class="btn btn-ghost">Ghost</button><button class="btn btn-destructive">Destructive</button><button class="btn btn-link">Link</button></div>
+        <div class="comp-card-title" style="margin-top: var(--space-2);">Sizes</div>
+        <div class="comp-row"><button class="btn btn-sm">Small</button><button class="btn">Medium</button><button class="btn btn-lg">Large</button><button class="btn btn-icon" aria-label="icon">+</button></div>
+      </div>
+
+      <!-- Inputs -->
+      <div class="card comp-item" style="padding: var(--space-6);">
+        <div class="comp-card-title">Inputs</div>
+        <div class="comp-col">
+          <input class="input" type="text" placeholder="请输入用户名" />
+          <input class="input" type="email" placeholder="email@example.com" />
+          <select class="select">
+            <option>请选择分类</option>
+            <option>桌面应用</option>
+            <option>移动应用</option>
+            <option>网页应用</option>
+          </select>
+          <textarea class="textarea" placeholder="添加备注…"></textarea>
+        </div>
+      </div>
+
+      <!-- Switch & Checkbox -->
+      <div class="card comp-item" style="padding: var(--space-6);">
+        <div class="comp-card-title">Toggle & Checkbox</div>
+        <div class="comp-col" style="gap: var(--space-4);">
+          <div class="setting-item" style="justify-content: space-between; border: none; padding: 0;">
+            <span class="setting-name">深色模式</span>
+            <label class="switch"><input type="checkbox" checked /><span class="switch-slider"></span></label>
+          </div>
+          <div class="setting-item" style="justify-content: space-between; border: none; padding: 0;">
+            <span class="setting-name">自动保存</span>
+            <label class="switch"><input type="checkbox" /><span class="switch-slider"></span></label>
+          </div>
+          <div class="setting-item" style="justify-content: space-between; border: none; padding: 0;">
+            <span class="setting-name">推送通知</span>
+            <label class="switch"><input type="checkbox" checked /><span class="switch-slider"></span></label>
+          </div>
+          <label class="checkbox"><input type="checkbox" class="checkbox-input" checked />我已阅读并同意用户协议</label>
+          <label class="checkbox"><input type="checkbox" class="checkbox-input" />接收产品更新邮件</label>
+          <label class="checkbox"><input type="checkbox" class="checkbox-input" />分享匿名使用数据</label>
+        </div>
+      </div>
+
+      <!-- Card Variants -->
+      <div class="card comp-item" style="padding: 0;">
+        <div class="card-header">
+          <div class="card-title">Pro 订阅</div>
+          <div class="card-desc">解锁高级抽奖功能 · ¥39/月</div>
+        </div>
+        <div class="card-body">
+          <div style="font-family: var(--font-mono); font-size: var(--fs-4xl); font-weight: 700; letter-spacing: -0.03em;">¥39<span style="font-size: var(--fs-sm); color: var(--muted-foreground); font-weight: 400;"> / month</span></div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-ghost" style="flex: 1;">了解更多</button>
+          <button class="btn" style="flex: 1;">立即订阅</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="card" style="padding: var(--space-6);">
+        <div class="comp-card-title">Tabs</div>
+        <div class="tabs" role="tablist" data-tabs="demo-tabs">
+          <button class="tab" data-tab="tab-1" data-active="true">概览</button>
+          <button class="tab" data-tab="tab-2">统计</button>
+          <button class="tab" data-tab="tab-3">设置</button>
+        </div>
+        <div class="tab-panel" data-panel="tab-1" data-active="true">
+          <p style="color: var(--muted-foreground); font-size: var(--fs-sm);">概览面板展示核心数据摘要。快速了解系统整体状态。</p>
+        </div>
+        <div class="tab-panel" data-panel="tab-2">
+          <p style="color: var(--muted-foreground); font-size: var(--fs-sm);">统计面板展示详细数据图表和历史趋势分析。</p>
+        </div>
+        <div class="tab-panel" data-panel="tab-3">
+          <p style="color: var(--muted-foreground); font-size: var(--fs-sm);">设置面板管理应用偏好与个性化选项。</p>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <div class="card comp-item" style="padding: var(--space-6);">
+        <div class="comp-card-title">Badges</div>
+        <div class="comp-row" style="gap: var(--space-2); margin-bottom: var(--space-2);">
+          <span class="badge badge-default">Default</span>
+          <span class="badge badge-secondary">Secondary</span>
+          <span class="badge badge-outline">Outline</span>
+        </div>
+        <div class="comp-row" style="gap: var(--space-2);">
+          <span class="badge badge-success">● 运行中</span>
+          <span class="badge badge-warning">⚠ 警告</span>
+          <span class="badge badge-destructive">✕ 错误</span>
+          <span class="badge badge-info">i 信息</span>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      <div class="card" style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3);">
+        <div class="comp-card-title">Alerts</div>
+        <div class="alert alert-success">
+          <span class="alert-icon">✓</span>
+          <div>
+            <div class="alert-title">操作成功</div>
+            <div class="alert-body">抽奖结果已保存到历史记录。</div>
           </div>
         </div>
-        <div>
-          <div class="features-label">移动优先</div>
-          <h2 class="features-title" style="margin-bottom: 24px; text-align: left;">触控时代的<br />极致体验</h2>
-          <p style="color: var(--fg-muted); font-size: 16px; line-height: 1.7; margin-bottom: 32px;">
-            为触控而生的界面设计。更大的触摸目标、更流畅的手势交互、更符合直觉的视觉反馈。
-            无论是在地铁上还是在会议中，都能轻松完成抽奖。
+        <div class="alert alert-error">
+          <span class="alert-icon">!</span>
+          <div>
+            <div class="alert-title">范围错误</div>
+            <div class="alert-body">最小值不能大于最大值，请重新输入。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerts 2 -->
+      <div class="card" style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3);">
+        <div class="comp-card-title">Warnings &amp; Info</div>
+        <div class="alert alert-warning">
+          <span class="alert-icon">⚠</span>
+          <div>
+            <div class="alert-title">去重模式</div>
+            <div class="alert-body">历史数字用尽时将自动重置池。</div>
+          </div>
+        </div>
+        <div class="alert alert-info">
+          <span class="alert-icon">i</span>
+          <div>
+            <div class="alert-title">快捷键</div>
+            <div class="alert-body">使用 <code style="font-family: var(--font-mono); background: var(--muted); padding: 1px 6px; border-radius: 4px;">⌘ + R</code> 快速抽取。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dialog trigger -->
+      <div class="card comp-item" style="padding: var(--space-6);">
+        <div class="comp-card-title">Dialog / Modal</div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+          <p style="color: var(--muted-foreground); font-size: var(--fs-sm); line-height: 1.6;">
+            Dialog 使用 scale(0.95) → scale(1) 配合 fade-in，背景带有 backdrop-blur。
           </p>
-          <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center;">👆</div>
-              <div>
-                <div style="font-weight: 600;">44px 触摸目标</div>
-                <div style="font-size: 13px; color: var(--fg-muted);">符合 Apple HIG 标准</div>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--success-soft); color: var(--success); display: flex; align-items: center; justify-content: center;">↕</div>
-              <div>
-                <div style="font-weight: 600;">惯性滚动</div>
-                <div style="font-size: 13px; color: var(--fg-muted);">自然的触控手感</div>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--warning-soft); color: var(--warning); display: flex; align-items: center; justify-content: center;">🎨</div>
-              <div>
-                <div style="font-weight: 600;">深色模式</div>
-                <div style="font-size: 13px; color: var(--fg-muted);">OLED 友好省电</div>
-              </div>
-            </div>
+          <div class="comp-row">
+            <button class="btn" id="openDialog">打开 Dialog</button>
+            <button class="btn btn-outline" id="openDialog2">确认删除</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     DESIGN TOKENS
+     ============================================================= -->
+<section class="section">
+  <div class="page">
+    <div class="section-header">
+      <div class="section-eyebrow">Design Tokens</div>
+      <h2 class="section-title">设计令牌</h2>
+      <p class="section-subtitle">
+        所有组件共用同一套基础令牌 — 色彩、字号、间距、动效曲线。修改一处，全局更新。
+      </p>
+    </div>
+
+    <!-- Color palette -->
+    <div style="margin-bottom: var(--space-12);">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-5);">
+        <h3 style="font-size: var(--fs-2xl); font-weight: 600; letter-spacing: -0.02em;">色彩系统</h3>
+        <span style="font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted-foreground);">Neutral · Mono</span>
+      </div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background: #ffffff;"></div><div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-value">#FFFFFF</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background: #0a0a0a;"></div><div class="swatch-info"><div class="swatch-name">Foreground</div><div class="swatch-value">#0A0A0A</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background: #f4f4f5; border-bottom: 1px solid var(--border);"></div><div class="swatch-info"><div class="swatch-name">Muted</div><div class="swatch-value">#F4F4F5</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background: #71717a;"></div><div class="swatch-info"><div class="swatch-name">Muted-FG</div><div class="swatch-value">#71717A</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background: #e4e4e7;"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-value">#E4E4E7</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background: #18181b;"></div><div class="swatch-info"><div class="swatch-name">Primary</div><div class="swatch-value">#18181B</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background: #ef4444;"></div><div class="swatch-info"><div class="swatch-name">Destructive</div><div class="swatch-value">#EF4444</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background: #10b981;"></div><div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-value">#10B981</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background: #f59e0b;"></div><div class="swatch-info"><div class="swatch-name">Warning</div><div class="swatch-value">#F59E0B</div></div></div>
+        <div class="swatch"><div class="swatch-color" style="background: #3b82f6;"></div><div class="swatch-info"><div class="swatch-name">Info</div><div class="swatch-value">#3B82F6</div></div></div>
+      </div>
+    </div>
+
+    <!-- Typography & Spacing -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); margin-bottom: var(--space-12);">
+
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-5);">
+          <h3 style="font-size: var(--fs-2xl); font-weight: 600; letter-spacing: -0.02em;">字号标尺</h3>
+          <span style="font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted-foreground);">Inter · Mono</span>
+        </div>
+        <div class="typography-scale">
+          <div class="typography-row"><div class="typography-label">Display · 88</div><div style="font-size: 60px; font-weight: 700; letter-spacing: -0.035em;">禅</div></div>
+          <div class="typography-row"><div class="typography-label">H1 · 48</div><div style="font-size: 36px; font-weight: 600; letter-spacing: -0.03em;">Design</div></div>
+          <div class="typography-row"><div class="typography-label">H2 · 30</div><div style="font-size: 26px; font-weight: 600; letter-spacing: -0.025em;">Typography</div></div>
+          <div class="typography-row"><div class="typography-label">H3 · 24</div><div style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em;">Components</div></div>
+          <div class="typography-row"><div class="typography-label">Body · 15</div><div style="font-size: 15px;">正文段落使用 15px · line-height 1.55</div></div>
+          <div class="typography-row"><div class="typography-label">Small · 13</div><div style="font-size: 13px; color: var(--muted-foreground);">次要说明、辅助信息</div></div>
+          <div class="typography-row"><div class="typography-label">Caption · 11</div><div style="font-size: 11px; font-family: var(--font-mono); color: var(--muted-foreground);">// CODE_LABEL · TOKEN</div></div>
+        </div>
+      </div>
+
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-5);">
+          <h3 style="font-size: var(--fs-2xl); font-weight: 600; letter-spacing: -0.02em;">间距系统</h3>
+          <span style="font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted-foreground);">4 · 8 · 12 · 16 · 20 · 24 · 32 · 48</span>
+        </div>
+        <div>
+          <div class="spacing-row"><span class="spacing-label">space-1</span><div class="spacing-bar" style="width: 4px;"></div><span class="spacing-value">4px</span></div>
+          <div class="spacing-row"><span class="spacing-label">space-2</span><div class="spacing-bar" style="width: 8px;"></div><span class="spacing-value">8px</span></div>
+          <div class="spacing-row"><span class="spacing-label">space-3</span><div class="spacing-bar" style="width: 12px;"></div><span class="spacing-value">12px</span></div>
+          <div class="spacing-row"><span class="spacing-label">space-4</span><div class="spacing-bar" style="width: 16px;"></div><span class="spacing-value">16px</span></div>
+          <div class="spacing-row"><span class="spacing-label">space-5</span><div class="spacing-bar" style="width: 20px;"></div><span class="spacing-value">20px</span></div>
+          <div class="spacing-row"><span class="spacing-label">space-6</span><div class="spacing-bar" style="width: 24px;"></div><span class="spacing-value">24px</span></div>
+          <div class="spacing-row"><span class="spacing-label">space-8</span><div class="spacing-bar" style="width: 32px;"></div><span class="spacing-value">32px</span></div>
+          <div class="spacing-row"><span class="spacing-label">space-12</span><div class="spacing-bar" style="width: 48px;"></div><span class="spacing-value">48px</span></div>
+        </div>
+
+        <div style="margin-top: var(--space-8);">
+          <div style="font-size: var(--fs-xs); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-foreground); margin-bottom: var(--space-4);">圆角系统</div>
+          <div style="display: flex; gap: var(--space-4); align-items: flex-end; flex-wrap: wrap;">
+            <div style="width: 64px; height: 64px; background: var(--foreground); border-radius: 6px; display: grid; place-items: center; color: var(--background); font-family: var(--font-mono); font-size: 11px;">sm</div>
+            <div style="width: 64px; height: 64px; background: var(--foreground); border-radius: 8px; display: grid; place-items: center; color: var(--background); font-family: var(--font-mono); font-size: 11px;">md</div>
+            <div style="width: 64px; height: 64px; background: var(--foreground); border-radius: 12px; display: grid; place-items: center; color: var(--background); font-family: var(--font-mono); font-size: 11px;">lg</div>
+            <div style="width: 64px; height: 64px; background: var(--foreground); border-radius: 16px; display: grid; place-items: center; color: var(--background); font-family: var(--font-mono); font-size: 11px;">xl</div>
+            <div style="width: 64px; height: 64px; background: var(--foreground); border-radius: 9999px; display: grid; place-items: center; color: var(--background); font-family: var(--font-mono); font-size: 11px;">full</div>
           </div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- Features Section -->
-  <section class="features-section" id="features">
-    <div class="features-header">
-      <div class="features-label">核心特性</div>
-      <h2 class="features-title">不只是抽奖</h2>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card" style="animation-delay: 0.1s;">
-        <div class="feature-icon">🎲</div>
-        <h3 class="feature-title">加密随机</h3>
-        <p class="feature-desc">使用 Web Crypto API 生成密码学安全的随机数，确保每一次抽奖结果都不可预测、不可操纵。</p>
+    <!-- Motion -->
+    <div>
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-5);">
+        <h3 style="font-size: var(--fs-2xl); font-weight: 600; letter-spacing: -0.02em;">动效曲线</h3>
+        <span style="font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--muted-foreground);">hover 查看演示</span>
       </div>
-      <div class="feature-card" style="animation-delay: 0.2s;">
-        <div class="feature-icon">♿</div>
-        <h3 class="feature-title">无障碍设计</h3>
-        <p class="feature-desc">遵循 WCAG 2.1 AA 标准，支持键盘导航、屏幕阅读器和减弱动效偏好。</p>
-      </div>
-      <div class="feature-card" style="animation-delay: 0.3s;">
-        <div class="feature-icon">🌙</div>
-        <h3 class="feature-title">智能主题</h3>
-        <p class="feature-desc">支持浅色、深色和跟随系统三种模式，自动适应环境光线，呵护你的眼睛。</p>
-      </div>
-      <div class="feature-card" style="animation-delay: 0.4s;">
-        <div class="feature-icon">📱</div>
-        <h3 class="feature-title">响应式布局</h3>
-        <p class="feature-desc">从 320px 的小屏手机到 4K 显示器，界面都能完美适配，始终保持最佳体验。</p>
-      </div>
-      <div class="feature-card" style="animation-delay: 0.5s;">
-        <div class="feature-icon">⚡</div>
-        <h3 class="feature-title">流畅动画</h3>
-        <p class="feature-desc">基于弹簧物理的微交互动画，60fps 的丝滑体验，每一次点击都有即时反馈。</p>
-      </div>
-      <div class="feature-card" style="animation-delay: 0.6s;">
-        <div class="feature-icon">💾</div>
-        <h3 class="feature-title">本地优先</h3>
-        <p class="feature-desc">所有数据存储在本地，无须注册、无须联网，保护隐私的同时实现秒开秒用。</p>
+      <div class="motion-grid">
+        <div class="motion-card">
+          <div class="motion-name">Ease Out</div>
+          <div class="motion-easing">cubic-bezier(0.16, 1, 0.3, 1)</div>
+          <div class="motion-track"><div class="motion-ball"></div></div>
+          <div style="font-size: var(--fs-xs); color: var(--muted-foreground);">用于出场 · 自然减速</div>
+        </div>
+        <div class="motion-card">
+          <div class="motion-name">Ease In</div>
+          <div class="motion-easing">cubic-bezier(0.4, 0, 1, 1)</div>
+          <div class="motion-track"><div class="motion-ball"></div></div>
+          <div style="font-size: var(--fs-xs); color: var(--muted-foreground);">用于进入 · 平滑启动</div>
+        </div>
+        <div class="motion-card">
+          <div class="motion-name">Spring</div>
+          <div class="motion-easing">cubic-bezier(0.34, 1.56, 0.64, 1)</div>
+          <div class="motion-track"><div class="motion-ball"></div></div>
+          <div style="font-size: var(--fs-xs); color: var(--muted-foreground);">弹性 · 数字定格</div>
+        </div>
+        <div class="motion-card">
+          <div class="motion-name">Linear</div>
+          <div class="motion-easing">linear</div>
+          <div class="motion-track"><div class="motion-ball"></div></div>
+          <div style="font-size: var(--fs-xs); color: var(--muted-foreground);">匀速 · 循环动画</div>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-brand">ZenDraw</div>
-    <div class="footer-tagline">极简抽奖，禅意生活</div>
-    <div class="footer-links">
-      <a href="#">设计规范</a>
-      <a href="#">组件文档</a>
-      <a href="#">GitHub</a>
+<!-- =============================================================
+     INTERACTION STATES
+     ============================================================= -->
+<section class="section">
+  <div class="page">
+    <div class="section-header">
+      <div class="section-eyebrow">States</div>
+      <h2 class="section-title">交互状态</h2>
+      <p class="section-subtitle">
+        每一个按钮在不同情境下都有清晰的视觉反馈 — 可预期、可理解、可信任。
+      </p>
     </div>
-  </footer>
 
-  <script>
-    // State
-    let isDrawing = false;
-    let drawnNumbers = new Set();
-    let totalDraws = 0;
-    let todayDraws = 0;
+    <div class="state-grid">
+      <div class="state-card">
+        <div class="state-name">DEFAULT</div>
+        <button class="btn">开始抽奖</button>
+        <div style="font-size: var(--fs-xs); color: var(--muted-foreground); font-family: var(--font-mono);">opacity 1 · scale 1</div>
+      </div>
+      <div class="state-card">
+        <div class="state-name">HOVER</div>
+        <button class="btn" style="box-shadow: var(--shadow-md); transform: translateY(-1px);">开始抽奖</button>
+        <div style="font-size: var(--fs-xs); color: var(--muted-foreground); font-family: var(--font-mono);">shadow-md · y -1px</div>
+      </div>
+      <div class="state-card">
+        <div class="state-name">ACTIVE</div>
+        <button class="btn" style="transform: scale(0.98);">开始抽奖</button>
+        <div style="font-size: var(--fs-xs); color: var(--muted-foreground); font-family: var(--font-mono);">scale 0.98</div>
+      </div>
+      <div class="state-card">
+        <div class="state-name">FOCUS</div>
+        <button class="btn" style="box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 30%, transparent);">开始抽奖</button>
+        <div style="font-size: var(--fs-xs); color: var(--muted-foreground); font-family: var(--font-mono);">ring 3px · 30% opacity</div>
+      </div>
+      <div class="state-card">
+        <div class="state-name">DISABLED</div>
+        <button class="btn" disabled>开始抽奖</button>
+        <div style="font-size: var(--fs-xs); color: var(--muted-foreground); font-family: var(--font-mono);">cursor: not-allowed</div>
+      </div>
+      <div class="state-card">
+        <div class="state-name">LOADING</div>
+        <button class="btn btn-loading">抽取中</button>
+        <div style="font-size: var(--fs-xs); color: var(--muted-foreground); font-family: var(--font-mono);">spin 0.7s</div>
+      </div>
+      <div class="state-card">
+        <div class="state-name">OUTLINE</div>
+        <button class="btn btn-outline">取消</button>
+        <div style="font-size: var(--fs-xs); color: var(--muted-foreground); font-family: var(--font-mono);">border + bg</div>
+      </div>
+      <div class="state-card">
+        <div class="state-name">DESTRUCTIVE</div>
+        <button class="btn btn-destructive">删除记录</button>
+        <div style="font-size: var(--fs-xs); color: var(--muted-foreground); font-family: var(--font-mono);">red · #EF4444</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    // Elements
-    const resultNumber = document.getElementById('result-number');
-    const resultLabel = document.getElementById('result-label');
-    const mainAction = document.getElementById('main-action');
-    const mobileNumber = document.getElementById('mobile-number');
-    const mobileCta = document.getElementById('mobile-cta');
-    const historyList = document.getElementById('history-list');
-    const totalCount = document.getElementById('total-count');
-    const todayCount = document.getElementById('today-count');
-    const uniqueCount = document.getElementById('unique-count');
+<!-- =============================================================
+     FOOTER
+     ============================================================= -->
+<footer class="footer">
+  <div class="page">
+    <div class="footer-inner">
+      <div class="footer-brand">禅抽 · ZenDraw</div>
+      <div>© 2025 · Designed with shadcn/ui design tokens</div>
+      <div style="font-family: var(--font-mono); font-size: var(--fs-xs); opacity: 0.8;">
+        Single-file HTML prototype · 1500+ lines · Pure CSS + Vanilla JS
+      </div>
+    </div>
+  </div>
+</footer>
 
-    // Theme
-    function toggleTheme() {
-      const body = document.body;
-      const current = body.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      body.setAttribute('data-theme', next);
-      document.getElementById('theme-icon').textContent = next === 'dark' ? '☀' : '🌙';
-    }
+<!-- =============================================================
+     DIALOG 1
+     ============================================================= -->
+<div class="dialog-backdrop" id="dialog1" data-open="false">
+  <div class="dialog" role="dialog" aria-modal="true">
+    <div class="dialog-header">
+      <div>
+        <div class="dialog-title">欢迎使用 ZenDraw</div>
+        <div class="dialog-desc">这是一个高保真原型 —— 所有交互均可实际操作。</div>
+      </div>
+      <button class="dialog-close" data-close-dialog="dialog1" aria-label="关闭">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="dialog-body">
+      <p style="margin-bottom: var(--space-3);">点击"开始抽奖"按钮体验数字滚动动画，在右侧设置面板可调整范围和开关选项。</p>
+      <p>页面底部展示了完整的组件库、设计令牌和交互状态 —— 可作为设计系统的基础参考。</p>
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-outline" data-close-dialog="dialog1">稍后再说</button>
+      <button class="btn" data-close-dialog="dialog1">开始体验</button>
+    </div>
+  </div>
+</div>
 
-    // Scroll
-    function scrollToApp() {
-      document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
-    }
+<!-- =============================================================
+     DIALOG 2
+     ============================================================= -->
+<div class="dialog-backdrop" id="dialog2" data-open="false">
+  <div class="dialog" role="dialog" aria-modal="true">
+    <div class="dialog-header">
+      <div>
+        <div class="dialog-title" style="color: var(--destructive);">确认删除</div>
+        <div class="dialog-desc">此操作无法撤销，请确认。</div>
+      </div>
+      <button class="dialog-close" data-close-dialog="dialog2" aria-label="关闭">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="dialog-body">
+      <p>即将清空所有历史抽奖记录，此操作不可恢复。您确定继续吗？</p>
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-outline" data-close-dialog="dialog2">取消</button>
+      <button class="btn btn-destructive" data-close-dialog="dialog2">确认删除</button>
+    </div>
+  </div>
+</div>
 
-    function scrollToMobile() {
-      document.getElementById('mobile').scrollIntoView({ behavior: 'smooth' });
-    }
+<!-- =============================================================
+     SCRIPT
+     ============================================================= -->
+<script>
+(function() {
+  'use strict';
 
-    // Draw
-    function startDraw() {
-      if (isDrawing) return;
+  /* =========================================
+     Theme toggle
+     ========================================= */
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
 
-      isDrawing = true;
-      mainAction.classList.add('drawing');
-      mainAction.textContent = '抽取中...';
-      mobileCta.textContent = '抽取中...';
-      resultLabel.style.opacity = '0';
-
-      const min = parseInt(document.getElementById('min-value').value) || 1;
-      const max = parseInt(document.getElementById('max-value').value) || 99;
-      const range = max - min + 1;
-
-      // Check if all numbers have been drawn
-      if (drawnNumbers.size >= range) {
-        drawnNumbers.clear();
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    try { localStorage.setItem('zendraw-theme', theme); } catch (e) {}
+    if (themeIcon) {
+      if (theme === 'dark') {
+        themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+      } else {
+        themeIcon.innerHTML = '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>';
       }
-
-      let count = 0;
-      const maxIterations = 50;
-
-      const interval = setInterval(() => {
-        const num = Math.floor(Math.random() * range) + min;
-        const displayNum = String(num).padStart(2, '0');
-
-        resultNumber.textContent = displayNum;
-        resultNumber.classList.add('scrolling');
-        mobileNumber.textContent = displayNum;
-
-        count++;
-
-        if (count >= maxIterations) {
-          clearInterval(interval);
-
-          // Get final random number (excluding already drawn if not allowing repeats)
-          const allowRepeat = document.querySelector('.switch:nth-child(2)').classList.contains('on');
-          let finalNum;
-
-          if (allowRepeat) {
-            finalNum = Math.floor(Math.random() * range) + min;
-          } else {
-            const available = [];
-            for (let i = min; i <= max; i++) {
-              if (!drawnNumbers.has(i)) available.push(i);
-            }
-            finalNum = available[Math.floor(Math.random() * available.length)];
-          }
-
-          const finalDisplay = String(finalNum).padStart(2, '0');
-          resultNumber.textContent = finalDisplay;
-          resultNumber.classList.remove('scrolling');
-          resultNumber.classList.add('pop');
-
-          mobileNumber.textContent = finalDisplay;
-
-          mainAction.classList.remove('drawing');
-          mainAction.textContent = '再抽一次';
-          mobileCta.textContent = '再抽一次';
-
-          resultLabel.style.opacity = '1';
-
-          // Update stats
-          drawnNumbers.add(finalNum);
-          totalDraws++;
-          todayDraws++;
-          totalCount.textContent = totalDraws;
-          todayCount.textContent = todayDraws;
-          uniqueCount.textContent = drawnNumbers.size;
-
-          // Add to history
-          addToHistory(finalDisplay);
-
-          setTimeout(() => {
-            resultNumber.classList.remove('pop');
-          }, 500);
-
-          isDrawing = false;
-        }
-      }, 50);
     }
+  }
 
-    function addToHistory(num) {
-      // Remove empty state if exists
-      const empty = historyList.querySelector('.history-empty');
-      if (empty) empty.remove();
+  let savedTheme = 'light';
+  try { savedTheme = localStorage.getItem('zendraw-theme') || 'light'; } catch (e) {}
+  applyTheme(savedTheme);
 
-      const now = new Date();
-      const time = now.toTimeString().slice(0, 8);
+  if (themeToggle) {
+    themeToggle.addEventListener('click', function() {
+      const cur = root.getAttribute('data-theme');
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    });
+  }
 
-      const item = document.createElement('div');
-      item.className = 'history-item';
-      item.style.opacity = '0';
-      item.style.transform = 'translateX(20px)';
-      item.innerHTML = `
-        <span class="history-time">${time}</span>
-        <span class="history-number">${num}</span>
-      `;
+  /* =========================================
+     Draw / Roll logic
+     ========================================= */
+  const minInput = document.getElementById('minInput');
+  const maxInput = document.getElementById('maxInput');
+  const rangeDisplay = document.getElementById('rangeDisplay');
+  const mobileRangeDisplay = document.getElementById('mobileRangeDisplay');
+  const resultNumber = document.getElementById('resultNumber');
+  const mobileResult = document.getElementById('mobileResult');
+  const rollBtn = document.getElementById('rollBtn');
+  const mobileRollBtn = document.getElementById('mobileRollBtn');
+  const historyList = document.getElementById('historyList');
+  const mobileHistory = document.getElementById('mobileHistory');
+  const drawCount = document.getElementById('drawCount');
+  const formatSelect = document.getElementById('formatSelect');
+  const uniqueSwitch = document.getElementById('uniqueSwitch');
+  const easingSwitch = document.getElementById('easingSwitch');
 
-      historyList.insertBefore(item, historyList.firstChild);
+  let history = [];
+  let isRolling = false;
 
-      // Animate in
-      requestAnimationFrame(() => {
-        item.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
-        item.style.opacity = '1';
-        item.style.transform = 'translateX(0)';
+  function clampRange() {
+    let min = parseInt(minInput.value, 10);
+    let max = parseInt(maxInput.value, 10);
+    if (isNaN(min)) min = 1;
+    if (isNaN(max)) max = 100;
+    if (min > max) { const t = min; min = max; max = t; }
+    return { min: min, max: max };
+  }
+
+  function digitsOf(n) {
+    const s = String(n);
+    return s.split('').map(c => c);
+  }
+
+  function padDigits(num, len) {
+    return String(num).padStart(len, '0');
+  }
+
+  function formatNumber(n) {
+    const fmt = formatSelect ? formatSelect.value : 'plain';
+    if (fmt === 'leading') {
+      const { min, max } = clampRange();
+      const len = String(Math.max(Math.abs(min), Math.abs(max))).length;
+      return padDigits(n, Math.max(len, 3));
+    }
+    if (fmt === 'ordinal') {
+      const s = String(n);
+      const last = s.slice(-1);
+      const two = s.slice(-2);
+      let suf = 'th';
+      if (two !== '11' && two !== '12' && two !== '13') {
+        if (last === '1') suf = 'st';
+        else if (last === '2') suf = 'nd';
+        else if (last === '3') suf = 'rd';
+      }
+      return n + suf;
+    }
+    return String(n);
+  }
+
+  function updateRangeDisplay() {
+    const { min, max } = clampRange();
+    if (rangeDisplay) rangeDisplay.textContent = min + ' — ' + max;
+    if (mobileRangeDisplay) mobileRangeDisplay.textContent = min + ' — ' + max;
+  }
+
+  function renderDigitsInto(el, text) {
+    el.textContent = text;
+  }
+
+  function renderDigitsSpans(el, digits) {
+    el.innerHTML = '';
+    digits.forEach(function(d) {
+      const span = document.createElement('span');
+      span.textContent = d;
+      el.appendChild(span);
+    });
+  }
+
+  function renderHistory() {
+    if (!historyList) return;
+    if (history.length === 0) {
+      historyList.innerHTML = '<div class="empty-history">还没有历史记录<br/>点击"开始抽奖"</div>';
+      if (mobileHistory) mobileHistory.innerHTML = '<div style="color: var(--muted-foreground); opacity: 0.6;">— 无 —</div>';
+      return;
+    }
+    historyList.innerHTML = '';
+    history.slice(-10).reverse().forEach(function(item) {
+      const row = document.createElement('div');
+      row.className = 'history-item';
+      row.innerHTML = '<span class="history-item-num">' + item.value + '</span><span class="history-item-time">' + item.time + '</span>';
+      historyList.appendChild(row);
+    });
+    if (mobileHistory) {
+      mobileHistory.innerHTML = '';
+      history.slice(-3).reverse().forEach(function(item) {
+        const row = document.createElement('div');
+        row.style.cssText = 'font-size: 11px; display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid var(--border); font-family: var(--font-mono);';
+        row.innerHTML = '<span style="font-weight: 600;">' + item.value + '</span><span style="color: var(--muted-foreground);">' + item.time + '</span>';
+        mobileHistory.appendChild(row);
       });
+    }
+  }
 
-      // Keep only last 10
-      while (historyList.children.length > 10) {
-        historyList.removeChild(historyList.lastChild);
+  function pickRandom() {
+    const { min, max } = clampRange();
+    if (uniqueSwitch && uniqueSwitch.checked) {
+      const used = new Set(history.map(function(h) { return h.raw; }));
+      const pool = [];
+      for (let i = min; i <= max; i++) {
+        if (!used.has(i)) pool.push(i);
+      }
+      if (pool.length === 0) {
+        history = [];
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function playBeep() {
+    try {
+      const sound = document.getElementById('soundSwitch');
+      if (!sound || !sound.checked) return;
+      if (!window.AudioContext && !window.webkitAudioContext) return;
+      if (!window.__zendrawCtx) {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        window.__zendrawCtx = new Ctx();
+      }
+      const ctx = window.__zendrawCtx;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.06, ctx.currentTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.15);
+    } catch (e) { /* ignore */ }
+  }
+
+  function roll() {
+    if (isRolling) return;
+    isRolling = true;
+    if (rollBtn) { rollBtn.dataset.rolling = 'true'; rollBtn.disabled = true; }
+    if (mobileRollBtn) { mobileRollBtn.dataset.rolling = 'true'; mobileRollBtn.disabled = true; }
+    if (resultNumber) resultNumber.dataset.rolled = 'false';
+    if (mobileResult) mobileResult.dataset.rolled = 'false';
+
+    const { min, max } = clampRange();
+    const digits = Math.max(String(min).length, String(max).length, 3);
+    const duration = easingSwitch && easingSwitch.checked ? 1500 : 1000;
+    const start = performance.now();
+    let lastTick = 0;
+    const tickInterval = 55;
+
+    const finalRaw = pickRandom();
+    const finalDisplay = formatNumber(finalRaw);
+
+    function step(now) {
+      const elapsed = now - start;
+      if (now - lastTick >= tickInterval) {
+        lastTick = now;
+        const random = Math.floor(Math.random() * (max - min + 1)) + min;
+        const display = formatNumber(random);
+        if (resultNumber) renderDigitsInto(resultNumber, display);
+        if (mobileResult) renderDigitsInto(mobileResult, display);
+        playBeep();
+      }
+      if (elapsed < duration) {
+        requestAnimationFrame(step);
+      } else {
+        if (resultNumber) {
+          renderDigitsInto(resultNumber, finalDisplay);
+          resultNumber.dataset.rolled = 'true';
+        }
+        if (mobileResult) {
+          renderDigitsInto(mobileResult, finalDisplay);
+          mobileResult.dataset.rolled = 'true';
+        }
+        history.push({
+          raw: finalRaw,
+          value: finalDisplay,
+          time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        });
+        if (drawCount) drawCount.textContent = history.length;
+        renderHistory();
+        isRolling = false;
+        if (rollBtn) { rollBtn.dataset.rolling = 'false'; rollBtn.disabled = false; }
+        if (mobileRollBtn) { mobileRollBtn.dataset.rolling = 'false'; mobileRollBtn.disabled = false; }
       }
     }
+    requestAnimationFrame(step);
+  }
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      // Add smooth scroll for nav links
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute('href'));
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-          }
+  if (rollBtn) rollBtn.addEventListener('click', roll);
+  if (mobileRollBtn) mobileRollBtn.addEventListener('click', roll);
+  if (minInput) { minInput.addEventListener('input', updateRangeDisplay); minInput.addEventListener('change', function() { if (parseInt(minInput.value,10) > parseInt(maxInput.value,10)) maxInput.value = parseInt(minInput.value,10)+10; updateRangeDisplay(); }); }
+  if (maxInput) { maxInput.addEventListener('input', updateRangeDisplay); maxInput.addEventListener('change', updateRangeDisplay); }
+  if (formatSelect) formatSelect.addEventListener('change', renderHistory);
+
+  updateRangeDisplay();
+  renderHistory();
+
+  /* =========================================
+     Tabs
+     ========================================= */
+  document.querySelectorAll('[data-tabs]').forEach(function(group) {
+    const tabs = group.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('[data-panel]');
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        const target = tab.dataset.tab;
+        tabs.forEach(function(t) { t.dataset.active = 'false'; });
+        tab.dataset.active = 'true';
+        panels.forEach(function(p) {
+          if (p.dataset.panel === target) p.dataset.active = 'true';
+          else p.dataset.active = 'false';
         });
       });
-
-      // Set initial theme icon
-      const isDark = document.body.getAttribute('data-theme') === 'dark';
-      document.getElementById('theme-icon').textContent = isDark ? '☀' : '🌙';
     });
-  </script>
+  });
+
+  /* =========================================
+     Dialog
+     ========================================= */
+  const open1 = document.getElementById('openDialog');
+  const open2 = document.getElementById('openDialog2');
+
+  function openDialog(id) {
+    const el = document.getElementById(id);
+    if (el) el.dataset.open = 'true';
+  }
+  function closeDialog(id) {
+    const el = document.getElementById(id);
+    if (el) el.dataset.open = 'false';
+  }
+  if (open1) open1.addEventListener('click', function() { openDialog('dialog1'); });
+  if (open2) open2.addEventListener('click', function() { openDialog('dialog2'); });
+
+  document.querySelectorAll('[data-close-dialog]').forEach(function(btn) {
+    btn.addEventListener('click', function() { closeDialog(btn.dataset.closeDialog); });
+  });
+
+  document.querySelectorAll('.dialog-backdrop').forEach(function(bd) {
+    bd.addEventListener('click', function(e) {
+      if (e.target === bd) bd.dataset.open = 'false';
+    });
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.dialog-backdrop').forEach(function(bd) { bd.dataset.open = 'false'; });
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'r' && !isRolling) {
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
+      e.preventDefault();
+      roll();
+    }
+  });
+
+  // Auto-open welcome dialog on first load
+  setTimeout(function() { openDialog('dialog1'); }, 800);
+})();
+</script>
+
 </body>
 </html>
