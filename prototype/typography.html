@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZenDraw · 字体系统 v3.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-elevated: #fafafa;
+      --bg-muted: #f4f4f5;
+      --fg: #0a0a0a;
+      --fg-muted: #52525b;
+      --fg-subtle: #a1a1aa;
+      --border: #e4e4e7;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --success: #16a34a;
+      --r-md: 10px;
+      --r-lg: 16px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-fast: 150ms;
+      --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --bg-elevated: #18181b;
+      --bg-muted: #27272a;
+      --fg: #fafafa;
+      --fg-muted: #a1a1aa;
+      --fg-subtle: #71717a;
+      --border: #27272a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); color: var(--fg); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 32px;
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+    .nav-logo { width: 36px; height: 36px; border-radius: 10px; background: var(--fg); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 800; }
+    .theme-btn { width: 36px; height: 36px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 16px; background: var(--bg-muted); cursor: pointer; border: none; transition: background var(--dur-fast); }
+    .theme-btn:hover { background: var(--bg-elevated); }
+
+    .content { max-width: 1000px; margin: 0 auto; padding: 100px 32px 80px; }
+    .page-header { margin-bottom: 64px; text-align: center; }
+    .page-label { font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .page-title { font-size: 48px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 16px; }
+    .page-desc { font-size: 18px; color: var(--fg-muted); max-width: 600px; margin: 0 auto; }
+
+    .section { margin-bottom: 80px; }
+    .section-header { margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .section-desc { color: var(--fg-muted); font-size: 15px; }
+
+    .font-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; margin-bottom: 24px; }
+    .font-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .font-name { font-weight: 700; font-size: 18px; }
+    .font-meta { font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); background: var(--bg-muted); padding: 4px 10px; border-radius: 6px; }
+    .font-body { padding: 32px; }
+    .font-sample { margin-bottom: 24px; }
+    .font-sample-chars { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .font-sample-text { font-size: 24px; line-height: 1.4; }
+    .font-sample-mono { font-family: var(--font-mono); font-size: 20px; }
+
+    .type-scale { display: flex; flex-direction: column; gap: 0; }
+    .type-row { display: flex; align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--border); gap: 24px; }
+    .type-row:last-child { border-bottom: none; }
+    .type-meta { width: 160px; flex-shrink: 0; }
+    .type-name { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; }
+    .type-spec { font-family: var(--font-mono); font-size: 11px; color: var(--fg-subtle); margin-top: 4px; }
+    .type-preview { flex: 1; }
+    .type-display { font-size: 72px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+    .type-h1 { font-size: 48px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+    .type-h2 { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+    .type-h3 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+    .type-h4 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
+    .type-body-lg { font-size: 18px; line-height: 1.6; }
+    .type-body { font-size: 16px; line-height: 1.6; }
+    .type-body-sm { font-size: 14px; line-height: 1.5; }
+    .type-caption { font-size: 12px; color: var(--fg-muted); }
+    .type-code { font-family: var(--font-mono); font-size: 14px; }
+
+    .weight-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .weight-card { padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); text-align: center; }
+    .weight-sample { font-size: 32px; margin-bottom: 8px; }
+    .weight-value { font-family: var(--font-mono); font-size: 14px; color: var(--fg-muted); }
+
+    .tracking-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+    .tracking-card { padding: 20px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); }
+    .tracking-sample { font-size: 28px; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tracking-label { font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); }
+
+    .line-height-demo { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .line-height-card { padding: 20px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); }
+    .line-height-label { font-family: var(--font-mono); font-size: 12px; color: var(--accent); margin-bottom: 12px; }
+    .line-height-sample { font-size: 14px; color: var(--fg-muted); }
+
+    .guidelines-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .guideline-card { padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); }
+    .guideline-icon { width: 48px; height: 48px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
+    .guideline-title { font-weight: 600; font-size: 16px; margin-bottom: 8px; }
+    .guideline-desc { font-size: 14px; color: var(--fg-muted); line-height: 1.6; }
+
+    .footer { padding: 48px; text-align: center; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 13px; }
+
+    @media (max-width: 768px) {
+      .type-row { flex-direction: column; gap: 8px; }
+      .type-meta { width: auto; }
+      .type-display { font-size: 48px; }
+      .type-h1 { font-size: 36px; }
+      .type-h2 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <nav class="nav">
+    <div class="nav-brand"><div class="nav-logo">Z</div><span>ZenDraw 字体系统</span></div>
+    <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+  </nav>
+
+  <div class="content">
+    <div class="page-header">
+      <div class="page-label">Typography</div>
+      <h1 class="page-title">字体系统</h1>
+      <p class="page-desc">精心挑选的字体组合，配合科学的字阶、字重和间距系统，确保清晰可读且富有层次感。</p>
+    </div>
+
+    <!-- Font Families -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">字体家族</h2>
+        <p class="section-desc">三种字体各司其职，覆盖所有使用场景。</p>
+      </div>
+
+      <div class="font-card">
+        <div class="font-header">
+          <span class="font-name">Sans — Inter + Noto Sans SC</span>
+          <span class="font-meta">--font-sans</span>
+        </div>
+        <div class="font-body">
+          <div class="font-sample">
+            <div class="font-sample-chars">Aa Bb Cc 123</div>
+            <div class="font-sample-text">ZenDraw 禅抽 — 正文、标题、UI 元素</div>
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <span class="font-meta">Inter</span>
+            <span class="font-meta">Noto Sans SC</span>
+            <span class="font-meta">system-ui</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="font-card">
+        <div class="font-header">
+          <span class="font-name">Mono — JetBrains Mono</span>
+          <span class="font-meta">--font-mono</span>
+        </div>
+        <div class="font-body">
+          <div class="font-sample">
+            <div class="font-sample-mono">{ draw: true, count: 42 }</div>
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <span class="font-meta">JetBrains Mono</span>
+            <span class="font-meta">SF Mono</span>
+            <span class="font-meta">ui-monospace</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Type Scale -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">字阶系统</h2>
+        <p class="section-desc">8 级字阶，从 72px 的超大标题到 12px 的辅助说明。</p>
+      </div>
+
+      <div class="type-scale">
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">Display</div>
+            <div class="type-spec">72px / 900 / -0.04em</div>
+          </div>
+          <div class="type-preview">
+            <div class="type-display">ZenDraw</div>
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">H1</div>
+            <div class="type-spec">48px / 800 / -0.03em</div>
+          </div>
+          <div class="type-preview">
+            <div class="type-h1">极简之美</div>
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">H2</div>
+            <div class="type-spec">36px / 700 / -0.02em</div>
+          </div>
+          <div class="type-preview">
+            <div class="type-h2">开始抽奖</div>
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">H3</div>
+            <div class="type-spec">28px / 700 / -0.02em</div>
+          </div>
+          <div class="type-preview">
+            <div class="type-h3">抽奖设置</div>
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">H4</div>
+            <div class="type-spec">22px / 600 / -0.01em</div>
+          </div>
+          <div class="type-preview">
+            <div class="type-h4">历史记录</div>
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">Body Large</div>
+            <div class="type-spec">18px / 400 / 1.6</div>
+          </div>
+          <div class="type-preview">
+            <div class="type-body-lg">ZenDraw 是一款简洁优雅的在线抽奖工具。</div>
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">Body</div>
+            <div class="type-spec">16px / 400 / 1.6</div>
+          </div>
+          <div class="type-preview">
+            <div class="type-body">支持自定义数字范围、不重复抽取等高级功能。</div>
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">Caption</div>
+            <div class="type-spec">12px / 400</div>
+          </div>
+          <div class="type-preview">
+            <div class="type-caption">v3.0 · 设计系统 · Apple Design Language</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Font Weights -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">字重系统</h2>
+        <p class="section-desc">使用 5 种字重创建清晰的视觉层次。</p>
+      </div>
+
+      <div class="weight-grid">
+        <div class="weight-card">
+          <div class="weight-sample" style="font-weight: 400;">Aa</div>
+          <div class="weight-value">Regular 400</div>
+        </div>
+        <div class="weight-card">
+          <div class="weight-sample" style="font-weight: 500;">Aa</div>
+          <div class="weight-value">Medium 500</div>
+        </div>
+        <div class="weight-card">
+          <div class="weight-sample" style="font-weight: 600;">Aa</div>
+          <div class="weight-value">Semibold 600</div>
+        </div>
+        <div class="weight-card">
+          <div class="weight-sample" style="font-weight: 700;">Aa</div>
+          <div class="weight-value">Bold 700</div>
+        </div>
+        <div class="weight-card">
+          <div class="weight-sample" style="font-weight: 800;">Aa</div>
+          <div class="weight-value">Extrabold 800</div>
+        </div>
+        <div class="weight-card">
+          <div class="weight-sample" style="font-weight: 900;">Aa</div>
+          <div class="weight-value">Black 900</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Letter Spacing -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">字距调整</h2>
+        <p class="section-desc">字号越大，字距越紧，营造紧凑感。</p>
+      </div>
+
+      <div class="tracking-grid">
+        <div class="tracking-card">
+          <div class="tracking-sample" style="letter-spacing: -0.04em;">ZenDraw</div>
+          <div class="tracking-label">Tight -0.04em (Display)</div>
+        </div>
+        <div class="tracking-card">
+          <div class="tracking-sample" style="letter-spacing: -0.03em;">ZenDraw</div>
+          <div class="tracking-label">Tighter -0.03em (H1)</div>
+        </div>
+        <div class="tracking-card">
+          <div class="tracking-sample" style="letter-spacing: -0.02em;">ZenDraw</div>
+          <div class="tracking-label">Tight -0.02em (H2-H3)</div>
+        </div>
+        <div class="tracking-card">
+          <div class="tracking-sample" style="letter-spacing: -0.01em;">ZenDraw</div>
+          <div class="tracking-label">Normal -0.01em (H4)</div>
+        </div>
+        <div class="tracking-card">
+          <div class="tracking-sample" style="letter-spacing: 0;">ZenDraw</div>
+          <div class="tracking-label">Standard 0 (Body)</div>
+        </div>
+        <div class="tracking-card">
+          <div class="tracking-sample" style="letter-spacing: 0.1em;">ZenDraw</div>
+          <div class="tracking-label">Wide 0.1em (Caption)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Line Height -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">行高设置</h2>
+        <p class="section-desc">根据内容类型选择合适的行高。</p>
+      </div>
+
+      <div class="line-height-demo">
+        <div class="line-height-card">
+          <div class="line-height-label">Tight 1.1 (Headings)</div>
+          <div class="line-height-sample" style="line-height: 1.1;">
+            ZenDraw 极简抽奖工具。字与字之间紧凑排列，适合标题使用。
+          </div>
+        </div>
+        <div class="line-height-card">
+          <div class="line-height-label">Normal 1.5 (Body)</div>
+          <div class="line-height-sample" style="line-height: 1.5;">
+            ZenDraw 极简抽奖工具。提供舒适阅读体验的行高设置，适合正文段落使用。
+          </div>
+        </div>
+        <div class="line-height-card">
+          <div class="line-height-label">Relaxed 1.7 (Long Text)</div>
+          <div class="line-height-sample" style="line-height: 1.7;">
+            ZenDraw 极简抽奖工具。宽松的行高让长文本更易阅读，减少阅读疲劳。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guidelines -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">使用规范</h2>
+        <p class="section-desc">字体使用的最佳实践。</p>
+      </div>
+
+      <div class="guidelines-grid">
+        <div class="guideline-card">
+          <div class="guideline-icon">A</div>
+          <div class="guideline-title">字号对比</div>
+          <div class="guideline-desc">使用至少两级字号差创建层次感。如正文 16px，标题 28px。</div>
+        </div>
+        <div class="guideline-card">
+          <div class="guideline-icon">W</div>
+          <div class="guideline-title">字重层次</div>
+          <div class="guideline-desc">重要信息用粗体，次要信息用常规字重。避免同一行混用过多字重。</div>
+        </div>
+        <div class="guideline-card">
+          <div class="guideline-icon">↕</div>
+          <div class="guideline-title">垂直节奏</div>
+          <div class="guideline-desc">保持 8px 基准的倍数关系。如 padding: 16px/24px/32px。</div>
+        </div>
+        <div class="guideline-card">
+          <div class="guideline-icon">{ }</div>
+          <div class="guideline-title">等宽字体</div>
+          <div class="guideline-desc">代码、数字、标签等使用 JetBrains Mono，避免与正文混淆。</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">ZenDraw · Design System v3.0</footer>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      document.querySelector('.theme-btn').textContent = next === 'dark' ? '☀' : '🌙';
+    }
+  </script>
+</body>
+</html>

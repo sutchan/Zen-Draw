@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZenDraw · 组件库规范 v3.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-elevated: #fafafa;
+      --bg-muted: #f4f4f5;
+      --fg: #0a0a0a;
+      --fg-muted: #52525b;
+      --fg-subtle: #a1a1aa;
+      --border: #e4e4e7;
+      --border-strong: #d4d4d8;
+      --primary: #0a0a0a;
+      --primary-fg: #fafafa;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --success: #16a34a;
+      --success-soft: rgba(22, 163, 74, 0.1);
+      --warning: #d97706;
+      --warning-soft: rgba(217, 119, 6, 0.1);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.1);
+      --info: #0891b2;
+      --info-soft: rgba(8, 145, 178, 0.1);
+      --r-sm: 6px;
+      --r-md: 10px;
+      --r-lg: 16px;
+      --r-xl: 24px;
+      --r-full: 9999px;
+      --s-1: 4px;
+      --s-2: 8px;
+      --s-3: 12px;
+      --s-4: 16px;
+      --s-5: 20px;
+      --s-6: 24px;
+      --s-8: 32px;
+      --s-10: 40px;
+      --s-12: 48px;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.06);
+      --shadow-xl: 0 24px 48px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.08);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-fast: 150ms;
+      --dur-norm: 250ms;
+      --dur-slow: 400ms;
+      --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --bg-elevated: #18181b;
+      --bg-muted: #27272a;
+      --fg: #fafafa;
+      --fg-muted: #a1a1aa;
+      --fg-subtle: #71717a;
+      --border: #27272a;
+      --border-strong: #3f3f46;
+      --primary: #fafafa;
+      --primary-fg: #0a0a0a;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.15);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.2);
+      --shadow-xl: 0 24px 48px rgba(0,0,0,0.5), 0 8px 16px rgba(0,0,0,0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--fg);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: var(--accent); color: white; }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 32px;
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+    }
+
+    .nav-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: var(--primary-fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .theme-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      background: var(--bg-muted);
+      transition: background var(--dur-fast);
+    }
+
+    .theme-btn:hover { background: var(--bg-elevated); }
+
+    /* Main Layout */
+    .main {
+      display: flex;
+      padding-top: 61px;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 61px;
+      left: 0;
+      width: 260px;
+      height: calc(100vh - 61px);
+      overflow-y: auto;
+      padding: 24px 16px;
+      border-right: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .sidebar-section {
+      margin-bottom: 24px;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg-muted);
+      border-radius: var(--r-md);
+      transition: all var(--dur-fast);
+      cursor: pointer;
+    }
+
+    .sidebar-link:hover {
+      color: var(--fg);
+      background: var(--bg-muted);
+    }
+
+    .sidebar-link.active {
+      color: var(--fg);
+      background: var(--bg-elevated);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-link-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .content {
+      flex: 1;
+      margin-left: 260px;
+      padding: 48px;
+      max-width: 1000px;
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar { display: none; }
+      .content { margin-left: 0; padding: 32px 20px; }
+    }
+
+    /* Typography */
+    .page-header {
+      margin-bottom: 48px;
+    }
+
+    .page-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .page-title {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .page-desc {
+      font-size: 16px;
+      color: var(--fg-muted);
+      max-width: 600px;
+    }
+
+    /* Sections */
+    .section {
+      margin-bottom: 64px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .subsection-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--fg-muted);
+    }
+
+    /* Component Grid */
+    .component-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .component-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+
+    .component-preview {
+      padding: 32px;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 120px;
+    }
+
+    .component-preview.centered {
+      align-items: center;
+    }
+
+    .component-info {
+      padding: 20px;
+    }
+
+    .component-name {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .component-desc {
+      font-size: 13px;
+      color: var(--fg-muted);
+      margin-bottom: 12px;
+    }
+
+    .component-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--fg-subtle);
+      background: var(--bg-muted);
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: var(--r-full);
+      transition: all var(--dur-fast) var(--ease-out);
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-primary { background: var(--primary); color: var(--primary-fg); }
+    .btn-primary:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-outline { background: transparent; border: 1.5px solid var(--border-strong); color: var(--fg); }
+    .btn-outline:hover { background: var(--bg-muted); }
+
+    .btn-ghost { background: transparent; color: var(--fg-muted); }
+    .btn-ghost:hover { background: var(--bg-muted); color: var(--fg); }
+
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { opacity: 0.9; }
+
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
+    .btn-lg { padding: 14px 28px; font-size: 16px; }
+    .btn-icon { width: 40px; height: 40px; padding: 0; border-radius: var(--r-md); }
+
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+    /* Inputs */
+    .input {
+      width: 100%;
+      height: 44px;
+      padding: 0 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--bg);
+      color: var(--fg);
+      font-size: 15px;
+      font-family: inherit;
+      transition: all var(--dur-fast);
+    }
+
+    .input:hover { border-color: var(--border-strong); }
+    .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .input.error { border-color: var(--danger); }
+    .input.error:focus { box-shadow: 0 0 0 3px var(--danger-soft); }
+
+    .input-wrapper { display: flex; flex-direction: column; gap: 8px; }
+    .input-label { font-size: 14px; font-weight: 500; }
+    .input-hint { font-size: 12px; color: var(--fg-subtle); }
+    .input-error { font-size: 12px; color: var(--danger); }
+
+    /* Textarea */
+    .textarea {
+      min-height: 100px;
+      padding: 12px 16px;
+      resize: vertical;
+    }
+
+    /* Select */
+    .select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2352525b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+    }
+
+    /* Switch */
+    .switch {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      border-radius: var(--r-full);
+      background: var(--border-strong);
+      cursor: pointer;
+      transition: background var(--dur-fast);
+      flex-shrink: 0;
+    }
+
+    .switch::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .switch.on { background: var(--primary); }
+    .switch.on::after { transform: translateX(20px); }
+    .switch:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .switch-row:last-child { border-bottom: none; }
+
+    .switch-label { font-size: 15px; font-weight: 500; }
+    .switch-desc { font-size: 13px; color: var(--fg-subtle); margin-top: 2px; }
+
+    /* Checkbox & Radio */
+    .checkbox, .radio {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .checkbox-input, .radio-input {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-strong);
+      background: var(--bg);
+      cursor: pointer;
+      transition: all var(--dur-fast);
+      appearance: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .checkbox-input {
+      border-radius: 5px;
+    }
+
+    .radio-input {
+      border-radius: 50%;
+    }
+
+    .checkbox-input:checked {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .checkbox-input:checked::after {
+      content: '✓';
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .radio-input:checked {
+      border-color: var(--accent);
+      background: var(--accent);
+      box-shadow: inset 0 0 0 4px var(--bg);
+    }
+
+    /* Slider */
+    .slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--bg-muted);
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: transform var(--dur-fast);
+    }
+
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--r-full);
+      font-family: var(--font-mono);
+    }
+
+    .badge-default { background: var(--bg-muted); color: var(--fg-muted); }
+    .badge-primary { background: var(--primary); color: var(--primary-fg); }
+    .badge-accent { background: var(--accent-soft); color: var(--accent); }
+    .badge-success { background: var(--success-soft); color: var(--success); }
+    .badge-warning { background: var(--warning-soft); color: var(--warning); }
+    .badge-danger { background: var(--danger-soft); color: var(--danger); }
+    .badge-info { background: var(--info-soft); color: var(--info); }
+
+    /* Alert */
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px 20px;
+      border-radius: var(--r-lg);
+      border: 1px solid;
+    }
+
+    .alert-success { background: var(--success-soft); border-color: var(--success); }
+    .alert-warning { background: var(--warning-soft); border-color: var(--warning); }
+    .alert-danger { background: var(--danger-soft); border-color: var(--danger); }
+    .alert-info { background: var(--info-soft); border-color: var(--info); }
+
+    .alert-icon { font-size: 20px; flex-shrink: 0; }
+    .alert-content { flex: 1; }
+    .alert-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .alert-message { font-size: 14px; color: var(--fg-muted); }
+
+    /* Card */
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .card-body { padding: 24px; }
+    .card-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-elevated);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    /* Dialog */
+    .dialog-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--dur-norm);
+    }
+
+    .dialog-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .dialog {
+      background: var(--bg);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-xl);
+      max-width: 480px;
+      width: 90%;
+      transform: scale(0.95);
+      transition: transform var(--dur-norm) var(--ease-spring);
+    }
+
+    .dialog-overlay.open .dialog {
+      transform: scale(1);
+    }
+
+    .dialog-header {
+      padding: 24px 24px 0;
+    }
+
+    .dialog-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .dialog-body {
+      padding: 20px 24px;
+    }
+
+    .dialog-footer {
+      padding: 16px 24px 24px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    /* Tabs */
+    .tabs {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-list {
+      display: flex;
+      gap: 4px;
+    }
+
+    .tab {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg-muted);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all var(--dur-fast);
+      cursor: pointer;
+    }
+
+    .tab:hover { color: var(--fg); }
+    .tab.active {
+      color: var(--fg);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      padding: 24px 0;
+      display: none;
+    }
+
+    .tab-content.active { display: block; }
+
+    /* Progress */
+    .progress {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-muted);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width var(--dur-slow) var(--ease-out);
+    }
+
+    .progress-success .progress-bar { background: var(--success); }
+    .progress-warning .progress-bar { background: var(--warning); }
+    .progress-danger .progress-bar { background: var(--danger); }
+
+    /* Skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, var(--bg-muted) 25%, var(--bg-elevated) 50%, var(--bg-muted) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--r-md);
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-text { height: 16px; margin-bottom: 8px; }
+    .skeleton-text:last-child { width: 60%; }
+    .skeleton-avatar { width: 48px; height: 48px; border-radius: 50%; }
+    .skeleton-button { width: 100px; height: 40px; border-radius: var(--r-full); }
+
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      padding: 8px 12px;
+      background: var(--fg);
+      color: var(--bg);
+      font-size: 13px;
+      border-radius: var(--r-md);
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--dur-fast);
+      pointer-events: none;
+    }
+
+    .tooltip:hover::after {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(-4px);
+    }
+
+    /* Avatar */
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 16px;
+      overflow: hidden;
+    }
+
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-sm { width: 32px; height: 32px; font-size: 13px; }
+    .avatar-lg { width: 56px; height: 56px; font-size: 22px; }
+
+    /* Tag */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--bg-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .tag-close {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      cursor: pointer;
+      transition: background var(--dur-fast);
+    }
+
+    .tag-close:hover { background: var(--danger); color: white; }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+
+    /* Code Block */
+    .code-block {
+      background: var(--bg-inverse, #0a0a0a);
+      color: #fafafa;
+      padding: 20px;
+      border-radius: var(--r-lg);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .code-keyword { color: #c792ea; }
+    .code-string { color: #c3e88d; }
+    .code-function { color: #82aaff; }
+    .code-comment { color: #546e7a; }
+
+    /* Usage Rules */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .rule-card {
+      padding: 24px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+    }
+
+    .rule-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--r-md);
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .rule-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .rule-desc {
+      font-size: 14px;
+      color: var(--fg-muted);
+      line-height: 1.6;
+    }
+
+    /* Do Don't */
+    .do-dont {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .do-dont { grid-template-columns: 1fr; }
+    }
+
+    .do-card, .dont-card {
+      padding: 20px;
+      border-radius: var(--r-lg);
+    }
+
+    .do-card {
+      background: var(--success-soft);
+      border: 1px solid var(--success);
+    }
+
+    .dont-card {
+      background: var(--danger-soft);
+      border: 1px solid var(--danger);
+    }
+
+    .do-dont-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .do-card .do-dont-title { color: var(--success); }
+    .dont-card .do-dont-title { color: var(--danger); }
+
+    .do-dont-list {
+      list-style: none;
+      font-size: 14px;
+      color: var(--fg-muted);
+    }
+
+    .do-dont-list li {
+      padding: 6px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .do-card .do-dont-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--success);
+    }
+
+    .dont-card .do-dont-list li::before {
+      content: '✗';
+      position: absolute;
+      left: 0;
+      color: var(--danger);
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="nav-logo">Z</div>
+      <span>ZenDraw 组件库</span>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+  </nav>
+
+  <div class="main">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">基础组件</div>
+        <div class="sidebar-link active" onclick="scrollTo('buttons')">
+          <span class="sidebar-link-icon">🔘</span>按钮
+        </div>
+        <div class="sidebar-link" onclick="scrollTo('inputs')">
+          <span class="sidebar-link-icon">📝</span>输入框
+        </div>
+        <div class="sidebar-link" onclick="scrollTo('toggles')">
+          <span class="sidebar-link-icon">🔄</span>开关/选择
+        </div>
+        <div class="sidebar-link" onclick="scrollTo('badges')">
+          <span class="sidebar-link-icon">🏷️</span>标签
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">复合组件</div>
+        <div class="sidebar-link" onclick="scrollTo('alerts')">
+          <span class="sidebar-link-icon">⚠️</span>提示框
+        </div>
+        <div class="sidebar-link" onclick="scrollTo('cards')">
+          <span class="sidebar-link-icon">📇</span>卡片
+        </div>
+        <div class="sidebar-link" onclick="scrollTo('dialogs')">
+          <span class="sidebar-link-icon">📋</span>对话框
+        </div>
+        <div class="sidebar-link" onclick="scrollTo('tabs')">
+          <span class="sidebar-link-icon">📑</span>标签页
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">反馈组件</div>
+        <div class="sidebar-link" onclick="scrollTo('progress')">
+          <span class="sidebar-link-icon">📊</span>进度条
+        </div>
+        <div class="sidebar-link" onclick="scrollTo('skeleton')">
+          <span class="sidebar-link-icon">⏳</span>骨架屏
+        </div>
+        <div class="sidebar-link" onclick="scrollTo('tooltips')">
+          <span class="sidebar-link-icon">💬</span>工具提示
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">业务组件</div>
+        <div class="sidebar-link" onclick="scrollTo('result')">
+          <span class="sidebar-link-icon">🎰</span>结果展示
+        </div>
+        <div class="sidebar-link" onclick="scrollTo('history')">
+          <span class="sidebar-link-icon">📜</span>历史记录
+        </div>
+        <div class="sidebar-link" onclick="scrollTo('settings')">
+          <span class="sidebar-link-icon">⚙️</span>设置面板
+        </div>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+      <div class="page-header">
+        <div class="page-label">Component Library</div>
+        <h1 class="page-title">组件库规范</h1>
+        <p class="page-desc">ZenDraw 基于 shadcn/ui 规范的完整组件库，包含基础组件、复合组件和业务组件。所有组件都遵循统一的设计语言和交互规范。</p>
+      </div>
+
+      <!-- Buttons -->
+      <section class="section" id="buttons">
+        <h2 class="section-title">按钮 Button</h2>
+
+        <div class="subsection-title">变体 Variants</div>
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-primary">Primary</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Primary</div>
+              <div class="component-desc">主要行动按钮，用于重要操作</div>
+              <code class="component-meta">bg-primary</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-outline">Outline</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Outline</div>
+              <div class="component-desc">次要操作，边界清晰</div>
+              <code class="component-meta">border + transparent</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-ghost">Ghost</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Ghost</div>
+              <div class="component-desc">最轻量的操作方式</div>
+              <code class="component-meta">transparent</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-danger">Danger</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Danger</div>
+              <div class="component-desc">危险操作，如删除</div>
+              <code class="component-meta">bg-danger</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection-title">尺寸 Sizes</div>
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-primary btn-sm">Small</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Small</div>
+              <code class="component-meta">h-32px</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-primary">Default</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Default</div>
+              <code class="component-meta">h-40px</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-primary btn-lg">Large</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Large</div>
+              <code class="component-meta">h-48px</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-primary btn-icon">⚙</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Icon</div>
+              <code class="component-meta">40×40</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection-title">状态 States</div>
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-primary">Normal</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Normal</div>
+              <code class="component-meta">默认状态</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-primary" disabled>Disabled</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Disabled</div>
+              <code class="component-meta">opacity 0.5</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-primary" style="animation: pulse 1s infinite;">Loading</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Loading</div>
+              <code class="component-meta">opacity 0.7 + pulse</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Inputs -->
+      <section class="section" id="inputs">
+        <h2 class="section-title">输入框 Input</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <div class="input-wrapper">
+                <label class="input-label">默认</label>
+                <input type="text" class="input" placeholder="请输入内容..." />
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">默认状态</div>
+              <code class="component-meta">border + 1.5px</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <div class="input-wrapper">
+                <label class="input-label">带提示</label>
+                <input type="text" class="input" value="已输入的内容" />
+                <span class="input-hint">这是一条帮助提示文字</span>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">带提示</div>
+              <code class="component-meta">input-hint</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <div class="input-wrapper">
+                <label class="input-label">错误状态</label>
+                <input type="text" class="input error" value="无效输入" />
+                <span class="input-error">输入内容不符合要求</span>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">错误状态</div>
+              <code class="component-meta">border-danger</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <div class="input-wrapper">
+                <label class="input-label">禁用状态</label>
+                <input type="text" class="input" value="不可编辑" disabled />
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">禁用状态</div>
+              <code class="component-meta">disabled</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection-title">变体 Variants</div>
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <input type="number" class="input" placeholder="数字输入" />
+            </div>
+            <div class="component-info">
+              <div class="component-name">Number</div>
+              <code class="component-meta">type="number"</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <textarea class="input textarea" placeholder="多行文本..."></textarea>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Textarea</div>
+              <code class="component-meta">min-height: 100px</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <select class="input select">
+                <option>选项一</option>
+                <option>选项二</option>
+                <option>选项三</option>
+              </select>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Select</div>
+              <code class="component-meta">appearance: none</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Toggles -->
+      <section class="section" id="toggles">
+        <h2 class="section-title">开关与选择 Toggle & Selection</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <label class="checkbox">
+                <input type="checkbox" class="checkbox-input" checked />
+                <span>同意服务条款</span>
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" class="checkbox-input" />
+                <span>订阅更新通知</span>
+              </label>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Checkbox</div>
+              <code class="component-meta">border-radius: 5px</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <label class="radio">
+                <input type="radio" name="demo" class="radio-input" checked />
+                <span>选项 A</span>
+              </label>
+              <label class="radio">
+                <input type="radio" name="demo" class="radio-input" />
+                <span>选项 B</span>
+              </label>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Radio</div>
+              <code class="component-meta">border-radius: 50%</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: flex-start; gap: 20px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="switch" onclick="this.classList.toggle('on')"></div>
+                <span>关闭</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="switch on" onclick="this.classList.toggle('on')"></div>
+                <span>开启</span>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Switch</div>
+              <code class="component-meta">48×28px</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 12px;">
+              <label class="switch-row" style="padding: 0; border: none;">
+                <div>
+                  <div class="switch-label">自动保存</div>
+                  <div class="switch-desc">输入时自动保存到本地</div>
+                </div>
+                <div class="switch on" onclick="this.classList.toggle('on')"></div>
+              </label>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Switch Row</div>
+              <code class="component-meta">label + switch</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Badges -->
+      <section class="section" id="badges">
+        <h2 class="section-title">标签 Badge & Tag</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview">
+              <span class="badge badge-default">Default</span>
+              <span class="badge badge-primary">Primary</span>
+              <span class="badge badge-accent">Accent</span>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Badge Variants</div>
+              <code class="component-meta">pill-shaped</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview">
+              <span class="badge badge-success">Success</span>
+              <span class="badge badge-warning">Warning</span>
+              <span class="badge badge-danger">Danger</span>
+              <span class="badge badge-info">Info</span>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Status Badges</div>
+              <code class="component-meta">语义色彩</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview">
+              <div class="tag">标签一<span class="tag-close">×</span></div>
+              <div class="tag">标签二</div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Tag</div>
+              <code class="component-meta">可关闭</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alerts -->
+      <section class="section" id="alerts">
+        <h2 class="section-title">提示框 Alert</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
+              <div class="alert alert-success">
+                <span class="alert-icon">✓</span>
+                <div class="alert-content">
+                  <div class="alert-title">操作成功</div>
+                  <div class="alert-message">结果已保存到本地文件</div>
+                </div>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Success</div>
+              <code class="component-meta">bg-success-soft</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
+              <div class="alert alert-warning">
+                <span class="alert-icon">⚠</span>
+                <div class="alert-content">
+                  <div class="alert-title">注意事项</div>
+                  <div class="alert-message">请确保输入的数值范围正确</div>
+                </div>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Warning</div>
+              <code class="component-meta">bg-warning-soft</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
+              <div class="alert alert-danger">
+                <span class="alert-icon">✗</span>
+                <div class="alert-content">
+                  <div class="alert-title">输入无效</div>
+                  <div class="alert-message">最小值不能大于最大值</div>
+                </div>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Danger</div>
+              <code class="component-meta">bg-danger-soft</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
+              <div class="alert alert-info">
+                <span class="alert-icon">ℹ</span>
+                <div class="alert-content">
+                  <div class="alert-title">提示信息</div>
+                  <div class="alert-message">这是系统自动保存的草稿</div>
+                </div>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">Info</div>
+              <code class="component-meta">bg-info-soft</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cards -->
+      <section class="section" id="cards">
+        <h2 class="section-title">卡片 Card</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="card" style="max-width: 320px;">
+              <div class="card-header">
+                <div class="card-title">卡片标题</div>
+              </div>
+              <div class="card-body">
+                <p style="color: var(--fg-muted); font-size: 14px;">这是卡片的正文内容，可以包含文字、图片等多种元素。</p>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-ghost btn-sm">取消</button>
+                <button class="btn btn-primary btn-sm">确认</button>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">基础卡片</div>
+              <code class="component-meta">header + body + footer</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="card" style="max-width: 320px;">
+              <div class="card-body">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                  <div class="avatar">Z</div>
+                  <div>
+                    <div style="font-weight: 600;">张三</div>
+                    <div style="font-size: 13px; color: var(--fg-muted);">设计师</div>
+                  </div>
+                </div>
+                <p style="color: var(--fg-muted); font-size: 14px;">ZenDraw 的设计简洁大方，用户体验非常流畅。</p>
+                <div style="margin-top: 16px; display: flex; gap: 8px;">
+                  <span class="badge badge-accent">设计</span>
+                  <span class="badge badge-default">产品</span>
+                </div>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">内容卡片</div>
+              <code class="component-meta">avatar + text + tags</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dialogs -->
+      <section class="section" id="dialogs">
+        <h2 class="section-title">对话框 Dialog</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="btn btn-primary" onclick="openDialog()">打开对话框</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">模态对话框</div>
+              <code class="component-meta">backdrop + focus trap</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="dialog-overlay" id="demo-dialog">
+          <div class="dialog">
+            <div class="dialog-header">
+              <div class="dialog-title">确认操作</div>
+            </div>
+            <div class="dialog-body">
+              <p style="color: var(--fg-muted);">确定要清空所有历史记录吗？此操作不可撤销。</p>
+            </div>
+            <div class="dialog-footer">
+              <button class="btn btn-ghost" onclick="closeDialog()">取消</button>
+              <button class="btn btn-danger" onclick="closeDialog()">确认删除</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabs -->
+      <section class="section" id="tabs">
+        <h2 class="section-title">标签页 Tabs</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
+              <div class="tabs">
+                <div class="tab-list">
+                  <div class="tab active" onclick="switchTab(this)">选项一</div>
+                  <div class="tab" onclick="switchTab(this)">选项二</div>
+                  <div class="tab" onclick="switchTab(this)">选项三</div>
+                </div>
+              </div>
+              <div class="tab-content active" data-tab="0">
+                <p style="color: var(--fg-muted); font-size: 14px;">这是第一个标签页的内容。</p>
+              </div>
+              <div class="tab-content" data-tab="1">
+                <p style="color: var(--fg-muted); font-size: 14px;">这是第二个标签页的内容。</p>
+              </div>
+              <div class="tab-content" data-tab="2">
+                <p style="color: var(--fg-muted); font-size: 14px;">这是第三个标签页的内容。</p>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">标签页</div>
+              <code class="component-meta">下划线指示器</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Progress -->
+      <section class="section" id="progress">
+        <h2 class="section-title">进度条 Progress</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 24px;">
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
+                  <span>进度</span>
+                  <span style="color: var(--fg-muted);">65%</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar" style="width: 65%;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
+                  <span>成功</span>
+                  <span style="color: var(--success);">100%</span>
+                </div>
+                <div class="progress progress-success">
+                  <div class="progress-bar" style="width: 100%;"></div>
+                </div>
+              </div>
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
+                  <span>警告</span>
+                  <span style="color: var(--warning);">45%</span>
+                </div>
+                <div class="progress progress-warning">
+                  <div class="progress-bar" style="width: 45%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">进度条</div>
+              <code class="component-meta">渐变动画</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Skeleton -->
+      <section class="section" id="skeleton">
+        <h2 class="section-title">骨架屏 Skeleton</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <div class="skeleton skeleton-avatar"></div>
+                <div style="flex: 1;">
+                  <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                  <div class="skeleton skeleton-text" style="width: 80%;"></div>
+                </div>
+              </div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text" style="width: 70%;"></div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">骨架屏</div>
+              <code class="component-meta">shimmer 动画</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch; gap: 16px;">
+              <div class="skeleton" style="height: 120px;"></div>
+              <div class="skeleton skeleton-button" style="align-self: flex-start;"></div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">卡片骨架</div>
+              <code class="component-meta">占位加载</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tooltips -->
+      <section class="section" id="tooltips">
+        <h2 class="section-title">工具提示 Tooltip</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview">
+              <button class="tooltip btn btn-outline" data-tooltip="这是提示文字">悬停查看</button>
+            </div>
+            <div class="component-info">
+              <div class="component-name">工具提示</div>
+              <code class="component-meta">data-tooltip</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Result Component -->
+      <section class="section" id="result">
+        <h2 class="section-title">结果展示 Result Display</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview centered">
+              <div style="text-align: center; padding: 40px;">
+                <div style="font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fg-subtle); margin-bottom: 12px;">Lucky Number</div>
+                <div style="font-size: 72px; font-weight: 900; letter-spacing: -0.04em; background: linear-gradient(180deg, var(--fg), var(--fg-muted)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">042</div>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">抽奖结果</div>
+              <code class="component-meta">渐变文字 + pop 动画</code>
+            </div>
+          </div>
+          <div class="component-card">
+            <div class="component-preview centered">
+              <div style="text-align: center; padding: 40px;">
+                <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;">📋</div>
+                <div style="color: var(--fg-muted); margin-bottom: 16px;">暂无历史记录</div>
+                <button class="btn btn-primary btn-sm">开始抽奖</button>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">空状态</div>
+              <code class="component-meta">图标 + 文案 + CTA</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- History -->
+      <section class="section" id="history">
+        <h2 class="section-title">历史记录 History</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-muted); border-radius: var(--r-md) var(--r-md) 0 0; font-size: 13px; font-weight: 500;">最近记录</div>
+              <div style="border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--r-md) var(--r-md); overflow: hidden;">
+                <div style="display: flex; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border);">
+                  <span style="font-family: var(--font-mono); font-size: 12px; color: var(--fg-subtle);">02:14:32</span>
+                  <span style="font-family: var(--font-mono); font-size: 16px; font-weight: 700;">077</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border);">
+                  <span style="font-family: var(--font-mono); font-size: 12px; color: var(--fg-subtle);">01:45:18</span>
+                  <span style="font-family: var(--font-mono); font-size: 16px; font-weight: 700;">042</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 16px;">
+                  <span style="font-family: var(--font-mono); font-size: 12px; color: var(--fg-subtle);">00:32:07</span>
+                  <span style="font-family: var(--font-mono); font-size: 16px; font-weight: 700;">015</span>
+                </div>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">历史列表</div>
+              <code class="component-meta">时间 + 数字</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings -->
+      <section class="section" id="settings">
+        <h2 class="section-title">设置面板 Settings Panel</h2>
+
+        <div class="component-grid">
+          <div class="component-card">
+            <div class="component-preview" style="flex-direction: column; align-items: stretch;">
+              <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 18px;">⚙</span>
+                <span style="font-weight: 600;">抽奖设置</span>
+              </div>
+              <div style="padding: 16px 20px;">
+                <div style="margin-bottom: 16px;">
+                  <label style="font-size: 13px; font-weight: 500; color: var(--fg-muted); display: block; margin-bottom: 8px;">范围设置</label>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <input type="number" class="input" value="1" />
+                    <input type="number" class="input" value="99" />
+                  </div>
+                </div>
+                <div class="switch-row" style="padding: 12px 0; border-top: 1px solid var(--border);">
+                  <div>
+                    <div class="switch-label">允许重复</div>
+                    <div class="switch-desc">抽过的数字可以再次抽出</div>
+                  </div>
+                  <div class="switch" onclick="this.classList.toggle('on')"></div>
+                </div>
+              </div>
+            </div>
+            <div class="component-info">
+              <div class="component-name">设置面板</div>
+              <code class="component-meta">表单 + 开关组合</code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Usage Rules -->
+      <section class="section">
+        <h2 class="section-title">组件使用规范</h2>
+
+        <div class="rules-grid">
+          <div class="rule-card">
+            <div class="rule-icon">✓</div>
+            <div class="rule-title">语义化使用</div>
+            <div class="rule-desc">根据操作的重要性和类型选择合适的组件变体。主要操作用 Primary，破坏性操作用 Danger，轻量操作用 Ghost。</div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-icon">📏</div>
+            <div class="rule-title">尺寸一致性</div>
+            <div class="rule-desc">同一条交互路径上的组件应保持尺寸一致。按钮高度统一为 40px，输入框高度统一为 44px。</div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-icon">🎯</div>
+            <div class="rule-title">状态完整</div>
+            <div class="rule-desc">每个组件都需要定义所有状态的样式：Normal、Hover、Active、Focus、Disabled、Loading、Error。</div>
+          </div>
+          <div class="rule-card">
+            <div class="rule-icon">♿</div>
+            <div class="rule-title">无障碍优先</div>
+            <div class="rule-desc">所有交互元素必须支持键盘操作，焦点状态必须可见，使用正确的 ARIA 属性标注。</div>
+          </div>
+        </div>
+
+        <div class="subsection-title" style="margin-top: 48px;">Do & Don't</div>
+        <div class="do-dont">
+          <div class="do-card">
+            <div class="do-dont-title"><span>✓</span> 推荐做法</div>
+            <ul class="do-dont-list">
+              <li>按钮文字清晰表达操作意图</li>
+              <li>错误提示给出明确的解决方案</li>
+              <li>使用加载状态告知用户进度</li>
+              <li>保持按钮组的视觉一致性</li>
+              <li>在表单中使用内联验证</li>
+            </ul>
+          </div>
+          <div class="dont-card">
+            <div class="do-dont-title"><span>✗</span> 避免做法</div>
+            <ul class="do-dont-list">
+              <li>使用模糊的按钮文字如"提交"</li>
+              <li>仅用颜色传递信息（加上图标或文字）</li>
+              <li>没有加载状态的长时间操作</li>
+              <li>混用不同尺寸的同类型组件</li>
+              <li>禁用了操作但没有说明原因</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      document.querySelector('.theme-btn').textContent = next === 'dark' ? '☀' : '🌙';
+    }
+
+    function scrollTo(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+      event.target.closest('.sidebar-link').classList.add('active');
+    }
+
+    function openDialog() {
+      document.getElementById('demo-dialog').classList.add('open');
+    }
+
+    function closeDialog() {
+      document.getElementById('demo-dialog').classList.remove('open');
+    }
+
+    function switchTab(tab) {
+      const tabs = tab.parentElement.querySelectorAll('.tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const contents = tab.closest('.tabs').parentElement.querySelectorAll('.tab-content');
+      contents.forEach(c => c.classList.remove('active'));
+      const index = Array.from(tabs).indexOf(tab);
+      contents[index].classList.add('active');
+    }
+
+    // Close dialog on overlay click
+    document.getElementById('demo-dialog').addEventListener('click', function(e) {
+      if (e.target === this) closeDialog();
+    });
+  </script>
+</body>
+</html>

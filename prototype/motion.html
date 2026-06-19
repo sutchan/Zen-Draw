@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZenDraw · 动效系统 v3.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-elevated: #fafafa;
+      --bg-muted: #f4f4f5;
+      --fg: #0a0a0a;
+      --fg-muted: #52525b;
+      --fg-subtle: #a1a1aa;
+      --border: #e4e4e7;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --r-md: 10px;
+      --r-lg: 16px;
+      --r-xl: 24px;
+      --r-full: 9999px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      --dur-instant: 50ms;
+      --dur-fast: 150ms;
+      --dur-norm: 250ms;
+      --dur-slow: 400ms;
+      --dur-slower: 600ms;
+      --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --bg-elevated: #18181b;
+      --bg-muted: #27272a;
+      --fg: #fafafa;
+      --fg-muted: #a1a1aa;
+      --fg-subtle: #71717a;
+      --border: #27272a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); color: var(--fg); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 32px;
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+    .nav-logo { width: 36px; height: 36px; border-radius: 10px; background: var(--fg); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 800; }
+    .theme-btn { width: 36px; height: 36px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 16px; background: var(--bg-muted); cursor: pointer; border: none; transition: background var(--dur-fast); }
+    .theme-btn:hover { background: var(--bg-elevated); }
+
+    .content { max-width: 1100px; margin: 0 auto; padding: 100px 32px 80px; }
+    .page-header { margin-bottom: 64px; text-align: center; }
+    .page-label { font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .page-title { font-size: 48px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 16px; }
+    .page-desc { font-size: 18px; color: var(--fg-muted); max-width: 600px; margin: 0 auto; }
+
+    .section { margin-bottom: 80px; }
+    .section-header { margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .section-title { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .section-desc { color: var(--fg-muted); font-size: 15px; }
+
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(0.98); } }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    @keyframes ripple { 0% { transform: scale(0); opacity: 0.5; } 100% { transform: scale(4); opacity: 0; } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes numberPop { 0% { transform: scale(0.5); opacity: 0; } 60% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+    .demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .demo-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+    .demo-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .demo-title { font-weight: 600; font-size: 14px; }
+    .demo-code { font-family: var(--font-mono); font-size: 11px; color: var(--accent); background: var(--accent-soft); padding: 4px 8px; border-radius: 4px; }
+    .demo-body { padding: 32px; display: flex; align-items: center; justify-content: center; min-height: 160px; background: var(--bg-elevated); }
+    .demo-footer { padding: 12px 20px; border-top: 1px solid var(--border); }
+    .demo-hint { font-size: 12px; color: var(--fg-muted); }
+
+    .anim-box { width: 80px; height: 80px; border-radius: var(--r-lg); background: var(--accent); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; cursor: pointer; transition: transform var(--dur-fast); }
+    .anim-box:hover { transform: scale(1.05); }
+    .anim-trigger { width: 60px; height: 32px; background: var(--bg-muted); border-radius: var(--r-full); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--fg-muted); cursor: pointer; transition: background var(--dur-fast); }
+    .anim-trigger:hover { background: var(--border); }
+
+    .demo-btn { padding: 12px 24px; background: var(--primary); color: var(--primary-fg); border-radius: var(--r-full); font-weight: 600; font-size: 14px; border: none; cursor: pointer; transition: all var(--dur-fast) var(--ease-out); }
+    .demo-btn:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+    .demo-number { font-size: 72px; font-weight: 900; letter-spacing: -0.04em; background: linear-gradient(180deg, var(--fg), var(--fg-muted)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+    .demo-icon { width: 80px; height: 80px; border-radius: var(--r-lg); background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 32px; }
+
+    .easing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .easing-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+    .easing-preview { height: 80px; background: var(--bg-elevated); position: relative; overflow: hidden; }
+    .easing-ball { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); position: absolute; left: 0; top: 28px; }
+    .easing-info { padding: 12px 16px; }
+    .easing-name { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+    .easing-value { font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); }
+
+    .duration-grid { display: flex; flex-direction: column; gap: 16px; }
+    .duration-row { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); }
+    .duration-bar { flex: 1; height: 8px; background: var(--bg-muted); border-radius: 4px; overflow: hidden; }
+    .duration-fill { height: 100%; background: var(--accent); border-radius: 4px; }
+    .duration-label { width: 100px; font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); }
+    .duration-time { width: 60px; font-family: var(--font-mono); font-size: 14px; font-weight: 600; text-align: right; }
+
+    .stagger-demo { display: flex; gap: 12px; flex-wrap: wrap; }
+    .stagger-item { width: 60px; height: 60px; border-radius: var(--r-md); background: var(--accent); opacity: 0; transform: translateY(20px); }
+
+    .state-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+    .state-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px; }
+    .state-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .state-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .state-name { font-weight: 600; font-size: 15px; }
+    .state-desc { font-size: 13px; color: var(--fg-muted); margin-bottom: 16px; }
+    .state-demo { height: 80px; background: var(--bg-elevated); border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; }
+
+    .guides-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .guide-card { padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); }
+    .guide-icon { width: 48px; height: 48px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
+    .guide-title { font-weight: 600; font-size: 16px; margin-bottom: 8px; }
+    .guide-desc { font-size: 14px; color: var(--fg-muted); line-height: 1.6; }
+
+    .footer { padding: 48px; text-align: center; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 13px; }
+
+    /* Animation Classes */
+    .play-fadeIn { animation: fadeIn var(--dur-norm) var(--ease-out) forwards; }
+    .play-fadeInUp { animation: fadeInUp var(--dur-slow) var(--ease-out) forwards; }
+    .play-fadeInScale { animation: fadeInScale var(--dur-norm) var(--ease-spring) forwards; }
+    .play-slideInLeft { animation: slideInLeft var(--dur-slow) var(--ease-out) forwards; }
+    .play-slideInRight { animation: slideInRight var(--dur-slow) var(--ease-out) forwards; }
+    .play-bounce { animation: bounce 0.8s var(--ease-bounce) infinite; }
+    .play-pulse { animation: pulse 1s ease-in-out infinite; }
+    .play-spin { animation: spin 1s linear infinite; }
+    .play-float { animation: float 2s ease-in-out infinite; }
+    .play-numberPop { animation: numberPop 0.5s var(--ease-spring) forwards; }
+  </style>
+</head>
+<body data-theme="light">
+  <nav class="nav">
+    <div class="nav-brand"><div class="nav-logo">Z</div><span>ZenDraw 动效系统</span></div>
+    <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+  </nav>
+
+  <div class="content">
+    <div class="page-header">
+      <div class="page-label">Motion</div>
+      <h1 class="page-title">动效系统</h1>
+      <p class="page-desc">精心设计的动画系统，让交互更流畅、体验更愉悦。遵循"有目的、有克制"的原则。</p>
+    </div>
+
+    <!-- Entrance Animations -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">入场动画</h2>
+        <p class="section-desc">元素出现时的动画效果。</p>
+      </div>
+
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="demo-header">
+            <span class="demo-title">Fade In</span>
+            <span class="demo-code">opacity 0→1</span>
+          </div>
+          <div class="demo-body">
+            <div class="anim-box play-fadeIn">Box</div>
+          </div>
+          <div class="demo-footer">
+            <div class="demo-hint">透明度渐变，最基础的动画。</div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-header">
+            <span class="demo-title">Fade In Up</span>
+            <span class="demo-code">Y: 20px→0</span>
+          </div>
+          <div class="demo-body">
+            <div class="anim-box play-fadeInUp">Box</div>
+          </div>
+          <div class="demo-footer">
+            <div class="demo-hint">向上滑入，引导视线。</div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-header">
+            <span class="demo-title">Fade In Scale</span>
+            <span class="demo-code">scale 0.9→1</span>
+          </div>
+          <div class="demo-body">
+            <div class="anim-box play-fadeInScale">Box</div>
+          </div>
+          <div class="demo-footer">
+            <div class="demo-hint">缩放入场，突出元素。</div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-header">
+            <span class="demo-title">Number Pop</span>
+            <span class="demo-code">spring</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-number play-numberPop">042</div>
+          </div>
+          <div class="demo-footer">
+            <div class="demo-hint">抽奖结果的弹入效果。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Micro Interactions -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">微交互动画</h2>
+        <p class="section-desc">悬停、点击等交互的即时反馈。</p>
+      </div>
+
+      <div class="demo-grid">
+        <div class="demo-card">
+          <div class="demo-header">
+            <span class="demo-title">按钮悬停</span>
+            <span class="demo-code">translateY + shadow</span>
+          </div>
+          <div class="demo-body">
+            <button class="demo-btn">悬停查看</button>
+          </div>
+          <div class="demo-footer">
+            <div class="demo-hint">轻微上浮 + 阴影加深</div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-header">
+            <span class="demo-title">Bounce</span>
+            <span class="demo-code">Y: 0→-20px</span>
+          </div>
+          <div class="demo-body">
+            <div class="anim-box play-bounce">弹跳</div>
+          </div>
+          <div class="demo-footer">
+            <div class="demo-hint">吸引注意力的弹跳效果</div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-header">
+            <span class="demo-title">Float</span>
+            <span class="demo-code">Y: 0→-10px</span>
+          </div>
+          <div class="demo-body">
+            <div class="anim-box play-float">浮动</div>
+          </div>
+          <div class="demo-footer">
+            <div class="demo-hint">悠闲的悬浮状态</div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-header">
+            <span class="demo-title">Pulse</span>
+            <span class="demo-code">opacity + scale</span>
+          </div>
+          <div class="demo-body">
+            <div class="anim-box play-pulse">脉冲</div>
+          </div>
+          <div class="demo-footer">
+            <div class="demo-hint">加载/处理中状态</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Easing -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">缓动函数</h2>
+        <p class="section-desc">不同的缓动曲线带来不同的运动质感。</p>
+      </div>
+
+      <div class="easing-grid">
+        <div class="easing-card">
+          <div class="easing-preview" id="ease-out-demo">
+            <div class="easing-ball" style="transition: left 1s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+          </div>
+          <div class="easing-info">
+            <div class="easing-name">Ease Out</div>
+            <div class="easing-value">cubic-bezier(0.16, 1, 0.3, 1)</div>
+          </div>
+        </div>
+        <div class="easing-card">
+          <div class="easing-preview" id="ease-spring-demo">
+            <div class="easing-ball" style="transition: left 1s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
+          </div>
+          <div class="easing-info">
+            <div class="easing-name">Spring</div>
+            <div class="easing-value">cubic-bezier(0.34, 1.56, 0.64, 1)</div>
+          </div>
+        </div>
+        <div class="easing-card">
+          <div class="easing-preview" id="ease-in-out-demo">
+            <div class="easing-ball" style="transition: left 1s cubic-bezier(0.65, 0, 0.35, 1);"></div>
+          </div>
+          <div class="easing-info">
+            <div class="easing-name">Ease In Out</div>
+            <div class="easing-value">cubic-bezier(0.65, 0, 0.35, 1)</div>
+          </div>
+        </div>
+        <div class="easing-card">
+          <div class="easing-preview" id="linear-demo">
+            <div class="easing-ball" style="transition: left 1s linear;"></div>
+          </div>
+          <div class="easing-info">
+            <div class="easing-name">Linear</div>
+            <div class="easing-value">linear</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; text-align: center;">
+        <button class="demo-btn" onclick="runEasingDemo()">▶ 运行演示</button>
+      </div>
+    </section>
+
+    <!-- Duration -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">时长规范</h2>
+        <p class="section-desc">根据动画类型选择合适的时长。</p>
+      </div>
+
+      <div class="duration-grid">
+        <div class="duration-row">
+          <span class="duration-label">Instant</span>
+          <div class="duration-bar"><div class="duration-fill" style="width: 10%;"></div></div>
+          <span class="duration-time">50ms</span>
+        </div>
+        <div class="duration-row">
+          <span class="duration-label">Fast</span>
+          <div class="duration-bar"><div class="duration-fill" style="width: 30%;"></div></div>
+          <span class="duration-time">150ms</span>
+        </div>
+        <div class="duration-row">
+          <span class="duration-label">Normal</span>
+          <div class="duration-bar"><div class="duration-fill" style="width: 50%;"></div></div>
+          <span class="duration-time">250ms</span>
+        </div>
+        <div class="duration-row">
+          <span class="duration-label">Slow</span>
+          <div class="duration-bar"><div class="duration-fill" style="width: 80%;"></div></div>
+          <span class="duration-time">400ms</span>
+        </div>
+        <div class="duration-row">
+          <span class="duration-label">Slower</span>
+          <div class="duration-bar"><div class="duration-fill" style="width: 100%;"></div></div>
+          <span class="duration-time">600ms</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- State Transitions -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">状态过渡</h2>
+        <p class="section-desc">组件在不同状态之间的平滑过渡。</p>
+      </div>
+
+      <div class="state-grid">
+        <div class="state-card">
+          <div class="state-header">
+            <div class="state-dot" style="background: var(--success);"></div>
+            <span class="state-name">Idle → Active</span>
+          </div>
+          <div class="state-desc">按钮从默认状态到按下状态的过渡</div>
+          <div class="state-demo">
+            <button class="demo-btn" style="transform: scale(0.95); box-shadow: none;">Pressed</button>
+          </div>
+        </div>
+
+        <div class="state-card">
+          <div class="state-header">
+            <div class="state-dot" style="background: var(--warning);"></div>
+            <span class="state-name">Loading</span>
+          </div>
+          <div class="state-desc">处理中状态的脉动效果</div>
+          <div class="state-demo">
+            <button class="demo-btn play-pulse">处理中...</button>
+          </div>
+        </div>
+
+        <div class="state-card">
+          <div class="state-header">
+            <div class="state-dot" style="background: var(--danger);"></div>
+            <span class="state-name">Error Shaking</span>
+          </div>
+          <div class="state-desc">输入错误时的抖动反馈</div>
+          <div class="state-demo">
+            <div style="width: 80px; height: 80px; border-radius: var(--r-lg); background: var(--danger-soft); border: 2px solid var(--danger); display: flex; align-items: center; justify-content: center; font-size: 32px;">✗</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stagger -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">错开动画</h2>
+        <p class="section-desc">列表元素依次入场，创建流畅的瀑布效果。</p>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-header">
+          <span class="demo-title">Stagger Animation</span>
+          <span class="demo-code">animation-delay</span>
+        </div>
+        <div class="demo-body" style="flex-direction: column; gap: 16px;">
+          <button class="demo-btn" onclick="runStagger()">▶ 播放动画</button>
+          <div class="stagger-demo" id="stagger-demo">
+            <div class="stagger-item" style="animation-delay: 0ms;"></div>
+            <div class="stagger-item" style="animation-delay: 100ms;"></div>
+            <div class="stagger-item" style="animation-delay: 200ms;"></div>
+            <div class="stagger-item" style="animation-delay: 300ms;"></div>
+            <div class="stagger-item" style="animation-delay: 400ms;"></div>
+            <div class="stagger-item" style="animation-delay: 500ms;"></div>
+          </div>
+        </div>
+        <div class="demo-footer">
+          <div class="demo-hint">每个元素间隔 100ms 依次入场</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guidelines -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">设计指南</h2>
+        <p class="section-desc">动效设计的基本原则。</p>
+      </div>
+
+      <div class="guides-grid">
+        <div class="guide-card">
+          <div class="guide-icon">🎯</div>
+          <div class="guide-title">有目的性</div>
+          <div class="guide-desc">每个动画都应该服务于某个目的：引导注意力、提供反馈、或传达层次关系。不要为动而动。</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">⚡</div>
+          <div class="guide-title">快速响应</div>
+          <div class="guide-desc">交互反馈应在 100-150ms 内完成。过长的动画会让人觉得迟钝。</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">🎚️</div>
+          <div class="guide-title">可中断</div>
+          <div class="guide-desc">长时间的动画应该可以被用户操作中断。比如页面跳转时立即停止当前动画。</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">♿</div>
+          <div class="guide-title">尊重偏好</div>
+          <div class="guide-desc">检测 prefers-reduced-motion，为有动效敏感的用户提供替代方案或关闭动画。</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">📱</div>
+          <div class="guide-title">性能优先</div>
+          <div class="guide-desc">优先使用 transform 和 opacity（GPU 加速），避免触发布局变化的动画。</div>
+        </div>
+        <div class="guide-card">
+          <div class="guide-icon">🎨</div>
+          <div class="guide-title">一致性</div>
+          <div class="guide-desc">同一类型的交互使用相同的动画模式，让用户形成肌肉记忆和预期。</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">ZenDraw · Design System v3.0</footer>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      document.querySelector('.theme-btn').textContent = next === 'dark' ? '☀' : '🌙';
+    }
+
+    function runEasingDemo() {
+      const balls = document.querySelectorAll('.easing-ball');
+      balls.forEach(ball => {
+        ball.style.left = '0px';
+        setTimeout(() => {
+          ball.style.left = 'calc(100% - 24px)';
+        }, 50);
+      });
+    }
+
+    function runStagger() {
+      const items = document.querySelectorAll('.stagger-item');
+      items.forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        item.style.animation = 'none';
+        setTimeout(() => {
+          item.style.animation = 'fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+        }, 50);
+      });
+    }
+
+    // Initial easing demo
+    setTimeout(runEasingDemo, 500);
+  </script>
+</body>
+</html>

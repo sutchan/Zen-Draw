@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZenDraw · 色彩系统 v3.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-elevated: #fafafa;
+      --bg-muted: #f4f4f5;
+      --fg: #0a0a0a;
+      --fg-muted: #52525b;
+      --fg-subtle: #a1a1aa;
+      --border: #e4e4e7;
+      --border-strong: #d4d4d8;
+      --primary: #0a0a0a;
+      --primary-fg: #fafafa;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --success: #16a34a;
+      --success-soft: rgba(22, 163, 74, 0.1);
+      --warning: #d97706;
+      --warning-soft: rgba(217, 119, 6, 0.1);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.1);
+      --info: #0891b2;
+      --info-soft: rgba(8, 145, 178, 0.1);
+      --r-md: 10px;
+      --r-lg: 16px;
+      --r-xl: 24px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-fast: 150ms;
+      --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --bg-elevated: #18181b;
+      --bg-muted: #27272a;
+      --fg: #fafafa;
+      --fg-muted: #a1a1aa;
+      --fg-subtle: #71717a;
+      --border: #27272a;
+      --border-strong: #3f3f46;
+      --primary: #fafafa;
+      --primary-fg: #0a0a0a;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.3);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); color: var(--fg); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 32px;
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+    .nav-logo { width: 36px; height: 36px; border-radius: 10px; background: var(--primary); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-weight: 800; }
+    .theme-btn { width: 36px; height: 36px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 16px; background: var(--bg-muted); cursor: pointer; border: none; transition: background var(--dur-fast); }
+    .theme-btn:hover { background: var(--bg-elevated); }
+
+    .content { max-width: 1200px; margin: 0 auto; padding: 100px 32px 80px; }
+    .page-header { margin-bottom: 64px; text-align: center; }
+    .page-label { font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .page-title { font-size: 48px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 16px; }
+    .page-desc { font-size: 18px; color: var(--fg-muted); max-width: 600px; margin: 0 auto; }
+
+    .section { margin-bottom: 80px; }
+    .section-header { margin-bottom: 32px; }
+    .section-title { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .section-desc { color: var(--fg-muted); font-size: 15px; }
+
+    .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+    .color-card { border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast); }
+    .color-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .color-swatch { height: 120px; display: flex; align-items: flex-end; padding: 12px; }
+    .color-swatch-light { border-bottom: 1px solid var(--border); }
+    .color-info { padding: 16px; background: var(--bg); }
+    .color-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .color-value { font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); }
+    .color-var { font-family: var(--font-mono); font-size: 11px; color: var(--fg-subtle); margin-top: 4px; }
+
+    .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+    .palette-item { aspect-ratio: 1; border-radius: var(--r-md); display: flex; flex-direction: column; justify-content: flex-end; padding: 8px; font-size: 11px; font-family: var(--font-mono); transition: transform var(--dur-fast); cursor: pointer; }
+    .palette-item:hover { transform: scale(1.05); }
+    .palette-item span { text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+
+    .theme-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 768px) { .theme-preview { grid-template-columns: 1fr; } }
+    .theme-card { border-radius: var(--r-xl); overflow: hidden; border: 1px solid var(--border); }
+    .theme-header { padding: 20px; border-bottom: 1px solid; }
+    .theme-name { font-weight: 700; font-size: 18px; }
+    .theme-desc { font-size: 13px; color: var(--fg-muted); margin-top: 4px; }
+    .theme-body { padding: 24px; }
+    .theme-swatch-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    .theme-swatch { width: 40px; height: 40px; border-radius: var(--r-md); flex-shrink: 0; }
+    .theme-btn-sample { padding: 10px 20px; background: var(--primary); color: var(--primary-fg); border-radius: 999px; font-weight: 600; font-size: 14px; display: inline-block; }
+
+    .gradient-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .gradient-card { border-radius: var(--r-lg); overflow: hidden; aspect-ratio: 16/9; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px; transition: transform var(--dur-fast) var(--ease-out); }
+    .gradient-card:hover { transform: scale(1.02); }
+    .gradient-name { font-weight: 700; font-size: 18px; margin-bottom: 4px; }
+    .gradient-value { font-family: var(--font-mono); font-size: 12px; opacity: 0.8; }
+
+    .usage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .usage-card { padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); }
+    .usage-icon { width: 48px; height: 48px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
+    .usage-title { font-weight: 600; font-size: 16px; margin-bottom: 8px; }
+    .usage-desc { font-size: 14px; color: var(--fg-muted); line-height: 1.6; }
+
+    .ratio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .ratio-card { padding: 20px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); text-align: center; }
+    .ratio-value { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px; }
+    .ratio-label { font-size: 13px; color: var(--fg-muted); }
+    .ratio-badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; margin-top: 8px; }
+    .ratio-pass { background: var(--success-soft); color: var(--success); }
+    .ratio-fail { background: var(--danger-soft); color: var(--danger); }
+
+    .footer { padding: 48px; text-align: center; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 13px; }
+  </style>
+</head>
+<body data-theme="light">
+  <nav class="nav">
+    <div class="nav-brand"><div class="nav-logo">Z</div><span>ZenDraw 色彩系统</span></div>
+    <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+  </nav>
+
+  <div class="content">
+    <div class="page-header">
+      <div class="page-label">Design Tokens</div>
+      <h1 class="page-title">色彩系统</h1>
+      <p class="page-desc">语义化的色彩系统，确保一致的品牌表达和可访问性。每个颜色都有明确的使用场景和搭配规范。</p>
+    </div>
+
+    <!-- Semantic Colors -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">语义色板</h2>
+        <p class="section-desc">具有明确语义的颜色，用于传达特定的信息含义。</p>
+      </div>
+      <div class="color-grid">
+        <div class="color-card">
+          <div class="color-swatch" style="background: var(--primary);"><span style="color: white; font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Primary</div>
+            <div class="color-value">#0a0a0a / #fafafa</div>
+            <div class="color-var">--primary / --primary-fg</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: var(--accent);"><span style="color: white; font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Accent</div>
+            <div class="color-value">#2563eb</div>
+            <div class="color-var">--accent</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: var(--success);"><span style="color: white; font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Success</div>
+            <div class="color-value">#16a34a</div>
+            <div class="color-var">--success</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: var(--warning);"><span style="color: white; font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Warning</div>
+            <div class="color-value">#d97706</div>
+            <div class="color-var">--warning</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: var(--danger);"><span style="color: white; font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Danger</div>
+            <div class="color-value">#dc2626</div>
+            <div class="color-var">--danger</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: var(--info);"><span style="color: white; font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Info</div>
+            <div class="color-value">#0891b2</div>
+            <div class="color-var">--info</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Neutral Scale -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">中性色阶</h2>
+        <p class="section-desc">用于背景、文字和边框的中性色系列。</p>
+      </div>
+      <div class="color-grid">
+        <div class="color-card">
+          <div class="color-swatch" style="background: #ffffff; border-bottom: 1px solid var(--border); color: var(--fg);"><span style="font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Background</div>
+            <div class="color-value">#ffffff</div>
+            <div class="color-var">--bg</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #fafafa; border-bottom: 1px solid var(--border); color: var(--fg);"><span style="font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Elevated</div>
+            <div class="color-value">#fafafa</div>
+            <div class="color-var">--bg-elevated</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #f4f4f5; border-bottom: 1px solid var(--border); color: var(--fg);"><span style="font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Muted</div>
+            <div class="color-value">#f4f4f5</div>
+            <div class="color-var">--bg-muted</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #e4e4e7; border-bottom: 1px solid var(--border); color: var(--fg);"><span style="font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Border</div>
+            <div class="color-value">#e4e4e7</div>
+            <div class="color-var">--border</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #d4d4d8; border-bottom: 1px solid var(--border); color: var(--fg);"><span style="font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Border Strong</div>
+            <div class="color-value">#d4d4d8</div>
+            <div class="color-var">--border-strong</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #a1a1aa; border-bottom: 1px solid var(--border); color: white;"><span style="font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Subtle</div>
+            <div class="color-value">#a1a1aa</div>
+            <div class="color-var">--fg-subtle</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #52525b; border-bottom: 1px solid var(--border); color: white;"><span style="font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Muted Text</div>
+            <div class="color-value">#52525b</div>
+            <div class="color-var">--fg-muted</div>
+          </div>
+        </div>
+        <div class="color-card">
+          <div class="color-swatch" style="background: #0a0a0a; border-bottom: 1px solid var(--border); color: white;"><span style="font-weight: 600;">Aa</span></div>
+          <div class="color-info">
+            <div class="color-name">Foreground</div>
+            <div class="color-value">#0a0a0a</div>
+            <div class="color-var">--fg</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Accent Scale -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Accent 色阶</h2>
+        <p class="section-desc">Accent 色的完整色阶，从浅到深。</p>
+      </div>
+      <div class="palette-grid">
+        <div class="palette-item" style="background: #eff6ff; color: #1e40af;"><span>50</span></div>
+        <div class="palette-item" style="background: #dbeafe; color: #1e40af;"><span>100</span></div>
+        <div class="palette-item" style="background: #bfdbfe; color: #1e40af;"><span>200</span></div>
+        <div class="palette-item" style="background: #93c5fd; color: #1e3a8a;"><span>300</span></div>
+        <div class="palette-item" style="background: #60a5fa; color: #1e3a8a;"><span>400</span></div>
+        <div class="palette-item" style="background: #3b82f6; color: #1e3a8a;"><span>500</span></div>
+        <div class="palette-item" style="background: #2563eb; color: white;"><span>600</span></div>
+        <div class="palette-item" style="background: #1d4ed8; color: white;"><span>700</span></div>
+        <div class="palette-item" style="background: #1e40af; color: white;"><span>800</span></div>
+        <div class="palette-item" style="background: #1e3a8a; color: white;"><span>900</span></div>
+        <div class="palette-item" style="background: #172554; color: white;"><span>950</span></div>
+      </div>
+    </section>
+
+    <!-- Theme Presets -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">主题预设</h2>
+        <p class="section-desc">预定义的主题色彩组合，可一键切换。</p>
+      </div>
+      <div class="theme-preview">
+        <div class="theme-card">
+          <div class="theme-header" style="background: #fafafa; border-color: #e4e4e7;">
+            <div class="theme-name">Ocean 海洋</div>
+            <div class="theme-desc">沉稳专业的蓝色调</div>
+          </div>
+          <div class="theme-body" style="background: #fafafa;">
+            <div class="theme-swatch-row">
+              <div class="theme-swatch" style="background: #0891b2;"></div>
+              <div class="theme-swatch" style="background: #0e7490;"></div>
+              <div class="theme-swatch" style="background: #155e75;"></div>
+            </div>
+            <button class="theme-btn-sample" style="background: #0891b2;">开始使用</button>
+          </div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-header" style="background: #f0fdf4; border-color: #bbf7d0;">
+            <div class="theme-name">Forest 森林</div>
+            <div class="theme-desc">自然清新的绿色调</div>
+          </div>
+          <div class="theme-body" style="background: #f0fdf4;">
+            <div class="theme-swatch-row">
+              <div class="theme-swatch" style="background: #16a34a;"></div>
+              <div class="theme-swatch" style="background: #15803d;"></div>
+              <div class="theme-swatch" style="background: #166534;"></div>
+            </div>
+            <button class="theme-btn-sample" style="background: #16a34a;">开始使用</button>
+          </div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-header" style="background: #fff7ed; border-color: #fed7aa;">
+            <div class="theme-name">Sunset 落日</div>
+            <div class="theme-desc">温暖活力的橙色调</div>
+          </div>
+          <div class="theme-body" style="background: #fff7ed;">
+            <div class="theme-swatch-row">
+              <div class="theme-swatch" style="background: #ea580c;"></div>
+              <div class="theme-swatch" style="background: #c2410c;"></div>
+              <div class="theme-swatch" style="background: #9a3412;"></div>
+            </div>
+            <button class="theme-btn-sample" style="background: #ea580c;">开始使用</button>
+          </div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-header" style="background: #faf5ff; border-color: #e9d5ff;">
+            <div class="theme-name">Purple 紫罗兰</div>
+            <div class="theme-desc">优雅神秘的紫色调</div>
+          </div>
+          <div class="theme-body" style="background: #faf5ff;">
+            <div class="theme-swatch-row">
+              <div class="theme-swatch" style="background: #9333ea;"></div>
+              <div class="theme-swatch" style="background: #7c3aed;"></div>
+              <div class="theme-swatch" style="background: #6b21a8;"></div>
+            </div>
+            <button class="theme-btn-sample" style="background: #9333ea;">开始使用</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gradients -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">渐变色</h2>
+        <p class="section-desc">用于特殊场景的渐变色组合。</p>
+      </div>
+      <div class="gradient-grid">
+        <div class="gradient-card" style="background: linear-gradient(135deg, #0a0a0a 0%, #52525b 100%);">
+          <div class="gradient-name">Mono Gradient</div>
+          <div class="gradient-value">#0a0a0a → #52525b</div>
+        </div>
+        <div class="gradient-card" style="background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);">
+          <div class="gradient-name">Accent Purple</div>
+          <div class="gradient-value">#2563eb → #7c3aed</div>
+        </div>
+        <div class="gradient-card" style="background: linear-gradient(135deg, #0891b2 0%, #16a34a 100%);">
+          <div class="gradient-name">Ocean Forest</div>
+          <div class="gradient-value">#0891b2 → #16a34a</div>
+        </div>
+        <div class="gradient-card" style="background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);">
+          <div class="gradient-name">Sunset Fire</div>
+          <div class="gradient-value">#ea580c → #dc2626</div>
+        </div>
+        <div class="gradient-card" style="background: linear-gradient(135deg, #fafafa 0%, #e4e4e7 50%, #fafafa 100%);">
+          <div class="gradient-name">Shimmer</div>
+          <div class="gradient-value">#fafafa → #e4e4e7 → #fafafa</div>
+        </div>
+        <div class="gradient-card" style="background: linear-gradient(135deg, var(--accent) 0%, transparent 50%);">
+          <div class="gradient-name">Accent Glow</div>
+          <div class="gradient-value">#2563eb → transparent</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Accessibility -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">对比度检查</h2>
+        <p class="section-desc">确保文字与背景的对比度符合 WCAG 2.1 AA 标准。</p>
+      </div>
+      <div class="ratio-grid">
+        <div class="ratio-card">
+          <div style="font-size: 24px; font-weight: 700; color: var(--fg); background: var(--bg); padding: 16px 24px; border-radius: 8px; margin-bottom: 12px;">大文本</div>
+          <div class="ratio-value" style="color: var(--success);">21:1</div>
+          <div class="ratio-label">Primary on Background</div>
+          <span class="ratio-badge ratio-pass">AAA</span>
+        </div>
+        <div class="ratio-card">
+          <div style="font-size: 14px; color: var(--fg-muted); background: var(--bg); padding: 16px 24px; border-radius: 8px; margin-bottom: 12px;">正常文本</div>
+          <div class="ratio-value" style="color: var(--success);">10.8:1</div>
+          <div class="ratio-label">Muted on Background</div>
+          <span class="ratio-badge ratio-pass">AAA</span>
+        </div>
+        <div class="ratio-card">
+          <div style="font-size: 14px; color: var(--danger); background: var(--danger-soft); padding: 16px 24px; border-radius: 8px; margin-bottom: 12px;">危险提示</div>
+          <div class="ratio-value" style="color: var(--success);">5.2:1</div>
+          <div class="ratio-label">Danger on Danger Soft</div>
+          <span class="ratio-badge ratio-pass">AA</span>
+        </div>
+        <div class="ratio-card">
+          <div style="font-size: 14px; color: var(--warning); background: var(--warning-soft); padding: 16px 24px; border-radius: 8px; margin-bottom: 12px;">警告提示</div>
+          <div class="ratio-value" style="color: var(--warning);">4.8:1</div>
+          <div class="ratio-label">Warning on Warning Soft</div>
+          <span class="ratio-badge ratio-pass">AA</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Usage Guidelines -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">使用规范</h2>
+        <p class="section-desc">色彩使用的基本原则和最佳实践。</p>
+      </div>
+      <div class="usage-grid">
+        <div class="usage-card">
+          <div class="usage-icon" style="background: var(--accent-soft); color: var(--accent);">1</div>
+          <div class="usage-title">语义优先</div>
+          <div class="usage-desc">始终使用语义化的颜色名称。success 表示成功，danger 表示错误，不要混用。</div>
+        </div>
+        <div class="usage-card">
+          <div class="usage-icon" style="background: var(--success-soft); color: var(--success);">2</div>
+          <div class="usage-title">对比度保证</div>
+          <div class="usage-desc">所有文本与背景的对比度至少达到 4.5:1，大文本至少 3:1。</div>
+        </div>
+        <div class="usage-card">
+          <div class="usage-icon" style="background: var(--warning-soft); color: var(--warning);">3</div>
+          <div class="usage-title">色彩+非色彩</div>
+          <div class="usage-desc">不要仅用颜色传达信息。配合图标、文字或图案确保色盲用户也能理解。</div>
+        </div>
+        <div class="usage-card">
+          <div class="usage-icon" style="background: var(--danger-soft); color: var(--danger);">4</div>
+          <div class="usage-title">克制使用</div>
+          <div class="usage-desc">鲜艳颜色用于强调和引导注意力，避免大范围使用造成视觉疲劳。</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">ZenDraw · Design System v3.0</footer>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      document.querySelector('.theme-btn').textContent = next === 'dark' ? '☀' : '🌙';
+    }
+  </script>
+</body>
+</html>

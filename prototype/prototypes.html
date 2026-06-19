@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZenDraw · 高保真交互原型 v3.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-elevated: #fafafa;
+      --bg-muted: #f4f4f5;
+      --bg-inverse: #0a0a0a;
+      --fg: #0a0a0a;
+      --fg-muted: #52525b;
+      --fg-subtle: #a1a1aa;
+      --fg-inverse: #fafafa;
+      --border: #e4e4e7;
+      --border-strong: #d4d4d8;
+      --primary: #0a0a0a;
+      --primary-hover: #27272a;
+      --primary-fg: #fafafa;
+      --accent: #2563eb;
+      --accent-hover: #1e40af;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --success: #16a34a;
+      --success-soft: rgba(22, 163, 74, 0.1);
+      --warning: #d97706;
+      --warning-soft: rgba(217, 119, 6, 0.1);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.1);
+      --r-sm: 6px;
+      --r-md: 10px;
+      --r-lg: 16px;
+      --r-xl: 24px;
+      --r-full: 9999px;
+      --s-1: 4px;
+      --s-2: 8px;
+      --s-3: 12px;
+      --s-4: 16px;
+      --s-5: 20px;
+      --s-6: 24px;
+      --s-8: 32px;
+      --s-10: 40px;
+      --s-12: 48px;
+      --s-16: 64px;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.06);
+      --shadow-xl: 0 24px 48px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.08);
+      --shadow-glow: 0 0 40px rgba(37, 99, 235, 0.15);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-instant: 100ms;
+      --dur-fast: 150ms;
+      --dur-norm: 250ms;
+      --dur-slow: 400ms;
+      --dur-slower: 600ms;
+      --font-sans: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+      --font-display: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+    }
+
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --bg-elevated: #18181b;
+      --bg-muted: #27272a;
+      --bg-inverse: #fafafa;
+      --fg: #fafafa;
+      --fg-muted: #a1a1aa;
+      --fg-subtle: #71717a;
+      --fg-inverse: #0a0a0a;
+      --border: #27272a;
+      --border-strong: #3f3f46;
+      --primary: #fafafa;
+      --primary-hover: #e4e4e7;
+      --primary-fg: #0a0a0a;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.15);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.2);
+      --shadow-xl: 0 24px 48px rgba(0,0,0,0.5), 0 8px 16px rgba(0,0,0,0.3);
+      --shadow-glow: 0 0 60px rgba(37, 99, 235, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--fg);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: white;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    input:focus-visible {
+      outline: none;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    @keyframes ripple {
+      0% { transform: scale(0); opacity: 0.5; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes numberPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .animate-fade-in { animation: fadeIn var(--dur-slow) var(--ease-out) forwards; }
+    .animate-fade-in-up { animation: fadeInUp var(--dur-slow) var(--ease-out) forwards; }
+    .animate-fade-in-scale { animation: fadeInScale var(--dur-slow) var(--ease-spring) forwards; }
+    .animate-pulse { animation: pulse 2s ease-in-out infinite; }
+    .animate-bounce { animation: bounce 1s ease-in-out infinite; }
+    .animate-float { animation: float 3s ease-in-out infinite; }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--fg), var(--fg-muted));
+      color: var(--fg-inverse);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .nav-version {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--fg-subtle);
+      background: var(--bg-muted);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 4px;
+    }
+
+    .nav-links a {
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: var(--r-md);
+      color: var(--fg-muted);
+      transition: all var(--dur-fast) var(--ease-out);
+    }
+
+    .nav-links a:hover {
+      color: var(--fg);
+      background: var(--bg-muted);
+    }
+
+    .nav-links a.active {
+      color: var(--fg);
+      background: var(--bg-elevated);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all var(--dur-fast) var(--ease-out);
+      background: var(--bg-muted);
+    }
+
+    .theme-btn:hover {
+      background: var(--bg-elevated);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 32px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -20%, color-mix(in srgb, var(--accent) 20%, transparent), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 80%, color-mix(in srgb, var(--success) 15%, transparent), transparent);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-full);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg-muted);
+      background: var(--bg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeInUp 0.6s var(--ease-out) 0.1s forwards;
+    }
+
+    .hero-badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .hero-title {
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeInUp 0.6s var(--ease-out) 0.2s forwards;
+    }
+
+    .hero-title-line {
+      display: block;
+    }
+
+    .hero-title-gradient {
+      background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 50%, var(--fg) 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 4s ease infinite;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(18px, 2.5vw, 24px);
+      color: var(--fg-muted);
+      max-width: 640px;
+      margin: 0 auto 48px;
+      line-height: 1.5;
+      opacity: 0;
+      animation: fadeInUp 0.6s var(--ease-out) 0.3s forwards;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeInUp 0.6s var(--ease-out) 0.4s forwards;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: var(--r-full);
+      transition: all var(--dur-fast) var(--ease-out);
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .btn:hover::after {
+      transform: translateX(100%);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-fg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--fg);
+      border: 1.5px solid var(--border-strong);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-muted);
+      border-color: var(--fg-subtle);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--fg-muted);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg-muted);
+      color: var(--fg);
+    }
+
+    .btn-lg {
+      padding: 18px 36px;
+      font-size: 16px;
+    }
+
+    .btn-sm {
+      padding: 10px 18px;
+      font-size: 13px;
+    }
+
+    .btn-icon {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: var(--r-md);
+    }
+
+    /* App Container */
+    .app-section {
+      padding: 80px 32px;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .app-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* App Main Card */
+    .app-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      animation: fadeInUp 0.6s var(--ease-out) 0.5s forwards;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+
+    .app-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: var(--primary-fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .app-title {
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .app-header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .app-header-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--fg-muted);
+      font-size: 16px;
+      transition: all var(--dur-fast);
+    }
+
+    .app-header-btn:hover {
+      background: var(--bg-muted);
+      color: var(--fg);
+    }
+
+    .app-main {
+      padding: 64px 48px;
+      text-align: center;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .app-result-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeIn 0.4s var(--ease-out) forwards;
+    }
+
+    .app-result-number {
+      font-size: clamp(80px, 15vw, 120px);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      background: linear-gradient(180deg, var(--fg) 0%, var(--fg-muted) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 40px;
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-result-number.pop {
+      animation: numberPop 0.5s var(--ease-spring) forwards;
+    }
+
+    .app-result-number.scrolling {
+      animation: pulse 0.1s linear infinite;
+    }
+
+    .app-action {
+      padding: 18px 48px;
+      background: var(--primary);
+      color: var(--primary-fg);
+      border-radius: var(--r-full);
+      font-size: 17px;
+      font-weight: 700;
+      box-shadow: var(--shadow-lg);
+      transition: all var(--dur-fast) var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-action::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+      transform: translateX(-100%);
+    }
+
+    .app-action:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .app-action:hover::before {
+      animation: shimmer 1s;
+    }
+
+    .app-action:active {
+      transform: translateY(-1px) scale(0.98);
+    }
+
+    .app-action.drawing {
+      opacity: 0.7;
+      animation: pulse 0.5s ease-in-out infinite;
+    }
+
+    .app-meta {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--fg-muted);
+    }
+
+    .app-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .app-meta-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--fg-subtle);
+    }
+
+    /* Sidebar */
+    .app-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .sidebar-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      opacity: 0;
+      animation: fadeInUp 0.6s var(--ease-out) forwards;
+    }
+
+    .sidebar-card:nth-child(1) { animation-delay: 0.6s; }
+    .sidebar-card:nth-child(2) { animation-delay: 0.7s; }
+    .sidebar-card:nth-child(3) { animation-delay: 0.8s; }
+
+    .sidebar-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-title {
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-body {
+      padding: 16px 20px;
+    }
+
+    /* Form Controls */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fg-muted);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--bg);
+      color: var(--fg);
+      font-size: 15px;
+      font-family: var(--font-mono);
+      transition: all var(--dur-fast) var(--ease-out);
+    }
+
+    .form-input:hover {
+      border-color: var(--border-strong);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Switch */
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .switch-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .switch-label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .switch-desc {
+      font-size: 12px;
+      color: var(--fg-subtle);
+      margin-top: 2px;
+    }
+
+    .switch {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      border-radius: var(--r-full);
+      background: var(--border-strong);
+      cursor: pointer;
+      transition: background var(--dur-fast) var(--ease-out);
+      flex-shrink: 0;
+    }
+
+    .switch::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .switch.on {
+      background: var(--primary);
+    }
+
+    .switch.on::after {
+      transform: translateX(20px);
+    }
+
+    /* History List */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--bg-elevated);
+      border-radius: var(--r-md);
+      transition: all var(--dur-fast);
+    }
+
+    .history-item:hover {
+      background: var(--bg-muted);
+    }
+
+    .history-time {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--fg-subtle);
+    }
+
+    .history-number {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--fg);
+    }
+
+    .history-empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--fg-subtle);
+      font-size: 14px;
+    }
+
+    .history-empty-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+      opacity: 0.5;
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 16px 8px;
+      background: var(--bg-elevated);
+      border-radius: var(--r-md);
+    }
+
+    .stat-value {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--fg);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--fg-subtle);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Mobile Device Frame */
+    .device-section {
+      padding: 80px 32px;
+      background: var(--bg-elevated);
+    }
+
+    .device-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 48px;
+      align-items: center;
+    }
+
+    .device-frame {
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      background: var(--fg);
+      border-radius: 52px;
+      padding: 12px;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+    }
+
+    .device-notch {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 32px;
+      background: var(--fg);
+      border-radius: 0 0 24px 24px;
+      z-index: 10;
+    }
+
+    .device-screen {
+      width: 100%;
+      aspect-ratio: 9/19.5;
+      background: var(--bg);
+      border-radius: 42px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .device-screen-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 56px 20px 24px;
+    }
+
+    .device-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .device-title {
+      font-weight: 700;
+      font-size: 17px;
+    }
+
+    .device-version {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--fg-subtle);
+    }
+
+    .device-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .device-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+      margin-bottom: 12px;
+    }
+
+    .device-number {
+      font-size: 72px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      background: linear-gradient(180deg, var(--fg), var(--fg-muted));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .device-cta {
+      width: 100%;
+      padding: 16px 24px;
+      background: var(--primary);
+      color: var(--primary-fg);
+      border-radius: var(--r-full);
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: var(--shadow-md);
+      margin-top: 24px;
+    }
+
+    .device-history {
+      padding: 16px;
+      background: var(--bg-elevated);
+      border-radius: var(--r-lg);
+      margin-top: 16px;
+    }
+
+    .device-history-title {
+      font-size: 12px;
+      color: var(--fg-subtle);
+      margin-bottom: 12px;
+    }
+
+    .device-history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .device-history-item:last-child {
+      border-bottom: none;
+    }
+
+    .device-history-time {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--fg-subtle);
+    }
+
+    .device-history-num {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    /* Features Grid */
+    .features-section {
+      padding: 80px 32px;
+    }
+
+    .features-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .features-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .features-title {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      padding: 32px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      transition: all var(--dur-norm) var(--ease-out);
+      opacity: 0;
+      animation: fadeInUp 0.6s var(--ease-out) forwards;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent);
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--r-lg);
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: 15px;
+      color: var(--fg-muted);
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 64px 32px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+
+    .footer-brand {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .footer-tagline {
+      color: var(--fg-muted);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      font-size: 13px;
+      color: var(--fg-subtle);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav {
+        padding: 12px 16px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 100px 20px 60px;
+      }
+
+      .hero-title {
+        font-size: 40px;
+      }
+
+      .app-main {
+        padding: 48px 24px;
+      }
+
+      .app-result-number {
+        font-size: 80px;
+        min-height: 100px;
+      }
+
+      .app-meta {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-muted);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--fg-subtle);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="nav-logo">Z</div>
+      <span>ZenDraw</span>
+      <span class="nav-version">v3.0</span>
+    </div>
+    <div class="nav-links">
+      <a href="#app" class="active">应用</a>
+      <a href="#mobile">移动端</a>
+      <a href="#features">特性</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="切换主题">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        设计系统 v3.0 · Apple Design Language
+      </div>
+      <h1 class="hero-title">
+        <span class="hero-title-line">禅抽</span>
+        <span class="hero-title-line hero-title-gradient">极简之美</span>
+      </h1>
+      <p class="hero-subtitle">
+        基于 Apple Human Interface Guidelines 的高保真抽奖应用原型。每一个像素、每一帧动画都经过精心打磨。
+      </p>
+      <div class="hero-cta">
+        <button class="btn btn-primary btn-lg" onclick="scrollToApp()">
+          体验原型
+          <span>→</span>
+        </button>
+        <button class="btn btn-outline btn-lg" onclick="scrollToMobile()">
+          查看移动端
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- App Section -->
+  <section class="app-section" id="app">
+    <div class="app-container">
+      <div class="app-grid">
+        <!-- Main App -->
+        <div class="app-card">
+          <div class="app-header">
+            <div class="app-header-left">
+              <div class="app-logo">Z</div>
+              <span class="app-title">ZenDraw 禅抽</span>
+            </div>
+            <div class="app-header-actions">
+              <button class="app-header-btn" aria-label="设置">⚙</button>
+              <button class="app-header-btn" aria-label="历史">📋</button>
+            </div>
+          </div>
+          <div class="app-main">
+            <div class="app-result-label" id="result-label">Lucky Number</div>
+            <div class="app-result-number" id="result-number">—</div>
+            <button class="app-action" id="main-action" onclick="startDraw()">
+              开始抽奖
+            </button>
+            <div class="app-meta">
+              <div class="app-meta-item">
+                <span class="app-meta-dot"></span>
+                <span>范围：1-99</span>
+              </div>
+              <div class="app-meta-item">
+                <span class="app-meta-dot"></span>
+                <span>不重复</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="app-sidebar">
+          <!-- Settings -->
+          <div class="sidebar-card">
+            <div class="sidebar-header">
+              <span class="sidebar-title">
+                <span>⚙</span>
+                抽奖设置
+              </span>
+            </div>
+            <div class="sidebar-body">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">最小值</label>
+                  <input type="number" class="form-input" id="min-value" value="1" min="1" max="98" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">最大值</label>
+                  <input type="number" class="form-input" id="max-value" value="99" min="2" max="99" />
+                </div>
+              </div>
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">自动隐藏侧边栏</div>
+                  <div class="switch-desc">30秒无操作后自动收起</div>
+                </div>
+                <div class="switch on" onclick="this.classList.toggle('on')"></div>
+              </div>
+              <div class="switch-row">
+                <div>
+                  <div class="switch-label">允许重复</div>
+                  <div class="switch-desc">抽过的数字可以再次抽出</div>
+                </div>
+                <div class="switch" onclick="this.classList.toggle('on')"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="sidebar-card">
+            <div class="sidebar-header">
+              <span class="sidebar-title">
+                <span>📊</span>
+                统计信息
+              </span>
+            </div>
+            <div class="sidebar-body">
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <div class="stat-value" id="total-count">0</div>
+                  <div class="stat-label">总次数</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value" id="today-count">0</div>
+                  <div class="stat-label">今日</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value" id="unique-count">0</div>
+                  <div class="stat-label">不重复</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- History -->
+          <div class="sidebar-card">
+            <div class="sidebar-header">
+              <span class="sidebar-title">
+                <span>📋</span>
+                最近记录
+              </span>
+              <button class="btn btn-ghost btn-sm">清空</button>
+            </div>
+            <div class="sidebar-body">
+              <div class="history-list" id="history-list">
+                <div class="history-empty">
+                  <div class="history-empty-icon">🎰</div>
+                  <div>暂无抽奖记录</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mobile Section -->
+  <section class="device-section" id="mobile">
+    <div class="app-container">
+      <div class="device-grid">
+        <div>
+          <div class="device-frame">
+            <div class="device-notch"></div>
+            <div class="device-screen">
+              <div class="device-screen-content">
+                <div class="device-header">
+                  <span class="device-title">禅抽</span>
+                  <span class="device-version">v3.0</span>
+                </div>
+                <div class="device-main">
+                  <div class="device-label">Lucky Number</div>
+                  <div class="device-number" id="mobile-number">—</div>
+                  <button class="device-cta" id="mobile-cta" onclick="startDraw()">
+                    开始抽奖
+                  </button>
+                </div>
+                <div class="device-history">
+                  <div class="device-history-title">最近记录</div>
+                  <div class="device-history-item">
+                    <span class="device-history-time">02:14:32</span>
+                    <span class="device-history-num">077</span>
+                  </div>
+                  <div class="device-history-item">
+                    <span class="device-history-time">01:45:18</span>
+                    <span class="device-history-num">042</span>
+                  </div>
+                  <div class="device-history-item">
+                    <span class="device-history-time">00:32:07</span>
+                    <span class="device-history-num">015</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="features-label">移动优先</div>
+          <h2 class="features-title" style="margin-bottom: 24px; text-align: left;">触控时代的<br />极致体验</h2>
+          <p style="color: var(--fg-muted); font-size: 16px; line-height: 1.7; margin-bottom: 32px;">
+            为触控而生的界面设计。更大的触摸目标、更流畅的手势交互、更符合直觉的视觉反馈。
+            无论是在地铁上还是在会议中，都能轻松完成抽奖。
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center;">👆</div>
+              <div>
+                <div style="font-weight: 600;">44px 触摸目标</div>
+                <div style="font-size: 13px; color: var(--fg-muted);">符合 Apple HIG 标准</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--success-soft); color: var(--success); display: flex; align-items: center; justify-content: center;">↕</div>
+              <div>
+                <div style="font-weight: 600;">惯性滚动</div>
+                <div style="font-size: 13px; color: var(--fg-muted);">自然的触控手感</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: var(--warning-soft); color: var(--warning); display: flex; align-items: center; justify-content: center;">🎨</div>
+              <div>
+                <div style="font-weight: 600;">深色模式</div>
+                <div style="font-size: 13px; color: var(--fg-muted);">OLED 友好省电</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="features-header">
+      <div class="features-label">核心特性</div>
+      <h2 class="features-title">不只是抽奖</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card" style="animation-delay: 0.1s;">
+        <div class="feature-icon">🎲</div>
+        <h3 class="feature-title">加密随机</h3>
+        <p class="feature-desc">使用 Web Crypto API 生成密码学安全的随机数，确保每一次抽奖结果都不可预测、不可操纵。</p>
+      </div>
+      <div class="feature-card" style="animation-delay: 0.2s;">
+        <div class="feature-icon">♿</div>
+        <h3 class="feature-title">无障碍设计</h3>
+        <p class="feature-desc">遵循 WCAG 2.1 AA 标准，支持键盘导航、屏幕阅读器和减弱动效偏好。</p>
+      </div>
+      <div class="feature-card" style="animation-delay: 0.3s;">
+        <div class="feature-icon">🌙</div>
+        <h3 class="feature-title">智能主题</h3>
+        <p class="feature-desc">支持浅色、深色和跟随系统三种模式，自动适应环境光线，呵护你的眼睛。</p>
+      </div>
+      <div class="feature-card" style="animation-delay: 0.4s;">
+        <div class="feature-icon">📱</div>
+        <h3 class="feature-title">响应式布局</h3>
+        <p class="feature-desc">从 320px 的小屏手机到 4K 显示器，界面都能完美适配，始终保持最佳体验。</p>
+      </div>
+      <div class="feature-card" style="animation-delay: 0.5s;">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title">流畅动画</h3>
+        <p class="feature-desc">基于弹簧物理的微交互动画，60fps 的丝滑体验，每一次点击都有即时反馈。</p>
+      </div>
+      <div class="feature-card" style="animation-delay: 0.6s;">
+        <div class="feature-icon">💾</div>
+        <h3 class="feature-title">本地优先</h3>
+        <p class="feature-desc">所有数据存储在本地，无须注册、无须联网，保护隐私的同时实现秒开秒用。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-brand">ZenDraw</div>
+    <div class="footer-tagline">极简抽奖，禅意生活</div>
+    <div class="footer-links">
+      <a href="#">设计规范</a>
+      <a href="#">组件文档</a>
+      <a href="#">GitHub</a>
+    </div>
+  </footer>
+
+  <script>
+    // State
+    let isDrawing = false;
+    let drawnNumbers = new Set();
+    let totalDraws = 0;
+    let todayDraws = 0;
+
+    // Elements
+    const resultNumber = document.getElementById('result-number');
+    const resultLabel = document.getElementById('result-label');
+    const mainAction = document.getElementById('main-action');
+    const mobileNumber = document.getElementById('mobile-number');
+    const mobileCta = document.getElementById('mobile-cta');
+    const historyList = document.getElementById('history-list');
+    const totalCount = document.getElementById('total-count');
+    const todayCount = document.getElementById('today-count');
+    const uniqueCount = document.getElementById('unique-count');
+
+    // Theme
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      document.getElementById('theme-icon').textContent = next === 'dark' ? '☀' : '🌙';
+    }
+
+    // Scroll
+    function scrollToApp() {
+      document.getElementById('app').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function scrollToMobile() {
+      document.getElementById('mobile').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Draw
+    function startDraw() {
+      if (isDrawing) return;
+
+      isDrawing = true;
+      mainAction.classList.add('drawing');
+      mainAction.textContent = '抽取中...';
+      mobileCta.textContent = '抽取中...';
+      resultLabel.style.opacity = '0';
+
+      const min = parseInt(document.getElementById('min-value').value) || 1;
+      const max = parseInt(document.getElementById('max-value').value) || 99;
+      const range = max - min + 1;
+
+      // Check if all numbers have been drawn
+      if (drawnNumbers.size >= range) {
+        drawnNumbers.clear();
+      }
+
+      let count = 0;
+      const maxIterations = 50;
+
+      const interval = setInterval(() => {
+        const num = Math.floor(Math.random() * range) + min;
+        const displayNum = String(num).padStart(2, '0');
+
+        resultNumber.textContent = displayNum;
+        resultNumber.classList.add('scrolling');
+        mobileNumber.textContent = displayNum;
+
+        count++;
+
+        if (count >= maxIterations) {
+          clearInterval(interval);
+
+          // Get final random number (excluding already drawn if not allowing repeats)
+          const allowRepeat = document.querySelector('.switch:nth-child(2)').classList.contains('on');
+          let finalNum;
+
+          if (allowRepeat) {
+            finalNum = Math.floor(Math.random() * range) + min;
+          } else {
+            const available = [];
+            for (let i = min; i <= max; i++) {
+              if (!drawnNumbers.has(i)) available.push(i);
+            }
+            finalNum = available[Math.floor(Math.random() * available.length)];
+          }
+
+          const finalDisplay = String(finalNum).padStart(2, '0');
+          resultNumber.textContent = finalDisplay;
+          resultNumber.classList.remove('scrolling');
+          resultNumber.classList.add('pop');
+
+          mobileNumber.textContent = finalDisplay;
+
+          mainAction.classList.remove('drawing');
+          mainAction.textContent = '再抽一次';
+          mobileCta.textContent = '再抽一次';
+
+          resultLabel.style.opacity = '1';
+
+          // Update stats
+          drawnNumbers.add(finalNum);
+          totalDraws++;
+          todayDraws++;
+          totalCount.textContent = totalDraws;
+          todayCount.textContent = todayDraws;
+          uniqueCount.textContent = drawnNumbers.size;
+
+          // Add to history
+          addToHistory(finalDisplay);
+
+          setTimeout(() => {
+            resultNumber.classList.remove('pop');
+          }, 500);
+
+          isDrawing = false;
+        }
+      }, 50);
+    }
+
+    function addToHistory(num) {
+      // Remove empty state if exists
+      const empty = historyList.querySelector('.history-empty');
+      if (empty) empty.remove();
+
+      const now = new Date();
+      const time = now.toTimeString().slice(0, 8);
+
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      item.style.opacity = '0';
+      item.style.transform = 'translateX(20px)';
+      item.innerHTML = `
+        <span class="history-time">${time}</span>
+        <span class="history-number">${num}</span>
+      `;
+
+      historyList.insertBefore(item, historyList.firstChild);
+
+      // Animate in
+      requestAnimationFrame(() => {
+        item.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+        item.style.opacity = '1';
+        item.style.transform = 'translateX(0)';
+      });
+
+      // Keep only last 10
+      while (historyList.children.length > 10) {
+        historyList.removeChild(historyList.lastChild);
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      // Add smooth scroll for nav links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+
+      // Set initial theme icon
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      document.getElementById('theme-icon').textContent = isDark ? '☀' : '🌙';
+    });
+  </script>
+</body>
+</html>
