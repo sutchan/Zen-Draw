@@ -1,1930 +1,482 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenDraw | 禅抽 - World-Class Prototype v3.2</title>
-    <style>
-        /* ============================================================
-           DESIGN TOKENS - 基于 Apple HIG + 顶尖设计系统
-           ============================================================ */
-        :root {
-            /* 核心色彩 - Light Mode */
-            --bg-primary: #FAFAFA;
-            --bg-secondary: #F5F5F7;
-            --bg-tertiary: #FFFFFF;
-            --bg-elevated: #FFFFFF;
-            
-            --text-primary: #1D1D1F;
-            --text-secondary: #86868B;
-            --text-tertiary: #A1A1A6;
-            
-            --accent-blue: #007AFF;
-            --accent-blue-light: rgba(0, 122, 255, 0.12);
-            --accent-green: #34C759;
-            --accent-orange: #FF9500;
-            --accent-red: #FF3B30;
-            --accent-purple: #AF52DE;
-            
-            /* 边框与分隔 */
-            --border-subtle: rgba(0, 0, 0, 0.06);
-            --border-default: rgba(0, 0, 0, 0.1);
-            --border-strong: rgba(0, 0, 0, 0.18);
-            
-            /* 阴影层级 */
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
-            --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.16);
-            --shadow-glow: 0 0 60px rgba(0, 122, 255, 0.25);
-            
-            /* 圆角系统 */
-            --radius-xs: 6px;
-            --radius-sm: 10px;
-            --radius-md: 14px;
-            --radius-lg: 20px;
-            --radius-xl: 28px;
-            --radius-full: 9999px;
-            
-            /* 间距 */
-            --space-1: 4px;
-            --space-2: 8px;
-            --space-3: 12px;
-            --space-4: 16px;
-            --space-5: 20px;
-            --space-6: 24px;
-            --space-8: 32px;
-            --space-10: 40px;
-            --space-12: 48px;
-            --space-16: 64px;
-            
-            /* 动效 */
-            --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
-            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-            --duration-fast: 150ms;
-            --duration-normal: 250ms;
-            --duration-slow: 400ms;
-            
-            /* 字体 */
-            --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-            --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-            --font-mono: "SF Mono", Monaco, "JetBrains Mono", monospace;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ZenDraw 禅抽 - 完整设计系统与组件库规范 (Design System v3.0)" />
+  <title>ZenDraw · Design System v3.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@500;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff; --bg-elevated: #fafafa; --bg-muted: #f4f4f5;
+      --fg: #0a0a0a; --fg-muted: #52525b; --fg-subtle: #a1a1aa;
+      --border: #e4e4e7; --border-strong: #d4d4d8;
+      --primary: #0a0a0a; --primary-fg: #fafafa;
+      --accent: #2563eb; --accent-soft: rgba(37, 99, 235, 0.12);
+      --success: #16a34a; --success-soft: rgba(22, 163, 74, 0.12);
+      --warning: #d97706; --warning-soft: rgba(217, 119, 6, 0.12);
+      --danger: #dc2626; --danger-soft: rgba(220, 38, 38, 0.12);
+      --r-sm: 6px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px; --r-full: 9999px;
+      --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-6: 24px; --s-8: 32px; --s-12: 48px;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,.04); --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,.08); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,.12);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-fast: 150ms; --dur-norm: 250ms; --dur-slow: 400ms;
+      --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --font-serif: 'Playfair Display', Georgia, serif;
+    }
+    [data-theme="dark"] {
+      --bg: #0a0a0a; --bg-elevated: #18181b; --bg-muted: #27272a;
+      --fg: #fafafa; --fg-muted: #a1a1aa; --fg-subtle: #71717a;
+      --border: #3f3f46; --border-strong: #52525b;
+      --primary: #fafafa; --primary-fg: #0a0a0a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); color: var(--fg); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-primary: #000000;
-                --bg-secondary: #1C1C1E;
-                --bg-tertiary: #2C2C2E;
-                --bg-elevated: #1C1C1E;
-                
-                --text-primary: #F5F5F7;
-                --text-secondary: #8E8E93;
-                --text-tertiary: #636366;
-                
-                --border-subtle: rgba(255, 255, 255, 0.05);
-                --border-default: rgba(255, 255, 255, 0.1);
-                --border-strong: rgba(255, 255, 255, 0.2);
-                
-                --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-                --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-                --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
-                --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.6);
-            }
-        }
+    .nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 32px; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-brand { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+    .nav-logo { width: 36px; height: 36px; border-radius: 8px; background: var(--primary); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-weight: 800; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a { padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 8px; color: var(--fg-muted); transition: all var(--dur-fast) var(--ease-out); }
+    .nav-links a:hover { color: var(--fg); background: var(--bg-muted); }
+    .theme-toggle { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: background var(--dur-fast); }
+    .theme-toggle:hover { background: var(--bg-muted); }
+    @media (max-width: 768px) { .nav { padding: 12px 16px; } .nav-links { display: none; } }
 
-        /* ============================================================
-           BASE STYLES
-           ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    .hero { padding: 96px 32px 80px; text-align: center; background: radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in srgb, var(--accent) 15%, transparent), transparent), linear-gradient(to bottom, var(--bg), var(--bg-elevated)); }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border: 1px solid var(--border); border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--fg-muted); background: var(--bg-elevated); }
+    .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+    .hero-title { font-size: clamp(40px, 6vw, 72px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin: 16px 0 12px; }
+    .hero-gradient { background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-subtitle { font-size: clamp(16px, 2vw, 20px); color: var(--fg-muted); max-width: 640px; margin: 0 auto 32px; }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-        html {
-            scroll-behavior: smooth;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+    @media (max-width: 768px) { .container { padding: 0 16px; } }
+    .section { padding: 96px 0; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-label { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .section-title { font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 16px; }
+    .section-desc { color: var(--fg-muted); font-size: 16px; max-width: 640px; margin: 0 auto; }
 
-        body {
-            font-family: var(--font-body);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.5;
-            letter-spacing: -0.01em;
-        }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; font-size: 14px; font-weight: 500; border-radius: 8px; transition: all var(--dur-fast) var(--ease-out); white-space: nowrap; }
+    .btn-primary { background: var(--primary); color: var(--primary-fg); box-shadow: var(--shadow-sm); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .btn-outline { background: var(--bg); color: var(--fg); border: 1px solid var(--border); }
+    .btn-outline:hover { background: var(--bg-muted); border-color: var(--border-strong); }
+    .btn-ghost { background: transparent; color: var(--fg-muted); }
+    .btn-ghost:hover { background: var(--bg-muted); color: var(--fg); }
+    .btn-lg { padding: 14px 24px; font-size: 15px; }
 
-        /* ============================================================
-           TYPOGRAPHY SYSTEM
-           ============================================================ */
-        .type-display-xl {
-            font-family: var(--font-display);
-            font-size: clamp(4rem, 10vw, 8rem);
-            font-weight: 700;
-            letter-spacing: -0.035em;
-            line-height: 1.02;
-        }
-        
-        .type-display-lg {
-            font-family: var(--font-display);
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            line-height: 1.08;
-        }
-        
-        .type-heading-xl {
-            font-size: clamp(1.75rem, 4vw, 2.5rem);
-            font-weight: 600;
-            letter-spacing: -0.025em;
-            line-height: 1.15;
-        }
-        
-        .type-heading-lg {
-            font-size: 1.375rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            line-height: 1.25;
-        }
-        
-        .type-heading-md {
-            font-size: 1.125rem;
-            font-weight: 600;
-            letter-spacing: -0.015em;
-            line-height: 1.3;
-        }
-        
-        .type-body-lg {
-            font-size: 1.125rem;
-            line-height: 1.55;
-        }
-        
-        .type-body {
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-        
-        .type-caption {
-            font-size: 0.8125rem;
-            line-height: 1.4;
-            color: var(--text-secondary);
-        }
-        
-        .type-label {
-            font-size: 0.6875rem;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-        }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+    @media (max-width: 1024px) { .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); } .grid-6 { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } .grid-6 { grid-template-columns: repeat(2, 1fr); } }
 
-        /* ============================================================
-           LAYOUT UTILITIES
-           ============================================================ */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--space-6);
-        }
-        
-        .section {
-            padding: var(--space-16) var(--space-6);
-        }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: var(--space-12);
-        }
+    .card { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: all var(--dur-norm) var(--ease-out); }
+    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--border-strong); }
+    .card-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .card-desc { font-size: 14px; color: var(--fg-muted); line-height: 1.6; }
+    .card-icon { width: 40px; height: 40px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 18px; }
 
-        /* ============================================================
-           NAVIGATION
-           ============================================================ */
-        .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 64px;
-            background: rgba(250, 250, 250, 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid var(--border-subtle);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 var(--space-6);
-        }
-        
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-        }
-        
-        .nav-logo {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, #424245 100%);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--bg-primary);
-            font-size: 1.125rem;
-        }
-        
-        .nav-title {
-            font-weight: 600;
-            font-size: 1rem;
-            letter-spacing: -0.01em;
-        }
-        
-        .nav-version {
-            font-size: 0.6875rem;
-            font-family: var(--font-mono);
-            color: var(--text-secondary);
-            padding: 2px 8px;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-full);
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: var(--space-2);
-        }
-        
-        .nav-link {
-            padding: var(--space-2) var(--space-4);
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-radius: var(--radius-sm);
-            transition: all var(--duration-fast) var(--ease-out);
-        }
-        
-        .nav-link:hover {
-            color: var(--text-primary);
-            background: var(--bg-secondary);
-        }
-        
-        .nav-link.active {
-            color: var(--text-primary);
-            background: var(--bg-secondary);
-        }
+    .swatch { aspect-ratio: 1; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; color: white; font-size: 11px; font-family: var(--font-mono); box-shadow: var(--shadow-sm); transition: transform var(--dur-norm) var(--ease-out); }
+    .swatch:hover { transform: scale(1.05); }
+    .swatch-name { font-weight: 600; opacity: 0.95; } .swatch-value { opacity: 0.75; }
+    .sw-dark { background: linear-gradient(135deg, #0a0a0a, #27272a); }
+    .sw-light { background: linear-gradient(135deg, #ffffff, #f4f4f5); color: #52525b; border: 1px solid var(--border); }
+    .sw-accent { background: linear-gradient(135deg, #2563eb, #1e40af); }
+    .sw-success { background: linear-gradient(135deg, #16a34a, #15803d); }
+    .sw-warning { background: linear-gradient(135deg, #d97706, #b45309); }
+    .sw-danger { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+    .sw-ocean { background: linear-gradient(135deg, #0891b2, #0e7490); }
+    .sw-forest { background: linear-gradient(135deg, #16a34a, #166534); }
+    .sw-sunset { background: linear-gradient(135deg, #ea580c, #c2410c); }
+    .sw-purple { background: linear-gradient(135deg, #9333ea, #7c3aed); }
+    .sw-neon { background: linear-gradient(135deg, #06b6d4, #0891b2); }
 
-        /* ============================================================
-           HERO SECTION
-           ============================================================ */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: var(--space-16) var(--space-6);
-            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 50% 50%, var(--accent-blue-light) 0%, transparent 50%);
-            opacity: 0.5;
-            animation: hero-glow 8s ease-in-out infinite;
-        }
-        
-        @keyframes hero-glow {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.1); opacity: 0.5; }
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-2);
-            padding: var(--space-2) var(--space-4);
-            background: var(--accent-blue-light);
-            color: var(--accent-blue);
-            border-radius: var(--radius-full);
-            font-size: 0.8125rem;
-            font-weight: 600;
-            margin-bottom: var(--space-6);
-        }
-        
-        .hero-title {
-            margin-bottom: var(--space-4);
-        }
-        
-        .hero-subtitle {
-            font-size: clamp(1.25rem, 3vw, 1.75rem);
-            color: var(--text-secondary);
-            margin-bottom: var(--space-6);
-            max-width: 600px;
-        }
-        
-        .hero-cta {
-            display: flex;
-            gap: var(--space-4);
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+    .type-sample { padding: 16px 0; border-bottom: 1px solid var(--border); } .type-sample:last-child { border-bottom: none; }
+    .type-display-xl { font-size: 72px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.02; }
+    .type-display-lg { font-size: 48px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+    .type-heading-xl { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+    .type-heading-lg { font-size: 22px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; }
+    .type-body-lg { font-size: 18px; line-height: 1.6; } .type-body { font-size: 16px; line-height: 1.6; }
+    .type-caption { font-size: 13px; color: var(--fg-muted); }
+    .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--fg-subtle); margin-top: 8px; }
 
-        /* ============================================================
-           BUTTON SYSTEM
-           ============================================================ */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-2);
-            padding: var(--space-3) var(--space-6);
-            font-family: inherit;
-            font-size: 0.9375rem;
-            font-weight: 600;
-            line-height: 1;
-            border: none;
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            transition: all var(--duration-normal) var(--ease-out);
-            text-decoration: none;
-        }
-        
-        .btn-primary {
-            height: 56px;
-            padding: 0 var(--space-8);
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-        
-        .btn-secondary {
-            height: 56px;
-            padding: 0 var(--space-8);
-            background: transparent;
-            color: var(--text-primary);
-            border: 1.5px solid var(--border-default);
-        }
-        
-        .btn-secondary:hover {
-            background: var(--bg-secondary);
-            border-color: var(--border-strong);
-        }
-        
-        .btn-ghost {
-            padding: var(--space-2) var(--space-4);
-            background: transparent;
-            color: var(--text-secondary);
-        }
-        
-        .btn-ghost:hover {
-            color: var(--text-primary);
-            background: var(--bg-secondary);
-        }
-        
-        .btn-icon {
-            width: 44px;
-            height: 44px;
-            padding: 0;
-            border-radius: var(--radius-md);
-        }
+    .spacing-row { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); }
+    .spacing-row:last-child { border-bottom: none; }
+    .spacing-bar { height: 16px; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); border-radius: 4px; }
+    .spacing-label { width: 80px; color: var(--fg); font-weight: 500; } .spacing-value { width: 60px; color: var(--fg-subtle); }
 
-        /* ============================================================
-           DEVICE MOCKUPS
-           ============================================================ */
-        .mockup-container {
-            margin: var(--space-12) auto;
-            max-width: 1400px;
-        }
-        
-        .mockup-label {
-            text-align: center;
-            padding: var(--space-4);
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-        }
-        
-        .desktop-mockup {
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--border-subtle);
-            overflow: hidden;
-        }
-        
-        .desktop-toolbar {
-            height: 52px;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-subtle);
-            display: flex;
-            align-items: center;
-            padding: 0 var(--space-4);
-            gap: var(--space-2);
-        }
-        
-        .desktop-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--border-default);
-        }
-        
-        .desktop-dot.red { background: #FF5F57; }
-        .desktop-dot.yellow { background: #FEBC2E; }
-        .desktop-dot.green { background: #28C840; }
-        
-        .desktop-content {
-            height: 700px;
-            position: relative;
-            background: var(--bg-primary);
-        }
-        
-        .mobile-mockup {
-            width: 320px;
-            height: 660px;
-            background: var(--bg-tertiary);
-            border-radius: 50px;
-            border: 12px solid #1D1D1F;
-            box-shadow: var(--shadow-xl);
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .mobile-notch {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 120px;
-            height: 34px;
-            background: #1D1D1F;
-            border-radius: 0 0 24px 24px;
-            z-index: 10;
-        }
-        
-        .mobile-content {
-            height: 100%;
-            padding-top: 44px;
-            background: var(--bg-primary);
-            overflow: hidden;
-        }
-        
-        .mockup-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: var(--space-8);
-        }
-        
-        @media (min-width: 1024px) {
-            .mockup-grid {
-                grid-template-columns: 2fr 1fr;
-            }
-        }
+    .radius-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; }
+    .radius-sample { aspect-ratio: 1.5/1; background: var(--fg); display: flex; align-items: center; justify-content: center; color: var(--bg); font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
 
-        /* ============================================================
-           APP INTERFACE - DESKTOP
-           ============================================================ */
-        .app-topbar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 56px;
-            padding: 0 var(--space-6);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(255, 255, 255, 0.72);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid var(--border-subtle);
-            z-index: 50;
-        }
-        
-        .app-brand {
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-        }
-        
-        .app-logo {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #1D1D1F 0%, #424245 100%);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        
-        .app-title-text {
-            font-weight: 600;
-            font-size: 0.9375rem;
-        }
-        
-        .app-version {
-            font-size: 0.625rem;
-            font-family: var(--font-mono);
-            color: var(--text-tertiary);
-        }
-        
-        .app-controls {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-        
-        .app-icon-btn {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius-md);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all var(--duration-fast) var(--ease-out);
-        }
-        
-        .app-icon-btn:hover {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
-        
-        .app-main-area {
-            position: absolute;
-            top: 56px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .app-result-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: var(--space-8);
-        }
-        
-        .result-card {
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-xl);
-            padding: var(--space-12) var(--space-16);
-            text-align: center;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border-subtle);
-            min-width: 400px;
-        }
-        
-        .result-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-bottom: var(--space-4);
-        }
-        
-        .result-number {
-            font-family: var(--font-display);
-            font-size: clamp(5rem, 15vw, 10rem);
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            line-height: 1;
-            background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-variant-numeric: tabular-nums;
-        }
-        
-        .ready-state {
-            text-align: center;
-        }
-        
-        .ready-icon {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto var(--space-8);
-            color: var(--text-tertiary);
-            opacity: 0.15;
-        }
-        
-        .ready-text {
-            font-family: var(--font-display);
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            margin-bottom: var(--space-3);
-        }
-        
-        .ready-hint {
-            color: var(--text-tertiary);
-        }
-        
-        .app-action-area {
-            padding: var(--space-8);
-            display: flex;
-            justify-content: center;
-        }
-        
-        .draw-btn {
-            height: 64px;
-            padding: 0 var(--space-12);
-            font-size: 1.125rem;
-            font-weight: 600;
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            border: none;
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            box-shadow: var(--shadow-lg);
-            transition: all var(--duration-normal) var(--ease-out);
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-        }
-        
-        .draw-btn:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: var(--shadow-xl);
-        }
-        
-        .draw-btn:active {
-            transform: translateY(0) scale(0.98);
-        }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 12px; font-weight: 500; border-radius: 999px; font-family: var(--font-mono); }
+    .badge-default { background: var(--bg-muted); color: var(--fg-muted); }
+    .badge-success { background: var(--success-soft); color: var(--success); }
+    .badge-warning { background: var(--warning-soft); color: var(--warning); }
+    .badge-danger { background: var(--danger-soft); color: var(--danger); }
+    .badge-info { background: var(--accent-soft); color: var(--accent); }
 
-        /* ============================================================
-           SETTINGS PANEL
-           ============================================================ */
-        .settings-panel {
-            position: absolute;
-            top: 56px;
-            right: 0;
-            width: 380px;
-            height: calc(100% - 56px);
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-left: 1px solid var(--border-subtle);
-            overflow-y: auto;
-            z-index: 40;
-        }
-        
-        .settings-header {
-            padding: var(--space-5) var(--space-6);
-            border-bottom: 1px solid var(--border-subtle);
-        }
-        
-        .settings-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-        }
-        
-        .settings-tabs {
-            display: flex;
-            gap: var(--space-2);
-            padding: var(--space-4) var(--space-5);
-        }
-        
-        .settings-tab {
-            flex: 1;
-            padding: var(--space-3);
-            font-size: 0.8125rem;
-            font-weight: 500;
-            text-align: center;
-            background: var(--bg-secondary);
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all var(--duration-fast) var(--ease-out);
-        }
-        
-        .settings-tab.active {
-            background: var(--bg-tertiary);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .settings-section {
-            padding: var(--space-5) var(--space-6);
-        }
-        
-        .settings-section-title {
-            font-size: 0.6875rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-bottom: var(--space-4);
-        }
-        
-        .settings-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: var(--space-3) var(--space-4);
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
-            margin-bottom: var(--space-2);
-        }
-        
-        .settings-row-label {
-            font-size: 0.9375rem;
-            font-weight: 500;
-        }
-        
-        .settings-input {
-            width: 72px;
-            height: 36px;
-            padding: 0 var(--space-3);
-            font-size: 0.875rem;
-            text-align: center;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-        }
-        
-        .settings-input:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px var(--accent-blue-light);
-        }
-        
-        .settings-select {
-            height: 36px;
-            padding: 0 var(--space-8) 0 var(--space-3);
-            font-size: 0.875rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2386868B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 8px center;
-        }
-        
-        .toggle-switch {
-            width: 48px;
-            height: 28px;
-            background: var(--text-secondary);
-            border-radius: var(--radius-full);
-            position: relative;
-            cursor: pointer;
-            transition: background var(--duration-fast) var(--ease-out);
-        }
-        
-        .toggle-switch.active {
-            background: var(--accent-green);
-        }
-        
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 22px;
-            height: 22px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-            transition: transform var(--duration-fast) var(--ease-spring);
-        }
-        
-        .toggle-switch.active::after {
-            transform: translateX(20px);
-        }
+    .app-mockup { background: var(--bg); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-xl); max-width: 520px; margin: 0 auto; }
+    .app-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--bg-elevated); }
+    .app-main { padding: 64px 32px 32px; text-align: center; min-height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .app-result-label { font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fg-subtle); margin-bottom: 16px; }
+    .app-result-number { font-size: 96px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; background: linear-gradient(180deg, var(--fg), var(--fg-muted)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 32px; }
+    .app-action { padding: 14px 40px; background: var(--primary); color: var(--primary-fg); border-radius: 999px; font-size: 15px; font-weight: 600; box-shadow: var(--shadow-md); transition: all var(--dur-norm) var(--ease-out); }
+    .app-action:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 
-        /* ============================================================
-           MOBILE APP INTERFACE
-           ============================================================ */
-        .mobile-app-topbar {
-            height: 52px;
-            padding: 0 var(--space-4);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-        
-        .mobile-main {
-            height: calc(100% - 52px);
-            display: flex;
-            flex-direction: column;
-            padding: var(--space-6);
-        }
-        
-        .mobile-result-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .mobile-result-card {
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-8) var(--space-10);
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            width: 100%;
-            margin-bottom: var(--space-6);
-        }
-        
-        .mobile-result-number {
-            font-family: var(--font-display);
-            font-size: clamp(3.5rem, 18vw, 5rem);
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            line-height: 1;
-        }
-        
-        .mobile-draw-btn {
-            width: 100%;
-            height: 56px;
-            font-size: 1rem;
-            font-weight: 600;
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            border: none;
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            box-shadow: var(--shadow-md);
-        }
+    .comp-lib-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .comp-lib-card { padding: 24px; border: 1px solid var(--border); border-radius: 16px; background: var(--bg); transition: all var(--dur-norm) var(--ease-out); }
+    .comp-lib-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .comp-lib-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .comp-lib-card p { font-size: 13px; color: var(--fg-muted); margin-bottom: 16px; }
+    .comp-preview { background: var(--bg-elevated); border: 1px dashed var(--border); border-radius: 12px; padding: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; }
+    .comp-meta { font-family: var(--font-mono); font-size: 12px; color: var(--fg-subtle); padding: 8px 12px; background: var(--bg-muted); border-radius: 8px; display: inline-block; }
 
-        /* ============================================================
-           DESIGN SYSTEM SECTION
-           ============================================================ */
-        .design-section {
-            background: var(--bg-secondary);
-        }
-        
-        .token-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--space-5);
-            margin-top: var(--space-8);
-        }
-        
-        .token-card {
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            border: 1px solid var(--border-subtle);
-            transition: all var(--duration-normal) var(--ease-out);
-        }
-        
-        .token-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .token-preview {
-            height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: var(--space-4);
-        }
-        
-        .color-swatch {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            box-shadow: var(--shadow-sm), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .color-swatch.dark {
-            background: linear-gradient(135deg, #1D1D1F 0%, #424245 100%);
-        }
-        
-        .color-swatch.blue {
-            background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
-        }
-        
-        .color-swatch.green {
-            background: linear-gradient(135deg, #34C759 0%, #28A745 100%);
-        }
-        
-        .color-swatch.orange {
-            background: linear-gradient(135deg, #FF9500 0%, #E68600 100%);
-        }
-        
-        .color-swatch.red {
-            background: linear-gradient(135deg, #FF3B30 0%, #D32F2F 100%);
-        }
-        
-        .color-swatch.purple {
-            background: linear-gradient(135deg, #AF52DE 0%, #8B3DBD 100%);
-        }
-        
-        .token-name {
-            font-size: 0.9375rem;
-            font-weight: 600;
-            margin-bottom: var(--space-1);
-        }
-        
-        .token-value {
-            font-size: 0.75rem;
-            font-family: var(--font-mono);
-            color: var(--text-secondary);
-        }
-        
-        .spacing-demo {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-        
-        .spacing-bar {
-            background: var(--accent-blue);
-            border-radius: 2px;
-            height: 24px;
-        }
-        
-        .radius-preview {
-            width: 80px;
-            height: 48px;
-            background: var(--text-primary);
-        }
-        
-        .type-preview {
-            font-family: var(--font-display);
-            font-weight: 600;
-            color: var(--text-primary);
-        }
+    .tab-group { display: inline-flex; background: var(--bg-muted); padding: 4px; border-radius: 8px; gap: 2px; }
+    .tab-btn { padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 6px; color: var(--fg-muted); transition: all var(--dur-fast); }
+    .tab-btn.active { background: var(--bg); color: var(--fg); box-shadow: var(--shadow-sm); }
+    .tab-btn:not(.active):hover { color: var(--fg); }
 
-        /* ============================================================
-           ANIMATION SHOWCASE
-           ============================================================ */
-        .anim-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: var(--space-5);
-            margin-top: var(--space-8);
-        }
-        
-        .anim-card {
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            text-align: center;
-            border: 1px solid var(--border-subtle);
-        }
-        
-        .anim-preview {
-            height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: var(--space-4);
-        }
-        
-        .anim-box {
-            width: 64px;
-            height: 64px;
-            border-radius: var(--radius-lg);
-            background: linear-gradient(135deg, var(--accent-blue) 0%, #0056CC 100%);
-        }
-        
-        @keyframes float-anim {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-16px); }
-        }
-        
-        @keyframes pulse-anim {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(0.92); }
-        }
-        
-        @keyframes glow-anim {
-            0%, 100% { box-shadow: 0 0 20px rgba(0, 122, 255, 0); }
-            50% { box-shadow: 0 0 40px rgba(0, 122, 255, 0.4); }
-        }
-        
-        @keyframes slide-anim {
-            0% { transform: translateX(-24px); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
-        
-        @keyframes spin-anim {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .anim-float { animation: float-anim 4s ease-in-out infinite; }
-        .anim-pulse { animation: pulse-anim 2.5s ease-in-out infinite; }
-        .anim-glow { animation: glow-anim 2s ease-in-out infinite; }
-        .anim-slide { animation: slide-anim 0.6s var(--ease-out); }
-        .anim-spin { animation: spin-anim 1.5s linear infinite; }
-        
-        .anim-name {
-            font-size: 0.9375rem;
-            font-weight: 600;
-            margin-bottom: var(--space-1);
-        }
-        
-        .anim-desc {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            font-family: var(--font-mono);
-        }
+    .switch { position: relative; width: 44px; height: 24px; border-radius: 999px; background: var(--border-strong); cursor: pointer; transition: background var(--dur-fast); display: inline-block; }
+    .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: white; box-shadow: var(--shadow-sm); transition: transform var(--dur-fast) var(--ease-out); }
+    .switch.on { background: var(--primary); }
+    .switch.on::after { transform: translateX(20px); }
 
-        /* ============================================================
-           COMPONENT LIBRARY
-           ============================================================ */
-        .component-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--space-6);
-            margin-top: var(--space-8);
-        }
-        
-        .component-card {
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            border: 1px solid var(--border-subtle);
-        }
-        
-        .component-preview {
-            padding: var(--space-6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: var(--space-4);
-            margin-bottom: var(--space-4);
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
-            min-height: 120px;
-        }
-        
-        .component-name {
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: var(--space-1);
-        }
-        
-        .component-desc {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            font-family: var(--font-mono);
-        }
+    .interactive-box { width: 80px; height: 80px; border-radius: 12px; background: var(--bg-elevated); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; transition: all var(--dur-norm) var(--ease-out); cursor: pointer; }
+    .interactive-box:hover { transform: translateY(-2px) scale(1.05); box-shadow: var(--shadow-lg); border-color: var(--accent); color: var(--accent); }
 
-        /* ============================================================
-           INTERACTION PATTERNS
-           ============================================================ */
-        .interaction-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--space-6);
-            margin-top: var(--space-8);
-        }
-        
-        .interaction-card {
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            border: 1px solid var(--border-subtle);
-        }
-        
-        .interaction-preview {
-            padding: var(--space-8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: var(--space-4);
-            background: var(--bg-secondary);
-            border-radius: var(--radius-md);
-            min-height: 140px;
-        }
-        
-        .interaction-box {
-            width: 80px;
-            height: 80px;
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-md);
-            cursor: pointer;
-            transition: all var(--duration-normal) var(--ease-out);
-            font-size: 1.5rem;
-        }
-        
-        .interaction-box:hover {
-            transform: scale(1.08);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .interaction-box:active {
-            transform: scale(0.95);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .interaction-name {
-            font-size: 0.9375rem;
-            font-weight: 600;
-            margin-bottom: var(--space-2);
-        }
-        
-        .interaction-desc {
-            font-size: 0.8125rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
+    .alert { display: flex; align-items: flex-start; gap: 12px; padding: 16px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-elevated); width: 100%; max-width: 480px; }
+    .alert-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .alert-msg { font-size: 13px; color: var(--fg-muted); }
+    .alert-success { border-color: color-mix(in srgb, var(--success) 30%, transparent); background: var(--success-soft); } .alert-success .alert-title { color: var(--success); }
+    .alert-danger { border-color: color-mix(in srgb, var(--danger) 30%, transparent); background: var(--danger-soft); } .alert-danger .alert-title { color: var(--danger); }
 
-        /* ============================================================
-           FLOW DIAGRAM
-           ============================================================ */
-        .flow-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--space-3);
-            margin-top: var(--space-8);
-        }
-        
-        .flow-step {
-            padding: var(--space-4) var(--space-8);
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-md);
-            font-size: 0.9375rem;
-            font-weight: 500;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-subtle);
-            text-align: center;
-            min-width: 280px;
-        }
-        
-        .flow-step.primary {
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            border-color: var(--text-primary);
-        }
-        
-        .flow-step.highlight {
-            background: var(--accent-blue);
-            color: white;
-            border-color: var(--accent-blue);
-        }
-        
-        .flow-arrow {
-            color: var(--text-tertiary);
-            font-size: 1.25rem;
-            line-height: 1;
-        }
+    .device-frame { width: 340px; height: 680px; margin: 0 auto; background: var(--fg); border-radius: 48px; padding: 12px; box-shadow: var(--shadow-xl); position: relative; }
+    .device-notch { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 120px; height: 28px; background: var(--fg); border-radius: 0 0 20px 20px; z-index: 2; }
+    .device-screen { width: 100%; height: 100%; background: var(--bg); border-radius: 36px; overflow: hidden; position: relative; }
+    .device-content { padding: 48px 20px 20px; height: 100%; display: flex; flex-direction: column; }
+    .device-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .device-number { font-size: 80px; font-weight: 800; letter-spacing: -0.04em; background: linear-gradient(180deg, var(--fg), var(--fg-muted)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
 
-        /* ============================================================
-           DESIGNER INSIGHTS
-           ============================================================ */
-        .insights-section {
-            background: linear-gradient(135deg, #1D1D1F 0%, #2C2C2E 100%);
-            color: white;
-        }
-        
-        .insights-section .section-header h2 {
-            color: white;
-        }
-        
-        .insights-section .section-header p {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .insight-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: var(--space-6);
-            margin-top: var(--space-8);
-        }
-        
-        .insight-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .insight-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--accent-blue);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: var(--space-4);
-            font-size: 1.25rem;
-        }
-        
-        .insight-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: var(--space-3);
-        }
-        
-        .insight-desc {
-            font-size: 0.9375rem;
-            color: rgba(255, 255, 255, 0.75);
-            line-height: 1.6;
-        }
-        
-        .insight-list {
-            list-style: none;
-            margin-top: var(--space-4);
-        }
-        
-        .insight-list li {
-            padding: var(--space-2) 0;
-            padding-left: var(--space-6);
-            position: relative;
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 0.9375rem;
-        }
-        
-        .insight-list li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: var(--accent-blue);
-        }
+    .footer { padding: 48px 32px; text-align: center; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 13px; }
 
-        /* ============================================================
-           FOOTER
-           ============================================================ */
-        .footer {
-            padding: var(--space-12) var(--space-6);
-            text-align: center;
-            border-top: 1px solid var(--border-subtle);
-            background: var(--bg-secondary);
-        }
-        
-        .footer-brand {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-3);
-            margin-bottom: var(--space-4);
-        }
-        
-        .footer-text {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
-        @media (max-width: 768px) {
-            .nav { padding: 0 var(--space-4); }
-            .nav-links { display: none; }
-            .section { padding: var(--space-10) var(--space-4); }
-            .hero { min-height: auto; padding: var(--space-16) var(--space-4); }
-            .result-card { min-width: auto; padding: var(--space-8) var(--space-6); }
-            .settings-panel { width: 100%; }
-            .token-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
-            .anim-grid { grid-template-columns: 1fr; }
-            .component-grid { grid-template-columns: 1fr; }
-            .insight-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    .pattern-list { list-style: none; font-size: 14px; }
+    .pattern-list li { padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; }
+    .pattern-list li:last-child { border-bottom: none; }
+    .pattern-list li::before { content: "→"; color: var(--accent); flex-shrink: 0; }
+  </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-brand">
-            <div class="nav-logo">✦</div>
-            <span class="nav-title">ZenDraw</span>
-            <span class="nav-version">v3.2</span>
-        </div>
-        <div class="nav-links">
-            <a href="#overview" class="nav-link active">Overview</a>
-            <a href="#design-system" class="nav-link">Design System</a>
-            <a href="#components" class="nav-link">Components</a>
-            <a href="#interactions" class="nav-link">Interactions</a>
-            <a href="#insights" class="nav-link">Designer Insights</a>
-        </div>
-    </nav>
+<body data-theme="light">
+  <nav class="nav">
+    <div class="nav-brand"><div class="nav-logo">Z</div><span>ZenDraw · Design System</span></div>
+    <div class="nav-links">
+      <a href="#overview">概述</a><a href="#tokens">设计令牌</a><a href="#typography">字体系统</a>
+      <a href="#components">组件库</a><a href="#interaction">交互</a><a href="#app">应用</a><a href="#a11y">无障碍</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题"><span id="theme-icon">🌙</span></button>
+  </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="overview">
-        <div class="hero-content">
-            <div class="hero-badge">✦ World-Class Design v3.2</div>
-            <h1 class="type-display-xl hero-title">ZenDraw | 禅抽</h1>
-            <p class="hero-subtitle">专业全屏随机抽奖应用 · Apple Design Language</p>
-            <div class="hero-cta">
-                <button class="btn btn-primary">开始体验</button>
-                <button class="btn btn-secondary">查看设计规范</button>
-            </div>
-        </div>
-    </section>
+  <!-- HERO -->
+  <section class="hero" id="overview">
+    <div class="container">
+      <div class="pill"><span class="pill-dot"></span>v3.0 · 生产就绪</div>
+      <h1 class="hero-title">禅抽设计系统<br /><span class="hero-gradient">极简 · 克制 · 永恒</span></h1>
+      <p class="hero-subtitle">基于 Apple Design Language 的完整前端设计规范，涵盖色彩、字体、间距、组件与交互模式。</p>
+      <div class="hero-cta"><a href="#tokens" class="btn btn-primary btn-lg">浏览令牌 →</a><a href="#app" class="btn btn-outline btn-lg">查看应用</a></div>
+    </div>
+  </section>
 
-    <!-- Device Mockups Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="type-display-lg">跨设备一致性体验</h2>
-                <p class="type-body-lg" style="color: var(--text-secondary); margin-top: var(--space-3);">从桌面到移动，统一的视觉语言与交互体验</p>
-            </div>
-            
-            <div class="mockup-container">
-                <div class="mockup-label">Desktop · 1440 × 900</div>
-                <div class="desktop-mockup">
-                    <div class="desktop-toolbar">
-                        <div class="desktop-dot red"></div>
-                        <div class="desktop-dot yellow"></div>
-                        <div class="desktop-dot green"></div>
-                    </div>
-                    <div class="desktop-content">
-                        <!-- App Topbar -->
-                        <div class="app-topbar">
-                            <div class="app-brand">
-                                <div class="app-logo">✦</div>
-                                <div>
-                                    <div class="app-title-text">禅抽</div>
-                                    <div class="app-version">v3.2</div>
-                                </div>
-                            </div>
-                            <div class="app-controls">
-                                <button class="app-icon-btn" title="切换语言">🌐</button>
-                                <button class="app-icon-btn" title="设置">⚙️</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Main Content -->
-                        <div class="app-main-area">
-                            <div class="app-result-area">
-                                <div class="result-card">
-                                    <div class="result-label">Lucky Number</div>
-                                    <div class="result-number">042</div>
-                                </div>
-                            </div>
-                            <div class="app-action-area">
-                                <button class="draw-btn">
-                                    <span>✦</span>
-                                    <span>开始抽奖</span>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Settings Panel -->
-                        <div class="settings-panel">
-                            <div class="settings-header">
-                                <h3 class="settings-title">设置</h3>
-                            </div>
-                            <div class="settings-tabs">
-                                <button class="settings-tab active">配置</button>
-                                <button class="settings-tab">历史</button>
-                            </div>
-                            <div class="settings-section">
-                                <div class="settings-section-title">抽奖设置</div>
-                                <div class="settings-row">
-                                    <span class="settings-row-label">最小值</span>
-                                    <input type="number" class="settings-input" value="1">
-                                </div>
-                                <div class="settings-row">
-                                    <span class="settings-row-label">最大值</span>
-                                    <input type="number" class="settings-input" value="100">
-                                </div>
-                                <div class="settings-row">
-                                    <span class="settings-row-label">抽取数量</span>
-                                    <input type="number" class="settings-input" value="1">
-                                </div>
-                                <div class="settings-row">
-                                    <span class="settings-row-label">允许重复</span>
-                                    <div class="toggle-switch active"></div>
-                                </div>
-                            </div>
-                            <div class="settings-section">
-                                <div class="settings-section-title">外观</div>
-                                <div class="settings-row">
-                                    <span class="settings-row-label">配色方案</span>
-                                    <select class="settings-select">
-                                        <option>默认</option>
-                                        <option>海洋蓝</option>
-                                        <option>森林绿</option>
-                                    </select>
-                                </div>
-                                <div class="settings-row">
-                                    <span class="settings-row-label">主题模式</span>
-                                    <select class="settings-select">
-                                        <option>浅色</option>
-                                        <option>深色</option>
-                                        <option>跟随系统</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Mobile Mockup -->
-            <div style="display: flex; justify-content: center; margin-top: var(--space-8);">
-                <div class="mobile-mockup">
-                    <div class="mobile-notch"></div>
-                    <div class="mobile-content">
-                        <div class="mobile-app-topbar">
-                            <span style="font-weight: 600; font-size: 0.875rem;">禅抽</span>
-                            <button class="app-icon-btn" style="width: 36px; height: 36px;">⚙️</button>
-                        </div>
-                        <div class="mobile-main">
-                            <div class="mobile-result-area">
-                                <div class="mobile-result-card">
-                                    <div class="result-label" style="font-size: 0.625rem; margin-bottom: var(--space-2);">Lucky Number</div>
-                                    <div class="mobile-result-number">042</div>
-                                </div>
-                            </div>
-                            <button class="mobile-draw-btn">开始抽奖</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <!-- PRINCIPLES -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header"><span class="section-label">核心原则</span><h2 class="section-title">四条基石</h2><p class="section-desc">所有设计决策都围绕这四条核心原则展开。</p></div>
+      <div class="grid-3">
+        <div class="card"><div class="card-icon">◐</div><h3 class="card-title">极简克制</h3><p class="card-desc">去除所有不必要的装饰，让内容成为唯一焦点。</p></div>
+        <div class="card"><div class="card-icon">✦</div><h3 class="card-title">一致性优先</h3><p class="card-desc">从按钮圆角到动画曲线，每个细节都有规范。</p></div>
+        <div class="card"><div class="card-icon">⌁</div><h3 class="card-title">动态响应</h3><p class="card-desc">桌面到移动端完美适配。动效克制自然有目的。</p></div>
+        <div class="card"><div class="card-icon">♿</div><h3 class="card-title">无障碍友好</h3><p class="card-desc">遵循 WCAG 2.1 AA 标准，支持键盘操作与阅读器。</p></div>
+        <div class="card"><div class="card-icon">◆</div><h3 class="card-title">语义化色彩</h3><p class="card-desc">蓝-信息、绿-成功、橙-警告、红-错误，视觉信号清晰。</p></div>
+        <div class="card"><div class="card-icon">☰</div><h3 class="card-title">模块化组件</h3><p class="card-desc">基于 shadcn/ui 构建，可组合可定制，支持 TS 严格模式。</p></div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Design System Section -->
-    <section class="section design-section" id="design-system">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="type-display-lg">设计系统</h2>
-                <p class="type-body-lg" style="color: var(--text-secondary); margin-top: var(--space-3);">统一的视觉规范，确保跨平台一致性</p>
-            </div>
-            
-            <!-- Colors -->
-            <h3 class="type-heading-lg" style="margin-top: var(--space-8); margin-bottom: var(--space-2);">色彩系统</h3>
-            <p class="type-body" style="color: var(--text-secondary); margin-bottom: var(--space-6);">基于 Apple Human Interface Guidelines 的语义化色彩体系</p>
-            <div class="token-grid">
-                <div class="token-card">
-                    <div class="token-preview">
-                        <div class="color-swatch dark"></div>
-                    </div>
-                    <div class="token-name">主色调</div>
-                    <div class="token-value">#1D1D1F / oklch</div>
-                </div>
-                <div class="token-card">
-                    <div class="token-preview">
-                        <div class="color-swatch blue"></div>
-                    </div>
-                    <div class="token-name">强调蓝</div>
-                    <div class="token-value">#007AFF</div>
-                </div>
-                <div class="token-card">
-                    <div class="token-preview">
-                        <div class="color-swatch green"></div>
-                    </div>
-                    <div class="token-name">成功绿</div>
-                    <div class="token-value">#34C759</div>
-                </div>
-                <div class="token-card">
-                    <div class="token-preview">
-                        <div class="color-swatch orange"></div>
-                    </div>
-                    <div class="token-name">警告橙</div>
-                    <div class="token-value">#FF9500</div>
-                </div>
-                <div class="token-card">
-                    <div class="token-preview">
-                        <div class="color-swatch red"></div>
-                    </div>
-                    <div class="token-name">错误红</div>
-                    <div class="token-value">#FF3B30</div>
-                </div>
-                <div class="token-card">
-                    <div class="token-preview">
-                        <div class="color-swatch purple"></div>
-                    </div>
-                    <div class="token-name">紫色</div>
-                    <div class="token-value">#AF52DE</div>
-                </div>
-            </div>
-            
-            <!-- Spacing -->
-            <h3 class="type-heading-lg" style="margin-top: var(--space-12); margin-bottom: var(--space-2);">间距系统</h3>
-            <p class="type-body" style="color: var(--text-secondary); margin-bottom: var(--space-6);">基于 4px 基准的 8 点网格系统</p>
-            <div class="token-grid">
-                <div class="token-card">
-                    <div class="token-preview">
-                        <div class="spacing-demo">
-                            <div class="spacing-bar" style="width: 4px;"></div>
-                            <div class="spacing-bar" style="width: 8px;"></div>
-                            <div class="spacing-bar" style="width: 12px;"></div>
-                            <div class="spacing-bar" style="width: 16px;"></div>
-                            <div class="spacing-bar" style="width: 24px;"></div>
-                        </div>
-                    </div>
-                    <div class="token-name">间距层级</div>
-                    <div class="token-value">4 / 8 / 12 / 16 / 24 / 32</div>
-                </div>
-                <div class="token-card">
-                    <div class="token-preview">
-                        <div class="radius-preview" style="border-radius: 6px;"></div>
-                    </div>
-                    <div class="token-name">圆角 · xs</div>
-                    <div class="token-value">6px</div>
-                </div>
-                <div class="token-card">
-                    <div class="token-preview">
-                        <div class="radius-preview" style="border-radius: 14px;"></div>
-                    </div>
-                    <div class="token-name">圆角 · md</div>
-                    <div class="token-value">14px</div>
-                </div>
-                <div class="token-card">
-                    <div class="token-preview">
-                        <div class="radius-preview" style="border-radius: 20px;"></div>
-                    </div>
-                    <div class="token-name">圆角 · lg</div>
-                    <div class="token-value">20px</div>
-                </div>
-            </div>
-            
-            <!-- Typography -->
-            <h3 class="type-heading-lg" style="margin-top: var(--space-12); margin-bottom: var(--space-2);">字体规范</h3>
-            <p class="type-body" style="color: var(--text-secondary); margin-bottom: var(--space-6);">SF Pro Display + SF Pro Text 组合</p>
-            <div class="token-grid">
-                <div class="token-card">
-                    <div class="token-preview">
-                        <span class="type-preview" style="font-size: 3rem;">Display</span>
-                    </div>
-                    <div class="token-name">展示字体</div>
-                    <div class="token-value">SF Pro Display · 700</div>
-                </div>
-                <div class="token-card">
-                    <div class="token-preview">
-                        <span class="type-preview" style="font-size: 1.5rem;">Body Text</span>
-                    </div>
-                    <div class="token-name">正文字体</div>
-                    <div class="token-value">SF Pro Text · 400</div>
-                </div>
-                <div class="token-card">
-                    <div class="token-preview">
-                        <span class="type-preview" style="font-size: 1.125rem; font-family: var(--font-mono);">Mono</span>
-                    </div>
-                    <div class="token-name">等宽字体</div>
-                    <div class="token-value">SF Mono · 400</div>
-                </div>
-            </div>
+  <!-- TOKENS -->
+  <section class="section" id="tokens" style="background: var(--bg-elevated);">
+    <div class="container">
+      <div class="section-header"><span class="section-label">Design Tokens</span><h2 class="section-title">色彩系统</h2><p class="section-desc">语义化命名的色板。</p></div>
+      <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">语义色板</h3>
+      <div class="grid-6" style="margin-bottom: 48px;">
+        <div><div class="swatch sw-dark"><span class="swatch-name">Primary</span><span class="swatch-value">#0a0a0a</span></div></div>
+        <div><div class="swatch sw-light"><span class="swatch-name">Surface</span><span class="swatch-value">#fff</span></div></div>
+        <div><div class="swatch sw-accent"><span class="swatch-name">Accent</span><span class="swatch-value">#2563eb</span></div></div>
+        <div><div class="swatch sw-success"><span class="swatch-name">Success</span><span class="swatch-value">#16a34a</span></div></div>
+        <div><div class="swatch sw-warning"><span class="swatch-name">Warning</span><span class="swatch-value">#d97706</span></div></div>
+        <div><div class="swatch sw-danger"><span class="swatch-name">Danger</span><span class="swatch-value">#dc2626</span></div></div>
+      </div>
+      <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">主题预设</h3>
+      <div class="grid-6" style="margin-bottom: 48px;">
+        <div><div class="swatch sw-ocean"><span class="swatch-name">Ocean</span><span class="swatch-value">海洋蓝</span></div></div>
+        <div><div class="swatch sw-forest"><span class="swatch-name">Forest</span><span class="swatch-value">森林绿</span></div></div>
+        <div><div class="swatch sw-sunset"><span class="swatch-name">Sunset</span><span class="swatch-value">落日橙</span></div></div>
+        <div><div class="swatch sw-purple"><span class="swatch-name">Purple</span><span class="swatch-value">紫罗兰</span></div></div>
+        <div><div class="swatch sw-neon"><span class="swatch-name">Neon</span><span class="swatch-value">霓虹青</span></div></div>
+        <div><div class="swatch sw-dark"><span class="swatch-name">Mono</span><span class="swatch-value">极简黑</span></div></div>
+      </div>
+      <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">间距系统</h3>
+      <div class="card" style="margin-bottom: 48px;">
+        <div class="spacing-row"><span class="spacing-label">--s-1</span><span class="spacing-value">4px</span><div class="spacing-bar" style="width: 4px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-2</span><span class="spacing-value">8px</span><div class="spacing-bar" style="width: 8px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-3</span><span class="spacing-value">12px</span><div class="spacing-bar" style="width: 12px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-4</span><span class="spacing-value">16px</span><div class="spacing-bar" style="width: 16px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-6</span><span class="spacing-value">24px</span><div class="spacing-bar" style="width: 24px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-8</span><span class="spacing-value">32px</span><div class="spacing-bar" style="width: 32px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-12</span><span class="spacing-value">48px</span><div class="spacing-bar" style="width: 48px;"></div></div>
+      </div>
+      <div class="grid-2">
+        <div><h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">圆角系统</h3>
+          <div class="card"><div class="radius-grid">
+            <div class="radius-sample" style="border-radius: 6px;">6px</div>
+            <div class="radius-sample" style="border-radius: 8px;">8px</div>
+            <div class="radius-sample" style="border-radius: 12px;">12px</div>
+            <div class="radius-sample" style="border-radius: 16px;">16px</div>
+            <div class="radius-sample" style="border-radius: 20px;">20px</div>
+            <div class="radius-sample" style="border-radius: 999px;">full</div>
+          </div></div>
         </div>
-    </section>
-
-    <!-- Animation Section -->
-    <section class="section" id="animations">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="type-display-lg">动效系统</h2>
-                <p class="type-body-lg" style="color: var(--text-secondary); margin-top: var(--space-3);">Apple 标准缓动曲线 · cubic-bezier(0.25, 0.1, 0.25, 1)</p>
-            </div>
-            
-            <div class="anim-grid">
-                <div class="anim-card">
-                    <div class="anim-preview">
-                        <div class="anim-box anim-float"></div>
-                    </div>
-                    <div class="anim-name">浮动效果</div>
-                    <div class="anim-desc">4s · ease-in-out · infinite</div>
-                </div>
-                <div class="anim-card">
-                    <div class="anim-preview">
-                        <div class="anim-box anim-pulse"></div>
-                    </div>
-                    <div class="anim-name">脉冲效果</div>
-                    <div class="anim-desc">2.5s · ease-in-out · infinite</div>
-                </div>
-                <div class="anim-card">
-                    <div class="anim-preview">
-                        <div class="anim-box anim-glow"></div>
-                    </div>
-                    <div class="anim-name">发光效果</div>
-                    <div class="anim-desc">2s · ease-in-out · infinite</div>
-                </div>
-                <div class="anim-card">
-                    <div class="anim-preview">
-                        <div class="anim-box anim-slide"></div>
-                    </div>
-                    <div class="anim-name">滑入效果</div>
-                    <div class="anim-desc">0.6s · Apple Ease · once</div>
-                </div>
-                <div class="anim-card">
-                    <div class="anim-preview">
-                        <div class="anim-box anim-spin" style="border-radius: 50%;"></div>
-                    </div>
-                    <div class="anim-name">加载旋转</div>
-                    <div class="anim-desc">1.5s · linear · infinite</div>
-                </div>
-            </div>
+        <div><h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">阴影层级</h3>
+          <div class="grid-4" style="gap: 12px;">
+            <div class="card" style="padding: 24px 8px; box-shadow: var(--shadow-sm); text-align: center; font-size: 12px; font-family: var(--font-mono);">sm</div>
+            <div class="card" style="padding: 24px 8px; box-shadow: var(--shadow-md); text-align: center; font-size: 12px; font-family: var(--font-mono);">md</div>
+            <div class="card" style="padding: 24px 8px; box-shadow: var(--shadow-lg); text-align: center; font-size: 12px; font-family: var(--font-mono);">lg</div>
+            <div class="card" style="padding: 24px 8px; box-shadow: var(--shadow-xl); text-align: center; font-size: 12px; font-family: var(--font-mono);">xl</div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Components Section -->
-    <section class="section design-section" id="components">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="type-display-lg">组件库</h2>
-                <p class="type-body-lg" style="color: var(--text-secondary); margin-top: var(--space-3);">基于 shadcn/ui 的可复用组件系统</p>
-            </div>
-            
-            <div class="component-grid">
-                <div class="component-card">
-                    <div class="component-preview">
-                        <button class="btn btn-primary" style="height: 48px; padding: 0 24px; font-size: 0.9375rem;">主要按钮</button>
-                        <button class="btn btn-secondary" style="height: 48px; padding: 0 24px; font-size: 0.9375rem; border: 1.5px solid var(--border-default);">次要按钮</button>
-                    </div>
-                    <div class="component-name">Button 按钮</div>
-                    <div class="component-desc">Primary / Secondary / Ghost / Destructive</div>
-                </div>
-                
-                <div class="component-card">
-                    <div class="component-preview">
-                        <input type="text" placeholder="输入内容..." style="height: 44px; width: 200px; padding: 0 16px; background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 14px; font-size: 0.9375rem;">
-                    </div>
-                    <div class="component-name">Input 输入框</div>
-                    <div class="component-desc">rounded-2xl + bg-muted</div>
-                </div>
-                
-                <div class="component-card">
-                    <div class="component-preview">
-                        <div style="width: 48px; height: 28px; background: var(--accent-green); border-radius: 9999px; position: relative;">
-                            <div style="position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; background: white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.15);"></div>
-                        </div>
-                    </div>
-                    <div class="component-name">Switch 开关</div>
-                    <div class="component-desc">48×28px · rounded-full</div>
-                </div>
-                
-                <div class="component-card">
-                    <div class="component-preview">
-                        <select style="height: 44px; padding: 0 40px 0 16px; background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 14px; font-size: 0.9375rem; cursor: pointer; appearance: none; background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2716%27 height=%2716%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%2386868B%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpolyline points=%276 9 12 15 18 9%27%3E%3C/polyline%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 12px center;">
-                            <option>选项 1</option>
-                            <option>选项 2</option>
-                        </select>
-                    </div>
-                    <div class="component-name">Select 选择器</div>
-                    <div class="component-desc">rounded-2xl + chevron icon</div>
-                </div>
-                
-                <div class="component-card">
-                    <div class="component-preview">
-                        <div style="width: 100%; max-width: 280px; padding: 20px; background: var(--bg-tertiary); border-radius: 20px; box-shadow: var(--shadow-md);">
-                            <div style="font-weight: 600; margin-bottom: 8px;">卡片标题</div>
-                            <div style="font-size: 0.875rem; color: var(--text-secondary);">卡片描述内容</div>
-                        </div>
-                    </div>
-                    <div class="component-name">Card 卡片</div>
-                    <div class="component-desc">rounded-xl + shadow + border</div>
-                </div>
-                
-                <div class="component-card">
-                    <div class="component-preview">
-                        <div style="display: flex; gap: 8px;">
-                            <div style="padding: 6px 14px; background: var(--text-primary); color: var(--bg-primary); border-radius: 9999px; font-size: 0.8125rem; font-weight: 500;">主要</div>
-                            <div style="padding: 6px 14px; background: var(--bg-secondary); border-radius: 9999px; font-size: 0.8125rem; font-weight: 500;">次要</div>
-                            <div style="padding: 6px 14px; background: rgba(0, 122, 255, 0.12); color: var(--accent-blue); border-radius: 9999px; font-size: 0.8125rem; font-weight: 500;">强调</div>
-                        </div>
-                    </div>
-                    <div class="component-name">Badge 徽章</div>
-                    <div class="component-desc">rounded-full + variants</div>
-                </div>
-            </div>
+  <!-- TYPOGRAPHY -->
+  <section class="section" id="typography">
+    <div class="container">
+      <div class="section-header"><span class="section-label">Typography</span><h2 class="section-title">字体系统</h2><p class="section-desc">三种字体、清晰的层级。字号越大，字距越紧。</p></div>
+      <div class="grid-3" style="margin-bottom: 48px;">
+        <div class="card"><span class="badge badge-info">font-sans</span><div style="font-size: 36px; font-weight: 600; letter-spacing: -0.02em; margin-top: 16px;">ZenDraw 禅抽</div><p class="card-desc" style="margin-top: 8px;">Inter · Noto Sans SC<br/>正文 · 标题 · UI</p></div>
+        <div class="card"><span class="badge badge-default">font-mono</span><div style="font-family: var(--font-mono); font-size: 28px; margin-top: 16px;">{ draw: true }</div><p class="card-desc" style="margin-top: 8px;">JetBrains Mono<br/>代码 · 数字</p></div>
+        <div class="card"><span class="badge badge-success">font-serif</span><div style="font-family: var(--font-serif); font-size: 36px; font-style: italic; margin-top: 16px;">ZenDraw</div><p class="card-desc" style="margin-top: 8px;">Playfair Display<br/>装饰性标题</p></div>
+      </div>
+      <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">字号阶梯</h3>
+      <div class="card">
+        <div class="type-sample"><div class="type-display-xl">Display 72</div><div class="type-meta">72px · weight 800 · tracking -0.04em</div></div>
+        <div class="type-sample"><div class="type-display-lg">Display 48</div><div class="type-meta">48px · 700 · -0.03em</div></div>
+        <div class="type-sample"><div class="type-heading-xl">Heading 28</div><div class="type-meta">28px · 700 · -0.02em</div></div>
+        <div class="type-sample"><div class="type-body-lg">Body Large · 18px — 强调正文文本</div><div class="type-meta">18px · 400 · line-height 1.6</div></div>
+        <div class="type-sample"><div class="type-body">Body · 16px — 标准正文，适合长段落</div><div class="type-meta">16px · 400</div></div>
+        <div class="type-sample"><div class="type-caption">Caption · 13px — 辅助说明、次要信息</div><div class="type-meta">13px · 400</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section class="section" id="components" style="background: var(--bg-elevated);">
+    <div class="container">
+      <div class="section-header"><span class="section-label">Component Library</span><h2 class="section-title">组件库</h2><p class="section-desc">基于 shadcn/ui 规范构建的完整组件库。</p></div>
+      <div style="text-align: center; margin-bottom: 32px;">
+        <div class="tab-group" id="comp-tabs">
+          <button class="tab-btn active" data-tab="buttons">按钮</button>
+          <button class="tab-btn" data-tab="forms">表单</button>
+          <button class="tab-btn" data-tab="feedback">反馈</button>
+          <button class="tab-btn" data-tab="display">展示</button>
         </div>
-    </section>
-
-    <!-- Interactions Section -->
-    <section class="section" id="interactions">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="type-display-lg">交互模式</h2>
-                <p class="type-body-lg" style="color: var(--text-secondary); margin-top: var(--space-3);">统一的交互反馈规范</p>
-            </div>
-            
-            <div class="interaction-grid">
-                <div class="interaction-card">
-                    <div class="interaction-preview">
-                        <div class="interaction-box">✦</div>
-                    </div>
-                    <div class="interaction-name">悬停反馈</div>
-                    <div class="interaction-desc">scale(1.08) + shadow-lg<br>duration: 250ms · ease-out</div>
-                </div>
-                
-                <div class="interaction-card">
-                    <div class="interaction-preview">
-                        <div class="interaction-box" style="cursor: pointer;" onmousedown="this.style.transform='scale(0.95)'; this.style.boxShadow='var(--shadow-sm)'" onmouseup="this.style.transform='scale(1)'; this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.transform='scale(1)'; this.style.boxShadow='var(--shadow-md)'">✦</div>
-                    </div>
-                    <div class="interaction-name">点击反馈</div>
-                    <div class="interaction-desc">scale(0.95) + shadow-sm<br>duration: 150ms</div>
-                </div>
-                
-                <div class="interaction-card">
-                    <div class="interaction-preview">
-                        <div style="width: 200px; height: 48px; background: var(--bg-secondary); border-radius: 12px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                            <div style="position: absolute; top: 0; left: 0; width: 65%; height: 100%; background: rgba(0, 122, 255, 0.15); border-radius: 10px;"></div>
-                            <span style="position: relative; z-index: 1; font-size: 0.875rem; font-weight: 500;">加载进度</span>
-                        </div>
-                    </div>
-                    <div class="interaction-name">加载状态</div>
-                    <div class="interaction-desc">Progress + Skeleton 组合<br>使用 sonner 进行 Toast 提示</div>
-                </div>
-                
-                <div class="interaction-card">
-                    <div class="interaction-preview">
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <div style="padding: 12px 16px; background: var(--bg-tertiary); border-radius: 10px; font-size: 0.875rem; animation: slide-anim 0.3s var(--ease-out);">✓ 操作成功</div>
-                            <div style="padding: 12px 16px; background: var(--bg-secondary); border-radius: 10px; font-size: 0.875rem; box-shadow: var(--shadow-sm);">↗ 消息提示</div>
-                        </div>
-                    </div>
-                    <div class="interaction-name">Toast 提示</div>
-                    <div class="interaction-desc">sonner 组件<br>slide-in 动画 + 自动消失</div>
-                </div>
-            </div>
-            
-            <!-- Flow Diagram -->
-            <h3 class="type-heading-lg" style="margin-top: var(--space-12); margin-bottom: var(--space-4); text-align: center;">核心交互流程</h3>
-            <div class="flow-container">
-                <div class="flow-step primary">打开应用</div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-step">主界面大图居中布局 + 准备状态</div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-step">点击右上角设置图标</div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-step">侧边栏从右侧滑入（spring 动画）</div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-step">配置抽奖参数（范围/数量/主题）</div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-step highlight">点击胶囊形「开始抽奖」</div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-step">UI 自动隐藏 + Slot-machine 滚动动画</div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-step primary">展示中奖结果（spring 弹性动画）</div>
-            </div>
+      </div>
+      <!-- Buttons -->
+      <div id="tab-buttons" class="comp-tab-content">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Button · 按钮</h3>
+        <div class="comp-lib-grid">
+          <div class="comp-lib-card"><h3>Primary</h3><p>行动号召的主按钮。</p><div class="comp-preview"><button class="btn btn-primary">开始抽奖</button></div><div class="comp-meta">rounded-md · shadow-sm</div></div>
+          <div class="comp-lib-card"><h3>Outline</h3><p>次要操作默认按钮。</p><div class="comp-preview"><button class="btn btn-outline">查看历史</button></div><div class="comp-meta">border · bg-transparent</div></div>
+          <div class="comp-lib-card"><h3>Ghost</h3><p>非侵入式最轻操作。</p><div class="comp-preview"><button class="btn btn-ghost">取消</button></div><div class="comp-meta">hover: bg-muted</div></div>
+          <div class="comp-lib-card"><h3>Size 阶梯</h3><p>按钮尺寸的完整阶梯。</p><div class="comp-preview" style="flex-direction: column;"><button class="btn btn-primary btn-lg">Large · 大</button><button class="btn btn-primary">Default</button><button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;">Small</button></div><div class="comp-meta">32/40/48px</div></div>
+          <div class="comp-lib-card"><h3>Icon Button</h3><p>最小的操作入口。</p><div class="comp-preview"><button class="icon-btn" style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted); transition: all var(--dur-fast);">⚙</button><button style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted); transition: all var(--dur-fast);">🌐</button><button style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted); transition: all var(--dur-fast);">⟳</button></div><div class="comp-meta">40×40</div></div>
+          <div class="comp-lib-card"><h3>States</h3><p>状态完整可见。</p><div class="comp-preview" style="flex-direction: column;"><button class="btn btn-primary">正常</button><button class="btn btn-primary" style="opacity: 0.5; cursor: not-allowed;">禁用</button></div><div class="comp-meta">cursor/opacity</div></div>
         </div>
-    </section>
-
-    <!-- Designer Insights Section -->
-    <section class="section insights-section" id="insights">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="type-display-lg">国际化顶尖设计师优化建议</h2>
-                <p class="type-body-lg" style="margin-top: var(--space-3);">基于 Apple, Google, Microsoft 设计系统的深度改进</p>
-            </div>
-            
-            <div class="insight-grid">
-                <div class="insight-card">
-                    <div class="insight-icon">🎯</div>
-                    <h3 class="insight-title">焦点与无障碍优化</h3>
-                    <p class="insight-desc">当前实现已具备良好的 ARIA 属性，建议进一步优化：</p>
-                    <ul class="insight-list">
-                        <li>添加 Skip-to-content 链接，提升键盘导航体验</li>
-                        <li>实现焦点指示器的自定义样式（避免浏览器默认样式）</li>
-                        <li>为所有交互元素添加 focus-visible 样式</li>
-                        <li>增加 ARIA live region 的优先级设置</li>
-                        <li>考虑添加高对比度模式支持</li>
-                    </ul>
-                </div>
-                
-                <div class="insight-card">
-                    <div class="insight-icon">✨</div>
-                    <h3 class="insight-title">微交互动效增强</h3>
-                    <p class="insight-desc">建议在现有动画基础上添加更多细腻的微交互：</p>
-                    <ul class="insight-list">
-                        <li>设置面板开关时添加轻微的弹性回弹</li>
-                        <li>数字滚动添加轻微的过冲效果（overshoot）</li>
-                        <li>结果卡片出现时添加光晕扩散效果</li>
-                        <li>按钮 hover 时添加微妙的光泽移动</li>
-                        <li>考虑添加轻触反馈（ripple effect）</li>
-                    </ul>
-                </div>
-                
-                <div class="insight-card">
-                    <div class="insight-icon">📱</div>
-                    <h3 class="insight-title">移动端触控优化</h3>
-                    <p class="insight-desc">移动端体验仍有提升空间：</p>
-                    <ul class="insight-list">
-                        <li>增大触控热区（至少 44×44pt）</li>
-                        <li>添加滑动手势支持（左滑显示设置）</li>
-                        <li>优化虚拟键盘弹出时的布局适配</li>
-                        <li>考虑添加 Haptic Feedback（iOS）</li>
-                        <li>实现 Pull-to-refresh 刷新历史</li>
-                    </ul>
-                </div>
-                
-                <div class="insight-card">
-                    <div class="insight-icon">🎨</div>
-                    <h3 class="insight-title">主题系统深化</h3>
-                    <p class="insight-desc">配色方案可进一步扩展：</p>
-                    <ul class="insight-list">
-                        <li>添加色盲友好模式（Deuteranopia/Protanopia）</li>
-                        <li>实现主题预设的实时预览</li>
-                        <li>考虑添加自定义主题功能</li>
-                        <li>支持随时间自动切换主题（Daytime/Nighttime）</li>
-                        <li>统一所有主题下的组件对比度（WCAG AA+）</li>
-                    </ul>
-                </div>
-                
-                <div class="insight-card">
-                    <div class="insight-icon">⚡</div>
-                    <h3 class="insight-title">性能与体验平衡</h3>
-                    <p class="insight-desc">动画性能优化建议：</p>
-                    <ul class="insight-list">
-                        <li>使用 will-change 优化动画元素</li>
-                        <li>在低性能设备上自动降级动画</li>
-                        <li>考虑使用 CSS containment 隔离重绘</li>
-                        <li>优化首屏加载的 CLS（Cumulative Layout Shift）</li>
-                        <li>添加骨架屏（Skeleton）优化感知性能</li>
-                    </ul>
-                </div>
-                
-                <div class="insight-card">
-                    <div class="insight-icon">🌐</div>
-                    <h3 class="insight-title">国际化扩展</h3>
-                    <p class="insight-desc">多语言支持可进一步完善：</p>
-                    <ul class="insight-list">
-                        <li>RTL（从右到左）语言布局支持</li>
-                        <li>添加更多语言（日语、韩语、阿拉伯语）</li>
-                        <li>数字格式化本地化（不同地区的千位分隔符）</li>
-                        <li>日期时间格式本地化</li>
-                        <li>考虑添加语音朗读功能</li>
-                    </ul>
-                </div>
-            </div>
+      </div>
+      <!-- Forms -->
+      <div id="tab-forms" class="comp-tab-content" style="display: none;">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Form Elements · 表单元素</h3>
+        <div class="comp-lib-grid">
+          <div class="comp-lib-card"><h3>Input</h3><p>标准数字输入框。</p><div class="comp-preview" style="flex-direction: column;"><div style="width: 100%;"><label style="font-size: 13px; font-weight: 500; display: block; margin-bottom: 6px;">最小值</label><input type="number" value="1" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg); font-size: 14px; font-family: inherit;" /></div></div><div class="comp-meta">h-40 · focus ring</div></div>
+          <div class="comp-lib-card"><h3>Switch</h3><p>二元开关，滑动动画。</p><div class="comp-preview"><div style="display: flex; align-items: center; gap: 12px;"><div class="switch on" onclick="this.classList.toggle('on')"></div><span>自动隐藏</span></div><div style="display: flex; align-items: center; gap: 12px; margin-top: 12px;"><div class="switch" onclick="this.classList.toggle('on')"></div><span>允许重复</span></div></div><div class="comp-meta">44×24 · tx-20</div></div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-brand">
-            <div class="nav-logo">✦</div>
-            <span class="nav-title">ZenDraw | 禅抽</span>
+      </div>
+      <!-- Feedback -->
+      <div id="tab-feedback" class="comp-tab-content" style="display: none;">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Feedback · 反馈</h3>
+        <div class="grid-2">
+          <div class="comp-lib-card"><h3>Badge</h3><p>轻量状态标签。</p><div class="comp-preview"><span class="badge badge-default">Default</span><span class="badge badge-info">Info</span><span class="badge badge-success">Success</span><span class="badge badge-warning">Warning</span><span class="badge badge-danger">Danger</span></div><div class="comp-meta">pill-shaped</div></div>
+          <div class="comp-lib-card"><h3>Alert</h3><p>醒目信息提示。</p><div class="comp-preview" style="flex-direction: column; width: 100%;">
+            <div class="alert alert-success" style="width: 100%;"><div><div class="alert-title">操作成功</div><div class="alert-msg">结果已导出到本地文件</div></div></div>
+            <div class="alert alert-danger" style="width: 100%; margin-top: 12px;"><div><div class="alert-title">输入无效</div><div class="alert-msg">最小值不能大于最大值</div></div></div>
+          </div><div class="comp-meta">border-1</div></div>
         </div>
-        <p class="footer-text">World-Class Prototype v3.2 · Apple Design Language</p>
-        <p class="footer-text" style="margin-top: var(--space-2); font-size: 0.75rem;">基于极简主义、大图展示、充足留白的设计理念</p>
-    </footer>
+      </div>
+      <!-- Display -->
+      <div id="tab-display" class="comp-tab-content" style="display: none;">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Display · 展示组件</h3>
+        <div class="grid-2">
+          <div class="comp-lib-card"><h3>Result Card</h3><p>核心抽奖结果展示。</p><div class="comp-preview" style="flex-direction: column; width: 100%;"><div style="padding: 32px 48px; border-radius: 20px; background: var(--bg); border: 1px solid var(--border); text-align: center; width: 100%;"><div class="app-result-label">Lucky Number</div><div class="app-result-number" style="font-size: 72px; margin: 0;">042</div></div></div><div class="comp-meta">clip-text</div></div>
+          <div class="comp-lib-card"><h3>Empty State</h3><p>无数据时的占位展示。</p><div class="comp-preview" style="flex-direction: column; width: 100%;"><div style="padding: 40px 24px; background: var(--bg-elevated); border: 1px dashed var(--border); border-radius: 16px; text-align: center; width: 100%;"><div style="font-size: 48px; opacity: 0.3; margin-bottom: 12px;">📋</div><p style="font-size: 14px; color: var(--fg-muted); margin-bottom: 16px;">暂无历史记录</p><button class="btn btn-primary" style="padding: 10px 16px; font-size: 13px;">开始抽奖</button></div></div><div class="comp-meta">dashed</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <script>
-        // Interactive demo scripts
-        document.querySelectorAll('.interaction-box').forEach(box => {
-            box.addEventListener('mouseenter', () => {
-                if (!box.matches(':active')) {
-                    box.style.transform = 'scale(1.08)';
-                    box.style.boxShadow = 'var(--shadow-lg)';
-                }
-            });
-            box.addEventListener('mouseleave', () => {
-                if (!box.matches(':active')) {
-                    box.style.transform = 'scale(1)';
-                    box.style.boxShadow = 'var(--shadow-md)';
-                }
-            });
-        });
-        
-        // Smooth scroll for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
+  <!-- INTERACTION -->
+  <section class="section" id="interaction">
+    <div class="container">
+      <div class="section-header"><span class="section-label">Interaction</span><h2 class="section-title">交互规范</h2><p class="section-desc">统一的交互模式，确保一致的心理预期。</p></div>
+      <div class="grid-2">
+        <div class="card"><h3 class="card-title">悬停反馈</h3>
+          <ul class="pattern-list" style="margin-top: 12px;">
+            <li>按钮悬停：translateY(-1px) + 阴影加深</li>
+            <li>图标按钮悬停：背景色切换至 --bg-muted</li>
+            <li>卡片悬停：Y 位移 + box-shadow: lg + border 强化</li>
+            <li>动画时长：150-250ms，缓动：cubic-bezier(0.16, 1, 0.3, 1)</li>
+          </ul>
+          <div class="comp-preview" style="margin-top: 20px;"><div class="interactive-box">1</div><div class="interactive-box">2</div><div class="interactive-box">3</div></div>
+        </div>
+        <div class="card"><h3 class="card-title">空状态 / 错误状态</h3>
+          <ul class="pattern-list" style="margin-top: 12px;">
+            <li>空状态：装饰性图标 + 友好文案 + CTA</li>
+            <li>错误状态：danger 色 + 明确错误说明</li>
+            <li>表单错误：input 边框变红 + 下方错误描述</li>
+            <li>加载状态：Skeleton 占位图，不使用 spinner</li>
+          </ul>
+        </div>
+        <div class="card"><h3 class="card-title">键盘操作</h3>
+          <ul class="pattern-list" style="margin-top: 12px;">
+            <li>Enter：确认 / 触发默认操作</li>
+            <li>Esc：关闭对话框 / 清空当前输入</li>
+            <li>Tab：按视觉顺序循环聚焦（焦点始终可见）</li>
+            <li>所有可点击元素必须可键盘聚焦并可见焦点指示</li>
+          </ul>
+        </div>
+        <div class="card"><h3 class="card-title">动画原则</h3>
+          <ul class="pattern-list" style="margin-top: 12px;">
+            <li>动画必须服务于信息传达，不为动而动</li>
+            <li>尊重 prefers-reduced-motion</li>
+            <li>出/入动画：淡入淡出 + 轻微位移，0.3-0.4s</li>
+            <li>结果数字：快速弹出 + 弹簧物理，stiffness 260</li>
+          </ul>
+        </div>
+      </div>
+      <h3 style="font-size: 20px; font-weight: 700; margin: 64px 0 24px; text-align: center;">主流程状态</h3>
+      <div class="grid-3" style="text-align: center;">
+        <div class="card"><span class="badge badge-default" style="margin-bottom: 12px;">IDLE</span><h3 class="card-title">准备就绪</h3><p class="card-desc">展示大字号 Ready 文案 + CTA 按钮。</p></div>
+        <div class="card"><span class="badge badge-info" style="margin-bottom: 12px;">DRAWING</span><h3 class="card-title">抽取中</h3><p class="card-desc">数字快速滚动，持续约 2 秒，切换至结果态。</p></div>
+        <div class="card"><span class="badge badge-success" style="margin-bottom: 12px;">RESULT</span><h3 class="card-title">结果展示</h3><p class="card-desc">结果以 pop 动画呈现，CTA 重置为「再抽一次」。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section class="section" id="app" style="background: var(--bg-elevated);">
+    <div class="container">
+      <div class="section-header"><span class="section-label">App Preview</span><h2 class="section-title">应用预览</h2><p class="section-desc">桌面端与移动端的真实应用界面。</p></div>
+      <div class="grid-2" style="gap: 48px; align-items: center;">
+        <div>
+          <div class="app-mockup" style="max-width: 480px;">
+            <div class="app-toolbar"><div style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><div style="width: 28px; height: 28px; border-radius: 8px; background: var(--primary); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;">Z</div>ZenDraw</div><div style="display: flex; gap: 4px;"><button style="width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted);">⚙</button><button style="width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted);">📋</button></div></div>
+            <div class="app-main">
+              <div class="app-result-label">Lucky Number</div>
+              <div class="app-result-number" id="app-number">042</div>
+              <button class="app-action" id="app-action">开始抽奖</button>
+              <div style="display: flex; gap: 8px; margin-top: 24px; font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted);"><span>范围：1-99</span>·<span>不重复</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="device-frame">
+            <div class="device-notch"></div>
+            <div class="device-screen">
+              <div class="device-content">
+                <div class="device-header"><span style="font-weight: 600; font-size: 15px;">禅抽</span><span style="font-size: 12px; color: var(--fg-muted); font-family: var(--font-mono);">v3.0</span></div>
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                  <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-subtle); margin-bottom: 16px;">Lucky Number</div>
+                  <div class="device-number" id="mobile-number">042</div>
+                </div>
+                <div style="padding: 16px 0 24px; text-align: center;"><button style="width: 100%; padding: 16px 24px; background: var(--primary); color: var(--primary-fg); border-radius: 999px; font-size: 15px; font-weight: 600; box-shadow: var(--shadow-md);">开始抽奖</button></div>
+                <div style="padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px;"><div style="font-size: 12px; color: var(--fg-muted); margin-bottom: 8px;">最近记录</div><div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="color: var(--fg-muted);">02:14:32</span><strong>077</strong></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A11Y -->
+  <section class="section" id="a11y">
+    <div class="container">
+      <div class="section-header"><span class="section-label">Accessibility</span><h2 class="section-title">无障碍设计</h2><p class="section-desc">让所有用户都能顺畅使用产品。</p></div>
+      <div class="grid-3">
+        <div class="card"><div class="card-icon">⌨</div><h3 class="card-title">键盘导航</h3><p class="card-desc">所有交互元素均可通过 Tab 键聚焦，并提供可见的焦点指示环。Enter 触发，Esc 取消。</p></div>
+        <div class="card"><div class="card-icon">🎯</div><h3 class="card-title">颜色对比度</h3><p class="card-desc">所有文本与背景的对比度达到 WCAG 2.1 AA 标准 (4.5:1)，大字达到 3:1。</p></div>
+        <div class="card"><div class="card-icon">🔊</div><h3 class="card-title">屏幕阅读器</h3><p class="card-desc">语义化 HTML、ARIA 属性、aria-live 区域，确保屏幕阅读器能正确传达状态变化。</p></div>
+        <div class="card"><div class="card-icon">🧭</div><h3 class="card-title">动效偏好</h3><p class="card-desc">检测 prefers-reduced-motion，尊重用户的动效偏好设置，对敏感用户关闭非必要动画。</p></div>
+        <div class="card"><div class="card-icon">🌓</div><h3 class="card-title">深色模式</h3><p class="card-desc">完整的浅色 / 深色 / 跟随系统三态切换，所有组件均在两种模式下表现良好。</p></div>
+        <div class="card"><div class="card-icon">📐</div><h3 class="card-title">触摸目标</h3><p class="card-desc">所有可点击元素最小尺寸为 40×40px，满足 WCAG 对触摸目标大小的 24×24 CSS 像素建议。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"><div style="font-weight: 700; color: var(--fg); margin-bottom: 8px;">ZenDraw · Design System</div><div>v3.0 · 极简 · 克制 · 永恒</div></footer>
+
+  <script>
+    // 主题切换
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      document.getElementById('theme-icon').textContent = next === 'dark' ? '☀' : '🌙';
+    }
+    // 组件标签切换
+    document.querySelectorAll('#comp-tabs .tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#comp-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.getAttribute('data-tab');
+        document.querySelectorAll('.comp-tab-content').forEach(panel => panel.style.display = 'none');
+        document.getElementById('tab-' + tab).style.display = 'block';
+      });
+    });
+    // 模拟抽奖 — 桌面
+    const appNumber = document.getElementById('app-number');
+    const appAction = document.getElementById('app-action');
+    const mobileNum = document.getElementById('mobile-number');
+    function startDraw() {
+      let count = 0; const max = 40;
+      appAction.textContent = '抽取中...';
+      appAction.style.opacity = '0.7';
+      const iv = setInterval(() => {
+        const n = String(Math.floor(Math.random() * 100)).padStart(3, '0');
+        appNumber.textContent = n; mobileNum.textContent = n;
+        count++; if (count >= max) { clearInterval(iv); appAction.textContent = '再抽一次'; appAction.style.opacity = '1'; }
+      }, 50);
+    }
+    appAction.addEventListener('click', startDraw);
+  </script>
 </body>
 </html>
