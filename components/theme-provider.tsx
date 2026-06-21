@@ -2,7 +2,9 @@
 // 负责：深浅模式切换、预设主题、字体族、用户偏好持久化
 "use client";
 
+// 顶部添加导入（用于 useSyncExternalStore 兼容）
 import * as React from "react";
+import { useSyncExternalStore } from "react";
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 
 export const THEME_PRESETS = [
@@ -66,27 +68,26 @@ export function ThemeProvider({
 
 /**
  * SSR 安全的主题挂载检测
- * 使用 ref + 单轮渲染模式避免 set-state-in-effect
+ * - 通过 useSyncExternalStore 实现安全的客户端判断
+ * - 服务端快照返回 false，客户端快照在 hydrate 后返回 true
+ * - 完全避免在 effect / 渲染期间读写 ref 或 setState
  */
+const noopSubscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export function useThemeMounted(): boolean {
-  const [mounted, setMounted] = React.useState<boolean>(() => {
-    // 首次渲染时：如果已经在客户端可以直接为 true
-    return typeof window !== "undefined";
-  });
-  const didSetRef = React.useRef<boolean>(false);
-  React.useEffect(() => {
-    if (!didSetRef.current && !mounted) {
-      didSetRef.current = true;
-      setMounted(true);
-    }
-  }, [mounted]);
-  return mounted;
+  return useSyncExternalStore(
+    noopSubscribe,
+    getClientSnapshot,
+    getServerSnapshot
+  );
 }
 
 /**
  * 自定义主题预设 Hook
- * - 状态通过事件回调而非同步 setState
- * - 持久化到 localStorage（写入发生在状态变更的回调中）
+ * - 通过 useState 惰性初始化读取 localStorage，避免在 effect 中 setState
+ * - 写入持久化发生在状态变更回调与 effect 中（只写外部存储，不触发重渲染）
  */
 export function usePresetTheme(): {
   preset: ThemePreset;
@@ -108,7 +109,7 @@ export function usePresetTheme(): {
       : "sans";
   });
 
-  // 首次挂载后同步到 DOM（通过 requestAnimationFrame 避免同步渲染警告）
+  // 挂载与值变化时将预设/字体类名同步到 DOM（外部副作用，不涉及 React 状态）
   React.useEffect(() => {
     const rafId = window.requestAnimationFrame(() => {
       applyPresetClass(preset);
@@ -117,26 +118,24 @@ export function usePresetTheme(): {
     return () => window.cancelAnimationFrame(rafId);
   }, [preset, font]);
 
-  // 主题变化时写入持久化（仅一次 per change）
+  // 主题变化时写入持久化（只写外部存储，避免同步渲染警告）
   React.useEffect(() => {
     writeStorage("zendraw-theme-preset", preset);
     writeStorage("zendraw-font-family", font);
   }, [preset, font]);
 
   const setPreset = React.useCallback((p: ThemePreset) => {
-    if ((THEME_PRESETS as readonly string[]).includes(p)) {
-      setPresetState(p);
-    } else {
-      setPresetState("default");
-    }
+    const next = (THEME_PRESETS as readonly string[]).includes(p)
+      ? p
+      : "default";
+    setPresetState(next);
   }, []);
 
   const setFont = React.useCallback((f: FontFamily) => {
-    if ((FONT_FAMILIES as readonly string[]).includes(f)) {
-      setFontState(f);
-    } else {
-      setFontState("sans");
-    }
+    const next = (FONT_FAMILIES as readonly string[]).includes(f)
+      ? f
+      : "sans";
+    setFontState(next);
   }, []);
 
   return { preset, setPreset, font, setFont };

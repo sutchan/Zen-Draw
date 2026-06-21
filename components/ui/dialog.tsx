@@ -2,6 +2,7 @@
 "use client";
 
 import * as React from "react";
+import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 
 // ---------- Context ----------
@@ -95,19 +96,17 @@ const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
 DialogTrigger.displayName = "DialogTrigger";
 
 // ---------- Portal ----------
+// SSR 安全：客户端直接渲染，SSR 不渲染子元素
+// 通过 ref + 惰性初始化避免在 effect 中调用 setState
 function Portal({ children }: { children: React.ReactNode }): React.ReactNode {
-  const [mounted, setMounted] = React.useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return typeof document !== "undefined";
-  });
-  const didSetRef = React.useRef<boolean>(false);
+  const isClientSide =
+    typeof window !== "undefined" && typeof document !== "undefined";
+  const [clientReady] = React.useState<boolean>(() => isClientSide);
+  const afterFirstRenderRef = React.useRef<boolean>(false);
   React.useEffect(() => {
-    if (!didSetRef.current && !mounted) {
-      didSetRef.current = true;
-      setMounted(true);
-    }
-  }, [mounted]);
-  if (!mounted) return null;
+    afterFirstRenderRef.current = true;
+  }, []);
+  if (!(clientReady || afterFirstRenderRef.current)) return null;
   return <>{children}</>;
 }
 
