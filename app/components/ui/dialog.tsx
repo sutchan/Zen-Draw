@@ -96,17 +96,21 @@ const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
 DialogTrigger.displayName = "DialogTrigger";
 
 // ---------- Portal ----------
-// SSR 安全：客户端直接渲染，SSR 不渲染子元素
-// 通过 ref + 惰性初始化避免在 effect 中调用 setState
+// SSR 安全：通过 useSyncExternalStore 实现客户端挂载检测
+// - 服务端快照返回 false（不渲染子元素）
+// - 客户端快照返回 true（渲染子元素）
+// - 完全避免在 effect / 渲染期间读写 ref 或 setState
+const portalSubscribe = () => () => {};
+const portalClientSnapshot = () => true;
+const portalServerSnapshot = () => false;
+
 function Portal({ children }: { children: React.ReactNode }): React.ReactNode {
-  const isClientSide =
-    typeof window !== "undefined" && typeof document !== "undefined";
-  const [clientReady] = React.useState<boolean>(() => isClientSide);
-  const afterFirstRenderRef = React.useRef<boolean>(false);
-  React.useEffect(() => {
-    afterFirstRenderRef.current = true;
-  }, []);
-  if (!(clientReady || afterFirstRenderRef.current)) return null;
+  const mounted = useSyncExternalStore(
+    portalSubscribe,
+    portalClientSnapshot,
+    portalServerSnapshot
+  );
+  if (!mounted) return null;
   return <>{children}</>;
 }
 
