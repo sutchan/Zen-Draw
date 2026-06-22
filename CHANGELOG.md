@@ -1,5 +1,41 @@
 # Changelog
 
+## [3.1.0] - 2026-06-11
+
+### Security Hardening
+
+#### Input Validation
+- 所有数字输入统一使用 `parseFiniteNumber()` 解析，杜绝 NaN/Infinity 写入状态
+- `min/max` 范围限制为 ±1,000,000，`count` 限制为 1-1000，`duration` 限制为 1-120s，`digits` 限制为 0-20
+- `prefix/suffix` 输入限制为 50 字符，过滤控制字符
+- `customList` 单项最长 200 字符，最多 1000 项
+
+#### Runtime Guards
+- `handleDraw` 添加二次验证：min/max/count/range 全部经过 `Number.isFinite` 和边界检查
+- `randomInt` 增加 `isFinite` 预检，防止 NaN 传递到 Math 函数
+- `NumberRoller` 限制字符数上限 200，防止超长内容触发性能 DoS
+- `html.lang` 使用白名单（仅允许 "en" / "zh"），防止任意字符串写入
+
+#### Dependency Security
+- 升级 `next`、`firebase-tools` 等易受攻击的依赖
+- `npm audit` 漏洞数从 11（9 moderate + 2 high）降至 0
+
+### Component Library
+- 新增 [badge.tsx](file:///workspace/components/ui/badge.tsx) — 语义化徽章组件（7 种变体）
+- 新增 [alert.tsx](file:///workspace/components/ui/alert.tsx) — 语义化警告组件（4 种变体）
+- 新增 [separator.tsx](file:///workspace/components/ui/separator.tsx) — 水平/垂直分隔线组件
+
+### React 19 Compliance
+- 修复 `theme-provider.tsx` 和 `dialog.tsx` 的 setState-in-effect 级联渲染警告
+- 修复 `select.tsx` 的 ARIA 属性缺失（`aria-controls` + listbox id）
+
+### Design System Documents
+- 新增 `prototype/color-system.html` — 完整色彩系统文档
+- 新增 `prototype/typography.html` — 字体/排版系统规范
+- 新增 `prototype/motion.html` — 动效系统规范
+- 完善 `prototype/prototypes.html` — 高保真可交互原型
+- 完善 `prototype/wireframes.html` — 组件库规范文档
+
 ## [3.0.0] - 2026-06-08
 
 ### Design Redesign - Apple Design Style

@@ -19,6 +19,14 @@ const nextConfig: NextConfig = {
   },
   output: 'standalone',
   transpilePackages: ['motion'],
+  // Next.js 16+ 默认使用 Turbopack。显式指定 root 为项目根目录，
+  // 同时启用 resolveAlias 别名，确保 node_modules 可被正确解析
+  turbopack: {
+    root: process.cwd(),
+    resolveAlias: {
+      '@': './app',
+    },
+  },
   webpack: (config, {dev}) => {
     // HMR is disabled in AI Studio via DISABLE_HMR env var.
     // Do not modify—file watching is disabled to prevent flickering during agent edits.

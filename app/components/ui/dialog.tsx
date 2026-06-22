@@ -2,6 +2,7 @@
 "use client";
 
 import * as React from "react";
+import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 
 // ---------- Context ----------
@@ -95,11 +96,21 @@ const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
 DialogTrigger.displayName = "DialogTrigger";
 
 // ---------- Portal ----------
+// SSR 安全：通过 useSyncExternalStore 实现客户端挂载检测
+// - 服务端快照返回 false（不渲染子元素）
+// - 客户端快照返回 true（渲染子元素）
+// - 完全避免在 effect / 渲染期间读写 ref 或 setState
+const portalSubscribe = () => () => {};
+const portalClientSnapshot = () => true;
+const portalServerSnapshot = () => false;
+
 function Portal({ children }: { children: React.ReactNode }): React.ReactNode {
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
+  const mounted = useSyncExternalStore(
+    portalSubscribe,
+    portalClientSnapshot,
+    portalServerSnapshot
+  );
   if (!mounted) return null;
-  // 在 Next.js SSR 环境下，这里直接 return 子元素 (使用 div 层替代 ReactDOM.createPortal)
   return <>{children}</>;
 }
 

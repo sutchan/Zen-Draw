@@ -47,11 +47,21 @@ export function generateLocalId(): string {
 }
 
 /**
+ * 安全的数字解析：确保结果是有限数字，防止 NaN/Infinity 写入
+ * @param input - 原始输入字符串
+ * @param fallback - 失败时的回退值
+ */
+export function parseFiniteNumber(input: string, fallback: number): number {
+  const n = Number(input);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+/**
  * 清理名单输入字符串：
  * - 按换行切分
  * - 去除首尾空白
  * - 过滤控制字符（防止 XSS 和格式问题）
- * - 过滤空行
+ * - 限制单项最长 200 字符、最多 1000 项，防止性能 DoS
  */
 export function sanitizeListInput(input: string): string[] {
   if (!input || typeof input !== "string") return [];
@@ -62,6 +72,7 @@ export function sanitizeListInput(input: string): string[] {
     .replace(/\r/g, "\n");
   return sanitized
     .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0);
+    .map((line) => line.trim().slice(0, 200))
+    .filter((line) => line.length > 0)
+    .slice(0, 1000);
 }
