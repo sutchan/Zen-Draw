@@ -75,49 +75,47 @@ interface RollingCharProps {
 }
 
 function RollingChar({ target, isDrawing, delay }: RollingCharProps) {
-  // 当前显示的字符（滚动过程中变化）
-  const [display, setDisplay] = React.useState(target);
-  // 当前阶段（用于停止时的动画过渡）
-  const [stage, setStage] = React.useState<"rolling" | "settling">("settling");
+  // 使用单个 useReducer 管理 stage 和 display，effect 中通过 dispatch 更新，避免同步 setState
+  // stage: 0 = rolling, 1 = settling; display: 当前显示的字符
+  const [state, dispatch] = React.useReducer(
+    (prev: { stage: number; display: string }, action: { type: "ROLL"; display: string } | { type: "SETTLE"; display: string }) => {
+      if (action.type === "ROLL") {
+        return { stage: 0, display: action.display };
+      }
+      return { stage: 1, display: action.display };
+    },
+    { stage: isDrawing ? 0 : 1, display: target }
+  );
+  const { stage, display } = state;
 
   // 3. 滚动动画的随机字符生成
   const rollChar = React.useCallback((t: string): string => {
-    // 根据 target 的类型选择不同的滚动字符
     if (/\d/.test(t)) {
-      // 数字字符 —— 用 0-9 的随机数字替换
       return String(Math.floor(Math.random() * 10));
     }
     if (/[a-z]/.test(t)) {
-      // 小写字母
       return String.fromCharCode(97 + Math.floor(Math.random() * 26));
     }
     if (/[A-Z]/.test(t)) {
-      // 大写字母
       return String.fromCharCode(65 + Math.floor(Math.random() * 26));
     }
-    // 其他字符（中文、符号等）直接显示目标字符
     return t;
   }, []);
 
-  // 4. 管理滚动定时器
+  // 4. 管理滚动定时器（通过 dispatch 更新状态，无同步 setState）
   React.useEffect(() => {
     let intervalId: number | null = null;
-    let cleanupDone = false;
 
     if (isDrawing) {
-      setStage("rolling");
-      // 每 80ms 刷新字符
+      dispatch({ type: "ROLL", display: rollChar(target) });
       intervalId = window.setInterval(() => {
-        if (!cleanupDone) setDisplay(rollChar(target));
+        dispatch({ type: "ROLL", display: rollChar(target) });
       }, 80);
     } else {
-      // 停止滚动 —— 立即显示最终字符，触发 settling 动画
-      setStage("settling");
-      setDisplay(target);
+      dispatch({ type: "SETTLE", display: target });
     }
 
     return () => {
-      cleanupDone = true;
       if (intervalId !== null) {
         window.clearInterval(intervalId);
         intervalId = null;
@@ -125,12 +123,7 @@ function RollingChar({ target, isDrawing, delay }: RollingCharProps) {
     };
   }, [isDrawing, target, rollChar]);
 
-  // 5. 组件挂载时也设为目标值（避免闪烁上一次的值）
-  React.useEffect(() => {
-    if (!isDrawing) setDisplay(target);
-  }, [target, isDrawing]);
-
-  // 6. 渲染：使用 AnimatePresence 做阶段切换动画
+  // 5. 渲染：使用 AnimatePresence 做阶段切换动画
   return (
     <span
       className="inline-flex items-center justify-center select-none min-w-[1ch]"
@@ -140,7 +133,7 @@ function RollingChar({ target, isDrawing, delay }: RollingCharProps) {
         <motion.span
           key={`${stage}-${display}`}
           initial={
-            stage === "settling"
+            stage === 1
               ? { scale: 1.25, opacity: 0, y: -6, filter: "blur(3px)" }
               : { scale: 1, opacity: 1, y: 0, filter: "blur(0px)" }
           }
@@ -152,11 +145,11 @@ function RollingChar({ target, isDrawing, delay }: RollingCharProps) {
           }}
           exit={{ scale: 0.75, opacity: 0, y: 8, filter: "blur(6px)" }}
           transition={{
-            type: stage === "settling" ? "spring" : "tween",
+            type: stage === 1 ? "spring" : "tween",
             stiffness: 280,
             damping: 22,
             mass: 0.8,
-            duration: stage === "settling" ? undefined : 0.1,
+            duration: stage === 1 ? undefined : 0.1,
             delay,
           }}
           className="inline-block"
