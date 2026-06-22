@@ -6,10 +6,14 @@ import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 export interface DrawButtonProps {
+  // 是否正在抽取中
   isDrawing: boolean;
+  // 开始 / 停止 时回调
   onStart: () => void;
   onStop: () => void;
+  // 是否可用（设置不合法时禁用）
   canDraw: boolean;
+  // 显示语言
   language: "zh" | "en";
 }
 
@@ -21,14 +25,35 @@ export function DrawButton({
   language,
 }: DrawButtonProps) {
   const shouldReduceMotion = useReducedMotion();
-  const t = {
-    start: language === "zh" ? "开始抽取" : "Start Draw",
-    stop: language === "zh" ? "停止（空格键）" : "Stop (Space)",
-    ready: language === "zh" ? "按下按钮或空格键开始" : "Click the button or press Space to start",
-  };
 
-  // 按钮尺寸根据状态动态调整
-  const btnSize = isDrawing ? "min-w-[280px] min-h-[84px] text-2xl" : "min-w-[240px] min-h-[72px] text-xl";
+  // 文案
+  const labels = React.useMemo(() => {
+    const isZH = language === "zh";
+    return {
+      start: isZH ? "开始抽取" : "Start Draw",
+      stop: isZH ? "停止" : "Stop",
+      hint: isZH ? "按下按钮或空格键开始" : "Click the button or press Space to start",
+      stopHint: isZH ? "抽取中 —— 点击停止或按空格键" : "Drawing — click to stop or press Space",
+    };
+  }, [language]);
+
+  // 处理点击
+  const handleClick = React.useCallback(() => {
+    if (!canDraw && !isDrawing) return;
+    if (isDrawing) onStop();
+    else onStart();
+  }, [canDraw, isDrawing, onStart, onStop]);
+
+  // 键盘支持（Enter / Space 触发）
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleClick();
+      }
+    },
+    [handleClick]
+  );
 
   return (
     <motion.div
@@ -36,23 +61,21 @@ export function DrawButton({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: shouldReduceMotion ? 0 : 0.5 }}
       className="relative pb-8 sm:pb-12 flex flex-col items-center"
+      aria-hidden="false"
     >
-      {/* 脉冲背景光晕（仅在未抽取且可用状态显示） */}
+      {/* 脉冲背景光晕（空闲时呼吸效果，仅无偏好减少动画时显示） */}
       {!isDrawing && canDraw && !shouldReduceMotion && (
         <>
           <motion.div
             aria-hidden="true"
-            className="absolute"
+            className="absolute left-1/2 top-1/2 rounded-full pointer-events-none"
             style={{
-              left: "50%",
-              top: "50%",
-              width: "300px",
-              height: "100px",
-              marginLeft: "-150px",
-              marginTop: "-50px",
-              borderRadius: "9999px",
-              background: "radial-gradient(ellipse, hsl(var(--primary) / 0.18) 0%, transparent 70%)",
-              zIndex: 0,
+              width: "340px",
+              height: "110px",
+              marginLeft: "-170px",
+              marginTop: "-55px",
+              background:
+                "radial-gradient(ellipse, hsl(var(--primary) / 0.18) 0%, transparent 70%)",
             }}
             animate={{
               scale: [1, 1.15, 1],
@@ -66,21 +89,18 @@ export function DrawButton({
           />
           <motion.div
             aria-hidden="true"
-            className="absolute"
+            className="absolute left-1/2 top-1/2 rounded-full pointer-events-none"
             style={{
-              left: "50%",
-              top: "50%",
-              width: "220px",
-              height: "76px",
-              marginLeft: "-110px",
-              marginTop: "-38px",
-              borderRadius: "9999px",
-              background: "radial-gradient(ellipse, hsl(var(--primary) / 0.25) 0%, transparent 70%)",
-              zIndex: 0,
+              width: "240px",
+              height: "80px",
+              marginLeft: "-120px",
+              marginTop: "-40px",
+              background:
+                "radial-gradient(ellipse, hsl(var(--primary) / 0.28) 0%, transparent 70%)",
             }}
             animate={{
               scale: [1.05, 0.95, 1.05],
-              opacity: [0.8, 1, 0.8],
+              opacity: [0.85, 1, 0.85],
             }}
             transition={{
               duration: 2.2,
@@ -94,47 +114,54 @@ export function DrawButton({
 
       {/* 主按钮 */}
       <motion.button
-        onClick={isDrawing ? onStop : onStart}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
         disabled={!canDraw && !isDrawing}
         aria-pressed={isDrawing}
-        aria-label={isDrawing ? t.stop : t.start}
+        aria-label={isDrawing ? labels.stop : labels.start}
         className={cn(
           "relative z-10",
-          btnSize,
           "px-12 py-5 rounded-[1.75rem]",
           "font-semibold tracking-wide text-white",
           "shadow-[0_10px_40px_hsl(var(--primary)/0.35)]",
           "transition-all duration-300 ease-out",
-          // 焦点样式
+          // 焦点样式（无障碍）
           "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 focus-visible:ring-offset-4 focus-visible:ring-offset-background",
           // 状态样式
           canDraw || isDrawing
             ? "cursor-pointer hover:shadow-[0_14px_56px_hsl(var(--primary)/0.45)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] bg-primary"
             : "cursor-not-allowed opacity-60 bg-muted text-muted-foreground",
-          // 动态色彩（抽取中为红色）
-          isDrawing && "bg-destructive hover:bg-destructive shadow-[0_10px_40px_rgba(239,68,68,0.4)]"
+          // 抽取中 —— 破坏性色彩 + 指示点动画
+          isDrawing && "bg-destructive hover:bg-destructive shadow-[0_10px_40px_hsl(var(--destructive)/0.4)]",
+          // 响应式尺寸
+          "min-w-[240px] min-h-[72px] text-xl"
         )}
-        style={{
-          background: isDrawing
-            ? "linear-gradient(135deg, hsl(0 84% 60%) 0%, hsl(0 72% 50%) 100%)"
-            : undefined,
-        }}
-        whileHover={!shouldReduceMotion && (canDraw || isDrawing) ? { y: -2, scale: 1.02 } : undefined}
-        whileTap={!shouldReduceMotion && (canDraw || isDrawing) ? { y: 0, scale: 0.98 } : undefined}
+        whileHover={
+          !shouldReduceMotion && (canDraw || isDrawing)
+            ? { y: -2, scale: 1.02 }
+            : undefined
+        }
+        whileTap={
+          !shouldReduceMotion && (canDraw || isDrawing)
+            ? { y: 0, scale: 0.98 }
+            : undefined
+        }
         role="button"
+        tabIndex={0}
       >
         {/* 按钮内部动画状态 */}
         <div className="flex items-center justify-center gap-3">
-          {/* 圆点指示器 */}
+          {/* 抽取中：跳动的红点；空闲时：静态小点 */}
           <motion.span
             className={cn(
               "inline-block rounded-full",
-              isDrawing ? "bg-red-300" : "bg-primary-foreground/80"
+              isDrawing ? "bg-white/90" : "bg-white/80"
             )}
+            style={{ width: "14px", height: "14px" }}
             animate={
               isDrawing
                 ? {
-                    scale: [1, 1.4, 1],
+                    scale: [1, 1.5, 1],
                     opacity: [0.8, 1, 0.8],
                   }
                 : { scale: 1 }
@@ -144,11 +171,10 @@ export function DrawButton({
                 ? { duration: 0.7, repeat: Infinity, ease: "easeInOut" }
                 : undefined
             }
-            style={{ width: "14px", height: "14px" }}
             aria-hidden="true"
           />
           <span className="font-semibold tracking-wide">
-            {isDrawing ? t.stop : t.start}
+            {isDrawing ? labels.stop : labels.start}
           </span>
         </div>
       </motion.button>
@@ -158,10 +184,9 @@ export function DrawButton({
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.7 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        className="mt-5 text-sm text-muted-foreground text-center"
-        aria-hidden="true"
+        className="mt-5 text-sm text-muted-foreground text-center max-w-md"
       >
-        {isDrawing ? t.stop : t.ready}
+        {isDrawing ? labels.stopHint : labels.hint}
       </motion.p>
     </motion.div>
   );

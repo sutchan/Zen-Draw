@@ -42,6 +42,8 @@ export interface DrawSettings {
   // 前缀/后缀
   prefix: string;
   suffix: string;
+  // 界面语言
+  language: "zh" | "en";
 }
 
 export interface DrawState extends DrawSettings {
@@ -76,6 +78,7 @@ type DrawAction =
   | { type: "SET_AUTO_HIDE"; value: boolean }
   | { type: "SET_USE_CUSTOM_LIST"; value: boolean }
   | { type: "SET_CUSTOM_LIST"; value: string[] }
+  | { type: "SET_LANGUAGE"; value: "zh" | "en" }
   | { type: "CLEAR_HISTORY" }
   | { type: "DISMISS_ERROR" };
 
@@ -95,6 +98,7 @@ const DEFAULT_SETTINGS: DrawSettings = {
   digits: 3,
   prefix: "",
   suffix: "",
+  language: "zh",
 };
 
 // ---------------------------------------------------------------------------
@@ -263,6 +267,8 @@ function drawReducer(state: DrawState, action: DrawAction): DrawState {
       return { ...state, useCustomList: action.value };
     case "SET_CUSTOM_LIST":
       return { ...state, customList: action.value };
+    case "SET_LANGUAGE":
+      return { ...state, language: action.value };
     case "CLEAR_HISTORY":
       return { ...state, history: [] };
     default:
@@ -292,6 +298,7 @@ export interface UseDrawReturn extends DrawState {
   setAutoHide: (value: boolean) => void;
   setUseCustomList: (value: boolean) => void;
   setCustomList: (value: string[]) => void;
+  setLanguage: (value: "zh" | "en") => void;
   // --- 便捷属性（避免在消费端重复计算）---
   // 是否正在抽取（别名，对应 status === "drawing"）
   isDrawing: boolean;
@@ -330,6 +337,7 @@ export function useDraw(): UseDrawReturn {
   const [persistedDigits, setPersistedDigits] = useLocalStorage<number>("zendraw-digits", DEFAULT_SETTINGS.digits);
   const [persistedPrefix, setPersistedPrefix] = useLocalStorage<string>("zendraw-prefix", DEFAULT_SETTINGS.prefix);
   const [persistedSuffix, setPersistedSuffix] = useLocalStorage<string>("zendraw-suffix", DEFAULT_SETTINGS.suffix);
+  const [persistedLanguage, setPersistedLanguage] = useLocalStorage<"zh" | "en">("zendraw-language", DEFAULT_SETTINGS.language);
   const [persistedHistory, setPersistedHistory] = useLocalStorage<HistoryEntry[]>("zendraw-history", []);
 
   // 构建初始 state（包含设置 + 运行时状态）
@@ -345,6 +353,7 @@ export function useDraw(): UseDrawReturn {
     digits: persistedDigits,
     prefix: persistedPrefix,
     suffix: persistedSuffix,
+    language: persistedLanguage,
   };
 
   const createInitialState = (settings: DrawSettings): DrawState => ({
@@ -408,6 +417,10 @@ export function useDraw(): UseDrawReturn {
   }, [state.suffix]);
 
   React.useEffect(() => {
+    setPersistedLanguage(state.language);
+  }, [state.language]);
+
+  React.useEffect(() => {
     setPersistedHistory(state.history);
   }, [state.history]);
 
@@ -427,6 +440,7 @@ export function useDraw(): UseDrawReturn {
       digits: state.digits,
       prefix: state.prefix,
       suffix: state.suffix,
+      language: state.language,
     };
 
     // 如果当前正在抽取中 → 这是一次"停止/确认"操作
@@ -547,6 +561,10 @@ export function useDraw(): UseDrawReturn {
     dispatch({ type: "SET_CUSTOM_LIST", value });
   }, []);
 
+  const setLanguage = React.useCallback((value: "zh" | "en") => {
+    dispatch({ type: "SET_LANGUAGE", value });
+  }, []);
+
   const dismissError = React.useCallback(() => {
     dispatch({ type: "DISMISS_ERROR" });
   }, []);
@@ -573,6 +591,7 @@ export function useDraw(): UseDrawReturn {
     digits: state.digits,
     prefix: state.prefix,
     suffix: state.suffix,
+    language: state.language,
   };
 
   // 历史记录的 setter（供外部组件直接操作历史）
@@ -605,6 +624,7 @@ export function useDraw(): UseDrawReturn {
     setAutoHide,
     setUseCustomList,
     setCustomList,
+    setLanguage,
     // 计算属性
     isDrawing,
     results,

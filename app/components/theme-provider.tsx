@@ -14,6 +14,10 @@ export const THEME_PRESETS = [
   "sunset",
   "purple",
   "neon",
+  "sakura",
+  "midnight",
+  "retro",
+  "pixel",
 ] as const;
 
 export type ThemePreset = (typeof THEME_PRESETS)[number];

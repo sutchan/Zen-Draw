@@ -1,4 +1,4 @@
-// components/draw/draw-display.tsx v2.0 —— 主显示区（欢迎状态 + 结果显示）
+// components/draw/draw-display.tsx v2.1 —— 主显示区（统一 draw 对象 + 增强 ARIA）
 "use client";
 
 import * as React from "react";
@@ -8,14 +8,18 @@ import { cn } from "@/lib/utils";
 import { NumberRoller } from "@/components/number-roller";
 
 // ---------------------------------------------------------------------------
-// Props
+// Types
 // ---------------------------------------------------------------------------
 
-export interface DrawDisplayProps {
+// 最小所需的 draw 接口（允许传入完整 UseDrawReturn）
+type DrawLike = {
   results: string[];
-  isDrawing: boolean;
-  showUI: boolean;
-  onToggleUI: () => void;
+  status: "idle" | "drawing" | "result" | "error";
+  language: "zh" | "en";
+};
+
+export interface DrawDisplayProps {
+  draw: DrawLike;
 }
 
 // ---------------------------------------------------------------------------
@@ -30,6 +34,8 @@ function WelcomeScreen({ t }: { t: { ready: string; hint: string } }) {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
       className="flex flex-col items-center justify-center text-center"
+      role="status"
+      aria-live="polite"
     >
       <motion.div
         animate={{ y: [0, -8, 0] }}
@@ -60,7 +66,22 @@ function WelcomeScreen({ t }: { t: { ready: string; hint: string } }) {
 // Sub-component: Result Card (单个结果卡片)
 // ---------------------------------------------------------------------------
 
-function ResultCard({ value, isDrawing, index }: { value: string; isDrawing: boolean; index: number }) {
+function ResultCard({
+  value,
+  isDrawing,
+  index,
+  language,
+}: {
+  value: string;
+  isDrawing: boolean;
+  index: number;
+  language: "zh" | "en";
+}) {
+  const label =
+    language === "zh"
+      ? `结果 ${index + 1}: ${value}`
+      : `Result ${index + 1}: ${value}`;
+
   return (
     <motion.div
       key={value + index}
@@ -74,14 +95,15 @@ function ResultCard({ value, isDrawing, index }: { value: string; isDrawing: boo
         delay: isDrawing ? index * 0.02 : index * 0.08,
       }}
       className="flex items-center justify-center"
-      aria-label={`结果 ${index + 1}: ${value}`}
+      role="article"
+      aria-label={label}
     >
       <div
         className={cn(
           "bg-background border rounded-[2.5rem] min-w-[220px] sm:min-w-[300px] px-10 py-8 sm:px-16 sm:py-12 text-center transition-all duration-500",
-          // 基础边框与阴影（视觉层次提升）
+          // 基础边框与阴影
           "border-border/20 shadow-[0_8px_32px_rgba(0,0,0,0.06)]",
-          // 滚动时的脉冲动画效果
+          // 滚动时增强
           isDrawing && "scale-[1.02] shadow-[0_12px_40px_rgba(0,0,0,0.10)]"
         )}
       >
@@ -99,28 +121,45 @@ function ResultCard({ value, isDrawing, index }: { value: string; isDrawing: boo
 // Sub-component: Result Grid (所有结果)
 // ---------------------------------------------------------------------------
 
-function ResultsGrid({ results, isDrawing }: { results: string[]; isDrawing: boolean }) {
+function ResultsGrid({
+  results,
+  isDrawing,
+  language,
+}: {
+  results: string[];
+  isDrawing: boolean;
+  language: "zh" | "en";
+}) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-      className="w-full h-full"
-      aria-live="polite"
-      aria-label="抽取结果"
+    <div
+      className="w-full"
+      role="region"
+      aria-live="assertive"
+      aria-label={language === "zh" ? "抽取结果" : "Draw results"}
     >
-      <div
-        className={cn(
-          "flex flex-wrap justify-center items-center",
-          // 动态间距：单结果更大，多结果更紧凑
-          results.length === 1 ? "gap-0" : "gap-6 sm:gap-10"
-        )}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
       >
-        {results.map((result, idx) => (
-          <ResultCard key={idx + result} value={result} isDrawing={isDrawing} index={idx} />
-        ))}
-      </div>
-    </motion.div>
+        <div
+          className={cn(
+            "flex flex-wrap justify-center items-center",
+            results.length === 1 ? "gap-0" : "gap-6 sm:gap-10"
+          )}
+        >
+          {results.map((result, idx) => (
+            <ResultCard
+              key={idx + "-" + result}
+              value={result}
+              isDrawing={isDrawing}
+              index={idx}
+              language={language}
+            />
+          ))}
+        </div>
+      </motion.div>
+    </div>
   );
 }
 
@@ -128,20 +167,17 @@ function ResultsGrid({ results, isDrawing }: { results: string[]; isDrawing: boo
 // Main Component
 // ---------------------------------------------------------------------------
 
-export function DrawDisplay({ results, isDrawing, showUI, onToggleUI }: DrawDisplayProps) {
+export function DrawDisplay({ draw }: DrawDisplayProps) {
   const shouldReduceMotion = useReducedMotion();
-
-  // 点击空白区切换 UI（移动端优化）
-  const handleContainerClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget && showUI) onToggleUI();
-  };
+  const { results, status, language } = draw;
+  const isDrawing = status === "drawing";
+  const isZH = language === "zh";
 
   return (
     <motion.div
-      role="main"
-      aria-label="抽取结果主显示区"
+      role="region"
+      aria-label={isZH ? "抽取结果显示区" : "Draw results display"}
       className="flex-1 flex flex-col items-center justify-center relative pt-14"
-      onClick={handleContainerClick}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
@@ -155,16 +191,25 @@ export function DrawDisplay({ results, isDrawing, showUI, onToggleUI }: DrawDisp
       >
         <AnimatePresence mode="wait">
           {results.length === 0 ? (
-            <div key="welcome" className="flex-1 flex items-center justify-center">
+            <div
+              key="welcome"
+              className="flex-1 flex items-center justify-center"
+            >
               <WelcomeScreen
                 t={{
-                  ready: "准备就绪",
-                  hint: "点击下方按钮开始抽取",
+                  ready: isZH ? "准备就绪" : "Ready",
+                  hint: isZH ? "点击下方按钮开始抽取" : "Click the button below to start",
                 }}
               />
             </div>
           ) : (
-            <ResultsGrid results={results} isDrawing={isDrawing} />
+            <div key="results" className="flex-1 flex items-center justify-center">
+              <ResultsGrid
+                results={results}
+                isDrawing={isDrawing}
+                language={language}
+              />
+            </div>
           )}
         </AnimatePresence>
       </div>
