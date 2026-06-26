@@ -1,12 +1,13 @@
-# ZenDraw | 禅抽 v3.0 - 项目规范文档
+# ZenDraw | 禅抽 v3.2 - 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **版本**: v3.0
+- **版本**: v3.2
 - **描述**: 一款专业的全屏随机抽奖应用，采用 Apple 设计风格，适用于年会抽奖、课堂互动、抽奖活动等场景。
 - **许可证**: MIT License
+- **代码质量**: 严格 TypeScript + ESLint + CI/CD + 代码审查标准
 
 ### 1.2 设计理念
 本版本采用 Apple 设计风格，重新定义了视觉呈现和交互体验：
@@ -52,7 +53,7 @@
 /workspace
 ├── app/
 │   ├── layout.tsx          # 根布局
-│   ├── page.tsx            # 主页面 (v3.0 Apple Design)
+│   ├── page.tsx            # 主页面 (v3.2)
 │   └── style.css           # 全局样式
 ├── components/
 │   ├── ui/                 # shadcn/ui 组件
@@ -66,31 +67,42 @@
 │   │   ├── switch.tsx
 │   │   ├── tabs.tsx
 │   │   └── textarea.tsx
+│   ├── draw/               # 抽签功能组件
+│   │   ├── draw-button.tsx
+│   │   ├── draw-display.tsx
+│   │   ├── history-list.tsx
+│   │   └── settings-panel.tsx
 │   ├── number-roller.tsx   # 数字滚动组件
 │   ├── theme-provider.tsx  # 主题提供者
 │   └── theme-toggle.tsx    # 主题切换
 ├── hooks/
 │   ├── use-local-storage.ts  # 本地存储hook
+│   ├── use-draw.ts           # 抽取逻辑 Hook
 │   └── use-mobile.ts         # 移动端检测hook
 ├── lib/
 │   └── utils.ts            # 工具函数
 ├── locales/
 │   └── index.ts            # 国际化翻译
-├── openspec/               # 规范文档
-│   ├── SPEC.md            # 本文档
-│   └── prototype.html     # 原型图 (v3.0 Apple Design)
-├── .eslintrc.json         # ESLint配置
-├── .gitignore
-├── CHANGELOG.md
-├── components.json         # shadcn配置
-├── eslint.config.js       # ESLint flat config
-├── metadata.json          # 项目元数据
-├── next.config.ts
-├── package.json
-├── postcss.config.mjs
+├── .github/                # GitHub 工作流和模板
+│   ├── CODEOWNERS         # 代码所有者配置
+│   ├── CODE_REVIEW_STANDARD.md  # 代码审查标准
+│   ├── PULL_REQUEST_TEMPLATE.md # PR 模板
+│   └── workflows/ci.yml    # CI/CD 工作流
+├── prototype/              # 设计原型文档
+│   ├── color-system.html
+│   ├── motion.html
+│   ├── typography.html
+│   ├── prototypes.html
+│   └── wireframes.html
+├── eslint.config.js       # ESLint 配置 (Flat Config)
+├── tsconfig.json          # TypeScript 配置
+├── package.json           # 项目依赖
+├── next.config.ts         # Next.js 配置
+├── CHANGELOG.md           # 更新日志
 ├── README.md              # 英文文档
 ├── README_CN.md           # 中文文档
-└── tsconfig.json
+└── openspec/              # 项目规范文档
+    └── SPEC.md            # 本文档
 ```
 
 ---
@@ -620,7 +632,123 @@ className="absolute top-0 left-0 right-0 h-14 px-6
 
 ---
 
-## 6. 交互标准规范 (v3.0)
+## 6. 代码质量规范 (v3.2 新增)
+
+### 6.1 TypeScript 严格配置
+
+项目启用 TypeScript 严格模式，配置文件 `tsconfig.json`：
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
+```
+
+**严格选项说明**：
+| 选项 | 作用 |
+|------|------|
+| `strict` | 启用所有严格类型检查 |
+| `noUncheckedIndexedAccess` | 数组/对象索引访问返回 `T \| undefined` |
+| `exactOptionalPropertyTypes` | 可选属性必须显式使用 `undefined` |
+| `noImplicitReturns` | 函数所有分支都必须有返回值 |
+| `forceConsistentCasingInFileNames` | 文件名大小写一致性检查 |
+
+### 6.2 ESLint 规则
+
+项目使用 ESLint Flat Config (`eslint.config.js`)，包含以下规则集：
+
+#### TypeScript 规则
+- `@typescript-eslint/no-explicit-any`: warn（禁止 any 类型）
+- `@typescript-eslint/no-non-null-assertion`: error（禁止非空断言）
+- `@typescript-eslint/no-unused-vars`: warn（未使用变量警告）
+
+#### React 规则
+- `react-hooks/rules-of-hooks`: error（Hooks 规则检查）
+- `react-hooks/exhaustive-deps`: error（依赖数组完整性）
+- `jsx-a11y/*`: warn（无障碍规则）
+
+#### 安全规则
+- `no-eval`: error（禁止 eval）
+- `no-new-func`: error（禁止 new Function）
+- `no-restricted-syntax`: warn（警告 Math.random() 使用）
+
+#### 代码质量规则
+- `no-console`: warn（禁止 console.log）
+- `no-debugger`: error（禁止 debugger）
+- `no-var`: error（禁止使用 var）
+- `prefer-const`: warn（优先使用 const）
+- `unused-imports/no-unused-imports`: error（自动移除未使用导入）
+
+### 6.3 代码审查标准
+
+项目遵循 [代码审查标准](./.github/CODE_REVIEW_STANDARD.md)，包含：
+
+#### 问题优先级分类
+| 级别 | 标识 | 描述 | 处理方式 |
+|------|------|------|----------|
+| 🔴 必须修复 | Blocker | 安全漏洞、数据丢失风险、正确性问题 | 必须修复才能合并 |
+| 🟡 应该修复 | Suggestion | 性能问题、可维护性问题、缺失测试 | 建议修复，可协商 |
+| 💭 可选优化 | Nit | 样式问题、命名改进、文档缺失 | 不阻碍合并 |
+
+#### 审查者职责
+- 在 **48 小时内** 完成审查
+- 每条评论必须说明理由并给出解决方案
+- 使用统一评论格式：`🔴 [必须] 描述`、`🟡 [建议] 描述`、`💭 [可选] 描述`
+
+#### PR 提交流程
+1. 填写 [PR 模板](./.github/PULL_REQUEST_TEMPLATE.md) 中的自查清单
+2. 本地运行 `npm run lint && npm run type-check && npm run build`
+3. 提交 PR 后等待 CI 检查和审查者审核
+4. 所有 🔴 问题必须解决后才能合并
+
+### 6.4 CI/CD 流水线
+
+项目使用 GitHub Actions (`.github/workflows/ci.yml`)，每次 PR 自动运行：
+
+| 检查项 | 命令 | 失败处理 |
+|--------|------|----------|
+| TypeScript 类型检查 | `npm run type-check` | 阻止合并 |
+| ESLint 检查 | `npm run lint` | 阻止合并（最多 20 个警告） |
+| 构建检查 | `npm run build` | 阻止合并 |
+| 安全审计 | `npm audit` | 警告（audit-level=high） |
+| 依赖漏洞扫描 | `dependency-review` | 警告 |
+
+### 6.5 安全编码规范
+
+#### 随机数生成
+```typescript
+// ✅ 正确：使用密码学安全随机数
+function secureRandomInt(min: number, max: number): number {
+  const range = max - min + 1;
+  const bytes = new Uint32Array(1);
+  crypto.getRandomValues(bytes);
+  return min + (bytes[0] % range);
+}
+
+// ❌ 错误：Math.random() 不具备密码学安全性
+const insecure = Math.floor(Math.random() * (max - min + 1)) + min;
+```
+
+#### 输入验证
+- 所有用户输入必须使用 `parseFiniteNumber()` 解析
+- 数字输入限制范围（min/max: ±1,000,000）
+- 字符串输入限制长度（prefix/suffix: 50 字符）
+- 自定义名单限制项数（最多 1000 项）
+
+#### XSS 防护
+- 不使用 `dangerouslySetInnerHTML`
+- 用户输入不直接插入 DOM
+- 使用 React 内置的转义机制
+
+---
+
+## 7. 交互标准规范 (v3.0)
 
 ### 6.1 交互模式库
 
@@ -780,7 +908,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
 ---
 
-## 7. 数据管理
+## 8. 数据管理
 
 ### 7.1 本地存储键名
 | 键名 | 类型 | 默认值 | 描述 |
@@ -812,7 +940,7 @@ interface HistoryItem {
 
 ---
 
-## 8. 国际化
+## 9. 国际化
 
 ### 8.1 支持语言
 - `en` - English
@@ -875,7 +1003,7 @@ interface HistoryItem {
 
 ---
 
-## 9. SEO与元数据
+## 10. SEO与元数据
 
 ### 9.1 Viewport
 ```typescript
@@ -899,7 +1027,7 @@ interface HistoryItem {
 
 ---
 
-## 10. 规范要求
+## 11. 规范要求
 
 ### 10.1 代码规范
 - 使用 ESLint 进行代码检查
@@ -922,9 +1050,32 @@ interface HistoryItem {
 
 ---
 
-## 11. 更新日志
+## 12. 更新日志
 
-### v3.0 (当前版本)
+### v3.2.0 (2026-06-26)
+
+#### 代码质量体系搭建
+- 新增 [代码审查标准](./.github/CODE_REVIEW_STANDARD.md) — 定义三级问题分类和审查流程
+- 新增 [PR 提交模板](./.github/PULL_REQUEST_TEMPLATE.md) — 结构化 PR 描述和自查清单
+- 新增 [CI/CD 工作流](./.github/workflows/ci.yml) — 自动运行类型检查、Lint、构建、安全审计
+- 新增 [CODEOWNERS](./.github/CODEOWNERS) — 自动分配代码审查者
+- 重写 `eslint.config.js` — 强化 ESLint 规则（TypeScript 严格、React Hooks、无障碍、安全规则）
+- 更新 `tsconfig.json` — 新增 `noUncheckedIndexedAccess`、`exactOptionalPropertyTypes` 等严格选项
+- 新增 `package.json` 脚本 — `lint:fix`、`type-check`
+
+#### 安全加固
+- 强化随机数生成安全规范（使用 `crypto.getRandomValues()`）
+- 新增输入验证规范（范围限制、长度限制）
+- 新增 XSS 防护规范
+
+#### 文档更新
+- 更新 `README.md` 和 `README_CN.md` — 添加代码质量说明
+- 更新 `openspec/SPEC.md` — 新增代码质量规范章节
+- 更新 `CHANGELOG.md` — 添加 v3.2.0 更新日志
+
+---
+
+### v3.1.0 (2026-06-11)
 **设计重构 - Apple Design Style**
 
 #### 设计变更
@@ -961,7 +1112,7 @@ interface HistoryItem {
 
 ---
 
-## 12. 附录
+## 13. 附录
 
 ### 12.1 npm scripts
 | 命令 | 描述 |
@@ -984,7 +1135,7 @@ interface HistoryItem {
 
 ---
 
-## 13. 设计参考
+## 14. 设计参考
 
 ### 13.1 Apple Human Interface Guidelines 关键点
 1. **清晰度**: 内容优先，界面服务于内容
@@ -1000,4 +1151,4 @@ interface HistoryItem {
 
 ---
 
-*本文档最后更新: v3.0.1*
+*本文档最后更新: v3.2.0*

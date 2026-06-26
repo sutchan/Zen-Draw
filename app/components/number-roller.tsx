@@ -101,7 +101,7 @@ function RollingChar({ target, isDrawing, delay }: RollingCharProps) {
 
   // 4. 管理滚动定时器
   React.useEffect(() => {
-    let intervalId: number | null = null;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
     let cleanupDone = false;
 
     if (isDrawing) {

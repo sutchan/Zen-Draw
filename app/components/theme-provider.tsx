@@ -41,8 +41,12 @@ function writeStorage<T>(key: string, value: T): void {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    // 静默忽略存储异常
+  } catch (e) {
+    if (e instanceof DOMException && e.name === "QuotaExceededError") {
+      console.warn(`[theme-provider] localStorage 已满，无法保存键"${key}"`);
+    } else {
+      console.warn(`[theme-provider] 写入失败（键"${key}"）:`, e);
+    }
   }
 }
 

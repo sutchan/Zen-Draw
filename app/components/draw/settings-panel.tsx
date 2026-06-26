@@ -544,7 +544,6 @@ function CustomListSettings({
         <Button
           variant="outline"
           onClick={() => {
-            // 导出到文件（简化为提示用户复制）
             const data = customList.join("\n");
             if (data) {
               const blob = new Blob([data], { type: "text/plain" });
@@ -552,8 +551,14 @@ function CustomListSettings({
               const a = document.createElement("a");
               a.href = url;
               a.download = "custom-list.txt";
+              a.style.display = "none";
+              document.body.appendChild(a);
               a.click();
-              URL.revokeObjectURL(url);
+              // 延迟 revoke，确保浏览器完成下载后再释放 URL
+              setTimeout(() => {
+                URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+              }, 200);
             }
           }}
           className="h-11 rounded-xl hover:bg-muted/50 transition-colors border-border/30"
@@ -564,7 +569,10 @@ function CustomListSettings({
 
       {/* 导入 Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[520px] rounded-2xl border-border/30">
+        <DialogContent
+        className="sm:max-w-[520px] rounded-2xl border-border/30"
+        aria-label={isZH ? "导入自定义列表" : "Import custom list"}
+      >
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold">{t.importList}</DialogTitle>
             <DialogDescription>

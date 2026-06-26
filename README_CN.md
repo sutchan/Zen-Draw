@@ -1,4 +1,4 @@
-# ZenDraw | 禅抽 v3.0
+# ZenDraw | 禅抽 v3.2
 
 [English Version](./README.md)
 
@@ -29,6 +29,18 @@
 - **历史记录与导出**：自动记录所有抽签结果并支持导出为文本文件。
 - **设置持久化**：所有用户设置自动保存到 localStorage。
 
+## 代码质量
+
+本项目遵循严格的代码质量标准：
+
+- **TypeScript 严格模式**：启用 `noUncheckedIndexedAccess`、`exactOptionalPropertyTypes` 等增强类型安全选项。
+- **ESLint 强化规则**：安全规则、无障碍规则 (jsx-a11y)、React 最佳实践强制检查。
+- **代码审查标准**：定义三级问题分类（🔴 必须修复、🟡 应该修复、💭 可选优化）的审查清单。
+- **CI/CD 流水线**：每次 PR 自动运行类型检查、Lint 检查、构建验证、安全审计。
+- **安全优先**：使用 `crypto.getRandomValues()` 保证随机数质量，输入验证，XSS 防护。
+
+详见 [代码审查标准](./.github/CODE_REVIEW_STANDARD.md)。
+
 ## 技术栈
 
 - **框架**: Next.js 15 (App Router)
@@ -37,6 +49,7 @@
 - **图标**: Lucide React
 - **主题**: next-themes
 - **UI 组件**: shadcn/ui
+- **语言**: TypeScript (严格模式)
 
 ## 安装与运行
 
@@ -49,6 +62,53 @@
    ```bash
    npm run dev
    ```
+
+## 可用脚本
+
+| 命令 | 描述 |
+|------|------|
+| `npm run dev` | 启动开发服务器 |
+| `npm run build` | 构建生产版本 |
+| `npm run start` | 启动生产服务器 |
+| `npm run lint` | 运行 ESLint 检查 |
+| `npm run lint:fix` | 自动修复 ESLint 错误 |
+| `npm run type-check` | TypeScript 类型检查 |
+
+## 项目结构
+
+```
+app/
+├── layout.tsx              # 根布局
+├── page.tsx                # 主页面
+├── style.css               # 全局样式
+├── components/
+│   ├── draw/               # 抽签功能组件
+│   ├── number-roller.tsx   # 数字滚动动画
+│   ├── theme-provider.tsx  # 主题提供者
+│   └── ui/                 # shadcn/ui 组件
+├── hooks/                  # 自定义 React Hooks
+├── lib/                    # 工具函数
+└── locales/                # 国际化翻译
+```
+
+## 贡献指南
+
+提交 Pull Request 前，请阅读 [代码审查标准](./.github/CODE_REVIEW_STANDARD.md) 和 [PR 模板](./.github/PULL_REQUEST_TEMPLATE.md)。
+
+### PR 提交流程
+
+1. 从 `main` 分支创建功能分支
+2. 填写 PR 模板中的自查清单
+3. 确保所有 CI 检查通过
+4. 请求代码所有者审查
+5. 处理审查反馈
+
+## 安全说明
+
+- 随机数生成使用 `crypto.getRandomValues()` 保证密码学质量
+- 所有用户输入均经过验证和脱敏处理
+- 客户端代码不存储敏感信息
+- 定期运行 `npm audit` 进行依赖安全审计
 
 ## 开源协议
 

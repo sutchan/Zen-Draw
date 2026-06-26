@@ -369,7 +369,7 @@ export function useDraw(): UseDrawReturn {
   const [state, dispatch] = React.useReducer(drawReducer, initialSettings, createInitialState);
 
   // 动画计时器引用
-  const animationRef = React.useRef<number | null>(null);
+  const animationRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
 
   // 当设置变化时，持久化到 localStorage
   React.useEffect(() => {
