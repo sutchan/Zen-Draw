@@ -144,6 +144,8 @@ export default function HomePage() {
                     onLanguageToggle={() =>
                       draw.setLanguage(lang === "zh" ? "en" : "zh")
                     }
+                    history={draw.history}
+                    onClearHistory={draw.clearHistory}
                   />
                 </div>
               </SheetContent>

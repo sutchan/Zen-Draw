@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { Dices } from "lucide-react";
+import { Dices, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NumberRoller } from "@/components/number-roller";
 
@@ -63,6 +63,40 @@ function WelcomeScreen({ t }: { t: { ready: string; hint: string } }) {
 }
 
 // ---------------------------------------------------------------------------
+// Sub-component: Error Screen (错误状态显示)
+// ---------------------------------------------------------------------------
+
+function ErrorScreen({ isZH }: { isZH: boolean }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+      className="flex flex-col items-center justify-center text-center"
+      role="alert"
+      aria-live="assertive"
+    >
+      <AlertTriangle
+        className="text-destructive/40 mb-8"
+        style={{ width: "8rem", height: "8rem" }}
+        aria-hidden="true"
+      />
+      <div className="space-y-3">
+        <p className="text-3xl md:text-4xl text-destructive font-semibold tracking-tight">
+          {isZH ? "抽取出错了" : "Draw Failed"}
+        </p>
+        <p className="text-base text-muted-foreground/70 max-w-md">
+          {isZH
+            ? "请检查设置后重试，或刷新页面"
+            : "Please check your settings and try again, or refresh the page"}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Sub-component: Result Card (单个结果卡片)
 // ---------------------------------------------------------------------------
 
@@ -100,7 +134,7 @@ function ResultCard({
     >
       <div
         className={cn(
-          "bg-background border rounded-[2.5rem] min-w-[220px] sm:min-w-[300px] px-10 py-8 sm:px-16 sm:py-12 text-center transition-all duration-500",
+          "bg-background border rounded-[calc(var(--radius)*3.33)] min-w-[220px] sm:min-w-[300px] px-10 py-8 sm:px-16 sm:py-12 text-center transition-all duration-500",
           // 基础边框与阴影
           "border-border/20 shadow-[0_8px_32px_rgba(0,0,0,0.06)]",
           // 滚动时增强
@@ -177,7 +211,7 @@ export function DrawDisplay({ draw }: DrawDisplayProps) {
     <motion.div
       role="region"
       aria-label={isZH ? "抽取结果显示区" : "Draw results display"}
-      className="flex-1 flex flex-col items-center justify-center relative pt-14"
+      className="flex-1 flex flex-col items-center justify-center relative"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
@@ -186,11 +220,18 @@ export function DrawDisplay({ draw }: DrawDisplayProps) {
       <div
         className={cn(
           "flex-1 flex flex-col items-center justify-center w-full max-w-5xl",
-          "px-6 sm:px-8 md:px-12 py-12 sm:py-16"
+          "px-6 sm:px-8 md:px-12 py-4 sm:py-8"
         )}
       >
         <AnimatePresence mode="wait">
-          {results.length === 0 ? (
+          {status === "error" ? (
+            <div
+              key="error"
+              className="flex-1 flex items-center justify-center"
+            >
+              <ErrorScreen isZH={isZH} />
+            </div>
+          ) : results.length === 0 ? (
             <div
               key="welcome"
               className="flex-1 flex items-center justify-center"

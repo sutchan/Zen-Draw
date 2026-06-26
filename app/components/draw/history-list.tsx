@@ -97,7 +97,8 @@ function HistoryCard({ entry, index, language }: HistoryCardProps) {
         "cursor-pointer shadow-sm hover:shadow-md"
       )}
       onClick={handleCopy}
-      role="article"
+      role="button"
+      tabIndex={0}
       aria-label={language === "zh" ? `历史记录：${entry.results.length} 个结果，${formatTime(entry.timestamp, language)}` : `Record: ${entry.results.length} results, ${formatTime(entry.timestamp, language)}`}
     >
       <div className="flex items-center justify-between mb-4">

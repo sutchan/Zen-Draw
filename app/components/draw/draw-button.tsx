@@ -122,7 +122,7 @@ export function DrawButton({
         className={cn(
           "relative z-10",
           "px-12 py-5 rounded-[1.75rem]",
-          "font-semibold tracking-wide text-white",
+          "font-semibold tracking-wide text-primary-foreground",
           "shadow-[0_10px_40px_hsl(var(--primary)/0.35)]",
           "transition-all duration-300 ease-out",
           // 焦点样式（无障碍）
@@ -132,7 +132,7 @@ export function DrawButton({
             ? "cursor-pointer hover:shadow-[0_14px_56px_hsl(var(--primary)/0.45)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] bg-primary"
             : "cursor-not-allowed opacity-60 bg-muted text-muted-foreground",
           // 抽取中 —— 破坏性色彩 + 指示点动画
-          isDrawing && "bg-destructive hover:bg-destructive shadow-[0_10px_40px_hsl(var(--destructive)/0.4)]",
+          isDrawing && "bg-destructive hover:bg-destructive text-white shadow-[0_10px_40px_hsl(var(--destructive)/0.4)]",
           // 响应式尺寸
           "min-w-[240px] min-h-[72px] text-xl"
         )}

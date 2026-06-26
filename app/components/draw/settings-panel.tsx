@@ -28,6 +28,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { sanitizeListInput } from "@/lib/utils";
+import { HistoryList, type HistoryEntry } from "@/components/draw/history-list";
 
 // Theme & Types
 import {
@@ -80,6 +81,9 @@ export interface SettingsPanelProps extends SettingsPanelState {
   // 语言切换
   language: "zh" | "en";
   onLanguageToggle: () => void;
+  // 历史记录
+  history: HistoryEntry[];
+  onClearHistory: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -291,11 +295,13 @@ function DrawSettings({
 
 function AppearanceSettings({
   t,
+  language,
   useCustomList,
   digits, prefix, suffix,
   onDigits, onPrefix, onSuffix,
 }: {
   t: { display: string; minDigits: string; minDigitsHint: string; prefix: string; suffix: string };
+  language: "zh" | "en";
   useCustomList: boolean;
   digits: number;
   prefix: string;
@@ -305,13 +311,14 @@ function AppearanceSettings({
   onSuffix: (value: string) => void;
 }) {
   const shouldReduceMotion = useReducedMotion();
+  const isZH = language === "zh";
 
   // 使用 theme
   const { theme, setTheme } = useTheme();
   const { preset, setPreset, font, setFont } = usePresetTheme();
   const mounted = useThemeMounted();
 
-  const displayT = {
+  const displayT = React.useMemo(() => isZH ? {
     appearance: "外观",
     themeMode: "主题模式",
     themeLight: "浅色",
@@ -322,9 +329,20 @@ function AppearanceSettings({
     fontSans: "无衬线",
     fontMono: "等宽",
     fontSerif: "衬线",
-  };
+  } : {
+    appearance: "Appearance",
+    themeMode: "Mode",
+    themeLight: "Light",
+    themeDark: "Dark",
+    themeSystem: "System",
+    themePreset: "Theme Preset",
+    fontFamily: "Font Family",
+    fontSans: "Sans Serif",
+    fontMono: "Monospace",
+    fontSerif: "Serif",
+  }, [isZH]);
 
-  const presetLabels: Record<string, string> = {
+  const presetLabels: Record<string, string> = React.useMemo(() => isZH ? {
     default: "默认",
     ocean: "海洋蓝",
     forest: "森林绿",
@@ -335,7 +353,18 @@ function AppearanceSettings({
     midnight: "午夜蓝",
     retro: "复古棕",
     pixel: "像素风",
-  };
+  } : {
+    default: "Default",
+    ocean: "Ocean",
+    forest: "Forest",
+    sunset: "Sunset",
+    purple: "Purple",
+    neon: "Neon",
+    sakura: "Sakura",
+    midnight: "Midnight",
+    retro: "Retro",
+    pixel: "Pixel",
+  }, [isZH]);
 
   return (
     <motion.div
@@ -458,16 +487,19 @@ function AppearanceSettings({
 
 function CustomListSettings({
   t,
+  language,
   useCustomList, customList,
   onUseCustomListChange,
   onImport,
 }: {
   t: { custom: string; useCustomList: string; itemsLoaded: string; noItems: string; importList: string; exportList: string };
+  language: "zh" | "en";
   useCustomList: boolean;
   customList: string[];
   onUseCustomListChange: (value: boolean) => void;
   onImport: (items: string[]) => void;
 }) {
+  const isZH = language === "zh";
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [importText, setImportText] = React.useState("");
 
@@ -535,15 +567,17 @@ function CustomListSettings({
         <DialogContent className="sm:max-w-[520px] rounded-2xl border-border/30">
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold">{t.importList}</DialogTitle>
-            <DialogDescription>每行一个项目，提交后将作为抽取池</DialogDescription>
+            <DialogDescription>
+              {isZH ? "每行一个项目，提交后将作为抽取池" : "One item per line, will be used as the draw pool"}
+            </DialogDescription>
           </DialogHeader>
           <div className="mt-4">
             <textarea
               value={importText}
               onChange={(e) => setImportText(e.target.value)}
-              placeholder="苹果&#10;香蕉&#10;橙子&#10;..."
+              placeholder={isZH ? "苹果&#10;香蕉&#10;橙子&#10;..." : "Apple&#10;Banana&#10;Orange&#10;..."}
               className="min-h-[240px] w-full rounded-xl resize-none bg-muted/30 border border-border/20 p-4 text-sm font-mono focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
-              aria-label="自定义列表内容（每行一项）"
+              aria-label={isZH ? "自定义列表内容（每行一项）" : "Custom list content (one per line)"}
             />
           </div>
           <DialogFooter className="gap-2 sm:gap-0">
@@ -552,7 +586,7 @@ function CustomListSettings({
               onClick={() => setDialogOpen(false)}
               className="flex-1 h-11 rounded-xl border-border/30"
             >
-              取消
+              {isZH ? "取消" : "Cancel"}
             </Button>
             <Button
               onClick={() => {
@@ -564,7 +598,7 @@ function CustomListSettings({
               }}
               className="flex-1 h-11 rounded-xl"
             >
-              确认导入
+              {isZH ? "确认导入" : "Import"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -591,6 +625,7 @@ export function SettingsPanel(props: SettingsPanelProps) {
     onCustomListChange, onUseCustomListChange,
     onDigitsChange, onPrefixChange, onSuffixChange,
     language, onLanguageToggle,
+    history, onClearHistory,
   } = props;
 
   const t = React.useMemo(() => {
@@ -708,6 +743,7 @@ export function SettingsPanel(props: SettingsPanelProps) {
 
               <AppearanceSettings
                 t={t}
+                language={language}
                 useCustomList={useCustomList}
                 digits={digits} prefix={prefix} suffix={suffix}
                 onDigits={onDigitsChange} onPrefix={onPrefixChange} onSuffix={onSuffixChange}
@@ -715,6 +751,7 @@ export function SettingsPanel(props: SettingsPanelProps) {
 
               <CustomListSettings
                 t={t}
+                language={language}
                 useCustomList={useCustomList} customList={customList}
                 onUseCustomListChange={onUseCustomListChange}
                 onImport={onCustomListChange}
@@ -722,10 +759,11 @@ export function SettingsPanel(props: SettingsPanelProps) {
             </TabsContent>
 
             <TabsContent value="history" className="px-6 py-6 pb-12 focus-visible:outline-none">
-              {/* history 由外部管理，不在这里渲染（避免重复） */}
-              <div className="text-center text-sm text-muted-foreground py-12">
-                {t.historyHint}
-              </div>
+              <HistoryList
+                history={history}
+                onClear={onClearHistory}
+                language={language}
+              />
             </TabsContent>
           </div>
         </Tabs>
