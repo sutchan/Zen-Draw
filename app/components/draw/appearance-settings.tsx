@@ -104,7 +104,7 @@ export function AppearanceSettings({
         <Label htmlFor="theme-mode">{displayT.themeMode}</Label>
         {mounted && (
           <Select value={theme ?? "system"} onValueChange={(v) => setTheme(v)}>
-            <SelectTrigger id="theme-mode" className="h-11 rounded-xl bg-muted/30 border border-border/20">
+            <SelectTrigger id="theme-mode" className="h-11 rounded-2xl bg-muted/30 border border-border/20">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -126,7 +126,7 @@ export function AppearanceSettings({
             if ((THEME_PRESETS as readonly string[]).includes(v)) setPreset(v);
           }}
         >
-          <SelectTrigger id="theme-preset" className="h-11 rounded-xl bg-muted/30 border border-border/20">
+          <SelectTrigger id="theme-preset" className="h-11 rounded-2xl bg-muted/30 border border-border/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -149,7 +149,7 @@ export function AppearanceSettings({
             if ((FONT_FAMILIES as readonly string[]).includes(v)) setFont(v);
           }}
         >
-          <SelectTrigger id="font-family" className="h-11 rounded-xl bg-muted/30 border border-border/20">
+          <SelectTrigger id="font-family" className="h-11 rounded-2xl bg-muted/30 border border-border/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

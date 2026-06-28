@@ -164,7 +164,7 @@ export function SettingsPanel(props: SettingsPanelProps) {
     return {
       // 基础
       title: isZH ? "随机抽取" : "Random Draw",
-      version: isZH ? "v3.3" : "v3.3",
+      version: isZH ? "v3.3.0" : "v3.3.0",
       toggle: open ? (isZH ? "收起设置" : "Collapse Settings") : (isZH ? "展开设置" : "Expand Settings"),
       // 设置
       drawSettings: isZH ? "抽取设置" : "Draw Settings",

@@ -17,7 +17,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "ZenDraw | 禅抽 v3.3",
+  title: "ZenDraw | 禅抽 v3.3.0",
   description:
     "A professional, full-screen random draw application with Apple-inspired design, customizable rules, multi-language support, slot-machine style rolling animations, and persistent settings.",
   keywords: [
