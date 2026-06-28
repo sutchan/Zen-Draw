@@ -34,6 +34,10 @@ export const zhTranslations: TranslationDict = {
   themeSunset: "落日橙",
   themePurple: "紫罗兰",
   themeNeon: "霓虹",
+  themeSakura: "樱花粉",
+  themeMidnight: "午夜蓝",
+  themeRetro: "复古棕",
+  themePixel: "像素风",
   fontFamily: "字体样式",
   fontSans: "无衬线",
   fontMono: "等宽",
@@ -91,4 +95,9 @@ export const zhTranslations: TranslationDict = {
   importDesc: "每行一个项目，提交后将作为抽取池",
   confirmImport: "确认导入",
   exportList: "导出列表",
+  // 错误
+  errCustomListEmpty: "请先在设置中导入自定义列表",
+  errCustomListTooMany: "自定义列表项数过多，请减少到 1000 项以内",
+  errCustomListRange: "不允许重复时，抽取数量不能超过列表项数",
+  errRangeInvalid: "数值范围过大或无效，请调整范围",
 };

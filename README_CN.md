@@ -24,7 +24,7 @@
 - **自定义名单导入**：支持导入自定义名单（姓名、奖品等）进行抽取，而不仅限于数字。
 - **多语言支持**：支持中英文无缝切换。
 - **响应式设计**：针对桌面端、平板和手机端进行了深度优化。
-- **主题与字体**：提供多种配色方案（默认、海洋蓝、森林绿、落日橙、紫罗兰、霓虹）和字体样式（无衬线、等宽、衬线）供选择。
+- **主题与字体**：提供 10 种配色方案（默认、海洋蓝、森林绿、落日橙、紫罗兰、霓虹、樱花粉、午夜蓝、复古棕、像素风）和字体样式（无衬线、等宽、衬线）供选择。
 - **深浅色模式**：完美支持系统主题及手动切换。
 - **历史记录与导出**：自动记录所有抽签结果并支持导出为文本文件。
 - **设置持久化**：所有用户设置自动保存到 localStorage。
@@ -45,7 +45,7 @@
 
 - **框架**: Next.js 15 (App Router)
 - **样式**: Tailwind CSS v4
-- **动画**: Framer Motion (motion/react)
+- **动画**: Motion (原 Framer Motion)
 - **图标**: Lucide React
 - **主题**: next-themes
 - **UI 组件**: shadcn/ui
@@ -73,6 +73,8 @@
 | `npm run lint` | 运行 ESLint 检查 |
 | `npm run lint:fix` | 自动修复 ESLint 错误 |
 | `npm run type-check` | TypeScript 类型检查 |
+| `npm run test` | 运行测试 |
+| `npm run test:watch` | 监听模式运行测试 |
 
 ## 项目结构
 
@@ -83,10 +85,25 @@ app/
 ├── style.css               # 全局样式
 ├── components/
 │   ├── draw/               # 抽签功能组件
+│   │   ├── draw-button.tsx  # 抽取按钮
+│   │   ├── draw-settings.tsx# 抽取参数设置
+│   │   ├── appearance-settings.tsx  # 外观设置
+│   │   ├── custom-list-settings.tsx # 自定义名单
+│   │   ├── draw-display/   # 结果展示（拆分）
+│   │   ├── history-list/   # 历史记录（拆分）
+│   │   └── settings-panel/ # 设置侧边栏（拆分）
 │   ├── number-roller.tsx   # 数字滚动动画
 │   ├── theme-provider.tsx  # 主题提供者
 │   └── ui/                 # shadcn/ui 组件
 ├── hooks/                  # 自定义 React Hooks
+│   ├── draw-types.ts       # 类型定义
+│   ├── draw-helpers.ts     # 纯函数逻辑
+│   ├── draw-reducer.ts     # 状态 reducer
+│   ├── use-draw.ts         # 主 Hook
+│   ├── use-draw-actions.ts # 动作回调
+│   ├── use-draw-persistence.ts # 持久化
+│   ├── use-local-storage.ts# 本地存储
+│   └── use-sound.ts        # 音效合成
 ├── lib/                    # 工具函数
 └── locales/                # 国际化翻译
 ```

@@ -82,8 +82,26 @@ function RollingChar({ target, isDrawing, stopDelay }: RollingCharProps) {
   // 当前阶段
   const [phase, setPhase] = React.useState<"rolling" | "settling">("settling");
 
+  // 当前显示字符引用（用于在 effect 中安全检测变化）
+  const displayRef = React.useRef(display);
+
   // 引用上一轮 isDrawing 以检测变化方向
   const prevDrawingRef = React.useRef(isDrawing);
+
+  // 同步 ref
+  React.useEffect(() => {
+    displayRef.current = display;
+  }, [display]);
+
+  // ------------------------------------------------------------------
+  // 字符类型匹配的随机字符生成（定义在 effects 之前避免 hoisting 警告）
+  // ------------------------------------------------------------------
+  const rollChar = React.useCallback((t: string): string => {
+    if (/\d/.test(t)) return String(secureRandomInt(10));
+    if (/[a-z]/.test(t)) return String.fromCharCode(97 + secureRandomInt(26));
+    if (/[A-Z]/.test(t)) return String.fromCharCode(65 + secureRandomInt(26));
+    return t;
+  }, []);
 
   // ------------------------------------------------------------------
   // 阶段转换：isDrawing 变化时驱动
@@ -95,6 +113,7 @@ function RollingChar({ target, isDrawing, stopDelay }: RollingCharProps) {
     if (isDrawing && !wasDrawing) {
       // isDrawing 从 false → true：立即进入滚动
       setPhase("rolling");
+      return;
     } else if (!isDrawing && wasDrawing) {
       // isDrawing 从 true → false：等待 stopDelay 后再定格
       const timer = window.setTimeout(() => {
@@ -102,10 +121,12 @@ function RollingChar({ target, isDrawing, stopDelay }: RollingCharProps) {
         setDisplay(target);
       }, stopDelay);
       return () => window.clearTimeout(timer);
-    } else if (!isDrawing) {
-      // 非滚动状态下确保显示目标值
+    } else if (!isDrawing && displayRef.current !== target) {
+      // 非滚动状态：确保显示目标值
       setDisplay(target);
+      return;
     }
+    return;
   }, [isDrawing, target, stopDelay]);
 
   // ------------------------------------------------------------------
@@ -119,17 +140,7 @@ function RollingChar({ target, isDrawing, stopDelay }: RollingCharProps) {
     }, 80);
 
     return () => window.clearInterval(id);
-  }, [phase, target]);
-
-  // ------------------------------------------------------------------
-  // 字符类型匹配的随机字符生成
-  // ------------------------------------------------------------------
-  const rollChar = React.useCallback((t: string): string => {
-    if (/\d/.test(t)) return String(secureRandomInt(10));
-    if (/[a-z]/.test(t)) return String.fromCharCode(97 + secureRandomInt(26));
-    if (/[A-Z]/.test(t)) return String.fromCharCode(65 + secureRandomInt(26));
-    return t;
-  }, []);
+  }, [phase, target, rollChar]);
 
   // ------------------------------------------------------------------
   // 渲染：AnimatePresence 驱动入场/出场弹簧动画
@@ -164,7 +175,7 @@ function RollingChar({ target, isDrawing, stopDelay }: RollingCharProps) {
             stiffness: phase === "settling" ? 400 : 300,
             damping: phase === "settling" ? 16 : 20,
             mass: phase === "settling" ? 0.55 : 0.7,
-            duration: phase === "settling" ? undefined : 0.06,
+            ...(phase === "settling" ? {} : { duration: 0.06 }),
           }}
           className="inline-block"
           style={{ fontVariantNumeric: "tabular-nums" }}

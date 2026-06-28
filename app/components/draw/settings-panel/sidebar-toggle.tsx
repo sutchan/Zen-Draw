@@ -5,16 +5,18 @@ import * as React from "react";
 import { motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { createTranslator } from "@/lib/i18n";
 
 export function SidebarToggle({
   open,
   onToggle,
-  t,
+  language,
 }: {
   open: boolean;
   onToggle: () => void;
-  t: { toggle: string; open: string; close: string };
+  language: "zh" | "en";
 }) {
+  const t = React.useMemo(() => createTranslator(language), [language]);
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -28,8 +30,8 @@ export function SidebarToggle({
         onClick={onToggle}
         aria-expanded={open}
         aria-controls="settings-panel"
-        title={t.toggle}
-        aria-label={t.toggle}
+        title={t("toggleUI")}
+        aria-label={t("toggleUI")}
         className="rounded-xl transition-all duration-300 hover:scale-105"
       >
         {open ? (

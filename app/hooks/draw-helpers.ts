@@ -3,6 +3,15 @@
 import { secureRandomInt } from "@/lib/utils";
 import type { DrawSettings } from "./draw-types";
 
+// 错误消息使用 TranslationKey 类型，由调用方通过 i18n 系统翻译
+export type ValidationErrorKey =
+  | "errCustomListEmpty"
+  | "errCustomListTooMany"
+  | "errCustomListRange"
+  | "minMaxError"
+  | "errRangeInvalid"
+  | "rangeError";
+
 /**
  * 格式化数字：添加前缀、后缀、补零
  */
@@ -38,12 +47,14 @@ export function finalizeDraw(settings: {
 
   if (useCustomList && customList.length > 0) {
     if (allowDuplicates) {
-      return Array.from({ length: safeCount }, () => customList[secureRandomInt(customList.length)]);
+      return Array.from({ length: safeCount }, () => customList[secureRandomInt(customList.length)] as string);
     }
     const pool = [...customList];
     for (let i = pool.length - 1; i > 0; i--) {
       const j = secureRandomInt(i + 1);
-      [pool[i], pool[j]] = [pool[j], pool[i]];
+      const temp = pool[i] as string;
+      pool[i] = pool[j] as string;
+      pool[j] = temp;
     }
     return pool.slice(0, Math.min(safeCount, pool.length));
   }
@@ -58,7 +69,9 @@ export function finalizeDraw(settings: {
   const pool: number[] = Array.from({ length: range }, (_, i) => i + safeMin);
   for (let i = pool.length - 1; i > 0; i--) {
     const j = secureRandomInt(i + 1);
-    [pool[i], pool[j]] = [pool[j], pool[i]];
+    const temp = pool[i] as number;
+    pool[i] = pool[j] as number;
+    pool[j] = temp;
   }
   return pool.slice(0, Math.min(safeCount, range)).map((n) => formatNumber(n, digits, prefix, suffix));
 }
@@ -80,7 +93,7 @@ export function generateTemporaryResults(settings: {
   const safeCount = Math.max(1, Math.min(1000, Number.isFinite(count) ? count : 1));
 
   if (useCustomList && customList.length > 0) {
-    return Array.from({ length: safeCount }, () => customList[secureRandomInt(customList.length)]);
+    return Array.from({ length: safeCount }, () => customList[secureRandomInt(customList.length)] as string);
   }
   const safeMin = Number.isFinite(min) ? min : 0;
   const safeMax = Number.isFinite(max) ? max : 0;
@@ -98,19 +111,19 @@ export function validateSettings(settings: {
   allowDuplicates: boolean;
   min: number;
   max: number;
-}): string | null {
+}): ValidationErrorKey | null {
   const { useCustomList, customList, count, allowDuplicates, min, max } = settings;
   const safeCount = Math.max(1, Math.min(1000, Number.isFinite(count) ? count : 1));
 
   if (useCustomList) {
     if (customList.length === 0) {
-      return "请先在设置中导入自定义列表";
+      return "errCustomListEmpty";
     }
     if (customList.length > 1000) {
-      return "自定义列表项数过多，请减少到 1000 项以内";
+      return "errCustomListTooMany";
     }
     if (!allowDuplicates && safeCount > customList.length) {
-      return "不允许重复时，抽取数量不能超过列表项数";
+      return "errCustomListRange";
     }
     return null;
   }
@@ -120,13 +133,13 @@ export function validateSettings(settings: {
   const safeRange = safeMax - safeMin + 1;
 
   if (!Number.isFinite(safeMin) || !Number.isFinite(safeMax) || safeMin > safeMax) {
-    return "最小值不能大于最大值";
+    return "minMaxError";
   }
   if (safeRange <= 0 || safeRange > 10_000_000) {
-    return "数值范围过大或无效，请调整范围";
+    return "errRangeInvalid";
   }
   if (!allowDuplicates && safeCount > safeRange) {
-    return "不允许重复时，抽取数量不能超过数值范围";
+    return "rangeError";
   }
   return null;
 }

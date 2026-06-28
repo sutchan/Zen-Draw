@@ -12,6 +12,7 @@ import { AppearanceSettings } from "../appearance-settings";
 import { CustomListSettings } from "../custom-list-settings";
 import { SidebarToggle } from "./sidebar-toggle";
 import { HeaderBar } from "./header-bar";
+import { createTranslator } from "@/lib/i18n";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -76,49 +77,15 @@ export function SettingsPanel(props: SettingsPanelProps) {
     history, onClearHistory,
   } = props;
 
-  const t = React.useMemo(() => {
-    const isZH = language === "zh";
-    return {
-      // 基础
-      title: isZH ? "随机抽取" : "Random Draw",
-      version: isZH ? "v3.3.0" : "v3.3.0",
-      toggle: open ? (isZH ? "收起设置" : "Collapse Settings") : (isZH ? "展开设置" : "Expand Settings"),
-      // 设置
-      drawSettings: isZH ? "抽取设置" : "Draw Settings",
-      minVal: isZH ? "最小值" : "Minimum",
-      maxVal: isZH ? "最大值" : "Maximum",
-      drawCount: isZH ? "抽取数量" : "Count",
-      duration: isZH ? "动画时长（秒）" : "Animation Duration (sec)",
-      durationHint: isZH ? "数字滚动动画的持续时间，1~120 秒" : "Duration of the rolling animation, 1~120 seconds",
-      allowDup: isZH ? "允许重复" : "Allow Duplicates",
-      autoHide: isZH ? "自动隐藏 UI" : "Auto-hide UI",
-      autoHideHint: isZH ? "抽取时自动隐藏设置，点击空白处显示" : "Hide settings automatically during drawing",
-      display: isZH ? "显示格式" : "Display",
-      minDigits: isZH ? "补零位数" : "Leading Zeros",
-      minDigitsHint: isZH ? "设置 3 则显示 001、002、...，0 表示不补零" : "Set to 3 to display as 001, 002, etc. Set to 0 to disable",
-      prefix: isZH ? "前缀" : "Prefix",
-      suffix: isZH ? "后缀" : "Suffix",
-      custom: isZH ? "自定义列表" : "Custom List",
-      useCustomList: isZH ? "使用自定义列表" : "Use Custom List",
-      itemsLoaded: isZH ? "项已加载" : "items loaded",
-      noItems: isZH ? "暂无项目" : "No items",
-      importList: isZH ? "导入列表" : "Import",
-      exportList: isZH ? "导出列表" : "Export",
-      // History
-      history: isZH ? "历史记录" : "History",
-      historyHint: isZH ? "最近 100 条记录" : "Recent 100 entries",
-    };
-  }, [language, open]);
+  const t = React.useMemo(() => createTranslator(language), [language]);
 
   return (
     <>
       {/* 顶部标题栏 */}
-      <HeaderBar t={t} language={language} onLanguageToggle={onLanguageToggle} />
+      <HeaderBar language={language} onLanguageToggle={onLanguageToggle} />
 
       {/* 侧边栏开关按钮 */}
-      <SidebarToggle open={open} onToggle={onToggle} t={{
-        toggle: t.toggle, open: "展开", close: "收起",
-      }} />
+      <SidebarToggle open={open} onToggle={onToggle} language={language} />
 
       {/* 移动端遮罩 */}
       <AnimatePresence>
@@ -153,7 +120,7 @@ export function SettingsPanel(props: SettingsPanelProps) {
           stiffness: 300,
           damping: 30,
           mass: 0.9,
-          duration: shouldReduceMotion ? 0 : undefined,
+          ...(shouldReduceMotion ? { duration: 0 } : {}),
         }}
       >
         <Tabs defaultValue="settings" className="w-full h-full flex flex-col">
@@ -164,21 +131,21 @@ export function SettingsPanel(props: SettingsPanelProps) {
               className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
             >
               <Settings2 className="w-4 h-4 mr-1.5" aria-hidden="true" />
-              {t.drawSettings}
+              {t("drawSettings")}
             </TabsTrigger>
             <TabsTrigger
               value="history"
               className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
             >
               <History className="w-4 h-4 mr-1.5" aria-hidden="true" />
-              {t.history}
+              {t("history")}
             </TabsTrigger>
           </TabsList>
 
           <div className="flex-1 overflow-y-auto">
             <TabsContent value="settings" className="px-6 py-6 pb-12 focus-visible:outline-none">
               <DrawSettings
-                t={t}
+                language={language}
                 useCustomList={useCustomList}
                 min={min} max={max} count={count} duration={duration}
                 allowDuplicates={allowDuplicates} autoHide={autoHide}
@@ -189,7 +156,6 @@ export function SettingsPanel(props: SettingsPanelProps) {
               />
 
               <AppearanceSettings
-                t={t}
                 language={language}
                 useCustomList={useCustomList}
                 digits={digits} prefix={prefix} suffix={suffix}
@@ -197,7 +163,6 @@ export function SettingsPanel(props: SettingsPanelProps) {
               />
 
               <CustomListSettings
-                t={t}
                 language={language}
                 useCustomList={useCustomList} customList={customList}
                 onUseCustomListChange={onUseCustomListChange}

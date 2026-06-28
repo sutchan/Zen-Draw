@@ -65,10 +65,6 @@ export default [
   {
     name: 'react-rules',
     files: ['**/*.{tsx,ts}'],
-    plugins: {
-      'react-hooks': reactHooks,
-      'jsx-a11y': jsxA11y,
-    },
     rules: {
       // React Hooks 依赖检查（严格）
       'react-hooks/rules-of-hooks': 'error',
@@ -150,6 +146,10 @@ export default [
       '**/*.config.{js,ts,mjs}',
       '**/*.stories.{tsx,ts}',
       '.github/**',
+      // shadcn/ui 生成的组件文件，不修改其源码
+      'app/components/ui/**',
+      // 测试辅助文件
+      'app/test/**',
     ],
   },
 ]

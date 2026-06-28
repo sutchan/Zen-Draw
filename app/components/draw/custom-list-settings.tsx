@@ -1,27 +1,26 @@
-// components/draw/custom-list-settings.tsx v3.0 —— 自定义列表子组件
+// components/draw/custom-list-settings.tsx v3.1 —— 自定义列表子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { sanitizeListInput } from "@/lib/utils";
+import { createTranslator } from "@/lib/i18n";
 
 export function CustomListSettings({
-  t,
   language,
   useCustomList,
   customList,
   onUseCustomListChange,
   onImport,
 }: {
-  t: { custom: string; useCustomList: string; itemsLoaded: string; noItems: string; importList: string; exportList: string };
   language: "zh" | "en";
   useCustomList: boolean;
   customList: string[];
   onUseCustomListChange: (value: boolean) => void;
   onImport: (items: string[]) => void;
 }) {
-  const isZH = language === "zh";
+  const t = React.useMemo(() => createTranslator(language), [language]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [importText, setImportText] = React.useState("");
 
@@ -33,16 +32,16 @@ export function CustomListSettings({
       className="space-y-6 pt-2"
     >
       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-        {t.custom}
+        {t("custom")}
       </p>
 
       <div className="flex items-center justify-between py-3 border-b border-border/20">
         <div className="space-y-0.5">
           <label htmlFor="use-custom" className="cursor-pointer text-sm font-medium">
-            {t.useCustomList}
+            {t("useCustomList")}
           </label>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            {customList.length > 0 ? `${customList.length} ${t.itemsLoaded}` : t.noItems}
+            {customList.length > 0 ? `${customList.length} ${t("itemsLoaded")}` : t("noItems")}
           </p>
         </div>
         <button
@@ -67,7 +66,7 @@ export function CustomListSettings({
           }}
           className="h-11 rounded-xl hover:bg-muted/50 transition-colors border-border/30"
         >
-          {t.importList}
+          {t("import_")}
         </Button>
         <Button
           variant="outline"
@@ -90,25 +89,31 @@ export function CustomListSettings({
           }}
           className="h-11 rounded-xl hover:bg-muted/50 transition-colors border-border/30"
         >
-          {t.exportList}
+          {t("export")}
         </Button>
       </div>
 
       {/* 导入 Dialog */}
       {dialogOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setDialogOpen(false)} />
+          <div
+            className="fixed inset-0 bg-black/50"
+            onClick={() => setDialogOpen(false)}
+            onKeyDown={(e) => { if (e.key === 'Escape' || e.key === ' ') { e.preventDefault(); setDialogOpen(false); } }}
+            role="presentation"
+            aria-hidden="true"
+          />
           <div className="relative z-50 bg-background rounded-2xl border border-border/30 p-6 max-w-[520px] w-full mx-4">
             <h3 className="text-xl font-semibold mb-2">
-              {t.importList}
+              {t("import_")}
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              {isZH ? "每行一个项目，提交后将作为抽取池" : "One item per line, will be used as the draw pool"}
+              {t("importDesc")}
             </p>
             <textarea
               value={importText}
               onChange={(e) => setImportText(e.target.value)}
-              placeholder={isZH ? "苹果\n香蕉\n橙子..." : "Apple\nBanana\nOrange..."}
+              placeholder={language === "zh" ? "苹果\n香蕉\n橙子..." : "Apple\nBanana\nOrange..."}
               className="min-h-[240px] w-full rounded-xl resize-none bg-muted/30 border border-border/20 p-4 text-sm font-mono focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
             />
             <div className="flex gap-2 mt-4 justify-end">
@@ -117,7 +122,7 @@ export function CustomListSettings({
                 onClick={() => setDialogOpen(false)}
                 className="flex-1 h-11 rounded-xl border-border/30"
               >
-                {isZH ? "取消" : "Cancel"}
+                {t("cancel")}
               </Button>
               <Button
                 onClick={() => {
@@ -129,7 +134,7 @@ export function CustomListSettings({
                 }}
                 className="flex-1 h-11 rounded-xl"
               >
-                {isZH ? "确认导入" : "Import"}
+                {t("confirmImport")}
               </Button>
             </div>
           </div>

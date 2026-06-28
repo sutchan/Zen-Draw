@@ -31,6 +31,7 @@ export function ResultsGrid({
       return () => window.clearTimeout(timer);
     }
     prevDrawingRef.current = isDrawing;
+    return;
   }, [isDrawing]);
 
   return (

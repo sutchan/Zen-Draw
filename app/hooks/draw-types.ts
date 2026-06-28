@@ -109,6 +109,7 @@ export interface UseDrawReturn extends DrawState {
     digits: number;
     prefix: string;
     suffix: string;
+    language: "zh" | "en";
   };
   // 历史记录的 set 方法（供 page.tsx 使用）
   setHistory: (updater: (prev: HistoryEntry[]) => HistoryEntry[]) => void;

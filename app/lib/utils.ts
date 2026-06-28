@@ -28,7 +28,7 @@ export function secureRandomInt(max: number): number {
     let value: number;
     do {
       crypto.getRandomValues(arr);
-      value = arr[0];
+      value = arr[0] as number;
     } while (value >= limit);
     return value % max;
   }

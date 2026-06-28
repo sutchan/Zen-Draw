@@ -11,6 +11,7 @@ export type TranslationKey =
   | "theme" | "themeMode" | "themeLight" | "themeDark" | "themeSystem"
   | "themePreset" | "themeDefault" | "themeOcean" | "themeForest"
   | "themeSunset" | "themePurple" | "themeNeon"
+  | "themeSakura" | "themeMidnight" | "themeRetro" | "themePixel"
   | "fontFamily" | "fontSans" | "fontMono" | "fontSerif"
   | "listImport" | "listImportDesc" | "useCustomList"
   | "export" | "displayRules" | "displayDesc"
@@ -33,6 +34,9 @@ export type TranslationKey =
   // 页脚
   | "footerInfo"
   // 导入
-  | "importDesc" | "confirmImport" | "exportList";
+  | "importDesc" | "confirmImport" | "exportList"
+  // 错误
+  | "errCustomListEmpty" | "errCustomListTooMany" | "errCustomListRange"
+  | "errRangeInvalid";
 
 export type TranslationDict = Record<TranslationKey, string>;

@@ -34,6 +34,10 @@ export const enTranslations: TranslationDict = {
   themeSunset: "Sunset",
   themePurple: "Purple",
   themeNeon: "Neon",
+  themeSakura: "Sakura",
+  themeMidnight: "Midnight",
+  themeRetro: "Retro",
+  themePixel: "Pixel",
   fontFamily: "Font Family",
   fontSans: "Sans Serif",
   fontMono: "Monospace",
@@ -91,4 +95,9 @@ export const enTranslations: TranslationDict = {
   importDesc: "One item per line, will be used as the draw pool",
   confirmImport: "Import",
   exportList: "Export Results",
+  // 错误
+  errCustomListEmpty: "Please import a custom list first",
+  errCustomListTooMany: "Custom list is too large. Please reduce to 1000 items or fewer",
+  errCustomListRange: "Number of draws cannot exceed list size when duplicates are disabled",
+  errRangeInvalid: "Range is too large or invalid. Please adjust",
 };

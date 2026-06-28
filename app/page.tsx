@@ -71,7 +71,7 @@ export default function HomePage() {
       <header className="sticky top-0 z-30 backdrop-blur-sm bg-background/70 border-b border-border/60">
         <div className="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
           <motion.div
-            initial={shouldReduceMotion ? undefined : { opacity: 0, y: -8 }}
+            initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             className="flex items-center gap-2"

@@ -127,16 +127,10 @@ export function DrawButton({
           // 响应式尺寸
           "min-w-[240px] min-h-[72px] text-xl"
         )}
-        whileHover={
-          !shouldReduceMotion && (canDraw || isDrawing)
-            ? { y: -2, scale: 1.02 }
-            : undefined
-        }
-        whileTap={
-          !shouldReduceMotion && (canDraw || isDrawing)
-            ? { y: 0, scale: 0.98 }
-            : undefined
-        }
+        {...(!shouldReduceMotion && (canDraw || isDrawing) ? {
+          whileHover: { y: -2, scale: 1.02 },
+          whileTap: { y: 0, scale: 0.98 },
+        } : {})}
         role="button"
         tabIndex={0}
       >
@@ -157,11 +151,7 @@ export function DrawButton({
                   }
                 : { scale: 1 }
             }
-            transition={
-              isDrawing
-                ? { duration: 0.7, repeat: Infinity, ease: "easeInOut" }
-                : undefined
-            }
+            {...(isDrawing ? { transition: { duration: 0.7, repeat: Infinity, ease: "easeInOut" } } : {})}
             aria-hidden="true"
           />
           <span className="font-semibold tracking-wide">

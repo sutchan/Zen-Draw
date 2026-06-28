@@ -1,4 +1,4 @@
-// components/draw/history-list/index.tsx v2.1 —— 历史记录列表（中英文支持）
+// components/draw/history-list/index.tsx v3.1 —— 历史记录列表（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -7,6 +7,7 @@ import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HistoryCard } from "./history-card";
 import { EmptyState } from "./empty-state";
+import { createTranslator } from "@/lib/i18n";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -31,21 +32,19 @@ export interface HistoryListProps {
 
 export function HistoryList({ history, onClear, language = "zh" }: HistoryListProps) {
   const hasHistory = history.length > 0;
-  const isZH = language === "zh";
+  const t = React.useMemo(() => createTranslator(language), [language]);
 
   return (
-    <div className="space-y-4" role="region" aria-label={isZH ? "历史记录" : "History"}>
+    <div className="space-y-4" role="region" aria-label={t("history")}>
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
           <h3 className="text-lg font-semibold tracking-tight">
-            {isZH ? "历史记录" : "History"}
+            {t("history")}
           </h3>
           <p className="text-sm text-muted-foreground">
             {hasHistory
-              ? isZH
-                ? `共 ${history.length} 条记录（最多保存 100 条）`
-                : `${history.length} records (max 100)`
-              : isZH
+              ? `${history.length} ${t("historyDesc")}`
+              : language === "zh"
               ? "点击任意记录可复制结果"
               : "Click any record to copy"}
           </p>
@@ -53,7 +52,7 @@ export function HistoryList({ history, onClear, language = "zh" }: HistoryListPr
         {hasHistory && (
           <button
             onClick={onClear}
-            aria-label={isZH ? "清空历史记录" : "Clear history"}
+            aria-label={t("clearHistory")}
             className={cn(
               "flex items-center gap-1.5 px-3 py-2 rounded-lg",
               "text-sm text-muted-foreground hover:text-red-600 hover:bg-red-500/10",
@@ -61,7 +60,7 @@ export function HistoryList({ history, onClear, language = "zh" }: HistoryListPr
             )}
           >
             <Trash2 className="w-4 h-4" aria-hidden="true" />
-            <span>{isZH ? "清空" : "Clear"}</span>
+            <span>{t("clearHistory")}</span>
           </button>
         )}
       </div>

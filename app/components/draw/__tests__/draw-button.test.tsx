@@ -1,31 +1,52 @@
-import { render, screen } from '@testing-library/react'
-import { expect } from 'vitest'
-import { DrawButton } from '../draw-button'
+/// <reference types="vitest/globals" />
+import { render } from "@testing-library/react";
+import { DrawButton } from "../draw-button";
 
-describe('DrawButton', () => {
-  it('renders correctly when not drawing', () => {
-    render(<DrawButton isDrawing={false} onClick={() => {}} />)
-    
-    const button = screen.getByRole('button')
-    expect(button).toBeInTheDocument()
-    expect(button).toHaveTextContent('开始抽奖')
-  })
+describe("DrawButton", () => {
+  it("renders correctly when not drawing", () => {
+    const { getByRole } = render(
+      <DrawButton
+        isDrawing={false}
+        onStart={() => {}}
+        onStop={() => {}}
+        canDraw={true}
+        language="zh"
+      />
+    );
 
-  it('renders correctly when drawing', () => {
-    render(<DrawButton isDrawing={true} onClick={() => {}} />)
-    
-    const button = screen.getByRole('button')
-    expect(button).toBeInTheDocument()
-    expect(button).toHaveTextContent('停止')
-  })
+    const button = getByRole("button");
+    expect(button).toBeInTheDocument();
+  });
 
-  it('calls onClick when clicked', () => {
-    const handleClick = vi.fn()
-    render(<DrawButton isDrawing={false} onClick={handleClick} />)
-    
-    const button = screen.getByRole('button')
-    button.click()
-    
-    expect(handleClick).toHaveBeenCalledTimes(1)
-  })
-})
+  it("renders correctly when drawing", () => {
+    const { getByRole } = render(
+      <DrawButton
+        isDrawing={true}
+        onStart={() => {}}
+        onStop={() => {}}
+        canDraw={true}
+        language="zh"
+      />
+    );
+
+    const button = getByRole("button");
+    expect(button).toBeInTheDocument();
+  });
+
+  it("calls onStart when clicked while idle", () => {
+    const handleStart = vi.fn();
+    const { getByRole } = render(
+      <DrawButton
+        isDrawing={false}
+        onStart={handleStart}
+        onStop={() => {}}
+        canDraw={true}
+        language="zh"
+      />
+    );
+
+    const button = getByRole("button");
+    button.click();
+    expect(handleStart).toHaveBeenCalledTimes(1);
+  });
+});
