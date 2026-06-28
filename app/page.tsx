@@ -11,32 +11,27 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { THEME_PRESETS, FONT_FAMILIES } from "@/components/theme-provider";
 import { useDraw } from "@/hooks/use-draw";
-import { NumberRoller } from "@/components/number-roller";
+import { useSound } from "@/hooks/use-sound";
 import { DrawButton } from "@/components/draw/draw-button";
 import { SettingsPanel } from "@/components/draw/settings-panel";
 import { HistoryList } from "@/components/draw/history-list";
 import { DrawDisplay } from "@/components/draw/draw-display";
-
+import { createTranslator } from "@/lib/i18n";
 export default function HomePage() {
   const shouldReduceMotion = useReducedMotion();
   const { theme, setTheme } = useTheme();
 
   // 1. 统一状态管理
-  const draw = useDraw();
+  const { play } = useSound();
+  const draw = useDraw(play);
 
   // 2. 面板状态
   const [panelOpen, setPanelOpen] = React.useState(false);
+  const t = React.useMemo(() => createTranslator(draw.language), [draw.language]);
 
   // 3. 键盘快捷键
   React.useEffect(() => {
@@ -66,13 +61,12 @@ export default function HomePage() {
   }, [panelOpen, draw]);
 
   const lang = draw.language;
-  const isZH = lang === "zh";
 
   return (
     <div
       className="min-h-screen w-full bg-gradient-to-b from-background via-background to-background/95 text-foreground antialiased"
       role="application"
-      aria-label={isZH ? "随机抽取应用" : "Random Draw Application"}
+      aria-label={t("appTitle")}
     >
       <header className="sticky top-0 z-30 backdrop-blur-sm bg-background/70 border-b border-border/60">
         <div className="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
@@ -87,10 +81,10 @@ export default function HomePage() {
             </div>
             <div>
               <div className="text-lg font-semibold leading-none">
-                {isZH ? "真随机" : "ZenDraw"}
+                {t("appTitle")}
               </div>
               <div className="text-xs text-muted-foreground mt-0.5">
-                {isZH ? "真随机抽取工具" : "Truly random draw tool"}
+                {t("appSubtitle")}
               </div>
             </div>
           </motion.div>
@@ -99,10 +93,10 @@ export default function HomePage() {
             <Sheet open={panelOpen} onOpenChange={setPanelOpen}>
               <SheetTrigger
                 className="inline-flex items-center justify-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label={isZH ? "打开设置" : "Open settings"}
+                aria-label={t("settings")}
               >
                 <Settings2 className="size-4" aria-hidden="true" />
-                {isZH ? "设置" : "Settings"}
+                {t("settings")}
               </SheetTrigger>
               <SheetContent
                 side="right"
@@ -111,7 +105,7 @@ export default function HomePage() {
               >
                 <SheetHeader>
                   <SheetTitle className="text-lg">
-                    {isZH ? "设置" : "Settings"}
+                    {t("settings")}
                   </SheetTitle>
                 </SheetHeader>
                 <div className="py-4">
@@ -157,12 +151,8 @@ export default function HomePage() {
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               aria-label={
                 theme === "dark"
-                  ? isZH
-                    ? "切换到浅色模式"
-                    : "Switch to light mode"
-                  : isZH
-                  ? "切换到深色模式"
-                  : "Switch to dark mode"
+                  ? t("switchLight")
+                  : t("switchDark")
               }
             >
               {theme === "dark" ? (
@@ -176,7 +166,7 @@ export default function HomePage() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 pt-10 sm:pt-14">
-        <section aria-label={isZH ? "抽取主区域" : "Draw main area"}>
+        <section aria-label={t("drawMainArea")}>
           <DrawDisplay draw={draw} />
 
           <DrawButton
@@ -193,9 +183,7 @@ export default function HomePage() {
 
       <footer className="mt-10 py-6 text-center text-xs text-muted-foreground/70">
         <p>
-          {isZH
-            ? `${THEME_PRESETS.length} 种主题 · ${FONT_FAMILIES.length} 种字体 · 本地存储`
-            : `${THEME_PRESETS.length} themes · ${FONT_FAMILIES.length} fonts · stored locally`}
+          {t("footerInfo", String(THEME_PRESETS.length), String(FONT_FAMILIES.length))}
         </p>
       </footer>
     </div>

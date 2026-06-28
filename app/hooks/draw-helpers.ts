@@ -1,6 +1,7 @@
 // hooks/draw-helpers.ts — 抽取逻辑纯函数
 
 import { secureRandomInt } from "@/lib/utils";
+import type { DrawSettings } from "./draw-types";
 
 /**
  * 格式化数字：添加前缀、后缀、补零
@@ -129,3 +130,23 @@ export function validateSettings(settings: {
   }
   return null;
 }
+
+// ---------------------------------------------------------------------------
+// 默认设置
+// ---------------------------------------------------------------------------
+
+
+export const DEFAULT_SETTINGS: DrawSettings = {
+  min: 1,
+  max: 100,
+  count: 1,
+  allowDuplicates: true,
+  autoHide: true,
+  duration: 5,
+  customList: [],
+  useCustomList: false,
+  digits: 3,
+  prefix: "",
+  suffix: "",
+  language: "zh",
+};

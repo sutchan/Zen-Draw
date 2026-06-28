@@ -8,28 +8,11 @@ import {
   finalizeDraw,
   generateTemporaryResults,
   validateSettings,
+  DEFAULT_SETTINGS,
 } from "./draw-helpers";
 import { createInitialState, drawReducer } from "./draw-reducer";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-
-// ---------------------------------------------------------------------------
-// 常量
-// ---------------------------------------------------------------------------
-
-const DEFAULT_SETTINGS: DrawSettings = {
-  min: 1,
-  max: 100,
-  count: 1,
-  allowDuplicates: true,
-  autoHide: true,
-  duration: 5,
-  customList: [],
-  useCustomList: false,
-  digits: 3,
-  prefix: "",
-  suffix: "",
-  language: "zh",
-};
+import { parseFiniteNumber } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Hook
@@ -38,7 +21,7 @@ const DEFAULT_SETTINGS: DrawSettings = {
 export type { DrawSettings } from "./draw-types";
 export type { HistoryEntry } from "./draw-types";
 
-export function useDraw(): UseDrawReturn {
+export function useDraw(onSound?: (type: string) => void): UseDrawReturn {
   // 持久化设置（从 localStorage 加载）
   const [persistedMin, setPersistedMin] = useLocalStorage<number>("zendraw-min", DEFAULT_SETTINGS.min);
   const [persistedMax, setPersistedMax] = useLocalStorage<number>("zendraw-max", DEFAULT_SETTINGS.max);
@@ -78,6 +61,9 @@ export function useDraw(): UseDrawReturn {
 
   // 动画计时器引用
   const animationRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
+  // 音效回调引用（避免 useCallback 依赖抖动）
+  const onSoundRef = React.useRef(onSound);
+  onSoundRef.current = onSound;
 
   // 当设置变化时，持久化到 localStorage
   React.useEffect(() => { setPersistedMin(state.min); }, [state.min]);
@@ -118,8 +104,11 @@ export function useDraw(): UseDrawReturn {
     const error = validateSettings(currentSettings);
     if (error) {
       dispatch({ type: "ERROR", message: error });
+      onSoundRef.current?.("error");
       return { ok: false, error };
     }
+
+    onSoundRef.current?.("start");
 
     dispatch({ type: "START_DRAW" });
 
@@ -134,6 +123,10 @@ export function useDraw(): UseDrawReturn {
         type: "UPDATE_ROLLING",
         values: generateTemporaryResults(currentSettings),
       });
+      // 每 3 次嘀嗒（约 240ms）播放一次滴答声
+      if (ticks % 3 === 0) {
+        onSoundRef.current?.("tick");
+      }
       if (ticks >= totalTicks) {
         if (animationRef.current !== null) {
           window.clearInterval(animationRef.current);
@@ -141,6 +134,7 @@ export function useDraw(): UseDrawReturn {
         }
         const finalResults = finalizeDraw(currentSettings);
         dispatch({ type: "FINALIZE_DRAW", results: finalResults });
+        onSoundRef.current?.("result");
       }
     }, tickMs);
     return { ok: true };
@@ -152,6 +146,7 @@ export function useDraw(): UseDrawReturn {
       animationRef.current = null;
     }
     dispatch({ type: "CANCEL" });
+    onSoundRef.current?.("stop");
   }, []);
 
   React.useEffect(() => {
@@ -264,7 +259,3 @@ export function useDraw(): UseDrawReturn {
   };
 }
 
-function parseFiniteNumber(input: string, fallback: number): number {
-  const n = Number(input);
-  return Number.isFinite(n) ? n : fallback;
-}

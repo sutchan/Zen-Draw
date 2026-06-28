@@ -30,6 +30,29 @@
   - Extract `CustomListSettings` to `app/components/draw/custom-list-settings.tsx`
   - Keep `SettingsPanel` main component in `app/components/draw/settings-panel.tsx` (now ~250 lines)
 
+#### Sound Effects System
+- Add `app/hooks/use-sound.ts` — Web Audio API sound synthesis, no external files needed
+- 5 sound types: start (rising tone), tick (rolling click), result (C5→E5→G5→C6 arpeggio), error (falling tone), stop
+- Integrate into draw flow via `onSound` callback in `useDraw`
+
+#### Animation Optimization
+- Staggered stop effect: characters settle left-to-right with 80ms delay (slot machine style)
+- Enhanced spring animation on settle: stiffness 400, damping 16, mass 0.55 with overshoot bounce
+- Celebration effect: radial glow + Sparkles icon pulse (1.2s) when results are revealed
+- Result card micro-bounce (1.025×) + box-shadow transition to primary highlight
+
+#### i18n Refactoring
+- Add `app/lib/i18n.ts` — `createTranslator` utility with `{0}` `{1}` parameter substitution
+- Restructure `app/locales/` — split into `types.ts` (type defs), `en.ts` (English), `zh.ts` (Chinese)
+- Add 21 new translation keys (header, buttons, welcome/error screens, result labels, theme toggle, footer)
+- Migrate `draw-display.tsx`, `draw-button.tsx`, `page.tsx` to use centralized translations
+
+#### Code Cleanup
+- Remove unused imports: `Volume2`, `VolumeX`, `Card`, `CardContent`, `CardHeader`, `CardTitle`, `CardDescription`, `usePresetTheme`, `useThemeMounted`, `THEME_PRESETS`, `ThemePreset`, `useTheme`, `NumberRoller`
+- Remove unused `total` prop from `HistoryCardProps`
+- Fix `metadata.json` version (v3.2 → v3.3.0)
+- Delete large original files and restructure as component directories
+
 ### Version Update
 - Bump version from `3.2.0` to `3.3.0`
 - Update `package.json`, `README.md`, `README_CN.md`, `app/layout.tsx`

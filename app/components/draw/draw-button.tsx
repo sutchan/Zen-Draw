@@ -4,7 +4,7 @@
 import * as React from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
-
+import { createTranslator } from "@/lib/i18n";
 export interface DrawButtonProps {
   // 是否正在抽取中
   isDrawing: boolean;
@@ -26,16 +26,7 @@ export function DrawButton({
 }: DrawButtonProps) {
   const shouldReduceMotion = useReducedMotion();
 
-  // 文案
-  const labels = React.useMemo(() => {
-    const isZH = language === "zh";
-    return {
-      start: isZH ? "开始抽取" : "Start Draw",
-      stop: isZH ? "停止" : "Stop",
-      hint: isZH ? "按下按钮或空格键开始" : "Click the button or press Space to start",
-      stopHint: isZH ? "抽取中 —— 点击停止或按空格键" : "Drawing — click to stop or press Space",
-    };
-  }, [language]);
+  const t = React.useMemo(() => createTranslator(language), [language]);
 
   // 处理点击
   const handleClick = React.useCallback(() => {
@@ -118,7 +109,7 @@ export function DrawButton({
         onKeyDown={handleKeyDown}
         disabled={!canDraw && !isDrawing}
         aria-pressed={isDrawing}
-        aria-label={isDrawing ? labels.stop : labels.start}
+        aria-label={isDrawing ? t("stopDraw") : t("startDraw")}
         className={cn(
           "relative z-10",
           "px-12 py-5 rounded-[1.75rem]",
@@ -174,7 +165,7 @@ export function DrawButton({
             aria-hidden="true"
           />
           <span className="font-semibold tracking-wide">
-            {isDrawing ? labels.stop : labels.start}
+            {isDrawing ? t("stopDraw") : t("startDraw")}
           </span>
         </div>
       </motion.button>
@@ -186,7 +177,7 @@ export function DrawButton({
         transition={{ delay: 0.4, duration: 0.5 }}
         className="mt-5 text-sm text-muted-foreground text-center max-w-md"
       >
-        {isDrawing ? labels.stopHint : labels.hint}
+        {isDrawing ? t("stopHint") : t("startHint")}
       </motion.p>
     </motion.div>
   );

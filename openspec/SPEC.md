@@ -58,12 +58,24 @@ zen-draw/
 │   ├── components/
 │   │   ├── draw/               # 抽签业务组件
 │   │   │   ├── draw-button.tsx
-│   │   │   ├── draw-display.tsx
+│   │   │   ├── draw-display/          # ⭐ 拆分为子组件目录
+│   │   │   │   ├── index.tsx
+│   │   │   │   ├── welcome-screen.tsx
+│   │   │   │   ├── error-screen.tsx
+│   │   │   │   ├── celebration-effect.tsx
+│   │   │   │   ├── result-card.tsx
+│   │   │   │   └── results-grid.tsx
 │   │   │   ├── draw-settings.tsx       # 抽取设置组件
 │   │   │   ├── appearance-settings.tsx # 外观设置组件
 │   │   │   ├── custom-list-settings.tsx # 自定义名单设置
-│   │   │   ├── history-list.tsx
-│   │   │   └── settings-panel.tsx      # 设置面板主组件
+│   │   │   ├── history-list/           # ⭐ 拆分为子组件目录
+│   │   │   │   ├── index.tsx
+│   │   │   │   ├── history-card.tsx
+│   │   │   │   └── empty-state.tsx
+│   │   │   └── settings-panel/         # ⭐ 拆分为子组件目录
+│   │   │       ├── index.tsx
+│   │   │       ├── sidebar-toggle.tsx
+│   │   │       └── header-bar.tsx      # 设置面板主组件
 │   │   ├── ui/                 # shadcn/ui 组件
 │   │   │   ├── alert.tsx
 │   │   │   ├── badge.tsx
@@ -86,11 +98,16 @@ zen-draw/
 │   │   ├── draw-helpers.ts         # 抽取逻辑纯函数
 │   │   ├── draw-reducer.ts         # 抽取状态 Reducer
 │   │   ├── use-draw.ts             # 抽取逻辑 Hook (主入口)
-│   │   └── use-local-storage.ts    # 本地存储 Hook
+│   │   ├── use-local-storage.ts    # 本地存储 Hook
+│   │   └── use-sound.ts            # ⭐ Web Audio API 音效合成
 │   ├── lib/
-│   │   └── utils.ts            # 工具函数
+│   │   ├── utils.ts            # 工具函数
+│   │   └── i18n.ts             # ⭐ 国际化翻译工具
 │   ├── locales/
-│   │   └── index.ts            # 国际化翻译
+│   │   ├── index.ts            # 国际化翻译入口 (re-export)
+│   │   ├── types.ts            # 翻译类型定义
+│   │   ├── en.ts               # 英文翻译数据
+│   │   └── zh.ts               # 中文翻译数据
 │   ├── layout.tsx            # 根布局
 │   ├── page.tsx              # 主页面
 │   └── style.css             # 全局样式 (Tailwind CSS v4)
@@ -1083,10 +1100,34 @@ interface HistoryItem {
 - 安全加固：`utils.ts` 中 `generateLocalId()` 改用 `crypto.getRandomValues()`
 - 统一更新版本号至 v3.3.0
 
+#### 音效系统
+- 新增 `use-sound.ts` Hook — 使用 Web Audio API 合成音效，无需外部音频文件
+- 5 种音效：开始抽取（上升音）、滚动滴答声、结果揭晓（C5→E5→G5→C6琶音）、错误提示、停止
+- 集成到抽取流程（startDraw / stopDraw / finalize / error 均有对应音效）
+
+#### 动效优化
+- 逐字定格停止（老虎机效果）：结果揭晓时字符从左到右依次延迟 80ms 定格
+- 增强弹簧动画：定格时 stiffness 400 + damping 16 + mass 0.55，产生 overshoot 弹跳感
+- 结果揭晓庆祝效果：径向渐变光晕 + Sparkles 图标闪烁动画（1.2s）
+- 结果卡片揭晓时微弹跳（1.025×）+ 阴影过渡到 primary 高光再恢复
+
+#### 国际化重构
+- 新增 `lib/i18n.ts` 翻译工具（`createTranslator`），支持参数替换 {0} {1}
+- 重构 `locales/` 模块：拆分 `types.ts`（类型）、`en.ts`（英文）、`zh.ts`（中文）
+- 新增 21 个翻译键（主界面、按钮提示、欢迎/错误界面、结果标签、主题切换、页脚等）
+- 所有组件（`draw-display`、`draw-button`、`page.tsx`）接入中央翻译系统
+
+#### 代码清理
+- 清理未使用的导入（`Volume2`、`VolumeX`、`Card` 系列组件、`usePresetTheme` 等）
+- 清理未使用的 `total` prop（`history-list.tsx`）
+- 修复 `metadata.json` 版本号（v3.2 → v3.3.0）
+- 删除原始大文件，拆分为子组件目录结构
+
 #### 文档更新
 - 更新 `README.md` 和 `README_CN.md` 至 v3.3.0
 - 更新 `CHANGELOG.md` 添加 v3.3.0 条目
 - 更新 `openspec/SPEC.md` 目录结构和翻译键
+- 更新 `openspec/SPEC.md` 目录结构（反映组件拆分）
 
 ---
 
