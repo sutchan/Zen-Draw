@@ -38,11 +38,17 @@ export function secureRandomInt(max: number): number {
 
 /**
  * 生成本地唯一 ID（不需要 UUID 完整标准）
- * 使用时间戳 + 随机数组合，保证本地唯一性
+ * 使用时间戳 + 密码学安全随机数组合，保证本地唯一性
  */
 export function generateLocalId(): string {
   const timePart = Date.now().toString(36);
-  const randomPart = Math.random().toString(36).slice(2, 10);
+  // 使用 crypto.getRandomValues() 生成安全随机字符串
+  const randomBytes = new Uint32Array(2);
+  crypto.getRandomValues(randomBytes);
+  const randomPart = Array.from(randomBytes)
+    .map((n) => n.toString(36))
+    .join("")
+    .slice(0, 10);
   return `${timePart}-${randomPart}`;
 }
 

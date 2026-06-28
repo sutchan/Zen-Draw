@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { motion, useReducedMotion, AnimatePresence } from "motion/react";
-import { cn } from "@/lib/utils";
+import { cn, secureRandomInt } from "@/lib/utils";
 
 export interface NumberRollerProps {
   // 要显示的值（字符串 —— 支持任意字符）
@@ -80,20 +80,20 @@ function RollingChar({ target, isDrawing, delay }: RollingCharProps) {
   // 当前阶段（用于停止时的动画过渡）
   const [stage, setStage] = React.useState<"rolling" | "settling">("settling");
 
-  // 3. 滚动动画的随机字符生成
+  // 3. 滚动动画的随机字符生成（使用 crypto 保证随机性质量）
   const rollChar = React.useCallback((t: string): string => {
     // 根据 target 的类型选择不同的滚动字符
     if (/\d/.test(t)) {
       // 数字字符 —— 用 0-9 的随机数字替换
-      return String(Math.floor(Math.random() * 10));
+      return String(secureRandomInt(10));
     }
     if (/[a-z]/.test(t)) {
       // 小写字母
-      return String.fromCharCode(97 + Math.floor(Math.random() * 26));
+      return String.fromCharCode(97 + secureRandomInt(26));
     }
     if (/[A-Z]/.test(t)) {
       // 大写字母
-      return String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      return String.fromCharCode(65 + secureRandomInt(26));
     }
     // 其他字符（中文、符号等）直接显示目标字符
     return t;

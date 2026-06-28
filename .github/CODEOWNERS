@@ -2,30 +2,30 @@
 # 当 PR 修改对应文件时，自动请求指定审查者
 
 # 项目所有者（所有变更都需要至少一人审查）
-*       @your-github-username
+*       @sutchan
 
 # 核心应用逻辑
-/app/hooks/*           @your-github-username
-/app/lib/*              @your-github-username
+/app/hooks/*           @sutchan
+/app/lib/*              @sutchan
 
 # UI 组件
-/app/components/ui/*    @your-github-username
-/app/components/draw/*  @your-github-username
+/app/components/ui/*    @sutchan
+/app/components/draw/*  @sutchan
 
 # 主题和样式
-/app/style.css          @your-github-username
-/app/components/theme-provider.tsx  @your-github-username
-/tailwind.config.*      @your-github-username
+/app/style.css          @sutchan
+/app/components/theme-provider.tsx  @sutchan
+/tailwind.config.*      @sutchan
 
 # 配置和构建
-/next.config.ts         @your-github-username
-/package.json           @your-github-username
-/tsconfig.json          @your-github-username
-/eslint.config.js       @your-github-username
+/next.config.ts         @sutchan
+/package.json           @sutchan
+/tsconfig.json          @sutchan
+/eslint.config.js       @sutchan
 
 # 文档
-/*.md                   @your-github-username
-/.github/*              @your-github-username
+/*.md                   @sutchan
+/.github/*              @sutchan
 
 # 原型设计文件
-/prototype/*            @your-github-username
+/prototype/*            @sutchan

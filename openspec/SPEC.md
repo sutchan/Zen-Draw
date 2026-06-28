@@ -1,10 +1,10 @@
-# ZenDraw | 禅抽 v3.2 - 项目规范文档
+# ZenDraw | 禅抽 v3.3 - 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **版本**: v3.2
+- **版本**: v3.3
 - **描述**: 一款专业的全屏随机抽奖应用，采用 Apple 设计风格，适用于年会抽奖、课堂互动、抽奖活动等场景。
 - **许可证**: MIT License
 - **代码质量**: 严格 TypeScript + ESLint + CI/CD + 代码审查标准
@@ -20,16 +20,19 @@
 | 清晰层次 | 明确的内容层级，信息结构一目了然，操作路径清晰 |
 
 ### 1.3 技术栈
-| 类别 | 技术 |
-|------|------|
-| 框架 | Next.js 15 (App Router) |
-| UI库 | React 19 |
-| 样式 | Tailwind CSS v4 |
-| 动画 | Framer Motion (motion/react) |
-| 图标 | Lucide React |
-| 主题 | next-themes |
-| 组件库 | shadcn/ui |
-| 语言 | TypeScript (strict mode) |
+| 类别 | 技术 | 版本 |
+|------|------|--------|
+| 框架 | Next.js (App Router) | ^15.4.9 |
+| UI 库 | React / React DOM | ^19.2.1 |
+| 样式 | Tailwind CSS v4 + PostCSS | 4.1.11 |
+| 动画 | Motion (ex-Framer Motion) | ^12.23.24 |
+| 图标 | Lucide React | ^0.553.0 |
+| 主题 | next-themes | ^0.4.6 |
+| 组件基础 | @base-ui/react | ^1.3.0 |
+| 组件 CLI | shadcn | ^4.0.8 |
+| AI 能力 | @google/genai | ^1.17.0 |
+| 工具函数 | clsx + class-variance-authority + tailwind-merge | latest |
+| 语言 | TypeScript (strict mode) | 5.9.3 |
 
 ### 1.4 字体配置
 | 名称 | 字体 | 变量名 |
@@ -50,54 +53,68 @@
 ## 2. 目录结构
 
 ```
-/workspace
+zen-draw/
 ├── app/
-│   ├── layout.tsx          # 根布局
-│   ├── page.tsx            # 主页面 (v3.2)
-│   └── style.css           # 全局样式
-├── components/
-│   ├── ui/                 # shadcn/ui 组件
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   ├── dialog.tsx
-│   │   ├── input.tsx
-│   │   ├── label.tsx
-│   │   ├── select.tsx
-│   │   ├── slider.tsx
-│   │   ├── switch.tsx
-│   │   ├── tabs.tsx
-│   │   └── textarea.tsx
-│   ├── draw/               # 抽签功能组件
-│   │   ├── draw-button.tsx
-│   │   ├── draw-display.tsx
-│   │   ├── history-list.tsx
-│   │   └── settings-panel.tsx
-│   ├── number-roller.tsx   # 数字滚动组件
-│   ├── theme-provider.tsx  # 主题提供者
-│   └── theme-toggle.tsx    # 主题切换
-├── hooks/
-│   ├── use-local-storage.ts  # 本地存储hook
-│   ├── use-draw.ts           # 抽取逻辑 Hook
-│   └── use-mobile.ts         # 移动端检测hook
-├── lib/
-│   └── utils.ts            # 工具函数
-├── locales/
-│   └── index.ts            # 国际化翻译
+│   ├── components/
+│   │   ├── draw/               # 抽签业务组件
+│   │   │   ├── draw-button.tsx
+│   │   │   ├── draw-display.tsx
+│   │   │   ├── draw-settings.tsx       # 抽取设置组件
+│   │   │   ├── appearance-settings.tsx # 外观设置组件
+│   │   │   ├── custom-list-settings.tsx # 自定义名单设置
+│   │   │   ├── history-list.tsx
+│   │   │   └── settings-panel.tsx      # 设置面板主组件
+│   │   ├── ui/                 # shadcn/ui 组件
+│   │   │   ├── alert.tsx
+│   │   │   ├── badge.tsx
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── input.tsx
+│   │   │   ├── label.tsx
+│   │   │   ├── select.tsx
+│   │   │   ├── separator.tsx
+│   │   │   ├── sheet.tsx
+│   │   │   ├── slider.tsx
+│   │   │   ├── switch.tsx
+│   │   │   ├── tabs.tsx
+│   │   │   └── textarea.tsx
+│   │   ├── number-roller.tsx   # 数字滚动组件
+│   │   ├── theme-provider.tsx  # 主题提供者
+│   │   └── theme-toggle.tsx   # 主题切换
+│   ├── hooks/
+│   │   ├── draw-types.ts           # 抽取模块类型定义
+│   │   ├── draw-helpers.ts         # 抽取逻辑纯函数
+│   │   ├── draw-reducer.ts         # 抽取状态 Reducer
+│   │   ├── use-draw.ts             # 抽取逻辑 Hook (主入口)
+│   │   └── use-local-storage.ts    # 本地存储 Hook
+│   ├── lib/
+│   │   └── utils.ts            # 工具函数
+│   ├── locales/
+│   │   └── index.ts            # 国际化翻译
+│   ├── layout.tsx            # 根布局
+│   ├── page.tsx              # 主页面
+│   └── style.css             # 全局样式 (Tailwind CSS v4)
 ├── .github/                # GitHub 工作流和模板
 │   ├── CODEOWNERS         # 代码所有者配置
+│   ├── CODE_REVIEW_SETUP.md  # 代码审查环境配置
 │   ├── CODE_REVIEW_STANDARD.md  # 代码审查标准
 │   ├── PULL_REQUEST_TEMPLATE.md # PR 模板
-│   └── workflows/ci.yml    # CI/CD 工作流
+│   ├── PUSH_GUIDE.md       # 推送指南
+│   └── workflows/
+│       └── ci.yml          # CI/CD 工作流
 ├── prototype/              # 设计原型文档
 │   ├── color-system.html
 │   ├── motion.html
 │   ├── typography.html
+│   ├── prototype.html
 │   ├── prototypes.html
 │   └── wireframes.html
 ├── eslint.config.js       # ESLint 配置 (Flat Config)
 ├── tsconfig.json          # TypeScript 配置
 ├── package.json           # 项目依赖
 ├── next.config.ts         # Next.js 配置
+├── postcss.config.mjs     # PostCSS 配置
+├── components.json         # shadcn/ui 配置
 ├── CHANGELOG.md           # 更新日志
 ├── README.md              # 英文文档
 ├── README_CN.md           # 中文文档
@@ -750,7 +767,7 @@ const insecure = Math.floor(Math.random() * (max - min + 1)) + min;
 
 ## 7. 交互标准规范 (v3.0)
 
-### 6.1 交互模式库
+### 7.1 交互模式库
 
 #### 悬停反馈
 ```css
@@ -779,16 +796,8 @@ const insecure = Math.floor(Math.random() * (max - min + 1)) + min;
 <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
 ```
 
-#### Toast 提示
-```tsx
-// 使用 sonner
-import { toast } from 'sonner'
-toast.success('操作成功')
-toast.error('操作失败')
-toast.warning('请检查输入')
-```
 
-### 6.2 交互反馈规范
+### 7.2 交互反馈规范
 
 #### 状态颜色语义化
 | 状态 | 颜色 | 使用场景 |
@@ -807,7 +816,7 @@ toast.warning('请检查输入')
 | 数据加载 | 加载中 | Skeleton 占位 |
 | 网络错误 | 错误时 | Toast + 重试按钮 |
 
-### 6.3 错误处理规范
+### 7.3 错误处理规范
 
 #### 错误类型与处理
 | 错误类型 | 处理方式 | UI 表现 |
@@ -835,7 +844,7 @@ toast.warning('请检查输入')
 </div>
 ```
 
-### 6.4 空状态设计规范
+### 7.4 空状态设计规范
 
 #### 空状态组件
 ```tsx
@@ -861,7 +870,7 @@ toast.warning('请检查输入')
 | 无数据 | DatabaseIcon | "暂无数据" |
 | 无网络 | WifiOffIcon | "网络连接失败" |
 
-### 6.5 表单交互规范
+### 7.5 表单交互规范
 
 #### 表单结构
 ```tsx
@@ -910,7 +919,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
 ## 8. 数据管理
 
-### 7.1 本地存储键名
+### 8.1 本地存储键名
 | 键名 | 类型 | 默认值 | 描述 |
 |------|------|--------|------|
 | zendraw-lang | Language | "zh" | 语言设置 |
@@ -929,7 +938,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 | zendraw-suffix | string | "" | 后缀 |
 | zendraw-history | HistoryItem[] | [] | 抽取历史 |
 
-### 7.2 历史记录结构
+### 8.2 历史记录结构
 ```typescript
 interface HistoryItem {
   id: string;          // 随机ID
@@ -942,11 +951,11 @@ interface HistoryItem {
 
 ## 9. 国际化
 
-### 8.1 支持语言
+### 9.1 支持语言
 - `en` - English
 - `zh` - 简体中文
 
-### 8.2 翻译键名
+### 9.2 翻译键名
 | 键名 | 英文 | 中文 |
 |------|------|------|
 | title | ZenDraw | 禅抽 |
@@ -998,14 +1007,26 @@ interface HistoryItem {
 | minMaxError | Minimum value cannot be greater than maximum value. | 最小值不能大于最大值。 |
 | rangeError | Cannot draw more unique numbers than the available range. | 抽取的不重复数字数量不能超过可用范围。 |
 | clearHistory | Clear History | 清空历史 |
-| toggleUI | Toggle UI | 切换控制面板 |
+| toggleUI | Toggle Control Panel | 切换控制面板 |
 | switchLang | Switch Language | 切换语言 |
+| notice | Notice | 提示 |
+| ok | OK | 确定 |
+| cancel | Cancel | 取消 |
+| import_ | Import | 导入 |
+| itemsLoaded | items loaded | 项已加载 |
+| noItems | No items | 暂无项目 |
+| configureHint | Configure range and options to start drawing | 设置范围和选项后开始抽取 |
+| custom | Custom List | 自定义名单 |
+| display | Display Options | 显示选项 |
+| drawAgain | Draw Again | 再抽一次 |
+| drawSettings | Draw Settings | 抽取设置 |
+| appearance | Appearance | 外观 |
 
 ---
 
 ## 10. SEO与元数据
 
-### 9.1 Viewport
+### 10.1 Viewport
 ```typescript
 {
   width: 'device-width',
@@ -1015,10 +1036,10 @@ interface HistoryItem {
 }
 ```
 
-### 9.2 Metadata
+### 10.2 Metadata
 ```typescript
 {
-  title: 'ZenDraw | 禅抽 v3.0',
+  title: 'ZenDraw | 禅抽 v3.3',
   description: '一款专业的全屏随机抽奖应用，采用 Apple 设计风格...',
   keywords: ['ZenDraw', '禅抽', 'random draw', 'lucky draw', ...],
   authors: [{ name: 'Sut' }]
@@ -1029,20 +1050,20 @@ interface HistoryItem {
 
 ## 11. 规范要求
 
-### 10.1 代码规范
+### 11.1 代码规范
 - 使用 ESLint 进行代码检查
 - TypeScript strict mode
 - React hooks 规范:
   - 不在 useEffect 中同步调用 setState
   - 使用 useCallback/useMemo 优化性能
 
-### 10.2 命名规范
+### 11.2 命名规范
 - 组件名: PascalCase
 - 文件名: kebab-case
 - 变量名: camelCase
 - 常量: UPPER_SNAKE_CASE
 
-### 10.3 提交规范
+### 11.3 提交规范
 遵循 Semantic Versioning:
 - MAJOR: 不兼容的API更改
 - MINOR: 向后兼容的功能添加
@@ -1051,6 +1072,23 @@ interface HistoryItem {
 ---
 
 ## 12. 更新日志
+
+### v3.3.0 (2026-06-28)
+
+#### 代码重构与安全加固
+- 拆分大文件（`use-draw.ts` 634行 → 4个模块，`settings-panel.tsx` 781行 → 4个组件）
+- 修复 `setHistory` 函数完全损坏的 bug（只清空不更新）
+- 新增 `SET_HISTORY` action 到 `drawReducer`
+- 安全加固：`number-roller.tsx` 中 `Math.random()` 替换为 `secureRandomInt()`
+- 安全加固：`utils.ts` 中 `generateLocalId()` 改用 `crypto.getRandomValues()`
+- 统一更新版本号至 v3.3.0
+
+#### 文档更新
+- 更新 `README.md` 和 `README_CN.md` 至 v3.3.0
+- 更新 `CHANGELOG.md` 添加 v3.3.0 条目
+- 更新 `openspec/SPEC.md` 目录结构和翻译键
+
+---
 
 ### v3.2.0 (2026-06-26)
 
@@ -1114,7 +1152,7 @@ interface HistoryItem {
 
 ## 13. 附录
 
-### 12.1 npm scripts
+### 13.1 npm scripts
 | 命令 | 描述 |
 |------|------|
 | npm run dev | 启动开发服务器 |
@@ -1123,7 +1161,7 @@ interface HistoryItem {
 | npm run lint | 运行 ESLint 检查 |
 | npm run lint:fix | 自动修复 lint 错误 |
 
-### 12.2 依赖版本
+### 13.2 依赖版本
 - next: ^15.x
 - react: ^19.x
 - react-dom: ^19.x
@@ -1137,13 +1175,13 @@ interface HistoryItem {
 
 ## 14. 设计参考
 
-### 13.1 Apple Human Interface Guidelines 关键点
+### 14.1 Apple Human Interface Guidelines 关键点
 1. **清晰度**: 内容优先，界面服务于内容
 2. **遵从**: 界面响应自然，符合用户预期
 3. **深度**: 层次分明，过渡自然流畅
 4. **美学**: 整体协调，细节精致
 
-### 13.2 常用 Apple 动画模式
+### 14.2 常用 Apple 动画模式
 - **Enter**: opacity 0→1, scale 0.95→1
 - **Exit**: opacity 1→0, scale 1→0.95
 - **Interactive**: scale 1→1.02 hover, scale 1→0.98 active
@@ -1151,4 +1189,4 @@ interface HistoryItem {
 
 ---
 
-*本文档最后更新: v3.2.0*
+*本文档最后更新: v3.3.0*

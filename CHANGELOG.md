@@ -1,5 +1,41 @@
 # Changelog
 
+## [3.3.0] - 2026-06-28
+
+### Security Fixes
+
+#### Replace Math.random() with Cryptographically Secure Random
+- `app/components/number-roller.tsx`: Replace `Math.random()` in `rollChar` with `secureRandomInt()` from `utils.ts`
+- `app/lib/utils.ts`: Update `generateLocalId()` to use `crypto.getRandomValues()` for secure random string generation
+- Align with project security standard (SPEC.md section 6.5)
+
+### Bug Fixes
+
+#### Fix Broken setHistory Function
+- `app/hooks/use-draw.ts`: Add `SET_HISTORY` action to `DrawAction` type
+- Handle `SET_HISTORY` in `drawReducer`
+- Fix `setHistory` function to properly update history via reducer (was previously only clearing history)
+
+### Code Refactoring
+
+#### Split Large Files (Over 200 Lines)
+- **`app/hooks/use-draw.ts` (634 lines)**:
+  - Extract types to `app/hooks/draw-types.ts`
+  - Extract helper functions to `app/hooks/draw-helpers.ts`
+  - Extract reducer to `app/hooks/draw-reducer.ts`
+  - Keep `useDraw` hook in `app/hooks/use-draw.ts` (now ~150 lines)
+- **`app/components/draw/settings-panel.tsx` (781 lines)**:
+  - Extract `DrawSettings` to `app/components/draw/draw-settings.tsx`
+  - Extract `AppearanceSettings` to `app/components/draw/appearance-settings.tsx`
+  - Extract `CustomListSettings` to `app/components/draw/custom-list-settings.tsx`
+  - Keep `SettingsPanel` main component in `app/components/draw/settings-panel.tsx` (now ~250 lines)
+
+### Version Update
+- Bump version from `3.2.0` to `3.3.0`
+- Update `package.json`, `README.md`, `README_CN.md`, `app/layout.tsx`
+
+---
+
 ## [3.2.0] - 2026-06-26
 
 ### Code Quality System
