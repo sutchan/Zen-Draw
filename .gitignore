@@ -6,3 +6,7 @@ coverage/
 .env*
 !.env.example
 .workbuddy/
+.codebuddy/
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+.npmrc
