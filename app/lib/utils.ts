@@ -32,7 +32,8 @@ export function secureRandomInt(max: number): number {
     } while (value >= limit);
     return value % max;
   }
-  // 降级方案：Node.js 环境或旧浏览器
+  // 降级方案：使用简单 PRNG（仅在极旧环境触发，此时无法使用 crypto）
+  // eslint-disable-next-line no-restricted-syntax -- 降级方案，非主路径
   return Math.floor(Math.random() * max);
 }
 
