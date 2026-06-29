@@ -1,4 +1,4 @@
-// components/draw/settings-panel/header-bar.tsx —— 顶部标题栏（使用中央翻译系统）
+// components/draw/settings-panel/header-bar.tsx v3.3.0 —— 顶部标题栏（使用中央翻译系统）
 "use client";
 
 import * as React from "react";

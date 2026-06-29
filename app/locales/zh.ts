@@ -100,4 +100,17 @@ export const zhTranslations: TranslationDict = {
   errCustomListTooMany: "自定义列表项数过多，请减少到 1000 项以内",
   errCustomListRange: "不允许重复时，抽取数量不能超过列表项数",
   errRangeInvalid: "数值范围过大或无效，请调整范围",
+
+  // 历史记录
+  clickToCopy: "点击任意记录可复制结果",
+  resultsCount: "共 {0} 项",
+  recordLabel: "历史记录：{0} 个结果，{1}",
+  autoSaveDesc: "抽取结果会自动保存在这里",
+
+  // 通用
+  copied: "已复制",
+  copiedToClipboard: "已复制到剪贴板",
+  copyResult: "复制",
+  listPlaceholder: "苹果\n香蕉\n橙子...",
+  settingsPanel: "设置面板",
 };

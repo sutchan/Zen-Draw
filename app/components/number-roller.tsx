@@ -1,4 +1,4 @@
-// components/number-roller.tsx v2.1 —— 数字滚动动画组件（字符级滚动 + 逐字定格）
+// components/number-roller.tsx v3.3.0 —— 数字滚动动画组件（字符级滚动 + 逐字定格）
 "use client";
 
 import * as React from "react";
@@ -12,6 +12,8 @@ export interface NumberRollerProps {
   isDrawing: boolean;
   // 自定义类名
   className?: string;
+  // 自定义 aria-label（默认自动生成）
+  ariaLabel?: string;
 }
 
 /**
@@ -23,7 +25,7 @@ export interface NumberRollerProps {
  * 3. isDrawing=false 时：字符从**左到右逐字定格**（老虎机停转效果），带有缩放 + 弹性动画
  * 4. 尊重 prefers-reduced-motion：偏好减少动画的用户直接显示文本
  */
-export function NumberRoller({ value, isDrawing, className }: NumberRollerProps) {
+export function NumberRoller({ value, isDrawing, className, ariaLabel }: NumberRollerProps) {
   const shouldReduceMotion = useReducedMotion();
 
   // 1. 尊重无障碍偏好：如果用户偏好减少动画，直接渲染静态文本
@@ -32,7 +34,7 @@ export function NumberRoller({ value, isDrawing, className }: NumberRollerProps)
       <span
         className={cn("tabular-nums", className)}
         aria-live="polite"
-        aria-label={`结果: ${value}`}
+        aria-label={ariaLabel ?? `结果: ${value}`}
       >
         {value}
       </span>
@@ -48,7 +50,7 @@ export function NumberRoller({ value, isDrawing, className }: NumberRollerProps)
         "flex items-center justify-center tabular-nums flex-wrap",
         className
       )}
-      aria-label={`结果: ${value}`}
+      aria-label={ariaLabel ?? `结果: ${value}`}
       aria-live="polite"
     >
       {chars.map((ch, idx) => (

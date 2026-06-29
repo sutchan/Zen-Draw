@@ -1,4 +1,4 @@
-// components/draw/history-list/empty-state.tsx —— 空状态显示（使用中央翻译系统）
+// components/draw/history-list/empty-state.tsx v3.3.0 —— 空状态显示（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -17,7 +17,7 @@ export function EmptyState({ language }: { language: "zh" | "en" }) {
         {t("noHistory")}
       </div>
       <div className="text-sm text-muted-foreground/70">
-        {language === "zh" ? "抽取结果会自动保存在这里" : "Draw results are saved here automatically"}
+        {t("autoSaveDesc")}
       </div>
     </motion.div>
   );

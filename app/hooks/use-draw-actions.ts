@@ -1,4 +1,4 @@
-// hooks/use-draw-actions.ts — 抽取动作回调（startDraw/stopDraw/设置更新方法）
+// hooks/use-draw-actions.ts v3.3.0 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
 "use client";
 
 import * as React from "react";

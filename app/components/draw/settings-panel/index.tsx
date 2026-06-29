@@ -1,4 +1,4 @@
-// components/draw/settings-panel/index.tsx v3.0 —— 设置侧边栏（重构拆分版）
+// components/draw/settings-panel/index.tsx v3.3.0 —— 设置侧边栏（重构拆分版）
 "use client";
 
 import * as React from "react";
@@ -106,7 +106,7 @@ export function SettingsPanel(props: SettingsPanelProps) {
       <motion.aside
         id="settings-panel"
         role="complementary"
-        aria-label="设置面板"
+        aria-label={t("settingsPanel")}
         className={cn(
           "absolute top-0 right-0 z-40 h-full w-full sm:w-[400px]",
           "bg-background/94 backdrop-blur-xl border-l border-border/25",

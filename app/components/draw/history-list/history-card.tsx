@@ -1,10 +1,11 @@
-// components/draw/history-list/history-card.tsx —— 历史记录卡片
+// components/draw/history-list/history-card.tsx v3.3.0 —— 历史记录卡片
 "use client";
 
 import * as React from "react";
 import { motion } from "motion/react";
 import { Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createTranslator } from "@/lib/i18n";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -17,21 +18,15 @@ function formatTime(iso: string, lang: "zh" | "en"): string {
     const diffMs = now.getTime() - date.getTime();
     const diffMin = Math.floor(diffMs / 60000);
 
-    if (lang === "en") {
-      if (diffMin < 1) return "just now";
-      if (diffMin < 60) return `${diffMin} min ago`;
+    if (typeof Intl?.RelativeTimeFormat !== "undefined") {
+      const rtf = new Intl.RelativeTimeFormat(lang, { numeric: "auto" });
+      if (diffMin < 1) return rtf.format(0, "minute");
+      if (diffMin < 60) return rtf.format(-diffMin, "minute");
       const diffHr = Math.floor(diffMin / 60);
-      if (diffHr < 24) return `${diffHr} hr ago`;
-      return date.toLocaleString("en-US", {
-        month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
-      });
+      if (diffHr < 24) return rtf.format(-diffHr, "hour");
     }
 
-    if (diffMin < 1) return "刚刚";
-    if (diffMin < 60) return `${diffMin} 分钟前`;
-    const diffHr = Math.floor(diffMin / 60);
-    if (diffHr < 24) return `${diffHr} 小时前`;
-    return date.toLocaleString("zh-CN", {
+    return date.toLocaleString(lang === "zh" ? "zh-CN" : "en-US", {
       month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
     });
   } catch {
@@ -53,6 +48,7 @@ export function HistoryCard({
   language: "zh" | "en";
 }) {
   const [copied, setCopied] = React.useState(false);
+  const t = React.useMemo(() => createTranslator(language), [language]);
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -83,11 +79,11 @@ export function HistoryCard({
       onClick={handleCopy}
       role="button"
       tabIndex={0}
-      aria-label={language === "zh" ? `历史记录：${entry.results.length} 个结果，${formatTime(entry.timestamp, language)}` : `Record: ${entry.results.length} results, ${formatTime(entry.timestamp, language)}`}
+      aria-label={t("recordLabel", String(entry.results.length), formatTime(entry.timestamp, language))}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="text-xs text-muted-foreground font-medium tracking-wide">
-          {formatTime(entry.timestamp, language)} · {language === "zh" ? `共 ${entry.results.length} 项` : `${entry.results.length} items`}
+          {formatTime(entry.timestamp, language)} · {t("resultsCount", String(entry.results.length))}
         </div>
         <button
           onClick={handleCopy}
@@ -97,14 +93,14 @@ export function HistoryCard({
             "transition-all duration-200 opacity-70 group-hover:opacity-100",
             copied && "text-green-600"
           )}
-          aria-label={copied ? (language === "zh" ? "已复制到剪贴板" : "Copied to clipboard") : (language === "zh" ? "复制结果到剪贴板" : "Copy results to clipboard")}
+          aria-label={copied ? t("copiedToClipboard") : t("copyResult")}
         >
           {copied ? (
             <Check className="w-3.5 h-3.5" aria-hidden="true" />
           ) : (
             <Copy className="w-3.5 h-3.5" aria-hidden="true" />
           )}
-          <span>{copied ? (language === "zh" ? "已复制" : "Copied") : (language === "zh" ? "复制" : "Copy")}</span>
+          <span>{copied ? t("copied") : t("copyResult")}</span>
         </button>
       </div>
       <div className="flex flex-wrap gap-2.5">

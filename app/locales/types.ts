@@ -37,6 +37,9 @@ export type TranslationKey =
   | "importDesc" | "confirmImport" | "exportList"
   // 错误
   | "errCustomListEmpty" | "errCustomListTooMany" | "errCustomListRange"
-  | "errRangeInvalid";
+  | "errRangeInvalid"
+  // 通用
+  | "autoSaveDesc" | "clickToCopy" | "copied" | "copiedToClipboard" | "copyResult"
+  | "listPlaceholder" | "recordLabel" | "resultsCount" | "settingsPanel";
 
 export type TranslationDict = Record<TranslationKey, string>;

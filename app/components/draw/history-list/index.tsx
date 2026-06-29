@@ -1,4 +1,4 @@
-// components/draw/history-list/index.tsx v3.1 —— 历史记录列表（使用中央翻译系统）
+// components/draw/history-list/index.tsx v3.3.0 —— 历史记录列表（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -44,9 +44,7 @@ export function HistoryList({ history, onClear, language = "zh" }: HistoryListPr
           <p className="text-sm text-muted-foreground">
             {hasHistory
               ? `${history.length} ${t("historyDesc")}`
-              : language === "zh"
-              ? "点击任意记录可复制结果"
-              : "Click any record to copy"}
+              : t("clickToCopy")}
           </p>
         </div>
         {hasHistory && (

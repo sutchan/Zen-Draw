@@ -100,4 +100,17 @@ export const enTranslations: TranslationDict = {
   errCustomListTooMany: "Custom list is too large. Please reduce to 1000 items or fewer",
   errCustomListRange: "Number of draws cannot exceed list size when duplicates are disabled",
   errRangeInvalid: "Range is too large or invalid. Please adjust",
+
+  // 历史记录
+  clickToCopy: "Click any record to copy results",
+  resultsCount: "{0} items",
+  recordLabel: "Record: {0} results, {1}",
+  autoSaveDesc: "Draw results are saved here automatically",
+
+  // 通用
+  copied: "Copied",
+  copiedToClipboard: "Copied to clipboard",
+  copyResult: "Copy",
+  listPlaceholder: "Apple\nBanana\nOrange...",
+  settingsPanel: "Settings panel",
 };

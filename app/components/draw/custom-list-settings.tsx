@@ -1,4 +1,4 @@
-// components/draw/custom-list-settings.tsx v3.1 —— 自定义列表子组件（使用中央翻译系统）
+// components/draw/custom-list-settings.tsx v3.3.0 —— 自定义列表子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -113,7 +113,7 @@ export function CustomListSettings({
             <textarea
               value={importText}
               onChange={(e) => setImportText(e.target.value)}
-              placeholder={language === "zh" ? "苹果\n香蕉\n橙子..." : "Apple\nBanana\nOrange..."}
+              placeholder={t("listPlaceholder")}
               className="min-h-[240px] w-full rounded-xl resize-none bg-muted/30 border border-border/20 p-4 text-sm font-mono focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
             />
             <div className="flex gap-2 mt-4 justify-end">

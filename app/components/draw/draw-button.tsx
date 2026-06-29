@@ -1,4 +1,4 @@
-// components/draw/draw-button.tsx v2.0 —— 抽取主按钮（增强交互反馈）
+// components/draw/draw-button.tsx v3.3.0 —— 抽取主按钮（增强交互反馈）
 "use client";
 
 import * as React from "react";

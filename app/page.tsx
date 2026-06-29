@@ -1,4 +1,4 @@
-// page.tsx v2.1 —— 抽取主页面（架构重构 + 完整键盘与 ARIA）
+// page.tsx v3.3.0 —— 抽取主页面（架构重构 + 完整键盘与 ARIA）
 "use client";
 
 import * as React from "react";
@@ -34,6 +34,11 @@ export default function HomePage() {
   const t = React.useMemo(() => createTranslator(draw.language), [draw.language]);
 
   // 3. 键盘快捷键
+  const drawRef = React.useRef(draw);
+  React.useEffect(() => {
+    drawRef.current = draw;
+  }, [draw]);
+
   React.useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
@@ -50,15 +55,16 @@ export default function HomePage() {
         return;
       }
 
-      if (e.key === " " && !isTyping && !panelOpen) {
+      if (e.key === " " && !isTyping && !panelOpen && target?.tagName !== "BUTTON") {
         e.preventDefault();
-        if (draw.status === "drawing") draw.stopDraw();
-        else if (draw.canDraw) draw.startDraw();
+        const currentDraw = drawRef.current;
+        if (currentDraw.status === "drawing") currentDraw.stopDraw();
+        else if (currentDraw.canDraw) currentDraw.startDraw();
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [panelOpen, draw]);
+  }, [panelOpen]);
 
   const lang = draw.language;
 

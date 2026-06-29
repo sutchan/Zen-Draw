@@ -1,4 +1,4 @@
-// components/draw/draw-display/result-card.tsx —— 单个结果卡片
+// components/draw/draw-display/result-card.tsx v3.3.0 —— 单个结果卡片
 "use client";
 
 import * as React from "react";
@@ -63,6 +63,7 @@ export function ResultCard({
         <NumberRoller
           value={value}
           isDrawing={isDrawing}
+          ariaLabel={t("resultLabel", String(index + 1), value)}
           className="text-6xl sm:text-7xl md:text-8xl lg:text-[12vw] font-bold tracking-tighter tabular-nums leading-none"
         />
       </motion.div>
