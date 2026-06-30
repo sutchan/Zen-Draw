@@ -1,4 +1,4 @@
-// components/draw/history-list/index.tsx v3.3.0 —— 历史记录列表（使用中央翻译系统）
+// components/draw/history-list/index.tsx v5.0 —— 历史记录列表（极简设计优化）
 "use client";
 
 import * as React from "react";

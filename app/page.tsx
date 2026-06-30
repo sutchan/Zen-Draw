@@ -1,4 +1,4 @@
-// page.tsx v3.3.0 —— 抽取主页面（架构重构 + 完整键盘与 ARIA）
+// page.tsx v5.0 —— 抽取主页面（极简设计优化）
 "use client";
 
 import * as React from "react";
@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import { THEME_PRESETS, FONT_FAMILIES } from "@/components/theme-provider";
 import { useDraw } from "@/hooks/use-draw";
 import { useSound } from "@/hooks/use-sound";
 import { DrawButton } from "@/components/draw/draw-button";
@@ -70,32 +69,33 @@ export default function HomePage() {
 
   return (
     <div
-      className="min-h-screen w-full bg-gradient-to-b from-background via-background to-background/95 text-foreground antialiased"
+      className="min-h-screen w-full bg-background text-foreground antialiased"
       role="application"
       aria-label={t("appTitle")}
     >
-      <header className="sticky top-0 z-30 backdrop-blur-sm bg-background/70 border-b border-border/60">
-        <div className="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
+      {/* Header — 极简设计 */}
+      <header className="sticky top-0 z-30 backdrop-blur-md bg-background/80 border-b border-border/50">
+        <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
           <motion.div
             initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2.5"
           >
-            <div className="size-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-md">
+            <div className="size-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
               <Sparkles className="size-5" aria-hidden="true" />
             </div>
             <div>
-              <div className="text-lg font-semibold leading-none">
+              <div className="text-base font-semibold leading-tight">
                 {t("appTitle")}
               </div>
-              <div className="text-xs text-muted-foreground mt-0.5">
+              <div className="text-xs text-muted-foreground">
                 {t("appSubtitle")}
               </div>
             </div>
           </motion.div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Button
               variant="ghost"
               size="sm"
@@ -105,6 +105,7 @@ export default function HomePage() {
                   ? t("switchLight")
                   : t("switchDark")
               }
+              className="rounded-full"
             >
               {theme === "dark" ? (
                 <Sun className="size-4" aria-hidden="true" />
@@ -115,15 +116,14 @@ export default function HomePage() {
 
             <Sheet open={panelOpen} onOpenChange={setPanelOpen}>
               <SheetTrigger
-                className="inline-flex items-center justify-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="inline-flex items-center justify-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label={t("settings")}
               >
                 <Settings2 className="size-4" aria-hidden="true" />
-                {t("settings")}
+                <span className="hidden sm:inline">{t("settings")}</span>
               </SheetTrigger>
               <SheetContent
                 side="right"
-                size="lg"
                 className="w-full sm:w-[420px] overflow-y-auto"
               >
                 <SheetHeader>
@@ -171,25 +171,31 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 pt-10 sm:pt-14">
-        <section aria-label={t("drawMainArea")}>
+      {/* Main Content — 极简布局 */}
+      <main className="mx-auto max-w-6xl px-4 pt-8 sm:pt-12 pb-16">
+        <section aria-label={t("drawMainArea")} className="flex flex-col items-center">
           <DrawDisplay draw={draw} />
 
-          <DrawButton
-            isDrawing={draw.status === "drawing"}
-            onStart={draw.startDraw}
-            onStop={draw.stopDraw}
-            canDraw={draw.canDraw}
-            language={lang}
-          />
+          <div className="mt-8 sm:mt-12">
+            <DrawButton
+              isDrawing={draw.status === "drawing"}
+              onStart={draw.startDraw}
+              onStop={draw.stopDraw}
+              canDraw={draw.canDraw}
+              language={lang}
+            />
+          </div>
         </section>
 
-        <HistoryList history={draw.history} language={lang} onClear={draw.clearHistory} onSetHistory={draw.setHistory} />
+        <section className="mt-12 sm:mt-16 max-w-2xl mx-auto">
+          <HistoryList history={draw.history} language={lang} onClear={draw.clearHistory} onSetHistory={draw.setHistory} />
+        </section>
       </main>
 
-      <footer className="mt-10 py-6 text-center text-xs text-muted-foreground/70">
+      {/* Footer — 极简 */}
+      <footer className="py-6 text-center text-xs text-muted-foreground/70 border-t border-border/30">
         <p>
-          {t("footerInfo", String(THEME_PRESETS.length), String(FONT_FAMILIES.length))}
+          {t("footerInfo", String(10), String(6))}
         </p>
       </footer>
     </div>

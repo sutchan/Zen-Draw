@@ -1,6 +1,8 @@
-# ZenDraw Design System v4.0
+# ZenDraw Design System v5.0
 
-> 极简 · 精准 · 禅意 — Apple Design 理念驱动的全屏随机抽签应用
+> **极简 · 精准 · 禅意** — 国际顶尖设计师水准的随机抽签应用
+
+**设计灵感**: Apple Design · Linear · Vercel · Stripe
 
 ---
 
