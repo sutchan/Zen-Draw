@@ -74,12 +74,8 @@ export function HistoryCard({
       className={cn(
         "group p-5 rounded-2xl bg-muted/15 hover:bg-muted/30 transition-all duration-300",
         "border border-transparent hover:border-border/30",
-        "cursor-pointer shadow-sm hover:shadow-md"
+        "shadow-sm hover:shadow-md"
       )}
-      onClick={handleCopy}
-      role="button"
-      tabIndex={0}
-      aria-label={t("recordLabel", String(entry.results.length), formatTime(entry.timestamp, language))}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="text-xs text-muted-foreground font-medium tracking-wide">

@@ -93,27 +93,32 @@ export function CustomListSettings({
         </Button>
       </div>
 
-      {/* 导入 Dialog */}
+      {/* 导入 Dialog — 无障碍支持: role="dialog" + aria-modal + Focus Trap */}
       {dialogOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="import-dialog-title"
+        >
           <div
             className="fixed inset-0 bg-black/50"
             onClick={() => setDialogOpen(false)}
-            onKeyDown={(e) => { if (e.key === 'Escape' || e.key === ' ') { e.preventDefault(); setDialogOpen(false); } }}
-            role="presentation"
-            aria-hidden="true"
+            onKeyDown={(e) => { if (e.key === 'Escape') { e.preventDefault(); setDialogOpen(false); } }}
           />
-          <div className="relative z-50 bg-background rounded-2xl border border-border/30 p-6 max-w-[520px] w-full mx-4">
-            <h3 className="text-xl font-semibold mb-2">
+          <div className="relative z-50 bg-background rounded-2xl border border-border/30 p-6 max-w-[520px] w-full mx-4 shadow-2xl">
+            <h3 id="import-dialog-title" className="text-xl font-semibold mb-2">
               {t("import_")}
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
               {t("importDesc")}
             </p>
             <textarea
+              ref={(el) => { if (el && dialogOpen) setTimeout(() => el.focus(), 50); }}
               value={importText}
               onChange={(e) => setImportText(e.target.value)}
               placeholder={t("listPlaceholder")}
+              aria-label={t("import_")}
               className="min-h-[240px] w-full rounded-xl resize-none bg-muted/30 border border-border/20 p-4 text-sm font-mono focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
             />
             <div className="flex gap-2 mt-4 justify-end">

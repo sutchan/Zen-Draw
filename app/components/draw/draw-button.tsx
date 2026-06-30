@@ -28,23 +28,12 @@ export function DrawButton({
 
   const t = React.useMemo(() => createTranslator(language), [language]);
 
-  // 处理点击
+  // 处理点击 — 原生 <button> 自动支持 Enter/Space 触发
   const handleClick = React.useCallback(() => {
     if (!canDraw && !isDrawing) return;
     if (isDrawing) onStop();
     else onStart();
   }, [canDraw, isDrawing, onStart, onStop]);
-
-  // 键盘支持（Enter / Space 触发）
-  const handleKeyDown = React.useCallback(
-    (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        handleClick();
-      }
-    },
-    [handleClick]
-  );
 
   return (
     <motion.div
@@ -103,10 +92,9 @@ export function DrawButton({
         </>
       )}
 
-      {/* 主按钮 */}
+      {/* 主按钮 — 原生 <button> 自动支持 Enter/Space，无需自定义 onKeyDown */}
       <motion.button
         onClick={handleClick}
-        onKeyDown={handleKeyDown}
         disabled={!canDraw && !isDrawing}
         aria-pressed={isDrawing}
         aria-label={isDrawing ? t("stopDraw") : t("startDraw")}

@@ -1,23 +1,24 @@
-# ZenDraw | 禅抽 v3.3 - 项目规范文档
+# ZenDraw | 禅抽 v4.0 - 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **版本**: v3.3
-- **描述**: 一款专业的全屏随机抽奖应用，采用 Apple 设计风格，适用于年会抽奖、课堂互动、抽奖活动等场景。
+- **版本**: v4.0
+- **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、10 种主题配色。
 - **许可证**: MIT License
-- **代码质量**: 严格 TypeScript + ESLint + CI/CD + 代码审查标准
+- **代码质量**: 严格 TypeScript + ESLint + CI/CD + 代码审查标准 + 安全头
 
 ### 1.2 设计理念
-本版本采用 Apple 设计风格，重新定义了视觉呈现和交互体验：
+本版本采用 Apple 设计哲学 + 极简禅意，重新定义了视觉呈现和交互体验：
 
 | 设计原则 | 说明 |
 |----------|------|
-| 极简布局 | 去除冗余元素，只保留核心功能入口，让内容优先于界面 |
-| 大图展示 | 突出显示抽奖结果，大字号居中布局，一眼即达 |
-| 充足留白 | 呼吸空间让界面更优雅，阅读更舒适，降低视觉疲劳 |
-| 清晰层次 | 明确的内容层级，信息结构一目了然，操作路径清晰 |
+| 减法美学 | 去除冗余元素，每个像素都有存在的理由 |
+| 聚焦核心 | 抽签是中心行为，界面围绕它设计 |
+| 克制即力量 | 色彩、动效、字体都服务于仪式感 |
+| 跨端一致 | 从桌面到移动端，体验保持连续与精致 |
+| 留白艺术 | 充足呼吸空间，降低视觉疲劳
 
 ### 1.3 技术栈
 | 类别 | 技术 | 版本 |
@@ -119,13 +120,16 @@ zen-draw/
 │   ├── PUSH_GUIDE.md       # 推送指南
 │   └── workflows/
 │       └── ci.yml          # CI/CD 工作流
-├── prototype/              # 设计原型文档
-│   ├── color-system.html
-│   ├── motion.html
-│   ├── typography.html
-│   ├── prototype.html
-│   ├── prototypes.html
-│   └── wireframes.html
+├── prototype/              # 设计原型（v4.0 重构）
+│   ├── v1/                 # v1 原型（线框图 + 初始原型）
+│   │   ├── wireframes.html
+│   │   └── prototype.html
+│   ├── v2/                 # v2 交互原型
+│   │   └── prototypes.html
+│   ├── interactive/        # v4.0 高保真可交互原型（极简禅意风格）
+│   │   └── index.html
+│   ├── design-system.md    # 完整设计系统规范（色彩/字体/间距/组件/动效）
+│   └── assets/
 ├── eslint.config.js       # ESLint 配置 (Flat Config)
 ├── tsconfig.json          # TypeScript 配置
 ├── package.json           # 项目依赖
@@ -200,82 +204,159 @@ zen-draw/
 
 ---
 
-## 4. 设计系统规范 (v3.0)
+## 4. 设计系统规范 (v4.0)
 
-### 4.1 视觉规范
+### 4.1 设计 Tokens (CSS 变量)
 
-#### 4.1.1 圆角系统
-| 名称 | 圆角值 | 适用场景 |
-|------|--------|----------|
-| xs | rounded-lg (0.5rem) | 小按钮、标签 |
-| sm | rounded-xl (0.75rem) | 小卡片、输入框聚焦状态 |
-| md | rounded-2xl (1rem) | 输入框、中等卡片、对话框 |
-| lg | rounded-[2rem] | 大型结果卡片、主面板 |
-| full | rounded-full / 980px | 胶囊按钮（主要操作） |
-
-#### 4.1.2 间距系统
-| 名称 | 间距值 | 适用场景 |
-|------|--------|----------|
-| xs | 4px (0.25rem) | 紧凑元素、图标间距 |
-| sm | 8px (0.5rem) | 小组件间距 |
-| md | 16px (1rem) | 默认间距、段落间距 |
-| lg | 24px (1.5rem) | 区块间距、设置分组间距 |
-| xl | 32px+ (2rem+) | 大区块留白、页面布局 |
-
-#### 4.1.3 颜色系统 (Light Mode)
-| 变量 | 值 | 用途 |
-|------|-----|------|
-| --background | oklch(0.99 0 0) | 页面背景 |
-| --foreground | oklch(0.145 0 0) | 主要文字 |
-| --muted | oklch(0.965 0 0) | 次要背景 |
-| --muted-foreground | oklch(0.556 0 0) | 次要文字 |
-| --border | oklch(0.91 0 0) | 边框颜色 |
-| --ring | oklch(0.708 0 0) | 聚焦环颜色 |
-
-#### 4.1.4 颜色系统 (Dark Mode)
-| 变量 | 值 | 用途 |
-|------|-----|------|
-| --background | oklch(0.145 0 0) | 页面背景 |
-| --foreground | oklch(0.985 0 0) | 主要文字 |
-| --muted | oklch(0.269 0 0) | 次要背景 |
-| --muted-foreground | oklch(0.708 0 0) | 次要文字 |
-| --border | oklch(1 0 0 / 10%) | 边框颜色 |
-
-#### 4.1.5 字体规范
-
-##### 字体层级
-| 类名 | 字号 | 字重 | 字间距 | 行高 | 适用场景 |
-|------|------|------|--------|------|----------|
-| display-1 | 3.5-7rem | 600 | -0.035em | 1.05 | 英雄标题 |
-| display-2 | 2.5rem | 600 | -0.025em | 1.1 | 大标题 |
-| heading-xl | 1.75rem | 600 | -0.022em | 1.2 | 区块标题 |
-| heading-lg | 1.25rem | 600 | -0.018em | 1.25 | 卡片标题 |
-| heading-md | 1rem | 600 | -0.014em | 1.3 | 小标题 |
-| body-text | 1.0625rem | 400 | - | 1.5 | 正文 |
-| caption | 0.875rem | 400 | - | 1.4 | 辅助文字 |
-
-##### 数字展示
+#### 4.1.1 中性色（冷色调）
 ```css
-/* 结果数字样式 */
-.result-number {
-    font-size: clamp(6rem, 12vw, 11rem);
-    font-weight: 700;
-    letter-spacing: -0.05em;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum";
-    background: linear-gradient(180deg, var(--foreground) 0%, var(--foreground)/0.8 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-}
+/* Light Mode */
+--bg: #fafbfc;               /* 页面背景 */
+--bg-subtle: #f4f5f7;        /* 次级背景 (hover, input) */
+--bg-elevated: #ffffff;      /* 卡片/弹窗 */
+--bg-muted: #eef0f4;         /* 悬停背景 */
+--fg: #1a1d23;               /* 主要文字 */
+--fg-secondary: #5a5f6b;     /* 次要文字 */
+--fg-tertiary: #8e939f;      /* 辅助文字 */
+--fg-quaternary: #b4b8c2;    /* 占位符/禁用 */
+
+/* Dark Mode */
+--bg: #0c0d0f;
+--bg-subtle: #141519;
+--bg-elevated: #1a1c22;
+--bg-muted: #23252b;
+--fg: #e8eaed;
+--fg-secondary: #9ca0ab;
+--fg-tertiary: #6b7080;
+--fg-quaternary: #464b58;
 ```
 
-#### 4.1.6 图标规范
-| 类型 | 尺寸 | 圆角 | 适用场景 |
-|------|------|------|----------|
-| 图标按钮 | 32×32px / 36×36px | rounded-lg | 顶部导航、控制按钮 |
-| 组合图标 | 28×28px | - | 装饰性图标 |
-| Logo 图标 | 32×32px | rounded-[10px] | 品牌标识 |
+#### 4.1.2 强调色（靛蓝 — Zen Indigo）
+```css
+--accent: #4f6ef7;           /* Light: 冷静靛蓝 */
+--accent-hover: #3b5ae0;
+--accent-subtle: rgba(79,110,247,0.10);
+
+/* Dark Mode */
+--accent: #6b87ff;
+--accent-hover: #85a0ff;
+```
+
+#### 4.1.3 语义色
+```css
+--success: #22a06b;
+--warning: #e8a313;
+--danger: #c9374b;
+--info: #4f6ef7;
+```
+
+#### 4.1.4 几何尺寸
+| Token | Value | 说明 |
+|-------|-------|------|
+| --radius-xs | 4px | 小标签 |
+| --radius-sm | 6px | 小按钮 |
+| --radius-md | 8px | 输入框 |
+| --radius-lg | 12px | 卡片 |
+| --radius-xl | 16px | 对话框 |
+| --radius-2xl | 24px | 大卡片 |
+| --radius-full | 9999px | 胶囊/圆形按钮 |
+
+#### 4.1.5 间距系统（4px 网格）
+| Token | Value | 使用场景 |
+|-------|-------|----------|
+| --space-2 | 8px | 紧凑元素 |
+| --space-4 | 16px | 默认间距 |
+| --space-6 | 24px | 区块间距 |
+| --space-8 | 32px | 大间距 |
+| --space-12 | 48px | 段落间距 |
+| --space-16+ | 64px+ | 页面布局留白 |
+
+#### 4.1.6 阴影系统
+```css
+--shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+--shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+--shadow-md: 0 4px 8px -2px rgba(0,0,0,0.08);
+--shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.10);
+--shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.14);
+```
+
+#### 4.1.7 动效系统
+```css
+--ease-out: cubic-bezier(0.16, 1, 0.3, 1);  /* Apple 式缓出 */
+--dur-100: 100ms;  /* 微交互 */
+--dur-200: 200ms;  /* 标准过渡 */
+--dur-300: 300ms;  /* 面板滑入 */
+--dur-500: 500ms;  /* 结果揭示 */
+--dur-700: 700ms;  /* 页面过渡 */
+```
+
+### 4.2 圆角系统
+| 名称 | 圆角值 | 适用场景 |
+|------|--------|----------|
+| xs | 4px (--radius-xs) | 小标签、页码 |
+| sm | 6px (--radius-sm) | 小按钮、输入框 |
+| md | 8px (--radius-md) | 默认组件 |
+| lg | 12px (--radius-lg) | 卡片 |
+| xl | 16px (--radius-xl) | 对话框 |
+| 2xl | 24px (--radius-2xl) | 大卡片 |
+| full | 9999px (--radius-full) | 胶囊/圆形按钮 |
+
+### 4.3 字体系统
+
+#### 4.3.1 字体栈
+| 名称 | 字体栈 |
+|------|--------|
+| Sans | Inter, Noto Sans SC, -apple-system, sans-serif |
+| Mono | JetBrains Mono, ui-monospace, monospace |
+| Serif | Playfair Display, Georgia, Noto Serif SC, serif |
+
+#### 4.3.2 字体层级（Modular Scale 1.25）
+| Token | Size | Weight | Line Height | 适用场景 |
+|-------|------|--------|-------------|----------|
+| --text-xs | 0.75rem (12px) | 400/600 | 1.33 | 辅助文字 |
+| --text-sm | 0.875rem (14px) | 400/500 | 1.4 | 标签、设置项 |
+| --text-base | 1rem (16px) | 400/500 | 1.5 | 正文 |
+| --text-lg | 1.125rem (18px) | 500/600 | 1.4 | 突出正文 |
+| --text-xl | 1.25rem (20px) | 600 | 1.3 | 小标题 |
+| --text-2xl | 1.5rem (24px) | 600/700 | 1.2 | 标题 |
+| --text-4xl | 2.25rem (36px) | 700 | 1.1 | 页标题 |
+| --text-6xl | 3.75rem (60px) | 700 | 1 | 抽签数字(桌面) |
+| --text-7xl | 4.5rem (72px) | 700 | 1 | 抽签数字(大屏) |
+
+### 4.4 交互标准
+
+#### 4.4.1 八种交互状态
+| 状态 | 触发 | 视觉反馈 |
+|------|------|----------|
+| Default | 静态 | 基础样式 |
+| Hover | 鼠标悬停 | 轻微上浮、颜色变化 |
+| Focus | Tab 导航 | 2px 焦点环 + offset |
+| Active | 按下 | scale(0.97) |
+| Disabled | 不可交互 | opacity 0.4 |
+| Loading | 处理中 | 脉冲/旋转动画 |
+| Error | 无效 | 红色边框 + 图标 |
+| Success | 完成 | 绿色提示 + 庆祝动效 |
+
+#### 4.4.2 键盘导航
+| 按键 | 操作 |
+|------|------|
+| Space / Enter | 开始/停止抽取 |
+| Escape | 返回欢迎状态 |
+| Tab | 控件间导航 |
+
+### 4.5 配色方案（10 种主题）
+| # | 名称 | 风格 | 强调色 |
+|---|------|------|--------|
+| 1 | Default | 靛蓝 · 经典 | #4f6ef7 |
+| 2 | Ocean | 海洋 · 冷静 | #00b4d8 |
+| 3 | Forest | 森林 · 自然 | #2d8a4e |
+| 4 | Sunset | 日落 · 温暖 | #e07c3c |
+| 5 | Purple | 紫色 · 优雅 | #7b2d8e |
+| 6 | Neon | 霓虹 · 激进 | #ff2d55 |
+| 7 | Sakura | 樱花 · 柔和 | #ff8fab |
+| 8 | Midnight | 午夜 · 深邃 | #3a3a5c |
+| 9 | Retro | 复古 · 怀旧 | #a67c52 |
+| 10 | Pixel | 像素 · 复古游戏 | #33ff33 |
 
 ##### 图标使用规则
 - 使用 `data-icon` 属性传递图标：`data-icon="inline-start"` 或 `data-icon="inline-end"`

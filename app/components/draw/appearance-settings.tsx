@@ -68,7 +68,7 @@ export function AppearanceSettings({
       <div className="space-y-3">
         <Label htmlFor="theme-mode">{t("themeMode")}</Label>
         {mounted && (
-          <Select value={theme ?? "system"} onValueChange={(v) => setTheme(v)}>
+          <Select value={theme ?? "system"} onValueChange={(v) => setTheme(v as string)}>
             <SelectTrigger id="theme-mode" className="h-11 rounded-2xl bg-muted/30 border border-border/20">
               <SelectValue />
             </SelectTrigger>
