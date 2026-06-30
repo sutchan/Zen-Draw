@@ -96,6 +96,23 @@ export default function HomePage() {
           </motion.div>
 
           <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              aria-label={
+                theme === "dark"
+                  ? t("switchLight")
+                  : t("switchDark")
+              }
+            >
+              {theme === "dark" ? (
+                <Sun className="size-4" aria-hidden="true" />
+              ) : (
+                <Moon className="size-4" aria-hidden="true" />
+              )}
+            </Button>
+
             <Sheet open={panelOpen} onOpenChange={setPanelOpen}>
               <SheetTrigger
                 className="inline-flex items-center justify-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -150,23 +167,6 @@ export default function HomePage() {
                 </div>
               </SheetContent>
             </Sheet>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label={
-                theme === "dark"
-                  ? t("switchLight")
-                  : t("switchDark")
-              }
-            >
-              {theme === "dark" ? (
-                <Sun className="size-4" aria-hidden="true" />
-              ) : (
-                <Moon className="size-4" aria-hidden="true" />
-              )}
-            </Button>
           </div>
         </div>
       </header>
