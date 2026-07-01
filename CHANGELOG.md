@@ -1,5 +1,22 @@
 # Changelog
 
+## [5.0.0] - 2026-06-24
+
+### Performance Optimization (Vercel Best Practices)
+- 动态导入 `SettingsPanel` 和 `HistoryList` 组件，减少初始 bundle 大小
+- 移除未使用的 Card 组件导入和未使用的依赖包
+- useReducer 模式重构 `use-draw.ts`，消除 13 个独立 useEffect 同步问题
+- 正则表达式提升到组件外作为常量（NumberRoller）
+- 添加 `content-visibility: auto` 优化长列表渲染
+- localStorage 版本化与迁移框架实现
+- ARIA 无障碍优化：`aria-live: "assertive"` → `"polite"`
+- 支持 `prefers-reduced-motion` 用户动画偏好
+
+### Code Quality
+- 修复所有 ESLint exhaustive-deps 警告
+- 移除无效的 `@import "shadcn/tailwind.css";`
+- 统一版本号至 v5.0.0
+
 ## [3.1.0] - 2026-06-11
 
 ### Security Hardening

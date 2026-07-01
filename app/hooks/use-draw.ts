@@ -372,57 +372,58 @@ export function useDraw(): UseDrawReturn {
   const animationRef = React.useRef<number | null>(null);
 
   // 当设置变化时，持久化到 localStorage
+  // 注意：setPersisted* 函数来自 useLocalStorage，使用 useCallback 包装，依赖 key，引用稳定
   React.useEffect(() => {
     setPersistedMin(state.min);
-  }, [state.min]);
+  }, [state.min, setPersistedMin]);
 
   React.useEffect(() => {
     setPersistedMax(state.max);
-  }, [state.max]);
+  }, [state.max, setPersistedMax]);
 
   React.useEffect(() => {
     setPersistedCount(state.count);
-  }, [state.count]);
+  }, [state.count, setPersistedCount]);
 
   React.useEffect(() => {
     setPersistedAllowDup(state.allowDuplicates);
-  }, [state.allowDuplicates]);
+  }, [state.allowDuplicates, setPersistedAllowDup]);
 
   React.useEffect(() => {
     setPersistedAutoHide(state.autoHide);
-  }, [state.autoHide]);
+  }, [state.autoHide, setPersistedAutoHide]);
 
   React.useEffect(() => {
     setPersistedDuration(state.duration);
-  }, [state.duration]);
+  }, [state.duration, setPersistedDuration]);
 
   React.useEffect(() => {
     setPersistedCustomList(state.customList);
-  }, [state.customList]);
+  }, [state.customList, setPersistedCustomList]);
 
   React.useEffect(() => {
     setPersistedUseCustom(state.useCustomList);
-  }, [state.useCustomList]);
+  }, [state.useCustomList, setPersistedUseCustom]);
 
   React.useEffect(() => {
     setPersistedDigits(state.digits);
-  }, [state.digits]);
+  }, [state.digits, setPersistedDigits]);
 
   React.useEffect(() => {
     setPersistedPrefix(state.prefix);
-  }, [state.prefix]);
+  }, [state.prefix, setPersistedPrefix]);
 
   React.useEffect(() => {
     setPersistedSuffix(state.suffix);
-  }, [state.suffix]);
+  }, [state.suffix, setPersistedSuffix]);
 
   React.useEffect(() => {
     setPersistedLanguage(state.language);
-  }, [state.language]);
+  }, [state.language, setPersistedLanguage]);
 
   React.useEffect(() => {
     setPersistedHistory(state.history);
-  }, [state.history]);
+  }, [state.history, setPersistedHistory]);
 
   // --- 抽取核心动作 ---
 
@@ -485,7 +486,7 @@ export function useDraw(): UseDrawReturn {
       }
     }, tickMs);
     return { ok: true };
-  }, [state.status, state.min, state.max, state.count, state.allowDuplicates, state.autoHide, state.duration, state.customList, state.useCustomList, state.digits, state.prefix, state.suffix]);
+  }, [state.status, state.min, state.max, state.count, state.allowDuplicates, state.autoHide, state.duration, state.customList, state.useCustomList, state.digits, state.prefix, state.suffix, state.language]);
 
   // 停止抽取（取消动画）
   const stopDraw = React.useCallback(() => {
