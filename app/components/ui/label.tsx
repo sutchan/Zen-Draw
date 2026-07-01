@@ -1,23 +1,20 @@
-// components/ui/label.tsx v1.0 — 纯 React Label
-"use client";
+"use client"
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
+import * as React from "react"
 
-export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {}
+import { cn } from "@/lib/utils"
 
-const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
-  ({ className, ...props }, ref) => (
+function Label({ className, ...props }: React.ComponentProps<"label">) {
+  return (
     <label
-      ref={ref}
+      data-slot="label"
       className={cn(
-        "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 select-none",
+        "flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
         className
       )}
       {...props}
     />
   )
-);
-Label.displayName = "Label";
+}
 
-export { Label };
+export { Label }

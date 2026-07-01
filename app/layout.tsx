@@ -1,4 +1,4 @@
-// app/layout.tsx v3.1
+// app/layout.tsx v3.3
 import type { Metadata, Viewport } from "next";
 import "./style.css";
 import { Geist, JetBrains_Mono, Playfair_Display } from "next/font/google";
@@ -17,7 +17,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "ZenDraw | 禅抽 v3.0",
+  title: "ZenDraw | 禅抽 v3.3.0",
   description:
     "A professional, full-screen random draw application with Apple-inspired design, customizable rules, multi-language support, slot-machine style rolling animations, and persistent settings.",
   keywords: [

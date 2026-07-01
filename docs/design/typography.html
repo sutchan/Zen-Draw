@@ -1,0 +1,2813 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZenDraw · Typography — 字体系统规范 v3.0</title>
+<style>
+/* ============================================================
+   CSS Variables — shadcn/ui design tokens (Light / Dark)
+   ============================================================ */
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #18181b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --success: #10b981;
+  --success-foreground: #fafafa;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+
+  /* Neutral scale */
+  --neutral-50: #fafafa;
+  --neutral-100: #f4f4f5;
+  --neutral-200: #e4e4e7;
+  --neutral-300: #d4d4d8;
+  --neutral-400: #a1a1aa;
+  --neutral-500: #71717a;
+  --neutral-600: #52525b;
+  --neutral-700: #3f3f46;
+  --neutral-800: #27272a;
+  --neutral-900: #18181b;
+  --neutral-950: #0a0a0a;
+
+  /* Doc-specific */
+  --doc-bg: #fafafa;
+  --doc-sample-bg: #ffffff;
+  --doc-elevated-bg: #ffffff;
+  --code-bg: #0b0d10;
+  --code-fg: #e5e7eb;
+  --code-comment: #6b7280;
+  --code-keyword: #c084fc;
+  --code-string: #86efac;
+  --code-tag: #fb7185;
+  --code-attr: #fbbf24;
+  --code-number: #7dd3fc;
+  --code-punc: #9ca3af;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.03);
+  --shadow: 0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.06), 0 2px 6px -3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.08), 0 4px 10px -4px rgba(0,0,0,0.04);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.10);
+  --shadow-2xl: 0 30px 60px -12px rgba(0,0,0,0.12), 0 18px 36px -18px rgba(0,0,0,0.08);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --transition: 200ms var(--ease-out);
+  --transition-slow: 300ms var(--ease-in-out);
+
+  /* Typography Tokens - Font Families */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-serif: "Noto Serif SC", Georgia, "Times New Roman", Times, serif;
+
+  /* Typography Tokens - Font Weights */
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Typography Tokens - Letter Spacing */
+  --ls-tightest: -0.05em;
+  --ls-tighter: -0.04em;
+  --ls-tight: -0.02em;
+  --ls-normal: 0em;
+  --ls-wide: 0.05em;
+  --ls-wider: 0.1em;
+
+  /* Typography Tokens - Line Heights */
+  --lh-tight: 1.2;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.75;
+
+  /* Font Sizes */
+  --fs-xs: 12px;
+  --fs-sm: 14px;
+  --fs-base: 16px;
+  --fs-lg: 18px;
+  --fs-xl: 20px;
+  --fs-2xl: 24px;
+  --fs-3xl: 36px;
+  --fs-4xl: 48px;
+  --fs-5xl: 60px;
+  --fs-6xl: 72px;
+  --fs-7xl: 96px;
+  --fs-8xl: 120px;
+  --fs-9xl: 144px;
+}
+
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #09090b;
+  --card-foreground: #fafafa;
+  --muted: #1f1f23;
+  --muted-foreground: #a1a1aa;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+
+  --neutral-50: #0a0a0a;
+  --neutral-100: #18181b;
+  --neutral-200: #27272a;
+  --neutral-300: #3f3f46;
+  --neutral-400: #52525b;
+  --neutral-500: #71717a;
+  --neutral-600: #a1a1aa;
+  --neutral-700: #d4d4d8;
+  --neutral-800: #e4e4e7;
+  --neutral-900: #f4f4f5;
+  --neutral-950: #fafafa;
+
+  --doc-bg: #0a0a0a;
+  --doc-sample-bg: #0f0f12;
+  --doc-elevated-bg: #111114;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.3);
+  --shadow: 0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.5), 0 2px 6px -3px rgba(0,0,0,0.3);
+  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.6), 0 4px 10px -4px rgba(0,0,0,0.4);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.7);
+}
+
+/* ============================================================
+   Reset
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { scroll-behavior: smooth; }
+
+html, body {
+  background: var(--doc-bg);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-slow), color var(--transition-slow);
+}
+
+body { min-height: 100vh; }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--muted);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--doc-bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-full); border: 2px solid var(--doc-bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); }
+
+/* Selection */
+::selection { background: color-mix(in srgb, var(--primary) 20%, transparent); color: var(--foreground); }
+
+/* ============================================================
+   Page Layout (matching color-system.html)
+   ============================================================ */
+.page {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+/* Top Header */
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--doc-bg) 85%, transparent);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--border);
+  grid-column: 1 / -1;
+  transition: background-color var(--transition-slow), border-color var(--transition-slow);
+}
+
+.top-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  padding: 0 32px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--neutral-900) 0%, var(--neutral-700) 50%, var(--neutral-950) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.brand-logo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, transparent 0%, transparent 60%, rgba(255,255,255,0.1) 100%);
+  pointer-events: none;
+}
+
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-text strong { font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.01em; }
+.brand-text span { font-size: var(--fs-xs); color: var(--muted-foreground); margin-top: 2px; }
+
+.version-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  margin-left: 8px;
+}
+
+.header-actions { display: flex; align-items: center; gap: 8px; }
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  transition: background-color var(--transition), color var(--transition), transform var(--transition);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--doc-elevated-bg);
+}
+.icon-btn:hover { background: var(--muted); transform: translateY(-1px); }
+.icon-btn:active { transform: translateY(0); }
+
+/* Sidebar nav */
+.sidebar {
+  position: sticky;
+  top: 68px;
+  height: calc(100vh - 68px);
+  overflow-y: auto;
+  padding: 28px 0 48px;
+  border-right: 1px solid var(--border);
+  background: var(--doc-bg);
+  transition: background-color var(--transition-slow), border-color var(--transition-slow);
+}
+
+.sidebar-inner {
+  padding: 0 24px;
+}
+
+.sidebar-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted-foreground);
+  font-weight: 600;
+  padding: 18px 12px 8px;
+}
+.sidebar-section-label:first-child { padding-top: 0; }
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition), color var(--transition);
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+}
+.sidebar-link .link-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--border);
+  min-width: 18px;
+  transition: color var(--transition);
+}
+.sidebar-link:hover { background: var(--muted); color: var(--foreground); }
+.sidebar-link:hover .link-num { color: var(--muted-foreground); }
+.sidebar-link.is-active {
+  background: var(--doc-elevated-bg);
+  color: var(--foreground);
+  font-weight: 500;
+  box-shadow: inset 2px 0 0 var(--foreground);
+}
+.sidebar-link.is-active .link-num { color: var(--foreground); }
+
+/* Main content */
+.content {
+  padding: 64px 80px 120px;
+  max-width: 1180px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* HERO */
+.hero {
+  margin-bottom: 64px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-bottom: 24px;
+  letter-spacing: 0.04em;
+}
+.hero-meta .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted-foreground); opacity: 0.5; }
+.hero h1 {
+  font-size: 72px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin-bottom: 20px;
+  background: linear-gradient(180deg, var(--foreground) 0%, color-mix(in srgb, var(--foreground) 55%, transparent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero h1 .highlight {
+  background: none;
+  -webkit-text-fill-color: var(--foreground);
+  font-style: italic;
+  font-weight: 500;
+}
+.hero .lead {
+  font-size: 19px;
+  color: var(--muted-foreground);
+  max-width: 640px;
+  line-height: 1.6;
+}
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 40px;
+  max-width: 720px;
+}
+.hero-metric {
+  padding: 18px 20px;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.hero-metric .m-value {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.hero-metric .m-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Section intro */
+.section-intro {
+  margin: 12px 0 40px;
+  color: var(--muted-foreground);
+  max-width: 720px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* Section heading with numbered */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding-top: 80px;
+  margin-top: 80px;
+  border-top: 1px solid var(--border);
+}
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.08em;
+}
+.section-head h2 {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+/* Section subtitle row */
+.section-subtitle {
+  font-size: 14px;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  margin-bottom: 48px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.section-subtitle .chip {
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+}
+
+/* ============================================================
+   1. Font Family Section
+   ============================================================ */
+.font-family-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.font-family-card {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+.font-family-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--foreground) 20%, var(--border));
+}
+
+.ffc-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ffc-name {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.ffc-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.ffc-body {
+  padding: 32px 28px 28px;
+}
+.ffc-chars {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.ffc-chars.mono {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.ffc-sample-text {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--foreground);
+  margin-bottom: 20px;
+}
+.ffc-sample-text.mono {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+.ffc-spec-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--border);
+}
+.ffc-spec-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.ffc-spec-item .spec-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--neutral-400);
+}
+
+/* Large Character Row */
+.char-sample-section {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 36px 32px;
+  margin-bottom: 24px;
+}
+
+.char-row-group-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.char-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.char-item {
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition);
+}
+.char-item:hover { background: var(--muted); }
+.char-item.monospace {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* ============================================================
+   2. Type Scale Section
+   ============================================================ */
+.type-scale-list {
+  display: flex;
+  flex-direction: column;
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.type-scale-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  align-items: flex-start;
+  padding: 32px 28px;
+  border-bottom: 1px solid var(--border);
+  gap: 24px;
+  transition: background-color var(--transition);
+}
+.type-scale-row:last-child { border-bottom: none; }
+.type-scale-row:hover { background: color-mix(in srgb, var(--muted) 50%, transparent); }
+
+.ts-scale-info {
+  flex-shrink: 0;
+}
+.ts-token {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 6px;
+}
+.ts-size {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-bottom: 4px;
+}
+.ts-usage {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.ts-preview {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Display Scale (9xl-6xl) */
+.ts-display-9xl {
+  font-family: var(--font-sans);
+  font-size: 144px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ts-display-8xl {
+  font-family: var(--font-sans);
+  font-size: 120px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ts-display-7xl {
+  font-family: var(--font-sans);
+  font-size: 96px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ts-display-6xl {
+  font-family: var(--font-sans);
+  font-size: 72px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: var(--foreground);
+}
+
+/* Heading Scale */
+.ts-h-5xl {
+  font-family: var(--font-sans);
+  font-size: 60px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.ts-h-4xl {
+  font-family: var(--font-sans);
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+.ts-h-3xl {
+  font-family: var(--font-sans);
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.ts-h-2xl {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+.ts-h-xl {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+/* Body Scale */
+.ts-b-lg {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+.ts-b-base {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+.ts-b-sm {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+.ts-b-xs {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+
+/* Mono Scale */
+.ts-m-lg {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+.ts-m-base {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+}
+.ts-m-sm {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scale divider label */
+.scale-divider {
+  grid-column: 1 / -1;
+  padding: 12px 24px;
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Do/Don't */
+.do-dont-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.dd-card {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  position: relative;
+}
+.dd-card.do { border-left: 4px solid var(--success); }
+.dd-card.dont { border-left: 4px solid var(--destructive); }
+.dd-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--border);
+}
+.dd-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+.dd-card.do .dd-badge { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); }
+.dd-card.dont .dd-badge { background: color-mix(in srgb, var(--destructive) 14%, transparent); color: var(--destructive); }
+.dd-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+.dd-sample {
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  background: var(--muted);
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+.dd-note {
+  font-size: 12.5px;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   3. Font Weight Section
+   ============================================================ */
+.weight-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.weight-card {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 16px;
+  text-align: center;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.weight-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+
+.weight-char {
+  font-size: 64px;
+  line-height: 1.1;
+  margin-bottom: 12px;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+}
+.w-light { font-weight: 300; }
+.w-regular { font-weight: 400; }
+.w-medium { font-weight: 500; }
+.w-semibold { font-weight: 600; }
+.w-bold { font-weight: 700; }
+
+.weight-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.weight-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+.weight-text-demo {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  margin-bottom: 32px;
+}
+.wt-row {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+}
+.wt-row:last-child { border-bottom: none; }
+.wt-label {
+  flex-shrink: 0;
+  width: 160px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+.wt-text {
+  font-size: 18px;
+  color: var(--foreground);
+  line-height: 1.4;
+}
+
+/* ============================================================
+   4. Line Height Section
+   ============================================================ */
+.lh-compare {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.lh-card {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+.lh-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lh-card-header .lh-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+.lh-card-header .lh-value {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  background: var(--muted);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+.lh-card-body {
+  padding: 24px 20px;
+  min-height: 200px;
+}
+.lh-card-body.tight { line-height: 1.2; }
+.lh-card-body.normal { line-height: 1.5; }
+.lh-card-body.relaxed { line-height: 1.75; }
+
+.lh-card-body p {
+  font-size: 14px;
+  color: var(--foreground);
+  margin-bottom: 12px;
+}
+
+/* Baseline Grid Visualization */
+.baseline-demo {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.baseline-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 23px,
+    color-mix(in srgb, var(--primary) 10%, transparent) 24px
+  );
+  opacity: 0.4;
+  pointer-events: none;
+}
+.baseline-content {
+  position: relative;
+  z-index: 1;
+}
+.baseline-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.baseline-text {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+
+/* ============================================================
+   5. Letter Spacing Section
+   ============================================================ */
+.ls-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.ls-card {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.ls-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+
+.ls-sample {
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 16px;
+  line-height: 1.2;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ls-sample.ls-tight { letter-spacing: -0.04em; }
+.ls-sample.ls-normal { letter-spacing: 0em; }
+.ls-sample.ls-wide { letter-spacing: 0.05em; }
+
+.ls-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+.ls-token {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--foreground);
+  font-weight: 500;
+}
+.ls-value {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+/* Sentence comparison */
+.ls-sentence-demo {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  margin-bottom: 32px;
+}
+.ls-sentence-row {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+}
+.ls-sentence-row:last-child { border-bottom: none; }
+.ls-s-label {
+  flex-shrink: 0;
+  width: 180px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}
+.ls-s-text {
+  font-size: 20px;
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+/* ============================================================
+   6. Paragraph / Heading Styles
+   ============================================================ */
+.heading-hierarchy {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 40px 36px;
+  margin-bottom: 24px;
+}
+.hh-row {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.hh-row:last-child { border-bottom: none; padding-bottom: 0; }
+.hh-row:first-child { padding-top: 0; }
+
+.hh-label {
+  flex-shrink: 0;
+  width: 120px;
+  padding-top: 8px;
+}
+.hh-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 4px;
+}
+.hh-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+
+.hh-preview { flex: 1; }
+
+.h1-preview {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--foreground);
+}
+.h2-preview {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+.h3-preview {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: var(--foreground);
+}
+.h4-preview {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+
+.lead-preview {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--foreground);
+}
+.body-preview {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--foreground);
+}
+.caption-preview {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+.small-preview {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* Color Hierarchy Demo */
+.color-hierarchy-demo {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  margin-bottom: 32px;
+}
+.ch-section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+.ch-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--foreground);
+  margin-bottom: 12px;
+}
+.ch-subtitle {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+.ch-muted {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+  margin-bottom: 16px;
+}
+.ch-link-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+}
+
+.link-sample {
+  font-size: 15px;
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: var(--muted-foreground);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color var(--transition), text-decoration-color var(--transition);
+  cursor: pointer;
+}
+.link-sample:hover { color: var(--foreground); text-decoration-color: var(--foreground); }
+.link-sample.muted { color: var(--muted-foreground); }
+.link-sample.muted:hover { color: var(--foreground); text-decoration-color: var(--foreground); }
+.link-sample.emphasis {
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid var(--foreground);
+  padding-bottom: 2px;
+}
+
+/* ============================================================
+   7. Mono / Numbers Styles
+   ============================================================ */
+.tabular-nums-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.tn-card {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+.tn-card-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tn-card-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+.tn-card-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.tn-card-body { padding: 28px 24px; }
+
+.tn-column-list {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--foreground);
+}
+.tn-proportional { font-variant-numeric: normal; }
+.tn-tabular { font-variant-numeric: tabular-nums; }
+
+/* Code snippet block */
+.code-snippet {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  margin-bottom: 24px;
+}
+.code-line { display: block; white-space: pre; }
+.code-c-key { color: var(--code-keyword); }
+.code-c-str { color: var(--code-string); }
+.code-c-num { color: var(--code-number); }
+.code-c-com { color: var(--code-comment); font-style: italic; }
+.code-c-tag { color: var(--code-tag); }
+.code-c-attr { color: var(--code-attr); }
+.code-c-punc { color: var(--code-punc); }
+
+/* Lottery number display */
+.lottery-display {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 40px 32px;
+  text-align: center;
+  margin-bottom: 32px;
+}
+.lottery-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 20px;
+}
+.lottery-number {
+  font-family: var(--font-mono);
+  font-size: 96px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 16px;
+  background: linear-gradient(180deg, var(--foreground) 0%, color-mix(in srgb, var(--foreground) 60%, transparent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.lottery-sub {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.02em;
+}
+.lottery-number-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.lottery-chip {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background: var(--muted);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   8. Accessibility Section
+   ============================================================ */
+.a11y-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.a11y-stat {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+}
+.a11y-stat .as-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.a11y-stat .as-value {
+  font-family: var(--font-mono);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--foreground);
+}
+.a11y-stat .as-value .as-unit {
+  font-size: 16px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  margin-left: 4px;
+}
+.a11y-stat .as-sub {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-top: 8px;
+}
+
+/* Size scale comparison */
+.size-comparison {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  margin-bottom: 32px;
+}
+.sc-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 24px;
+  display: block;
+}
+.sc-row {
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.sc-row:last-child { border-bottom: none; }
+.sc-tag {
+  flex-shrink: 0;
+  width: 100px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  padding: 4px 8px;
+  background: var(--muted);
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+.sc-tag.ok { color: var(--success); background: color-mix(in srgb, var(--success) 10%, transparent); }
+.sc-tag.warn { color: var(--warning); background: color-mix(in srgb, var(--warning) 10%, transparent); }
+.sc-text {
+  font-size: 14px;
+  color: var(--foreground);
+  line-height: 1.5;
+}
+
+/* Zoomed text demo */
+.zoom-demo {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.zoom-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.zoom-head-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+.zoom-percentage {
+  display: flex;
+  gap: 6px;
+}
+.zoom-chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  background: var(--muted);
+  border-radius: var(--radius-sm);
+  color: var(--muted-foreground);
+}
+.zoom-body {
+  padding: 32px 28px;
+}
+.zoom-block {
+  padding: 20px;
+  background: var(--muted);
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  transform-origin: top left;
+}
+.zoom-block:last-child { margin-bottom: 0; }
+.zoom-block-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted-foreground);
+  margin-bottom: 8px;
+}
+.zoom-text-base {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--foreground);
+}
+.zoom-text-150 {
+  font-size: 24px;
+  line-height: 1.5;
+  color: var(--foreground);
+}
+.zoom-text-200 {
+  font-size: 32px;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+
+/* Accessibility Guidelines */
+.a11y-notes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.a11y-note {
+  background: var(--doc-elevated-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+}
+.a11y-note-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.a11y-note-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+.a11y-note h4 { font-size: 14px; letter-spacing: -0.01em; }
+.a11y-note p { font-size: 13px; margin-top: 6px; line-height: 1.6; color: var(--muted-foreground); }
+
+/* Footer */
+.docs-footer {
+  margin-top: 96px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+}
+.docs-footer .df-brand { display: flex; align-items: center; gap: 10px; }
+.docs-footer .df-logo {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  background: var(--foreground);
+  color: var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .content { padding: 48px 40px 80px; }
+  .hero h1 { font-size: 56px; }
+  .type-scale-row { grid-template-columns: 1fr; }
+  .font-family-grid { grid-template-columns: 1fr; }
+  .weight-compare-grid { grid-template-columns: repeat(3, 1fr); }
+  .lh-compare { grid-template-columns: 1fr; }
+  .ls-grid { grid-template-columns: 1fr; }
+  .tabular-nums-demo { grid-template-columns: 1fr; }
+  .a11y-stats { grid-template-columns: repeat(2, 1fr); }
+  .hero-metrics { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+  .page { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .content { padding: 32px 20px 64px; }
+  .hero h1 { font-size: 42px; }
+  .section-head h2 { font-size: 30px; }
+  .do-dont-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .hero h1 { font-size: 32px; }
+  .top-header-inner { padding: 0 16px; }
+  .weight-compare-grid { grid-template-columns: repeat(2, 1fr); }
+  .hh-row { flex-direction: column; }
+  .hh-label { width: 100%; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ============ TOP HEADER ============ -->
+  <header class="top-header">
+    <div class="top-header-inner">
+      <div class="brand">
+        <div class="brand-logo">Z</div>
+        <div class="brand-text">
+          <strong>ZenDraw · Typography</strong>
+          <span>Font System Reference</span>
+        </div>
+        <span class="version-badge">v3.0.0</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="theme-toggle" title="切换主题" aria-label="切换主题">
+          <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ SIDEBAR NAV ============ -->
+  <nav class="sidebar" id="sidebar-nav">
+    <div class="sidebar-inner">
+      <div class="sidebar-section-label">Sections</div>
+      <a class="sidebar-link" href="#section-family" data-section="01">
+        <span class="link-num">01</span>
+        <span>字体家族</span>
+      </a>
+      <a class="sidebar-link" href="#section-scale" data-section="02">
+        <span class="link-num">02</span>
+        <span>字号阶梯</span>
+      </a>
+      <a class="sidebar-link" href="#section-weight" data-section="03">
+        <span class="link-num">03</span>
+        <span>字重</span>
+      </a>
+      <a class="sidebar-link" href="#section-lineheight" data-section="04">
+        <span class="link-num">04</span>
+        <span>行高</span>
+      </a>
+      <a class="sidebar-link" href="#section-spacing" data-section="05">
+        <span class="link-num">05</span>
+        <span>字距</span>
+      </a>
+      <a class="sidebar-link" href="#section-paragraph" data-section="06">
+        <span class="link-num">06</span>
+        <span>段落样式</span>
+      </a>
+      <a class="sidebar-link" href="#section-mono" data-section="07">
+        <span class="link-num">07</span>
+        <span>代码/数字</span>
+      </a>
+      <a class="sidebar-link" href="#section-a11y" data-section="08">
+        <span class="link-num">08</span>
+        <span>无障碍</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main class="content">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-meta">
+        <span>ZENDRAW DS</span>
+        <span class="meta-dot"></span>
+        <span>TYPOGRAPHY · v3.0</span>
+        <span class="meta-dot"></span>
+        <span>2025</span>
+      </div>
+      <h1>优雅可读的<br/><span class="highlight">字体系统</span></h1>
+      <p class="lead">
+        一套极简、清晰且富有层次的排版规范。基于语义化字号阶梯与字重体系，
+        确保在所有界面中文字都具有良好的可读性与一致的视觉权重。
+      </p>
+      <div class="hero-metrics">
+        <div class="hero-metric">
+          <div class="m-value">3</div>
+          <div class="m-label">Font Families</div>
+        </div>
+        <div class="hero-metric">
+          <div class="m-value">13</div>
+          <div class="m-label">Type Scale</div>
+        </div>
+        <div class="hero-metric">
+          <div class="m-value">5</div>
+          <div class="m-label">Weights</div>
+        </div>
+        <div class="hero-metric">
+          <div class="m-value">WCAG</div>
+          <div class="m-label">A11y Compliant</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 1. TYPEFACE / FONT FAMILY ============ -->
+    <section id="section-family">
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <h2>字体家族 · Typeface</h2>
+      </div>
+      <div class="section-subtitle">
+        <span class="chip">--font-sans</span>
+        <span class="chip">--font-mono</span>
+        <span class="chip">Inter · JetBrains Mono</span>
+      </div>
+      <p class="section-intro">
+        我们采用两套字体覆盖全部使用场景。Sans 字体用于界面文案与标题，确保跨平台清晰可读；
+        Mono 字体用于数字、代码与数据展示，提供对齐一致的字符宽度。
+      </p>
+
+      <div class="font-family-grid">
+        <!-- Sans -->
+        <div class="font-family-card">
+          <div class="ffc-header">
+            <span class="ffc-name">Sans · 界面字体</span>
+            <span class="ffc-tag">--font-sans</span>
+          </div>
+          <div class="ffc-body">
+            <div class="ffc-chars">Aa Bb Cc</div>
+            <div class="ffc-sample-text">
+              ZenDraw 禅抽。简洁优雅的在线抽奖工具，用于会议、团队活动与年会。
+            </div>
+            <div class="ffc-spec-list">
+              <div class="ffc-spec-item"><span class="spec-dot"></span>Inter · 现代无衬线英文</div>
+              <div class="ffc-spec-item"><span class="spec-dot"></span>PingFang / 微软雅黑 · 中文字体回退</div>
+              <div class="ffc-spec-item"><span class="spec-dot"></span>-apple-system · macOS/iOS 系统字体</div>
+              <div class="ffc-spec-item"><span class="spec-dot"></span>场景: 标题、正文、按钮、标签</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mono -->
+        <div class="font-family-card">
+          <div class="ffc-header">
+            <span class="ffc-name">Mono · 等宽字体</span>
+            <span class="ffc-tag">--font-mono</span>
+          </div>
+          <div class="ffc-body">
+            <div class="ffc-chars mono">{ 0: 42 }</div>
+            <div class="ffc-sample-text mono">
+              const lottery = draw(range, { repeat: false });
+              // Returns: [ 7, 12, 35, 49, 88 ]
+            </div>
+            <div class="ffc-spec-list">
+              <div class="ffc-spec-item"><span class="spec-dot"></span>JetBrains Mono · 开发者首选等宽字体</div>
+              <div class="ffc-spec-item"><span class="spec-dot"></span>ui-monospace · 系统等宽字体回退</div>
+              <div class="ffc-spec-item"><span class="spec-dot"></span>使用 font-variant-numeric: tabular-nums</div>
+              <div class="ffc-spec-item"><span class="spec-dot"></span>场景: 抽奖数字、代码片段、配置</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Character Samples -->
+      <div class="char-sample-section">
+        <span class="char-row-group-label">Sans · Character Set</span>
+        <div class="char-row">
+          <span class="char-item">A</span><span class="char-item">B</span><span class="char-item">C</span><span class="char-item">D</span><span class="char-item">E</span><span class="char-item">F</span><span class="char-item">G</span><span class="char-item">H</span><span class="char-item">I</span><span class="char-item">J</span><span class="char-item">K</span><span class="char-item">L</span><span class="char-item">M</span><span class="char-item">N</span><span class="char-item">O</span><span class="char-item">P</span><span class="char-item">Q</span><span class="char-item">R</span><span class="char-item">S</span><span class="char-item">T</span><span class="char-item">U</span><span class="char-item">V</span><span class="char-item">W</span><span class="char-item">X</span><span class="char-item">Y</span><span class="char-item">Z</span>
+        </div>
+        <div class="char-row">
+          <span class="char-item">a</span><span class="char-item">b</span><span class="char-item">c</span><span class="char-item">d</span><span class="char-item">e</span><span class="char-item">f</span><span class="char-item">g</span><span class="char-item">h</span><span class="char-item">i</span><span class="char-item">j</span><span class="char-item">k</span><span class="char-item">l</span><span class="char-item">m</span><span class="char-item">n</span><span class="char-item">o</span><span class="char-item">p</span><span class="char-item">q</span><span class="char-item">r</span><span class="char-item">s</span><span class="char-item">t</span><span class="char-item">u</span><span class="char-item">v</span><span class="char-item">w</span><span class="char-item">x</span><span class="char-item">y</span><span class="char-item">z</span>
+        </div>
+        <div class="char-row">
+          <span class="char-item">0</span><span class="char-item">1</span><span class="char-item">2</span><span class="char-item">3</span><span class="char-item">4</span><span class="char-item">5</span><span class="char-item">6</span><span class="char-item">7</span><span class="char-item">8</span><span class="char-item">9</span><span class="char-item">.</span><span class="char-item">,</span><span class="char-item">?</span><span class="char-item">!</span><span class="char-item">:</span><span class="char-item">;</span><span class="char-item">@</span><span class="char-item">#</span><span class="char-item">%</span><span class="char-item">&amp;</span>
+        </div>
+      </div>
+
+      <div class="char-sample-section">
+        <span class="char-row-group-label">Mono · Character Set</span>
+        <div class="char-row">
+          <span class="char-item monospace">0</span><span class="char-item monospace">1</span><span class="char-item monospace">2</span><span class="char-item monospace">3</span><span class="char-item monospace">4</span><span class="char-item monospace">5</span><span class="char-item monospace">6</span><span class="char-item monospace">7</span><span class="char-item monospace">8</span><span class="char-item monospace">9</span><span class="char-item monospace">0</span><span class="char-item monospace">1</span><span class="char-item monospace">2</span>
+        </div>
+        <div class="char-row">
+          <span class="char-item monospace">=</span><span class="char-item monospace">+</span><span class="char-item monospace">-</span><span class="char-item monospace">*</span><span class="char-item monospace">/</span><span class="char-item monospace">&lt;</span><span class="char-item monospace">&gt;</span><span class="char-item monospace">{</span><span class="char-item monospace">}</span><span class="char-item monospace">[</span><span class="char-item monospace">]</span><span class="char-item monospace">(</span><span class="char-item monospace">)</span><span class="char-item monospace">;</span><span class="char-item monospace">:</span><span class="char-item monospace">,</span><span class="char-item monospace">.</span><span class="char-item monospace">'</span><span class="char-item monospace">"</span>
+        </div>
+        <div class="char-row">
+          <span class="char-item monospace">Il1</span><span class="char-item monospace">O0o</span><span class="char-item monospace">8B</span><span class="char-item monospace">rn</span><span class="char-item monospace">mnh</span><span class="char-item monospace">aeg</span>
+        </div>
+      </div>
+
+      <div class="do-dont-grid">
+        <div class="dd-card do">
+          <div class="dd-head"><span class="dd-badge">Do</span><span class="dd-title">正确做法</span></div>
+          <div class="dd-sample">
+            <strong style="font-size:16px;">抽奖结果 · 第 3 轮</strong><br/>
+            <span style="font-family: var(--font-mono); font-size: 20px; font-variant-numeric: tabular-nums;">[ 07, 12, 35, 49, 88 ]</span>
+          </div>
+          <p class="dd-note">数字与代码使用 Mono 字体并配合 tabular-nums 以保持对齐。标题与正文使用 Sans 字体。</p>
+        </div>
+        <div class="dd-card dont">
+          <div class="dd-head"><span class="dd-badge">Don't</span><span class="dd-title">避免</span></div>
+          <div class="dd-sample">
+            <span style="font-size: 16px;">🎲 抽奖结果 第 3 轮</span><br/>
+            <span style="font-size: 20px;">[ 7, 12, 35, 49, 88 ]</span>
+          </div>
+          <p class="dd-note">避免混用多种字体、在数字中使用默认比例字体导致列不对齐。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2. TYPE SCALE ============ -->
+    <section id="section-scale">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <h2>字号阶梯 · Type Scale</h2>
+      </div>
+      <div class="section-subtitle">
+        <span class="chip">12px - 144px</span>
+        <span class="chip">13 级字号</span>
+        <span class="chip">Display · Heading · Body · Mono</span>
+      </div>
+      <p class="section-intro">
+        完整的字号阶梯系统，从大型 Display 展示级到小型正文辅助级。每一级都对应明确的使用场景，
+        确保在不同的界面区域中都有一致的字号使用规范。
+      </p>
+
+      <!-- Display Scale -->
+      <div class="type-scale-list">
+        <div class="scale-divider">Display · 展示级</div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">display-9xl</div>
+            <div class="ts-size">144px / 9rem</div>
+            <div class="ts-size">Weight: 700 · LS: -0.05em</div>
+            <div class="ts-usage">用于 Landing Page 主标题或英雄区域的视觉焦点。仅在最突出的展示位置使用。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-display-9xl">ZenDraw</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">display-8xl</div>
+            <div class="ts-size">120px / 7.5rem</div>
+            <div class="ts-size">Weight: 700 · LS: -0.05em</div>
+            <div class="ts-usage">巨型展示文字，用于产品页或宣传页的核心标题。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-display-8xl">极简抽奖</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">display-7xl</div>
+            <div class="ts-size">96px / 6rem</div>
+            <div class="ts-size">Weight: 700 · LS: -0.04em</div>
+            <div class="ts-usage">大型展示标题，用于主页面一级标题或抽奖结果大号数字。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-display-7xl">Fortune Awaits</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">display-6xl</div>
+            <div class="ts-size">72px / 4.5rem</div>
+            <div class="ts-size">Weight: 700 · LS: -0.04em</div>
+            <div class="ts-usage">大标题，用于章节分割或产品展示中的主要文字。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-display-6xl">开始你的抽奖</div>
+          </div>
+        </div>
+
+        <!-- Heading Scale -->
+        <div class="scale-divider">Heading · 标题级</div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">heading-5xl</div>
+            <div class="ts-size">60px / 3.75rem</div>
+            <div class="ts-size">Weight: 700 · LS: -0.03em</div>
+            <div class="ts-usage">一级页面标题，如设置页、结果页的大标题。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-h-5xl">抽奖配置</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">heading-4xl</div>
+            <div class="ts-size">48px / 3rem</div>
+            <div class="ts-size">Weight: 700 · LS: -0.03em</div>
+            <div class="ts-usage">页面主标题，最常使用的大标题级别。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-h-4xl">历史抽奖记录</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">heading-3xl</div>
+            <div class="ts-size">36px / 2.25rem</div>
+            <div class="ts-size">Weight: 600 · LS: -0.02em</div>
+            <div class="ts-usage">次要标题或区块标题，用于卡片内大标题。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-h-3xl">不重复抽取</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">heading-2xl</div>
+            <div class="ts-size">24px / 1.5rem</div>
+            <div class="ts-size">Weight: 600 · LS: -0.02em</div>
+            <div class="ts-usage">中型标题，用于卡片标题或模态框中的主文字。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-h-2xl">今日幸运号码</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">heading-xl</div>
+            <div class="ts-size">20px / 1.25rem</div>
+            <div class="ts-size">Weight: 600 · LS: -0.01em</div>
+            <div class="ts-usage">小标题，用于列表项标题或侧边栏分组标题。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-h-xl">范围设置</div>
+          </div>
+        </div>
+
+        <!-- Body Scale -->
+        <div class="scale-divider">Body · 正文级</div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">body-lg</div>
+            <div class="ts-size">18px / 1.125rem</div>
+            <div class="ts-size">Weight: 400 · LH: 1.6</div>
+            <div class="ts-usage">引导正文，用于介绍性段落或重要消息提示。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-b-lg">ZenDraw 支持自定义范围与不重复抽取，适合会议、教学、年会等多种场景。</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">body-base</div>
+            <div class="ts-size">16px / 1rem</div>
+            <div class="ts-size">Weight: 400 · LH: 1.6</div>
+            <div class="ts-usage">标准正文，界面中最常用的正文段落级别。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-b-base">设置抽奖的最小值与最大值，系统将在此范围内随机生成数字。</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">body-sm</div>
+            <div class="ts-size">14px / 0.875rem</div>
+            <div class="ts-size">Weight: 400 · LH: 1.5</div>
+            <div class="ts-usage">辅助文字，用于按钮、表单标签与较短描述。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-b-sm">点击"开始"按钮，系统将立即进行随机抽奖。</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">body-xs</div>
+            <div class="ts-size">12px / 0.75rem</div>
+            <div class="ts-size">Weight: 500 · LS: 0.02em</div>
+            <div class="ts-usage">最小字号，用于脚注、说明性标签或时间戳。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-b-xs">LAST UPDATED · 2025.07.15 14:32:08 · SESSION #A7F21</div>
+          </div>
+        </div>
+
+        <!-- Mono Scale -->
+        <div class="scale-divider">Mono · 数字/代码</div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">mono-lg</div>
+            <div class="ts-size">18px / 1.125rem</div>
+            <div class="ts-size">tabular-nums</div>
+            <div class="ts-usage">展示用大数字，用于列表中的数值展示。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-m-lg">range: 1-100 · count: 42 · #07</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">mono-base</div>
+            <div class="ts-size">16px / 1rem</div>
+            <div class="ts-size">tabular-nums</div>
+            <div class="ts-usage">代码片段与普通数字显示，配置区域的数值。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-m-base">const prize = draw({ min: 1, max: 100, n: 5 });</div>
+          </div>
+        </div>
+
+        <div class="type-scale-row">
+          <div class="ts-scale-info">
+            <div class="ts-token">mono-sm</div>
+            <div class="ts-size">14px / 0.875rem</div>
+            <div class="ts-size">tabular-nums</div>
+            <div class="ts-usage">紧凑数据展示，用于表格与列表中的数字列。</div>
+          </div>
+          <div class="ts-preview">
+            <div class="ts-m-sm">id=2048 · time=14:32:08 · value=[12,35,88]</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="do-dont-grid">
+        <div class="dd-card do">
+          <div class="dd-head"><span class="dd-badge">Do</span><span class="dd-title">正确做法</span></div>
+          <div class="dd-sample">
+            <span style="font-size: 44px; font-weight: 700; letter-spacing: -0.03em;">抽奖结果</span><br/>
+            <span style="font-size: 16px; color: var(--muted-foreground);">第 3 轮 · 2025.07.15</span>
+          </div>
+          <p class="dd-note">标题与正文之间保持至少两个级别的字号差以形成视觉层次。标题使用 Bold/700 字重加负字距。</p>
+        </div>
+        <div class="dd-card dont">
+          <div class="dd-head"><span class="dd-badge">Don't</span><span class="dd-title">避免</span></div>
+          <div class="dd-sample">
+            <span style="font-size: 22px; font-weight: 500;">抽奖结果</span><br/>
+            <span style="font-size: 20px;">第 3 轮 · 2025.07.15</span>
+          </div>
+          <p class="dd-note">标题与辅助文字过于接近导致层级不清；在同一层级中使用过多相似大小的字号。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3. FONT WEIGHT ============ -->
+    <section id="section-weight">
+      <div class="section-head">
+        <span class="section-num">03</span>
+        <h2>字重 · Font Weight</h2>
+      </div>
+      <div class="section-subtitle">
+        <span class="chip">Light 300</span>
+        <span class="chip">Regular 400</span>
+        <span class="chip">Medium 500</span>
+        <span class="chip">Semibold 600</span>
+        <span class="chip">Bold 700</span>
+      </div>
+      <p class="section-intro">
+        5 种字重，通过粗细变化建立视觉层级。重要信息使用较粗的字重，正文与说明文字使用常规字重。
+        避免在小字号下使用过细的字重导致可读性降低。
+      </p>
+
+      <!-- Weight Comparison Grid -->
+      <div class="weight-compare-grid">
+        <div class="weight-card">
+          <div class="weight-char w-light">Aa</div>
+          <div class="weight-label">Light</div>
+          <div class="weight-num">300</div>
+        </div>
+        <div class="weight-card">
+          <div class="weight-char w-regular">Aa</div>
+          <div class="weight-label">Regular</div>
+          <div class="weight-num">400</div>
+        </div>
+        <div class="weight-card">
+          <div class="weight-char w-medium">Aa</div>
+          <div class="weight-label">Medium</div>
+          <div class="weight-num">500</div>
+        </div>
+        <div class="weight-card">
+          <div class="weight-char w-semibold">Aa</div>
+          <div class="weight-label">Semibold</div>
+          <div class="weight-num">600</div>
+        </div>
+        <div class="weight-card">
+          <div class="weight-char w-bold">Aa</div>
+          <div class="weight-label">Bold</div>
+          <div class="weight-num">700</div>
+        </div>
+      </div>
+
+      <!-- Same Text Different Weights -->
+      <div class="weight-text-demo">
+        <div class="wt-row">
+          <div class="wt-label">Light 300</div>
+          <div class="wt-text" style="font-weight: 300;">ZenDraw 禅抽 · 简洁优雅的在线抽奖工具 (适合大号展示)</div>
+        </div>
+        <div class="wt-row">
+          <div class="wt-label">Regular 400</div>
+          <div class="wt-text" style="font-weight: 400;">ZenDraw 禅抽 · 简洁优雅的在线抽奖工具 (标准正文首选)</div>
+        </div>
+        <div class="wt-row">
+          <div class="wt-label">Medium 500</div>
+          <div class="wt-text" style="font-weight: 500;">ZenDraw 禅抽 · 简洁优雅的在线抽奖工具 (按钮/标签/强调)</div>
+        </div>
+        <div class="wt-row">
+          <div class="wt-label">Semibold 600</div>
+          <div class="wt-text" style="font-weight: 600;">ZenDraw 禅抽 · 简洁优雅的在线抽奖工具 (小标题/表单标签)</div>
+        </div>
+        <div class="wt-row">
+          <div class="wt-label">Bold 700</div>
+          <div class="wt-text" style="font-weight: 700;">ZenDraw 禅抽 · 简洁优雅的在线抽奖工具 (标题/重要数字)</div>
+        </div>
+      </div>
+
+      <div class="a11y-notes">
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">400</div>
+            <h4>正文使用 Regular</h4>
+          </div>
+          <p>所有段落正文使用 Regular 400 字重。在正文中使用更粗的字重会因密度过高降低长时间阅读的舒适度。</p>
+        </div>
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">500</div>
+            <h4>Medium 用于交互</h4>
+          </div>
+          <p>按钮、标签、链接等交互元素使用 Medium 500 字重。提供足够的视觉存在感但不会显得过于沉重。</p>
+        </div>
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">600+</div>
+            <h4>粗体用于标题</h4>
+          </div>
+          <p>Semibold 600 与 Bold 700 用于标题与强调文字。在 14px 以下的小字号中推荐使用 Semibold 而非 Bold。</p>
+        </div>
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">300</div>
+            <h4>Light 仅限大号</h4>
+          </div>
+          <p>Light 300 仅用于 32px 以上的大号展示文字。小字号下使用 Light 会严重影响可读性。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4. LINE HEIGHT ============ -->
+    <section id="section-lineheight">
+      <div class="section-head">
+        <span class="section-num">04</span>
+        <h2>行高 · Line Height</h2>
+      </div>
+      <div class="section-subtitle">
+        <span class="chip">Tight 1.2</span>
+        <span class="chip">Normal 1.5</span>
+        <span class="chip">Relaxed 1.75</span>
+      </div>
+      <p class="section-intro">
+        行高决定了文字的纵向密度与可读性。标题使用较紧凑的行高以增强视觉聚焦；正文使用适中的行高保证阅读流畅；
+        长文本内容使用更宽松的行高以减少阅读疲劳。
+      </p>
+
+      <!-- Line Height Comparison Cards -->
+      <div class="lh-compare">
+        <div class="lh-card">
+          <div class="lh-card-header">
+            <span class="lh-label">Tight</span>
+            <span class="lh-value">1.2</span>
+          </div>
+          <div class="lh-card-body tight">
+            <p>紧凑的行高设置适合标题文字，让标题在视觉上更加聚焦。</p>
+            <p>用于大字号标题及短行文字场景。配合大字距以形成鲜明的视觉冲击力。</p>
+            <p>标题级别: Display · H1-H4。</p>
+          </div>
+        </div>
+
+        <div class="lh-card">
+          <div class="lh-card-header">
+            <span class="lh-label">Normal</span>
+            <span class="lh-value">1.5</span>
+          </div>
+          <div class="lh-card-body normal">
+            <p>标准的行高设置适合界面正文，在保持良好可读性的同时不过度占用空间。</p>
+            <p>用于大多数 UI 文本、按钮描述、卡片内容以及中等长度的消息。</p>
+            <p>应用级别: Body Base · Body Small · 列表项描述。</p>
+          </div>
+        </div>
+
+        <div class="lh-card">
+          <div class="lh-card-header">
+            <span class="lh-label">Relaxed</span>
+            <span class="lh-value">1.75</span>
+          </div>
+          <div class="lh-card-body relaxed">
+            <p>宽松的行高设置适合长段落的文档内容阅读，减少眼睛的扫视距离。</p>
+            <p>用于帮助文档、说明指南、博客文章等长文本内容，提升长时间阅读体验。</p>
+            <p>应用级别: Body Large · Lead Text · Article Content。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Baseline Grid Visual -->
+      <div class="baseline-demo">
+        <div class="baseline-grid-bg"></div>
+        <div class="baseline-content">
+          <div class="baseline-label">Baseline Grid · 8px Rhythm</div>
+          <div class="baseline-text">ZenDraw 的排版遵循 8px 基准网格节奏，</div>
+          <div class="baseline-text">确保每个元素的垂直间距都能对齐到网格。</div>
+          <div class="baseline-text">正文字号 16px · 行高 1.5 · 产生 24px 的节奏单位。</div>
+          <div class="baseline-text" style="color: var(--muted-foreground);">此设置确保界面拥有稳定的垂直韵律。</div>
+        </div>
+      </div>
+
+      <div class="do-dont-grid">
+        <div class="dd-card do">
+          <div class="dd-head"><span class="dd-badge">Do</span><span class="dd-title">正确做法</span></div>
+          <div class="dd-sample">
+            <span style="font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2;">抽奖结果已生成</span><br/>
+            <span style="font-size: 15px; color: var(--foreground); line-height: 1.6; margin-top: 12px; display: inline-block;">系统已生成本轮抽奖结果，点击下方按钮可查看详细记录或进行下一轮抽奖。</span>
+          </div>
+          <p class="dd-note">标题使用紧凑行高 1.2，正文使用 1.5-1.6 的行高。不同层级有不同的行高策略。</p>
+        </div>
+        <div class="dd-card dont">
+          <div class="dd-head"><span class="dd-badge">Don't</span><span class="dd-title">避免</span></div>
+          <div class="dd-sample">
+            <span style="font-size: 36px; font-weight: 700; line-height: 1.8;">抽奖结果已生成</span><br/>
+            <span style="font-size: 15px; line-height: 1.1;">系统已生成本轮抽奖结果，点击下方按钮可查看详细记录或进行下一轮抽奖。</span>
+          </div>
+          <p class="dd-note">标题使用过大的行高会产生断句割裂；正文行高过小导致文字挤在一起难以阅读。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5. LETTER SPACING ============ -->
+    <section id="section-spacing">
+      <div class="section-head">
+        <span class="section-num">05</span>
+        <h2>字距 · Letter Spacing</h2>
+      </div>
+      <div class="section-subtitle">
+        <span class="chip">Tight -0.04em</span>
+        <span class="chip">Normal 0em</span>
+        <span class="chip">Wide 0.05em</span>
+      </div>
+      <p class="section-intro">
+        字距用于调整字符之间的紧密度。字号越大，需要更多的负字距以保持视觉紧凑；
+        全大写的标签文字需要使用正字距以提升可读性。
+      </p>
+
+      <div class="ls-grid">
+        <div class="ls-card">
+          <div class="ls-sample ls-tight">ZenDraw 123</div>
+          <div class="ls-info">
+            <span class="ls-token">--ls-tight</span>
+            <span class="ls-value">-0.04em</span>
+          </div>
+        </div>
+
+        <div class="ls-card">
+          <div class="ls-sample ls-normal">ZenDraw 123</div>
+          <div class="ls-info">
+            <span class="ls-token">--ls-normal</span>
+            <span class="ls-value">0em</span>
+          </div>
+        </div>
+
+        <div class="ls-card">
+          <div class="ls-sample ls-wide">ZENDRAW</div>
+          <div class="ls-info">
+            <span class="ls-token">--ls-wide</span>
+            <span class="ls-value">0.05em</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sentence Comparison -->
+      <div class="ls-sentence-demo">
+        <div class="ls-sentence-row">
+          <div class="ls-s-label">Display -0.04em</div>
+          <div class="ls-s-text" style="letter-spacing: -0.04em;">极简之美，精密之选</div>
+        </div>
+        <div class="ls-sentence-row">
+          <div class="ls-s-label">Heading -0.02em</div>
+          <div class="ls-s-text" style="letter-spacing: -0.02em;">极简之美，精密之选</div>
+        </div>
+        <div class="ls-sentence-row">
+          <div class="ls-s-label">Body 0em</div>
+          <div class="ls-s-text" style="letter-spacing: 0em;">极简之美，精密之选</div>
+        </div>
+        <div class="ls-sentence-row">
+          <div class="ls-s-label">Uppercase +0.08em</div>
+          <div class="ls-s-text" style="letter-spacing: 0.08em; text-transform: uppercase;">ZenDraw Update</div>
+        </div>
+      </div>
+
+      <div class="a11y-notes">
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">−</div>
+            <h4>大标题使用负字距</h4>
+          </div>
+          <p>随着字号增大，字符之间的视觉空隙会被放大。使用适度的负字距 (-0.02em ~ -0.05em) 保持大字标题的视觉紧凑。</p>
+        </div>
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">0</div>
+            <h4>正文使用默认字距</h4>
+          </div>
+          <p>16px 以下的正文文字使用 0 字距或默认 letter-spacing。过小字号下使用负字距会影响字符辨认。</p>
+        </div>
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">+</div>
+            <h4>标签使用正字距</h4>
+          </div>
+          <p>全大写标签、小型辅助说明文字使用 +0.05em ~ +0.1em 的正字距。字母在小写时会显得更清晰易辨。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6. PARAGRAPH STYLES ============ -->
+    <section id="section-paragraph">
+      <div class="section-head">
+        <span class="section-num">06</span>
+        <h2>段落样式 · Paragraph Styles</h2>
+      </div>
+      <div class="section-subtitle">
+        <span class="chip">H1-H4</span>
+        <span class="chip">Lead · Body</span>
+        <span class="chip">Caption · Small</span>
+        <span class="chip">Links</span>
+      </div>
+      <p class="section-intro">
+        组合使用标题、正文、辅助文字及链接样式形成完整的内容层级。通过颜色与字重的对比建立清晰的信息结构。
+      </p>
+
+      <!-- Heading Hierarchy -->
+      <div class="heading-hierarchy">
+        <div class="hh-row">
+          <div class="hh-label">
+            <div class="hh-tag">H1</div>
+            <div class="hh-sub">44px / 700 / -0.03em</div>
+          </div>
+          <div class="hh-preview">
+            <div class="h1-preview">开始你的 ZenDraw 之旅</div>
+          </div>
+        </div>
+
+        <div class="hh-row">
+          <div class="hh-label">
+            <div class="hh-tag">H2</div>
+            <div class="hh-sub">32px / 700 / -0.02em</div>
+          </div>
+          <div class="hh-preview">
+            <div class="h2-preview">抽奖配置面板</div>
+          </div>
+        </div>
+
+        <div class="hh-row">
+          <div class="hh-label">
+            <div class="hh-tag">H3</div>
+            <div class="hh-sub">24px / 600 / -0.02em</div>
+          </div>
+          <div class="hh-preview">
+            <div class="h3-preview">号码范围设置</div>
+          </div>
+        </div>
+
+        <div class="hh-row">
+          <div class="hh-label">
+            <div class="hh-tag">H4</div>
+            <div class="hh-sub">18px / 600 / -0.01em</div>
+          </div>
+          <div class="hh-preview">
+            <div class="h4-preview">高级选项</div>
+          </div>
+        </div>
+
+        <div class="hh-row">
+          <div class="hh-label">
+            <div class="hh-tag">Lead</div>
+            <div class="hh-sub">18px / 400 / 1.6</div>
+          </div>
+          <div class="hh-preview">
+            <div class="lead-preview">ZenDraw 提供简洁优雅的抽奖体验，支持自定义范围、不重复抽取、历史记录等高级功能。</div>
+          </div>
+        </div>
+
+        <div class="hh-row">
+          <div class="hh-label">
+            <div class="hh-tag">Body</div>
+            <div class="hh-sub">16px / 400 / 1.6</div>
+          </div>
+          <div class="hh-preview">
+            <div class="body-preview">设置抽奖的最小数值与最大数值，系统将在此范围内进行随机抽取。可选择是否允许重复号码。</div>
+          </div>
+        </div>
+
+        <div class="hh-row">
+          <div class="hh-label">
+            <div class="hh-tag">Caption</div>
+            <div class="hh-sub">13px / 400 / 1.5</div>
+          </div>
+          <div class="hh-preview">
+            <div class="caption-preview">最后更新于 2025 年 7 月 15 日下午 2 点 32 分 · 当前会话已进行 42 次抽奖</div>
+          </div>
+        </div>
+
+        <div class="hh-row">
+          <div class="hh-label">
+            <div class="hh-tag">Small</div>
+            <div class="hh-sub">12px / 500 / UPPER</div>
+          </div>
+          <div class="hh-preview">
+            <div class="small-preview">Session Active · A7F21 · 42 Draws</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Color Hierarchy -->
+      <div class="color-hierarchy-demo">
+        <div class="ch-section-label">Color Hierarchy · 颜色层级</div>
+        <div class="ch-title">标题颜色使用 foreground</div>
+        <div class="ch-subtitle">重要正文使用 foreground，确保最高对比度的阅读体验。</div>
+        <div class="ch-muted">次要说明、辅助信息使用 muted-foreground，通过颜色对比建立信息层级。</div>
+        <div class="ch-link-row">
+          <a class="link-sample">默认链接样式</a>
+          <a class="link-sample muted">次要链接</a>
+          <a class="link-sample emphasis">强调链接</a>
+          <span style="font-family: var(--font-mono); font-size: 11px; color: var(--muted-foreground);">
+            Link text-decoration: underline · offset: 3px
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 7. MONO / NUMBERS ============ -->
+    <section id="section-mono">
+      <div class="section-head">
+        <span class="section-num">07</span>
+        <h2>代码/数字样式 · Mono Styles</h2>
+      </div>
+      <div class="section-subtitle">
+        <span class="chip">font-variant-numeric: tabular-nums</span>
+        <span class="chip">JetBrains Mono</span>
+      </div>
+      <p class="section-intro">
+        使用等宽字体展示数字与代码片段。tabular-nums 确保每一位数字占据相同的水平空间，
+        在表格与列表中形成整齐的对齐效果。
+      </p>
+
+      <!-- Tabular Numbers Comparison -->
+      <div class="tabular-nums-demo">
+        <div class="tn-card">
+          <div class="tn-card-header">
+            <span class="tn-card-label">Proportional Numbers</span>
+            <span class="tn-card-sub">不推荐</span>
+          </div>
+          <div class="tn-card-body">
+            <div class="tn-column-list tn-proportional">
+              <div>111.11</div>
+              <div>222.22</div>
+              <div>333.33</div>
+              <div>888.88</div>
+              <div>999.99</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tn-card">
+          <div class="tn-card-header">
+            <span class="tn-card-label">Tabular Numbers</span>
+            <span class="tn-card-sub">推荐 ✓</span>
+          </div>
+          <div class="tn-card-body">
+            <div class="tn-column-list tn-tabular">
+              <div>111.11</div>
+              <div>222.22</div>
+              <div>333.33</div>
+              <div>888.88</div>
+              <div>999.99</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Code Snippet -->
+      <div class="sc-label" style="font-family: var(--font-mono); font-size: 11px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: block; padding-left: 4px;">Code Snippet · 代码片段</div>
+      <div class="code-snippet">
+<span class="code-line"><span class="code-c-com">// 配置并执行一次抽奖</span></span>
+<span class="code-line"><span class="code-c-key">import</span> { useLottery } <span class="code-c-key">from</span> <span class="code-c-str">"@zendraw/core"</span>;</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-c-key">const</span> { draw, results, reset } = useLottery({</span>
+<span class="code-line">  min: <span class="code-c-num">1</span>,</span>
+<span class="code-line">  max: <span class="code-c-num">100</span>,</span>
+<span class="code-line">  count: <span class="code-c-num">5</span>,</span>
+<span class="code-line">  allowDuplicates: <span class="code-c-key">false</span>,</span>
+<span class="code-line">  seed: <span class="code-c-str">"session-a7f21"</span></span>
+<span class="code-line">});</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-c-key">const</span> numbers = draw(); <span class="code-c-com">// → [ 07, 12, 35, 49, 88 ]</span></span>
+      </div>
+
+      <!-- Lottery Number Display -->
+      <div class="lottery-display">
+        <div class="lottery-label">Lottery Result · 抽奖结果</div>
+        <div class="lottery-number">07 · 12 · 35 · 49 · 88</div>
+        <div class="lottery-sub">Session A7F21 · Round 3 · 2025.07.15 14:32:08</div>
+        <div class="lottery-number-row">
+          <div class="lottery-chip">07</div>
+          <div class="lottery-chip">12</div>
+          <div class="lottery-chip">35</div>
+          <div class="lottery-chip">49</div>
+          <div class="lottery-chip">88</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 8. ACCESSIBILITY ============ -->
+    <section id="section-a11y">
+      <div class="section-head">
+        <span class="section-num">08</span>
+        <h2>无障碍 · Accessibility</h2>
+      </div>
+      <div class="section-subtitle">
+        <span class="chip">Minimum 14px</span>
+        <span class="chip">Contrast AA</span>
+        <span class="chip">Zoom 200%</span>
+      </div>
+      <p class="section-intro">
+        文字排版的无障碍规范。确保所有用户都能清晰地阅读界面内容，包括使用放大文本、屏幕阅读器等辅助功能的用户。
+      </p>
+
+      <!-- A11y Stats -->
+      <div class="a11y-stats">
+        <div class="a11y-stat">
+          <div class="as-label">Minimum Body</div>
+          <div class="as-value">14<span class="as-unit">px</span></div>
+          <div class="as-sub">推荐最小正文字号</div>
+        </div>
+        <div class="a11y-stat">
+          <div class="as-label">Recommended</div>
+          <div class="as-value">16<span class="as-unit">px</span></div>
+          <div class="as-sub">标准正文字号</div>
+        </div>
+        <div class="a11y-stat">
+          <div class="as-label">Line Height</div>
+          <div class="as-value">1.5<span class="as-unit">+</span></div>
+          <div class="as-sub">正文推荐行高</div>
+        </div>
+        <div class="a11y-stat">
+          <div class="as-label">Contrast</div>
+          <div class="as-value">4.5<span class="as-unit">:1</span></div>
+          <div class="as-sub">WCAG AA 正文要求</div>
+        </div>
+      </div>
+
+      <!-- Size Recommendations -->
+      <div class="size-comparison">
+        <span class="sc-label">Font Size Recommendations · 字号推荐</span>
+
+        <div class="sc-row">
+          <div class="sc-tag ok">18px</div>
+          <div class="sc-text">适合 Lead Text · 引导文案 · 长时间阅读的最佳字号</div>
+        </div>
+        <div class="sc-row">
+          <div class="sc-tag ok">16px</div>
+          <div class="sc-text">标准正文字号 · 界面主要内容 · 推荐默认使用</div>
+        </div>
+        <div class="sc-row">
+          <div class="sc-tag ok">14px</div>
+          <div class="sc-text">辅助文字 · 列表项描述 · 允许的最小正文字号下限</div>
+        </div>
+        <div class="sc-row">
+          <div class="sc-tag warn">12px</div>
+          <div class="sc-text">仅用于脚注、标签、时间戳 · 不用于段落正文</div>
+        </div>
+        <div class="sc-row">
+          <div class="sc-tag warn">10px</div>
+          <div class="sc-text">不建议使用 · 可能导致视力正常与受损用户均难以阅读</div>
+        </div>
+      </div>
+
+      <!-- Zoom Demo -->
+      <div class="zoom-demo">
+        <div class="zoom-head">
+          <span class="zoom-head-title">Text Zoom Test · 文本缩放测试</span>
+          <div class="zoom-percentage">
+            <span class="zoom-chip">100%</span>
+            <span class="zoom-chip">150%</span>
+            <span class="zoom-chip">200%</span>
+          </div>
+        </div>
+        <div class="zoom-body">
+          <div class="zoom-block">
+            <div class="zoom-block-label">100% · Default (16px body)</div>
+            <div class="zoom-text-base">
+              ZenDraw 提供清晰的字号阶梯。从 12px 到 144px，每一级都经过精心设计，确保在各种情况下都保持良好的可读性。
+            </div>
+          </div>
+
+          <div class="zoom-block">
+            <div class="zoom-block-label">150% · Zoom (24px body)</div>
+            <div class="zoom-text-150">
+              ZenDraw 提供清晰的字号阶梯。从 12px 到 144px，每一级都经过精心设计。
+            </div>
+          </div>
+
+          <div class="zoom-block">
+            <div class="zoom-block-label">200% · WCAG Required (32px body)</div>
+            <div class="zoom-text-200">
+              ZenDraw 字号系统支持放大至 200%。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accessibility Guidelines Grid -->
+      <div class="a11y-notes">
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">A</div>
+            <h4>正文不小于 14px</h4>
+          </div>
+          <p>所有可被视为正文的段落内容，最小字号不低于 14px。12px 仅用于简短标签与时间戳，且需确保与背景有足够对比度。</p>
+        </div>
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">⇅</div>
+            <h4>行高不低于 1.5</h4>
+          </div>
+          <p>正文使用 1.5 或更高的行高，确保相邻行文字不会在视觉上互相拥挤。长文本内容使用 1.75 的宽松行高。</p>
+        </div>
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">◐</div>
+            <h4>对比度 AA 标准</h4>
+          </div>
+          <p>正文文字与背景的对比度至少 4.5:1。大字（18px 及以上或加粗的 14px 及以上）可放宽至 3:1。</p>
+        </div>
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">+</div>
+            <h4>支持文本放大 200%</h4>
+          </div>
+          <p>所有界面布局需要支持文本放大 200% 后仍保持可用。避免使用固定高度容器、硬编码字号或绝对定位文字。</p>
+        </div>
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">⌘</div>
+            <h4>尊重系统字体设置</h4>
+          </div>
+          <p>不通过 hardcode 禁用浏览器的字体大小调整功能。使用相对单位（rem/em/%）以便响应用户的系统字体偏好。</p>
+        </div>
+        <div class="a11y-note">
+          <div class="a11y-note-head">
+            <div class="a11y-note-icon">⎀</div>
+            <h4>语义化标签</h4>
+          </div>
+          <p>使用正确的 HTML 语义标签（h1-h6、p、strong、em）使屏幕阅读器能正确理解内容层级。不依靠纯视觉样式表达层级。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="docs-footer">
+      <div class="df-brand">
+        <div class="df-logo">Z</div>
+        <span>ZenDraw Design System</span>
+      </div>
+      <span>Typography · v3.0.0 · 2025</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // Theme toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  const html = document.documentElement;
+
+  function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+    } else {
+      themeIcon.innerHTML = '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>';
+    }
+  }
+
+  // Initialize
+  const savedTheme = localStorage.getItem('zendraw-theme');
+  applyTheme(savedTheme || 'light');
+
+  themeToggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem('zendraw-theme', next);
+  });
+
+  // Sidebar section highlight based on scroll position
+  const sidebarLinks = document.querySelectorAll('.sidebar-link');
+  const sections = Array.from(sidebarLinks).map(link => {
+    const id = link.getAttribute('href').substring(1);
+    return document.getElementById(id);
+  }).filter(Boolean);
+
+  function updateActiveSection() {
+    const scrollPos = window.scrollY + 200;
+    let activeIndex = 0;
+
+    sections.forEach((section, index) => {
+      if (section.offsetTop <= scrollPos) {
+        activeIndex = index;
+      }
+    });
+
+    sidebarLinks.forEach((link, index) => {
+      link.classList.toggle('is-active', index === activeIndex);
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveSection, { passive: true });
+  window.addEventListener('resize', updateActiveSection);
+  updateActiveSection();
+
+  // Smooth scroll for sidebar links
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href').substring(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        const offset = 80;
+        const targetPos = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: targetPos, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</div>
+</html>

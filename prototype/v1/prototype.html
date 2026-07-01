@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ZenDraw 禅抽 - 完整设计系统与组件库规范 (Design System v3.0)" />
+  <title>ZenDraw · Design System v3.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@500;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff; --bg-elevated: #fafafa; --bg-muted: #f4f4f5;
+      --fg: #0a0a0a; --fg-muted: #52525b; --fg-subtle: #a1a1aa;
+      --border: #e4e4e7; --border-strong: #d4d4d8;
+      --primary: #0a0a0a; --primary-fg: #fafafa;
+      --accent: #2563eb; --accent-soft: rgba(37, 99, 235, 0.12);
+      --success: #16a34a; --success-soft: rgba(22, 163, 74, 0.12);
+      --warning: #d97706; --warning-soft: rgba(217, 119, 6, 0.12);
+      --danger: #dc2626; --danger-soft: rgba(220, 38, 38, 0.12);
+      --r-sm: 6px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px; --r-full: 9999px;
+      --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-6: 24px; --s-8: 32px; --s-12: 48px;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,.04); --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,.08); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0,0,0,.12);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-fast: 150ms; --dur-norm: 250ms; --dur-slow: 400ms;
+      --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --font-serif: 'Playfair Display', Georgia, serif;
+    }
+    [data-theme="dark"] {
+      --bg: #0a0a0a; --bg-elevated: #18181b; --bg-muted: #27272a;
+      --fg: #fafafa; --fg-muted: #a1a1aa; --fg-subtle: #71717a;
+      --border: #3f3f46; --border-strong: #52525b;
+      --primary: #fafafa; --primary-fg: #0a0a0a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); color: var(--fg); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+    .nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 12px 32px; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: saturate(180%) blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-brand { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+    .nav-logo { width: 36px; height: 36px; border-radius: 8px; background: var(--primary); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-weight: 800; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a { padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 8px; color: var(--fg-muted); transition: all var(--dur-fast) var(--ease-out); }
+    .nav-links a:hover { color: var(--fg); background: var(--bg-muted); }
+    .theme-toggle { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: background var(--dur-fast); }
+    .theme-toggle:hover { background: var(--bg-muted); }
+    @media (max-width: 768px) { .nav { padding: 12px 16px; } .nav-links { display: none; } }
+
+    .hero { padding: 96px 32px 80px; text-align: center; background: radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in srgb, var(--accent) 15%, transparent), transparent), linear-gradient(to bottom, var(--bg), var(--bg-elevated)); }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border: 1px solid var(--border); border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--fg-muted); background: var(--bg-elevated); }
+    .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+    .hero-title { font-size: clamp(40px, 6vw, 72px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin: 16px 0 12px; }
+    .hero-gradient { background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-subtitle { font-size: clamp(16px, 2vw, 20px); color: var(--fg-muted); max-width: 640px; margin: 0 auto 32px; }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+    @media (max-width: 768px) { .container { padding: 0 16px; } }
+    .section { padding: 96px 0; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-label { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .section-title { font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 16px; }
+    .section-desc { color: var(--fg-muted); font-size: 16px; max-width: 640px; margin: 0 auto; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; font-size: 14px; font-weight: 500; border-radius: 8px; transition: all var(--dur-fast) var(--ease-out); white-space: nowrap; }
+    .btn-primary { background: var(--primary); color: var(--primary-fg); box-shadow: var(--shadow-sm); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .btn-outline { background: var(--bg); color: var(--fg); border: 1px solid var(--border); }
+    .btn-outline:hover { background: var(--bg-muted); border-color: var(--border-strong); }
+    .btn-ghost { background: transparent; color: var(--fg-muted); }
+    .btn-ghost:hover { background: var(--bg-muted); color: var(--fg); }
+    .btn-lg { padding: 14px 24px; font-size: 15px; }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+    @media (max-width: 1024px) { .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); } .grid-6 { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } .grid-6 { grid-template-columns: repeat(2, 1fr); } }
+
+    .card { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: all var(--dur-norm) var(--ease-out); }
+    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--border-strong); }
+    .card-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .card-desc { font-size: 14px; color: var(--fg-muted); line-height: 1.6; }
+    .card-icon { width: 40px; height: 40px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 18px; }
+
+    .swatch { aspect-ratio: 1; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; color: white; font-size: 11px; font-family: var(--font-mono); box-shadow: var(--shadow-sm); transition: transform var(--dur-norm) var(--ease-out); }
+    .swatch:hover { transform: scale(1.05); }
+    .swatch-name { font-weight: 600; opacity: 0.95; } .swatch-value { opacity: 0.75; }
+    .sw-dark { background: linear-gradient(135deg, #0a0a0a, #27272a); }
+    .sw-light { background: linear-gradient(135deg, #ffffff, #f4f4f5); color: #52525b; border: 1px solid var(--border); }
+    .sw-accent { background: linear-gradient(135deg, #2563eb, #1e40af); }
+    .sw-success { background: linear-gradient(135deg, #16a34a, #15803d); }
+    .sw-warning { background: linear-gradient(135deg, #d97706, #b45309); }
+    .sw-danger { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+    .sw-ocean { background: linear-gradient(135deg, #0891b2, #0e7490); }
+    .sw-forest { background: linear-gradient(135deg, #16a34a, #166534); }
+    .sw-sunset { background: linear-gradient(135deg, #ea580c, #c2410c); }
+    .sw-purple { background: linear-gradient(135deg, #9333ea, #7c3aed); }
+    .sw-neon { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+
+    .type-sample { padding: 16px 0; border-bottom: 1px solid var(--border); } .type-sample:last-child { border-bottom: none; }
+    .type-display-xl { font-size: 72px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.02; }
+    .type-display-lg { font-size: 48px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+    .type-heading-xl { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+    .type-heading-lg { font-size: 22px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; }
+    .type-body-lg { font-size: 18px; line-height: 1.6; } .type-body { font-size: 16px; line-height: 1.6; }
+    .type-caption { font-size: 13px; color: var(--fg-muted); }
+    .type-meta { font-family: var(--font-mono); font-size: 12px; color: var(--fg-subtle); margin-top: 8px; }
+
+    .spacing-row { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); }
+    .spacing-row:last-child { border-bottom: none; }
+    .spacing-bar { height: 16px; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); border-radius: 4px; }
+    .spacing-label { width: 80px; color: var(--fg); font-weight: 500; } .spacing-value { width: 60px; color: var(--fg-subtle); }
+
+    .radius-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; }
+    .radius-sample { aspect-ratio: 1.5/1; background: var(--fg); display: flex; align-items: center; justify-content: center; color: var(--bg); font-family: var(--font-mono); font-size: 12px; font-weight: 500; }
+
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 12px; font-weight: 500; border-radius: 999px; font-family: var(--font-mono); }
+    .badge-default { background: var(--bg-muted); color: var(--fg-muted); }
+    .badge-success { background: var(--success-soft); color: var(--success); }
+    .badge-warning { background: var(--warning-soft); color: var(--warning); }
+    .badge-danger { background: var(--danger-soft); color: var(--danger); }
+    .badge-info { background: var(--accent-soft); color: var(--accent); }
+
+    .app-mockup { background: var(--bg); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-xl); max-width: 520px; margin: 0 auto; }
+    .app-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--bg-elevated); }
+    .app-main { padding: 64px 32px 32px; text-align: center; min-height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .app-result-label { font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fg-subtle); margin-bottom: 16px; }
+    .app-result-number { font-size: 96px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; background: linear-gradient(180deg, var(--fg), var(--fg-muted)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 32px; }
+    .app-action { padding: 14px 40px; background: var(--primary); color: var(--primary-fg); border-radius: 999px; font-size: 15px; font-weight: 600; box-shadow: var(--shadow-md); transition: all var(--dur-norm) var(--ease-out); }
+    .app-action:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+    .comp-lib-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .comp-lib-card { padding: 24px; border: 1px solid var(--border); border-radius: 16px; background: var(--bg); transition: all var(--dur-norm) var(--ease-out); }
+    .comp-lib-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .comp-lib-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .comp-lib-card p { font-size: 13px; color: var(--fg-muted); margin-bottom: 16px; }
+    .comp-preview { background: var(--bg-elevated); border: 1px dashed var(--border); border-radius: 12px; padding: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; }
+    .comp-meta { font-family: var(--font-mono); font-size: 12px; color: var(--fg-subtle); padding: 8px 12px; background: var(--bg-muted); border-radius: 8px; display: inline-block; }
+
+    .tab-group { display: inline-flex; background: var(--bg-muted); padding: 4px; border-radius: 8px; gap: 2px; }
+    .tab-btn { padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 6px; color: var(--fg-muted); transition: all var(--dur-fast); }
+    .tab-btn.active { background: var(--bg); color: var(--fg); box-shadow: var(--shadow-sm); }
+    .tab-btn:not(.active):hover { color: var(--fg); }
+
+    .switch { position: relative; width: 44px; height: 24px; border-radius: 999px; background: var(--border-strong); cursor: pointer; transition: background var(--dur-fast); display: inline-block; }
+    .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: white; box-shadow: var(--shadow-sm); transition: transform var(--dur-fast) var(--ease-out); }
+    .switch.on { background: var(--primary); }
+    .switch.on::after { transform: translateX(20px); }
+
+    .interactive-box { width: 80px; height: 80px; border-radius: 12px; background: var(--bg-elevated); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; transition: all var(--dur-norm) var(--ease-out); cursor: pointer; }
+    .interactive-box:hover { transform: translateY(-2px) scale(1.05); box-shadow: var(--shadow-lg); border-color: var(--accent); color: var(--accent); }
+
+    .alert { display: flex; align-items: flex-start; gap: 12px; padding: 16px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-elevated); width: 100%; max-width: 480px; }
+    .alert-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .alert-msg { font-size: 13px; color: var(--fg-muted); }
+    .alert-success { border-color: color-mix(in srgb, var(--success) 30%, transparent); background: var(--success-soft); } .alert-success .alert-title { color: var(--success); }
+    .alert-danger { border-color: color-mix(in srgb, var(--danger) 30%, transparent); background: var(--danger-soft); } .alert-danger .alert-title { color: var(--danger); }
+
+    .device-frame { width: 340px; height: 680px; margin: 0 auto; background: var(--fg); border-radius: 48px; padding: 12px; box-shadow: var(--shadow-xl); position: relative; }
+    .device-notch { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 120px; height: 28px; background: var(--fg); border-radius: 0 0 20px 20px; z-index: 2; }
+    .device-screen { width: 100%; height: 100%; background: var(--bg); border-radius: 36px; overflow: hidden; position: relative; }
+    .device-content { padding: 48px 20px 20px; height: 100%; display: flex; flex-direction: column; }
+    .device-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .device-number { font-size: 80px; font-weight: 800; letter-spacing: -0.04em; background: linear-gradient(180deg, var(--fg), var(--fg-muted)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+
+    .footer { padding: 48px 32px; text-align: center; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 13px; }
+
+    .pattern-list { list-style: none; font-size: 14px; }
+    .pattern-list li { padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; }
+    .pattern-list li:last-child { border-bottom: none; }
+    .pattern-list li::before { content: "→"; color: var(--accent); flex-shrink: 0; }
+  </style>
+</head>
+<body data-theme="light">
+  <nav class="nav">
+    <div class="nav-brand"><div class="nav-logo">Z</div><span>ZenDraw · Design System</span></div>
+    <div class="nav-links">
+      <a href="#overview">概述</a><a href="#tokens">设计令牌</a><a href="#typography">字体系统</a>
+      <a href="#components">组件库</a><a href="#interaction">交互</a><a href="#app">应用</a><a href="#a11y">无障碍</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题"><span id="theme-icon">🌙</span></button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="overview">
+    <div class="container">
+      <div class="pill"><span class="pill-dot"></span>v3.0 · 生产就绪</div>
+      <h1 class="hero-title">禅抽设计系统<br /><span class="hero-gradient">极简 · 克制 · 永恒</span></h1>
+      <p class="hero-subtitle">基于 Apple Design Language 的完整前端设计规范，涵盖色彩、字体、间距、组件与交互模式。</p>
+      <div class="hero-cta"><a href="#tokens" class="btn btn-primary btn-lg">浏览令牌 →</a><a href="#app" class="btn btn-outline btn-lg">查看应用</a></div>
+    </div>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header"><span class="section-label">核心原则</span><h2 class="section-title">四条基石</h2><p class="section-desc">所有设计决策都围绕这四条核心原则展开。</p></div>
+      <div class="grid-3">
+        <div class="card"><div class="card-icon">◐</div><h3 class="card-title">极简克制</h3><p class="card-desc">去除所有不必要的装饰，让内容成为唯一焦点。</p></div>
+        <div class="card"><div class="card-icon">✦</div><h3 class="card-title">一致性优先</h3><p class="card-desc">从按钮圆角到动画曲线，每个细节都有规范。</p></div>
+        <div class="card"><div class="card-icon">⌁</div><h3 class="card-title">动态响应</h3><p class="card-desc">桌面到移动端完美适配。动效克制自然有目的。</p></div>
+        <div class="card"><div class="card-icon">♿</div><h3 class="card-title">无障碍友好</h3><p class="card-desc">遵循 WCAG 2.1 AA 标准，支持键盘操作与阅读器。</p></div>
+        <div class="card"><div class="card-icon">◆</div><h3 class="card-title">语义化色彩</h3><p class="card-desc">蓝-信息、绿-成功、橙-警告、红-错误，视觉信号清晰。</p></div>
+        <div class="card"><div class="card-icon">☰</div><h3 class="card-title">模块化组件</h3><p class="card-desc">基于 shadcn/ui 构建，可组合可定制，支持 TS 严格模式。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOKENS -->
+  <section class="section" id="tokens" style="background: var(--bg-elevated);">
+    <div class="container">
+      <div class="section-header"><span class="section-label">Design Tokens</span><h2 class="section-title">色彩系统</h2><p class="section-desc">语义化命名的色板。</p></div>
+      <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">语义色板</h3>
+      <div class="grid-6" style="margin-bottom: 48px;">
+        <div><div class="swatch sw-dark"><span class="swatch-name">Primary</span><span class="swatch-value">#0a0a0a</span></div></div>
+        <div><div class="swatch sw-light"><span class="swatch-name">Surface</span><span class="swatch-value">#fff</span></div></div>
+        <div><div class="swatch sw-accent"><span class="swatch-name">Accent</span><span class="swatch-value">#2563eb</span></div></div>
+        <div><div class="swatch sw-success"><span class="swatch-name">Success</span><span class="swatch-value">#16a34a</span></div></div>
+        <div><div class="swatch sw-warning"><span class="swatch-name">Warning</span><span class="swatch-value">#d97706</span></div></div>
+        <div><div class="swatch sw-danger"><span class="swatch-name">Danger</span><span class="swatch-value">#dc2626</span></div></div>
+      </div>
+      <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">主题预设</h3>
+      <div class="grid-6" style="margin-bottom: 48px;">
+        <div><div class="swatch sw-ocean"><span class="swatch-name">Ocean</span><span class="swatch-value">海洋蓝</span></div></div>
+        <div><div class="swatch sw-forest"><span class="swatch-name">Forest</span><span class="swatch-value">森林绿</span></div></div>
+        <div><div class="swatch sw-sunset"><span class="swatch-name">Sunset</span><span class="swatch-value">落日橙</span></div></div>
+        <div><div class="swatch sw-purple"><span class="swatch-name">Purple</span><span class="swatch-value">紫罗兰</span></div></div>
+        <div><div class="swatch sw-neon"><span class="swatch-name">Neon</span><span class="swatch-value">霓虹青</span></div></div>
+        <div><div class="swatch sw-dark"><span class="swatch-name">Mono</span><span class="swatch-value">极简黑</span></div></div>
+      </div>
+      <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">间距系统</h3>
+      <div class="card" style="margin-bottom: 48px;">
+        <div class="spacing-row"><span class="spacing-label">--s-1</span><span class="spacing-value">4px</span><div class="spacing-bar" style="width: 4px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-2</span><span class="spacing-value">8px</span><div class="spacing-bar" style="width: 8px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-3</span><span class="spacing-value">12px</span><div class="spacing-bar" style="width: 12px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-4</span><span class="spacing-value">16px</span><div class="spacing-bar" style="width: 16px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-6</span><span class="spacing-value">24px</span><div class="spacing-bar" style="width: 24px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-8</span><span class="spacing-value">32px</span><div class="spacing-bar" style="width: 32px;"></div></div>
+        <div class="spacing-row"><span class="spacing-label">--s-12</span><span class="spacing-value">48px</span><div class="spacing-bar" style="width: 48px;"></div></div>
+      </div>
+      <div class="grid-2">
+        <div><h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">圆角系统</h3>
+          <div class="card"><div class="radius-grid">
+            <div class="radius-sample" style="border-radius: 6px;">6px</div>
+            <div class="radius-sample" style="border-radius: 8px;">8px</div>
+            <div class="radius-sample" style="border-radius: 12px;">12px</div>
+            <div class="radius-sample" style="border-radius: 16px;">16px</div>
+            <div class="radius-sample" style="border-radius: 20px;">20px</div>
+            <div class="radius-sample" style="border-radius: 999px;">full</div>
+          </div></div>
+        </div>
+        <div><h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">阴影层级</h3>
+          <div class="grid-4" style="gap: 12px;">
+            <div class="card" style="padding: 24px 8px; box-shadow: var(--shadow-sm); text-align: center; font-size: 12px; font-family: var(--font-mono);">sm</div>
+            <div class="card" style="padding: 24px 8px; box-shadow: var(--shadow-md); text-align: center; font-size: 12px; font-family: var(--font-mono);">md</div>
+            <div class="card" style="padding: 24px 8px; box-shadow: var(--shadow-lg); text-align: center; font-size: 12px; font-family: var(--font-mono);">lg</div>
+            <div class="card" style="padding: 24px 8px; box-shadow: var(--shadow-xl); text-align: center; font-size: 12px; font-family: var(--font-mono);">xl</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPOGRAPHY -->
+  <section class="section" id="typography">
+    <div class="container">
+      <div class="section-header"><span class="section-label">Typography</span><h2 class="section-title">字体系统</h2><p class="section-desc">三种字体、清晰的层级。字号越大，字距越紧。</p></div>
+      <div class="grid-3" style="margin-bottom: 48px;">
+        <div class="card"><span class="badge badge-info">font-sans</span><div style="font-size: 36px; font-weight: 600; letter-spacing: -0.02em; margin-top: 16px;">ZenDraw 禅抽</div><p class="card-desc" style="margin-top: 8px;">Inter · Noto Sans SC<br/>正文 · 标题 · UI</p></div>
+        <div class="card"><span class="badge badge-default">font-mono</span><div style="font-family: var(--font-mono); font-size: 28px; margin-top: 16px;">{ draw: true }</div><p class="card-desc" style="margin-top: 8px;">JetBrains Mono<br/>代码 · 数字</p></div>
+        <div class="card"><span class="badge badge-success">font-serif</span><div style="font-family: var(--font-serif); font-size: 36px; font-style: italic; margin-top: 16px;">ZenDraw</div><p class="card-desc" style="margin-top: 8px;">Playfair Display<br/>装饰性标题</p></div>
+      </div>
+      <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">字号阶梯</h3>
+      <div class="card">
+        <div class="type-sample"><div class="type-display-xl">Display 72</div><div class="type-meta">72px · weight 800 · tracking -0.04em</div></div>
+        <div class="type-sample"><div class="type-display-lg">Display 48</div><div class="type-meta">48px · 700 · -0.03em</div></div>
+        <div class="type-sample"><div class="type-heading-xl">Heading 28</div><div class="type-meta">28px · 700 · -0.02em</div></div>
+        <div class="type-sample"><div class="type-body-lg">Body Large · 18px — 强调正文文本</div><div class="type-meta">18px · 400 · line-height 1.6</div></div>
+        <div class="type-sample"><div class="type-body">Body · 16px — 标准正文，适合长段落</div><div class="type-meta">16px · 400</div></div>
+        <div class="type-sample"><div class="type-caption">Caption · 13px — 辅助说明、次要信息</div><div class="type-meta">13px · 400</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section class="section" id="components" style="background: var(--bg-elevated);">
+    <div class="container">
+      <div class="section-header"><span class="section-label">Component Library</span><h2 class="section-title">组件库</h2><p class="section-desc">基于 shadcn/ui 规范构建的完整组件库。</p></div>
+      <div style="text-align: center; margin-bottom: 32px;">
+        <div class="tab-group" id="comp-tabs">
+          <button class="tab-btn active" data-tab="buttons">按钮</button>
+          <button class="tab-btn" data-tab="forms">表单</button>
+          <button class="tab-btn" data-tab="feedback">反馈</button>
+          <button class="tab-btn" data-tab="display">展示</button>
+        </div>
+      </div>
+      <!-- Buttons -->
+      <div id="tab-buttons" class="comp-tab-content">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Button · 按钮</h3>
+        <div class="comp-lib-grid">
+          <div class="comp-lib-card"><h3>Primary</h3><p>行动号召的主按钮。</p><div class="comp-preview"><button class="btn btn-primary">开始抽奖</button></div><div class="comp-meta">rounded-md · shadow-sm</div></div>
+          <div class="comp-lib-card"><h3>Outline</h3><p>次要操作默认按钮。</p><div class="comp-preview"><button class="btn btn-outline">查看历史</button></div><div class="comp-meta">border · bg-transparent</div></div>
+          <div class="comp-lib-card"><h3>Ghost</h3><p>非侵入式最轻操作。</p><div class="comp-preview"><button class="btn btn-ghost">取消</button></div><div class="comp-meta">hover: bg-muted</div></div>
+          <div class="comp-lib-card"><h3>Size 阶梯</h3><p>按钮尺寸的完整阶梯。</p><div class="comp-preview" style="flex-direction: column;"><button class="btn btn-primary btn-lg">Large · 大</button><button class="btn btn-primary">Default</button><button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;">Small</button></div><div class="comp-meta">32/40/48px</div></div>
+          <div class="comp-lib-card"><h3>Icon Button</h3><p>最小的操作入口。</p><div class="comp-preview"><button class="icon-btn" style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted); transition: all var(--dur-fast);">⚙</button><button style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted); transition: all var(--dur-fast);">🌐</button><button style="width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted); transition: all var(--dur-fast);">⟳</button></div><div class="comp-meta">40×40</div></div>
+          <div class="comp-lib-card"><h3>States</h3><p>状态完整可见。</p><div class="comp-preview" style="flex-direction: column;"><button class="btn btn-primary">正常</button><button class="btn btn-primary" style="opacity: 0.5; cursor: not-allowed;">禁用</button></div><div class="comp-meta">cursor/opacity</div></div>
+        </div>
+      </div>
+      <!-- Forms -->
+      <div id="tab-forms" class="comp-tab-content" style="display: none;">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Form Elements · 表单元素</h3>
+        <div class="comp-lib-grid">
+          <div class="comp-lib-card"><h3>Input</h3><p>标准数字输入框。</p><div class="comp-preview" style="flex-direction: column;"><div style="width: 100%;"><label style="font-size: 13px; font-weight: 500; display: block; margin-bottom: 6px;">最小值</label><input type="number" value="1" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg); font-size: 14px; font-family: inherit;" /></div></div><div class="comp-meta">h-40 · focus ring</div></div>
+          <div class="comp-lib-card"><h3>Switch</h3><p>二元开关，滑动动画。</p><div class="comp-preview"><div style="display: flex; align-items: center; gap: 12px;"><div class="switch on" onclick="this.classList.toggle('on')"></div><span>自动隐藏</span></div><div style="display: flex; align-items: center; gap: 12px; margin-top: 12px;"><div class="switch" onclick="this.classList.toggle('on')"></div><span>允许重复</span></div></div><div class="comp-meta">44×24 · tx-20</div></div>
+        </div>
+      </div>
+      <!-- Feedback -->
+      <div id="tab-feedback" class="comp-tab-content" style="display: none;">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Feedback · 反馈</h3>
+        <div class="grid-2">
+          <div class="comp-lib-card"><h3>Badge</h3><p>轻量状态标签。</p><div class="comp-preview"><span class="badge badge-default">Default</span><span class="badge badge-info">Info</span><span class="badge badge-success">Success</span><span class="badge badge-warning">Warning</span><span class="badge badge-danger">Danger</span></div><div class="comp-meta">pill-shaped</div></div>
+          <div class="comp-lib-card"><h3>Alert</h3><p>醒目信息提示。</p><div class="comp-preview" style="flex-direction: column; width: 100%;">
+            <div class="alert alert-success" style="width: 100%;"><div><div class="alert-title">操作成功</div><div class="alert-msg">结果已导出到本地文件</div></div></div>
+            <div class="alert alert-danger" style="width: 100%; margin-top: 12px;"><div><div class="alert-title">输入无效</div><div class="alert-msg">最小值不能大于最大值</div></div></div>
+          </div><div class="comp-meta">border-1</div></div>
+        </div>
+      </div>
+      <!-- Display -->
+      <div id="tab-display" class="comp-tab-content" style="display: none;">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Display · 展示组件</h3>
+        <div class="grid-2">
+          <div class="comp-lib-card"><h3>Result Card</h3><p>核心抽奖结果展示。</p><div class="comp-preview" style="flex-direction: column; width: 100%;"><div style="padding: 32px 48px; border-radius: 20px; background: var(--bg); border: 1px solid var(--border); text-align: center; width: 100%;"><div class="app-result-label">Lucky Number</div><div class="app-result-number" style="font-size: 72px; margin: 0;">042</div></div></div><div class="comp-meta">clip-text</div></div>
+          <div class="comp-lib-card"><h3>Empty State</h3><p>无数据时的占位展示。</p><div class="comp-preview" style="flex-direction: column; width: 100%;"><div style="padding: 40px 24px; background: var(--bg-elevated); border: 1px dashed var(--border); border-radius: 16px; text-align: center; width: 100%;"><div style="font-size: 48px; opacity: 0.3; margin-bottom: 12px;">📋</div><p style="font-size: 14px; color: var(--fg-muted); margin-bottom: 16px;">暂无历史记录</p><button class="btn btn-primary" style="padding: 10px 16px; font-size: 13px;">开始抽奖</button></div></div><div class="comp-meta">dashed</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTION -->
+  <section class="section" id="interaction">
+    <div class="container">
+      <div class="section-header"><span class="section-label">Interaction</span><h2 class="section-title">交互规范</h2><p class="section-desc">统一的交互模式，确保一致的心理预期。</p></div>
+      <div class="grid-2">
+        <div class="card"><h3 class="card-title">悬停反馈</h3>
+          <ul class="pattern-list" style="margin-top: 12px;">
+            <li>按钮悬停：translateY(-1px) + 阴影加深</li>
+            <li>图标按钮悬停：背景色切换至 --bg-muted</li>
+            <li>卡片悬停：Y 位移 + box-shadow: lg + border 强化</li>
+            <li>动画时长：150-250ms，缓动：cubic-bezier(0.16, 1, 0.3, 1)</li>
+          </ul>
+          <div class="comp-preview" style="margin-top: 20px;"><div class="interactive-box">1</div><div class="interactive-box">2</div><div class="interactive-box">3</div></div>
+        </div>
+        <div class="card"><h3 class="card-title">空状态 / 错误状态</h3>
+          <ul class="pattern-list" style="margin-top: 12px;">
+            <li>空状态：装饰性图标 + 友好文案 + CTA</li>
+            <li>错误状态：danger 色 + 明确错误说明</li>
+            <li>表单错误：input 边框变红 + 下方错误描述</li>
+            <li>加载状态：Skeleton 占位图，不使用 spinner</li>
+          </ul>
+        </div>
+        <div class="card"><h3 class="card-title">键盘操作</h3>
+          <ul class="pattern-list" style="margin-top: 12px;">
+            <li>Enter：确认 / 触发默认操作</li>
+            <li>Esc：关闭对话框 / 清空当前输入</li>
+            <li>Tab：按视觉顺序循环聚焦（焦点始终可见）</li>
+            <li>所有可点击元素必须可键盘聚焦并可见焦点指示</li>
+          </ul>
+        </div>
+        <div class="card"><h3 class="card-title">动画原则</h3>
+          <ul class="pattern-list" style="margin-top: 12px;">
+            <li>动画必须服务于信息传达，不为动而动</li>
+            <li>尊重 prefers-reduced-motion</li>
+            <li>出/入动画：淡入淡出 + 轻微位移，0.3-0.4s</li>
+            <li>结果数字：快速弹出 + 弹簧物理，stiffness 260</li>
+          </ul>
+        </div>
+      </div>
+      <h3 style="font-size: 20px; font-weight: 700; margin: 64px 0 24px; text-align: center;">主流程状态</h3>
+      <div class="grid-3" style="text-align: center;">
+        <div class="card"><span class="badge badge-default" style="margin-bottom: 12px;">IDLE</span><h3 class="card-title">准备就绪</h3><p class="card-desc">展示大字号 Ready 文案 + CTA 按钮。</p></div>
+        <div class="card"><span class="badge badge-info" style="margin-bottom: 12px;">DRAWING</span><h3 class="card-title">抽取中</h3><p class="card-desc">数字快速滚动，持续约 2 秒，切换至结果态。</p></div>
+        <div class="card"><span class="badge badge-success" style="margin-bottom: 12px;">RESULT</span><h3 class="card-title">结果展示</h3><p class="card-desc">结果以 pop 动画呈现，CTA 重置为「再抽一次」。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section class="section" id="app" style="background: var(--bg-elevated);">
+    <div class="container">
+      <div class="section-header"><span class="section-label">App Preview</span><h2 class="section-title">应用预览</h2><p class="section-desc">桌面端与移动端的真实应用界面。</p></div>
+      <div class="grid-2" style="gap: 48px; align-items: center;">
+        <div>
+          <div class="app-mockup" style="max-width: 480px;">
+            <div class="app-toolbar"><div style="display: flex; align-items: center; gap: 8px; font-weight: 600;"><div style="width: 28px; height: 28px; border-radius: 8px; background: var(--primary); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;">Z</div>ZenDraw</div><div style="display: flex; gap: 4px;"><button style="width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted);">⚙</button><button style="width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--fg-muted);">📋</button></div></div>
+            <div class="app-main">
+              <div class="app-result-label">Lucky Number</div>
+              <div class="app-result-number" id="app-number">042</div>
+              <button class="app-action" id="app-action">开始抽奖</button>
+              <div style="display: flex; gap: 8px; margin-top: 24px; font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted);"><span>范围：1-99</span>·<span>不重复</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="device-frame">
+            <div class="device-notch"></div>
+            <div class="device-screen">
+              <div class="device-content">
+                <div class="device-header"><span style="font-weight: 600; font-size: 15px;">禅抽</span><span style="font-size: 12px; color: var(--fg-muted); font-family: var(--font-mono);">v3.0</span></div>
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                  <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-subtle); margin-bottom: 16px;">Lucky Number</div>
+                  <div class="device-number" id="mobile-number">042</div>
+                </div>
+                <div style="padding: 16px 0 24px; text-align: center;"><button style="width: 100%; padding: 16px 24px; background: var(--primary); color: var(--primary-fg); border-radius: 999px; font-size: 15px; font-weight: 600; box-shadow: var(--shadow-md);">开始抽奖</button></div>
+                <div style="padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px;"><div style="font-size: 12px; color: var(--fg-muted); margin-bottom: 8px;">最近记录</div><div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="color: var(--fg-muted);">02:14:32</span><strong>077</strong></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A11Y -->
+  <section class="section" id="a11y">
+    <div class="container">
+      <div class="section-header"><span class="section-label">Accessibility</span><h2 class="section-title">无障碍设计</h2><p class="section-desc">让所有用户都能顺畅使用产品。</p></div>
+      <div class="grid-3">
+        <div class="card"><div class="card-icon">⌨</div><h3 class="card-title">键盘导航</h3><p class="card-desc">所有交互元素均可通过 Tab 键聚焦，并提供可见的焦点指示环。Enter 触发，Esc 取消。</p></div>
+        <div class="card"><div class="card-icon">🎯</div><h3 class="card-title">颜色对比度</h3><p class="card-desc">所有文本与背景的对比度达到 WCAG 2.1 AA 标准 (4.5:1)，大字达到 3:1。</p></div>
+        <div class="card"><div class="card-icon">🔊</div><h3 class="card-title">屏幕阅读器</h3><p class="card-desc">语义化 HTML、ARIA 属性、aria-live 区域，确保屏幕阅读器能正确传达状态变化。</p></div>
+        <div class="card"><div class="card-icon">🧭</div><h3 class="card-title">动效偏好</h3><p class="card-desc">检测 prefers-reduced-motion，尊重用户的动效偏好设置，对敏感用户关闭非必要动画。</p></div>
+        <div class="card"><div class="card-icon">🌓</div><h3 class="card-title">深色模式</h3><p class="card-desc">完整的浅色 / 深色 / 跟随系统三态切换，所有组件均在两种模式下表现良好。</p></div>
+        <div class="card"><div class="card-icon">📐</div><h3 class="card-title">触摸目标</h3><p class="card-desc">所有可点击元素最小尺寸为 40×40px，满足 WCAG 对触摸目标大小的 24×24 CSS 像素建议。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"><div style="font-weight: 700; color: var(--fg); margin-bottom: 8px;">ZenDraw · Design System</div><div>v3.0 · 极简 · 克制 · 永恒</div></footer>
+
+  <script>
+    // 主题切换
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      document.getElementById('theme-icon').textContent = next === 'dark' ? '☀' : '🌙';
+    }
+    // 组件标签切换
+    document.querySelectorAll('#comp-tabs .tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#comp-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.getAttribute('data-tab');
+        document.querySelectorAll('.comp-tab-content').forEach(panel => panel.style.display = 'none');
+        document.getElementById('tab-' + tab).style.display = 'block';
+      });
+    });
+    // 模拟抽奖 — 桌面
+    const appNumber = document.getElementById('app-number');
+    const appAction = document.getElementById('app-action');
+    const mobileNum = document.getElementById('mobile-number');
+    function startDraw() {
+      let count = 0; const max = 40;
+      appAction.textContent = '抽取中...';
+      appAction.style.opacity = '0.7';
+      const iv = setInterval(() => {
+        const n = String(Math.floor(Math.random() * 100)).padStart(3, '0');
+        appNumber.textContent = n; mobileNum.textContent = n;
+        count++; if (count >= max) { clearInterval(iv); appAction.textContent = '再抽一次'; appAction.style.opacity = '1'; }
+      }, 50);
+    }
+    appAction.addEventListener('click', startDraw);
+  </script>
+</body>
+</html>

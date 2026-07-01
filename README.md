@@ -1,4 +1,4 @@
-# ZenDraw | 禅抽 v3.0
+# ZenDraw | 禅抽 v5.0
 
 [中文版本](./README_CN.md)
 
@@ -24,19 +24,32 @@ This version embraces Apple Design principles:
 - **Custom List Import**: Import a custom list of items (names, prizes, etc.) to draw from instead of numbers.
 - **Multi-language Support**: Seamlessly switch between English and Simplified Chinese.
 - **Responsive Design**: Optimized for Desktop, Tablet, and Mobile devices.
-- **Theming & Fonts**: Choose from multiple color presets (Default, Ocean, Forest, Sunset, Purple, Neon) and font families (Sans, Mono, Serif).
+- **Theming & Fonts**: Choose from 10 color presets (Default, Ocean, Forest, Sunset, Purple, Neon, Sakura, Midnight, Retro, Pixel) and font families (Sans, Mono, Serif).
 - **Dark/Light Mode**: Full support for system themes and manual toggling.
 - **History Tracking & Export**: Keep track of all previous draws and export them to a text file.
 - **Settings Persistence**: All user settings are automatically saved to localStorage.
+
+## Code Quality
+
+This project follows strict code quality standards:
+
+- **TypeScript Strict Mode**: Enhanced type safety with `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`.
+- **ESLint Enhanced Rules**: Security, accessibility (jsx-a11y), and React best practices enforcement.
+- **Code Review Standard**: Defined review checklist with priority levels (🔴 Blockers, 🟡 Suggestions, 💭 Nits).
+- **CI/CD Pipeline**: Automated type checking, linting, build verification, and security audits on every PR.
+- **Security First**: `crypto.getRandomValues()` for cryptographic-quality randomness, input validation, XSS protection.
+
+See [Code Review Standard](./.github/CODE_REVIEW_STANDARD.md) for details.
 
 ## Tech Stack
 
 - **Framework**: Next.js 15 (App Router)
 - **Styling**: Tailwind CSS v4
-- **Animations**: Framer Motion (motion/react)
+- **Animations**: Motion (ex-Framer Motion)
 - **Icons**: Lucide React
 - **Theming**: next-themes
 - **UI Components**: shadcn/ui
+- **Language**: TypeScript (strict mode)
 
 ## Installation
 
@@ -49,6 +62,70 @@ This version embraces Apple Design principles:
    ```bash
    npm run dev
    ```
+
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build production bundle |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint check |
+| `npm run lint:fix` | Auto-fix ESLint errors |
+| `npm run type-check` | TypeScript type checking |
+| `npm run test` | Run tests |
+| `npm run test:watch` | Run tests in watch mode |
+
+## Project Structure
+
+```
+app/
+├── layout.tsx              # Root layout
+├── page.tsx                # Main page
+├── style.css               # Global styles
+├── components/
+│   ├── draw/               # Draw feature components
+│   │   ├── draw-button.tsx  # Draw action button
+│   │   ├── draw-settings.tsx# Draw parameter settings
+│   │   ├── appearance-settings.tsx  # Appearance settings
+│   │   ├── custom-list-settings.tsx # Custom list settings
+│   │   ├── draw-display/   # Draw results display (split)
+│   │   ├── history-list/   # Draw history (split)
+│   │   └── settings-panel/ # Settings sidebar panel (split)
+│   ├── number-roller.tsx   # Number rolling animation
+│   ├── theme-provider.tsx  # Theme provider
+│   └── ui/                 # shadcn/ui components
+├── hooks/                  # Custom React hooks
+│   ├── draw-types.ts       # Draw type definitions
+│   ├── draw-helpers.ts     # Draw logic pure functions
+│   ├── draw-reducer.ts     # Draw state reducer
+│   ├── use-draw.ts         # Main draw hook
+│   ├── use-draw-actions.ts # Draw action callbacks
+│   ├── use-draw-persistence.ts # localStorage persistence
+│   ├── use-local-storage.ts# Local storage hook
+│   └── use-sound.ts        # Web Audio API sounds
+├── lib/                    # Utility functions
+└── locales/                # i18n translations
+```
+
+## Contributing
+
+Please read our [Code Review Standard](./.github/CODE_REVIEW_STANDARD.md) and [PR Template](./.github/PULL_REQUEST_TEMPLATE.md) before submitting a pull request.
+
+### Pull Request Process
+
+1. Create a feature branch from `main`
+2. Complete the self-checklist in the PR template
+3. Ensure all CI checks pass
+4. Request review from code owners
+5. Address review feedback
+
+## Security
+
+- Random number generation uses `crypto.getRandomValues()` for cryptographic quality
+- All user inputs are validated and sanitized
+- No sensitive information is stored in client-side code
+- Regular dependency audits with `npm audit`
 
 ## License
 

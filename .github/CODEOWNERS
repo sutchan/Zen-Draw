@@ -1,0 +1,31 @@
+# CODEOWNERS — 代码审查责任人配置
+# 当 PR 修改对应文件时，自动请求指定审查者
+
+# 项目所有者（所有变更都需要至少一人审查）
+*       @sutchan
+
+# 核心应用逻辑
+/app/hooks/*           @sutchan
+/app/lib/*              @sutchan
+
+# UI 组件
+/app/components/ui/*    @sutchan
+/app/components/draw/*  @sutchan
+
+# 主题和样式
+/app/style.css          @sutchan
+/app/components/theme-provider.tsx  @sutchan
+/tailwind.config.*      @sutchan
+
+# 配置和构建
+/next.config.ts         @sutchan
+/package.json           @sutchan
+/tsconfig.json          @sutchan
+/eslint.config.js       @sutchan
+
+# 文档
+/*.md                   @sutchan
+/.github/*              @sutchan
+
+# 原型设计文件
+/prototype/*            @sutchan

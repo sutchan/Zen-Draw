@@ -1,96 +1,162 @@
-# ZenDraw | 禅抽 v3.0 - 项目规范文档
+# ZenDraw | 禅抽 v3.3.0 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **版本**: v3.0
-- **描述**: 一款专业的全屏随机抽奖应用，采用 Apple 设计风格，适用于年会抽奖、课堂互动、抽奖活动等场景。
+- **当前版本**: v3.3.0
+- **上次更新**: 2026-06-30
+- **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、10 种主题配色、Web Audio API 音效。
 - **许可证**: MIT License
+- **代码质量**: 严格 TypeScript (strict mode) + ESLint + CI/CD + 代码审查标准 + 安全头
 
 ### 1.2 设计理念
-本版本采用 Apple 设计风格，重新定义了视觉呈现和交互体验：
-
-| 设计原则 | 说明 |
-|----------|------|
-| 极简布局 | 去除冗余元素，只保留核心功能入口，让内容优先于界面 |
-| 大图展示 | 突出显示抽奖结果，大字号居中布局，一眼即达 |
-| 充足留白 | 呼吸空间让界面更优雅，阅读更舒适，降低视觉疲劳 |
-| 清晰层次 | 明确的内容层级，信息结构一目了然，操作路径清晰 |
+| 原则 | 说明 |
+|------|------|
+| 减法美学 | 去除冗余元素，每个像素都有存在的理由，界面服务于抽签仪式本身 |
+| 聚焦核心 | 抽签是中心行为，界面围绕它设计，而非分散注意力 |
+| 克制即力量 | 色彩、动效、字体都服务于仪式感，强调色使用不超过 10% 视觉面积 |
+| 跨端一致 | 从桌面到移动端，体验连续且精致 |
+| 留白艺术 | 充足呼吸空间，降低视觉疲劳，增强内容层次感 |
 
 ### 1.3 技术栈
-| 类别 | 技术 |
-|------|------|
-| 框架 | Next.js 15 (App Router) |
-| UI库 | React 19 |
-| 样式 | Tailwind CSS v4 |
-| 动画 | Framer Motion (motion/react) |
-| 图标 | Lucide React |
-| 主题 | next-themes |
-| 组件库 | shadcn/ui |
-| 语言 | TypeScript (strict mode) |
+| 类别 | 技术 | 版本 |
+|------|------|--------|
+| 框架 | Next.js (App Router) | ^15.4.9 |
+| UI 库 | React / React DOM | ^19.2.1 |
+| 样式 | Tailwind CSS v4 + PostCSS | 4.1.11 |
+| 动画 | Motion (ex-Framer Motion) | ^12.23.24 |
+| 图标 | Lucide React | ^0.553.0 |
+| 主题 | next-themes | ^0.4.6 |
+| 组件基础 | @base-ui/react | ^1.3.0 |
+| shadcn/ui CLI | shadcn | ^4.12.0 |
+| 工具函数 | clsx + class-variance-authority + tailwind-merge | latest |
+| 测试 | Vitest + @testing-library/react + jsdom | latest |
+| 语言 | TypeScript (strict mode) | 5.9.3 |
+| 音效 | Web Audio API（自合成，无外部文件） | — |
+| 国际化 | 自建 i18n（createTranslator） | — |
 
 ### 1.4 字体配置
-| 名称 | 字体 | 变量名 |
-|------|------|--------|
-| 无衬线 | Inter (Geist) | --font-sans |
-| 等宽 | JetBrains Mono | --font-mono |
-| 衬线 | Playfair Display | --font-serif |
+| 名称 | 字体 | CSS 变量 |
+|------|------|----------|
+| 无衬线 | Geist (Google Fonts), Inter 备用 | `--font-geist-sans` |
+| 等宽 | JetBrains Mono | `--font-geist-mono` |
+| 衬线 | Playfair Display | `--font-serif` |
 
 ### 1.5 核心交互流程
-1. 打开应用 → 显示主界面（大图居中布局 + 准备状态）
-2. 点击右上角齿轮图标 → 侧边栏从右侧滑入（带 spring 物理动画）
-3. 在侧边栏配置抽奖参数（范围、数量、动画时长、主题预设等）
-4. 点击胶囊形「开始抽奖」按钮 → UI 自动隐藏 + 数字滚动动画
-5. 动画结束 → 展示中奖结果（大字号聚焦展示 + spring 弹性动画）
+```
+Welcome ──[点击/空格键]──→ Drawing ──[点击/空格键]──→ Result
+  ↑                                                      │
+  └──────────────────[继续/重试]──────────────────────────┘
+
+Any State ──[Escape]──→ Welcome
+```
+
+步骤分解：
+1. 打开应用 → 欢迎界面（图标 + 准备状态 + 脉冲呼吸光晕）
+2. 点击圆形「开始抽取」按钮或按空格 → 数字高速滚动动画 + 滴答音效
+3. 再次点击按钮或按空格 → 数字逐字定格（老虎机效果）+ 结果揭晓琶音 + 庆祝光晕
+4. 查看结果 → 点击「继续抽取」重置到欢迎状态
+5. 随时按 Escape → 返回欢迎状态
 
 ---
 
 ## 2. 目录结构
 
 ```
-/workspace
-├── app/
-│   ├── layout.tsx          # 根布局
-│   ├── page.tsx            # 主页面 (v3.0 Apple Design)
-│   └── style.css           # 全局样式
-├── components/
-│   ├── ui/                 # shadcn/ui 组件
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   ├── dialog.tsx
-│   │   ├── input.tsx
-│   │   ├── label.tsx
-│   │   ├── select.tsx
-│   │   ├── slider.tsx
-│   │   ├── switch.tsx
-│   │   ├── tabs.tsx
-│   │   └── textarea.tsx
-│   ├── number-roller.tsx   # 数字滚动组件
-│   ├── theme-provider.tsx  # 主题提供者
-│   └── theme-toggle.tsx    # 主题切换
-├── hooks/
-│   ├── use-local-storage.ts  # 本地存储hook
-│   └── use-mobile.ts         # 移动端检测hook
-├── lib/
-│   └── utils.ts            # 工具函数
-├── locales/
-│   └── index.ts            # 国际化翻译
-├── openspec/               # 规范文档
-│   ├── SPEC.md            # 本文档
-│   └── prototype.html     # 原型图 (v3.0 Apple Design)
-├── .eslintrc.json         # ESLint配置
-├── .gitignore
-├── CHANGELOG.md
-├── components.json         # shadcn配置
-├── eslint.config.js       # ESLint flat config
-├── metadata.json          # 项目元数据
-├── next.config.ts
+zen-draw/
+├── app/                           # Next.js App Router
+│   ├── layout.tsx                 # 根布局（SEO metadata + 字体加载）
+│   ├── page.tsx                   # 主页面（状态编排 + 键盘快捷键）
+│   ├── error.tsx                  # ⭐ 全局错误边界 (v4.0)
+│   ├── not-found.tsx              # ⭐ 404 页面 (v4.0)
+│   ├── style.css                  # 全局样式（Tailwind v4 + shadcn/ui + 10 主题）
+│   ├── components/
+│   │   ├── ui/                    # shadcn/ui v4 组件（base-nova 风格）
+│   │   │   ├── alert.tsx, badge.tsx, button.tsx, card.tsx
+│   │   │   ├── dialog.tsx, input.tsx, label.tsx, select.tsx
+│   │   │   ├── separator.tsx, sheet.tsx, slider.tsx
+│   │   │   ├── switch.tsx, tabs.tsx, textarea.tsx
+│   │   ├── draw/                  # 抽签业务组件
+│   │   │   ├── draw-button.tsx           # 核心抽取按钮（脉冲动画 + aria）
+│   │   │   ├── draw-settings.tsx         # 抽取参数设置
+│   │   │   ├── appearance-settings.tsx   # 外观设置（主题/字体/数字格式）
+│   │   │   ├── custom-list-settings.tsx  # 自定义名单导入/导出
+│   │   │   ├── draw-display/             # 结果展示组件集
+│   │   │   │   ├── index.tsx             # 主显示区（状态路由）
+│   │   │   │   ├── welcome-screen.tsx    # 空闲/欢迎状态
+│   │   │   │   ├── error-screen.tsx      # 错误状态
+│   │   │   │   ├── celebration-effect.tsx# 结果揭晓庆祝光晕
+│   │   │   │   ├── result-card.tsx       # 单个结果卡片
+│   │   │   │   └── results-grid.tsx      # 结果网格展示
+│   │   │   ├── history-list/             # 历史记录组件集
+│   │   │   │   ├── index.tsx             # 历史记录列表
+│   │   │   │   ├── history-card.tsx      # 历史记录卡片
+│   │   │   │   └── empty-state.tsx       # 空状态
+│   │   │   ├── settings-panel/           # 设置面板组件集
+│   │   │   │   ├── index.tsx             # 主面板（Tabs 切换）
+│   │   │   │   ├── header-bar.tsx        # 面板标题栏
+│   │   │   │   └── sidebar-toggle.tsx    # 侧边栏开关按钮
+│   │   │   └── __tests__/
+│   │   │       └── draw-button.test.tsx  # 按钮单元测试
+│   │   ├── number-roller.tsx      # 数字滚动动画组件
+│   │   └── theme-provider.tsx     # 主题提供者（10 预设 + 3 字体 + 深浅色）
+│   ├── hooks/                     # 自定义 Hooks
+│   │   ├── draw-types.ts          # 类型定义
+│   │   ├── draw-helpers.ts        # 纯函数（抽签逻辑/验证/格式化）
+│   │   ├── draw-reducer.ts        # 状态 Reducer
+│   │   ├── use-draw.ts            # 主 Hook（状态管理入口）
+│   │   ├── use-draw-actions.ts    # 动作回调（start/stop/setters）
+│   │   ├── use-draw-persistence.ts# 持久化设置（13 组 localStorage）
+│   │   ├── use-local-storage.ts   # localStorage Hook（含跨标签同步）
+│   │   ├── use-persist-settings.ts# 批量持久化副作用
+│   │   └── use-sound.ts          # Web Audio API 音效合成
+│   ├── lib/
+│   │   ├── utils.ts              # 工具函数（cn / secureRandomInt / sanitizeListInput）
+│   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
+│   ├── locales/                  # 国际化数据
+│   │   ├── index.ts              # re-export
+│   │   ├── types.ts              # TranslationKey（49 键）
+│   │   ├── en.ts                 # 英文翻译
+│   │   └── zh.ts                 # 中文翻译
+│   └── test/
+│       └── setup.ts              # 测试环境配置
+├── prototype/                    # 设计原型（v4.0 重构）
+│   ├── v1/                       # 线框图 + 初始原型
+│   │   ├── wireframes.html
+│   │   └── prototype.html
+│   ├── v2/                       # 交互原型
+│   │   └── prototypes.html
+│   ├── interactive/              # v4.0 高保真可交互原型
+│   │   └── index.html
+│   ├── design-system.md          # 完整设计系统规范
+│   └── assets/
+├── docs/design/                  # 设计参考文档
+│   ├── color-system.html
+│   ├── motion.html
+│   └── typography.html
+├── .github/                      # GitHub 配置
+│   ├── CODEOWNERS
+│   ├── CODE_REVIEW_SETUP.md
+│   ├── CODE_REVIEW_STANDARD.md
+│   ├── FIXES_SUMMARY.md
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   ├── PUSH_GUIDE.md
+│   └── workflows/
+│       └── ci.yml
+├── openspec/
+│   └── SPEC.md                   # 本文档
+├── eslint.config.js              # ESLint Flat Config
+├── tsconfig.json                 # TypeScript strict mode
+├── next.config.ts                # Next.js + 安全头
+├── components.json               # shadcn/ui 配置
 ├── package.json
 ├── postcss.config.mjs
-├── README.md              # 英文文档
-├── README_CN.md           # 中文文档
-└── tsconfig.json
+├── vitest.config.ts
+├── CHANGELOG.md
+├── CODE_REVIEW.md
+├── README.md / README_CN.md
+└── metadata.json
 ```
 
 ---
@@ -100,904 +166,462 @@
 ### 3.1 核心功能
 
 #### 3.1.1 随机抽取
-- **数值范围**: 支持自定义最小值和最大值
-- **抽取数量**: 支持一次抽取多个结果
-- **重复选项**: 支持允许/禁止重复抽取
-- **自定义名单**: 支持导入自定义名单（每行一个）
+- **数值范围**: 自定义最小值和最大值（范围宽度 ≤ 10,000,000）
+- **抽取数量**: 一次抽取多个结果（≤ 范围宽度或 1000 项上限）
+- **重复选项**: 允许/禁止重复抽取
+- **自定义名单**: 导入自定义名单（每行一个，最多 1000 项，每项 ≤ 200 字符）
+- **随机数安全**: `crypto.getRandomValues()` + 拒绝采样消除模偏差；降级方案 `Math.random()`
 
 #### 3.1.2 显示规则
-- **位数补零**: 最小位数设置（如 3 位数: 001, 002...）
-- **前缀/后缀**: 支持添加自定义前缀和后缀
+- **位数补零**: `digits` 设置（如 3 位数: 001, 002...），0 时不补零
+- **前缀/后缀**: 自定义文本，限制 ≤ 50 字符，过滤控制字符
 
 #### 3.1.3 动画效果
-- **滚动动画**: Slot-machine 风格数字滚动效果
-- **动画时长**: 可配置（1-30秒）
-- **动画优化**: 支持 reduce motion 偏好设置
+- **滚动动画**: Slot-machine 风格，每个字符独立滚动
+- **逐字定格**: 停止时从左到右依次延迟 80ms 定格，弹性弹簧动画
+- **动画时长**: 可配置（1–30 秒）
+- **优化**: 尊重 `prefers-reduced-motion`，跳过所有非必要动画
+
+#### 3.1.4 音效系统（Web Audio API）
+- **开始抽取**: 上升音（440Hz→880Hz，0.15s 正弦波）
+- **滚动滴答**: 短促咔嗒音（800Hz，0.05s 方波）
+- **结果揭晓**: 琶音（C5→E5→G5→C6，每音符 0.12s 正弦波）
+- **错误提示**: 下降音（440Hz→220Hz，0.3s 锯齿波）
+- **停止音**: 短促叮声（600Hz，0.08s 正弦波）
 
 ### 3.2 界面功能
 
-#### 3.2.1 顶部导航栏 (v3.0 新增)
-- **极简设计**: 高度 56px (h-14)，半透明背景
-- **毛玻璃效果**: backdrop-blur-xl
-- **品牌标识**: 左侧显示 Logo + 应用名称
-- **控制按钮**: 右侧语言切换 + 设置面板开关
+#### 3.2.1 顶部导航栏
+- **高度**: 56px (`h-14`)
+- **背景**: `bg-background/80 backdrop-blur-xl` 毛玻璃半透明
+- **布局**: 左（Logo + 名称） 中（弹性空间） 右（主题切换 + 设置开关）
+- **分隔线**: `border-b border-border/50`
 
-#### 3.2.2 设置面板 (v3.0 优化)
-- **宽度**: 380px (sm:w-[380px])
-- **毛玻璃背景**: backdrop-blur-xl
-- **分组设计**: 使用大写标签区分功能区块
-- **圆角风格**: 统一使用 rounded-xl / rounded-2xl
+#### 3.2.2 设置面板（Sheet 侧边栏）
+- **布局**: 右滑入，`w-full`（移动端） / `sm:w-[380px]`（桌面）
+- **Tabs 切换**: 抽取 / 外观 / 历史
+- **抽取设置**: 范围（min/max）、个数、重复、自动隐藏、动画时长
+- **外观设置**: 深浅模式（light/dark/system）、10 种配色方案、3 种字体、数字格式
+- **自定义名单**: 开关 + 导入对话框 + 导出 txt
+- **历史记录**: 卡片列表 + 复制 + 清空
 
-#### 3.2.3 主题系统
-| 模式 | 描述 |
-|------|------|
-| Light | 浅色模式 |
-| Dark | 深色模式 |
-| System | 跟随系统 |
-
-#### 3.2.4 配色方案
-| ID | 名称 | 描述 |
-|----|------|------|
-| default | 默认 | 标准配色 |
-| ocean | 海洋蓝 | 蓝调主题 |
-| forest | 森林绿 | 绿调主题 |
-| sunset | 落日橙 | 橙调主题 |
-| purple | 紫罗兰 | 紫调主题 |
-| neon | 霓虹 | 赛博朋克风格 |
-
-#### 3.2.5 字体样式
-| ID | 名称 | 字体 |
-|----|------|------|
-| sans | 无衬线 | Inter (Geist) |
-| mono | 等宽 | JetBrains Mono |
-| serif | 衬线 | Playfair Display |
+#### 3.2.3 主显示区域
+- **空闲态**: 圆形图标 + 标题 + 描述 + 脉冲呼吸光晕 + 圆形大按钮
+- **抽取中**: 大字号数字滚动 + 提示文字
+- **结果态**: 结果标签 + 大字号数字 + 元信息 + 操作按钮
+- **错误态**: 错误图标 + 错误信息 + 重试按钮
 
 ---
 
-## 4. 设计系统规范 (v3.0)
+## 4. 设计系统规范 (v4.0)
 
-### 4.1 视觉规范
+### 4.1 设计 Tokens — 色彩
 
-#### 4.1.1 圆角系统
-| 名称 | 圆角值 | 适用场景 |
-|------|--------|----------|
-| xs | rounded-lg (0.5rem) | 小按钮、标签 |
-| sm | rounded-xl (0.75rem) | 小卡片、输入框聚焦状态 |
-| md | rounded-2xl (1rem) | 输入框、中等卡片、对话框 |
-| lg | rounded-[2rem] | 大型结果卡片、主面板 |
-| full | rounded-full / 980px | 胶囊按钮（主要操作） |
-
-#### 4.1.2 间距系统
-| 名称 | 间距值 | 适用场景 |
-|------|--------|----------|
-| xs | 4px (0.25rem) | 紧凑元素、图标间距 |
-| sm | 8px (0.5rem) | 小组件间距 |
-| md | 16px (1rem) | 默认间距、段落间距 |
-| lg | 24px (1.5rem) | 区块间距、设置分组间距 |
-| xl | 32px+ (2rem+) | 大区块留白、页面布局 |
-
-#### 4.1.3 颜色系统 (Light Mode)
-| 变量 | 值 | 用途 |
-|------|-----|------|
-| --background | oklch(0.99 0 0) | 页面背景 |
-| --foreground | oklch(0.145 0 0) | 主要文字 |
-| --muted | oklch(0.965 0 0) | 次要背景 |
-| --muted-foreground | oklch(0.556 0 0) | 次要文字 |
-| --border | oklch(0.91 0 0) | 边框颜色 |
-| --ring | oklch(0.708 0 0) | 聚焦环颜色 |
-
-#### 4.1.4 颜色系统 (Dark Mode)
-| 变量 | 值 | 用途 |
-|------|-----|------|
-| --background | oklch(0.145 0 0) | 页面背景 |
-| --foreground | oklch(0.985 0 0) | 主要文字 |
-| --muted | oklch(0.269 0 0) | 次要背景 |
-| --muted-foreground | oklch(0.708 0 0) | 次要文字 |
-| --border | oklch(1 0 0 / 10%) | 边框颜色 |
-
-#### 4.1.5 字体规范
-
-##### 字体层级
-| 类名 | 字号 | 字重 | 字间距 | 行高 | 适用场景 |
-|------|------|------|--------|------|----------|
-| display-1 | 3.5-7rem | 600 | -0.035em | 1.05 | 英雄标题 |
-| display-2 | 2.5rem | 600 | -0.025em | 1.1 | 大标题 |
-| heading-xl | 1.75rem | 600 | -0.022em | 1.2 | 区块标题 |
-| heading-lg | 1.25rem | 600 | -0.018em | 1.25 | 卡片标题 |
-| heading-md | 1rem | 600 | -0.014em | 1.3 | 小标题 |
-| body-text | 1.0625rem | 400 | - | 1.5 | 正文 |
-| caption | 0.875rem | 400 | - | 1.4 | 辅助文字 |
-
-##### 数字展示
+#### 4.1.1 shadcn/ui CSS 变量（实际代码值）
 ```css
-/* 结果数字样式 */
-.result-number {
-    font-size: clamp(6rem, 12vw, 11rem);
-    font-weight: 700;
-    letter-spacing: -0.05em;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum";
-    background: linear-gradient(180deg, var(--foreground) 0%, var(--foreground)/0.8 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
+:root {
+  --background: oklch(0.99 0 0);      --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);               --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);            --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);        --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.965 0 0);      --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.965 0 0);          --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.965 0 0);         --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.91 0 0);          --input: oklch(0.91 0 0);
+  --ring: oklch(0.708 0 0);
+  --radius: 0.75rem;
+}
+.dark {
+  --background: oklch(0.145 0 0);     --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);           --card-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);          --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);         --accent-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);       --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
 }
 ```
 
-#### 4.1.6 图标规范
-| 类型 | 尺寸 | 圆角 | 适用场景 |
-|------|------|------|----------|
-| 图标按钮 | 32×32px / 36×36px | rounded-lg | 顶部导航、控制按钮 |
-| 组合图标 | 28×28px | - | 装饰性图标 |
-| Logo 图标 | 32×32px | rounded-[10px] | 品牌标识 |
-
-##### 图标使用规则
-- 使用 `data-icon` 属性传递图标：`data-icon="inline-start"` 或 `data-icon="inline-end"`
-- 不要在图标上直接设置尺寸类，让组件内部处理
-- 图标作为对象传递：`icon={CheckIcon}`，而非字符串键
-
-#### 4.1.7 动画曲线
-```typescript
-// Apple 风格动画曲线 - 核心缓动
-ease: [0.25, 0.1, 0.25, 1]  // cubic-bezier(0.25, 0.1, 0.25, 1)
-
-// Spring 物理动画参数 - 侧边栏滑入/结果弹出
-stiffness: 300  // 刚度
-damping: 30     // 阻尼
-mass: 0.8       // 质量
-```
-
-#### 4.1.8 动画时长规范
-| 场景 | 时长 | 动画类型 |
-|------|------|---------|
-| 快速过渡（悬停、开关） | 200-300ms | ease-out |
-| 标准过渡（页面切换） | 300-500ms | cubic-bezier(0.25, 0.1, 0.25, 1) |
-| 强调动画（结果展示） | 500-800ms | spring(300, 30, 0.8) |
-| 浮动装饰动画 | 4s | ease-in-out (infinite) |
-
-#### 4.1.9 阴影系统
-| 级别 | 阴影值 | 适用场景 |
-|------|--------|----------|
-| sm | `0 1px 2px rgba(0,0,0,0.04)` | 轻微浮起、卡片常态 |
-| md | `0 8px 32px rgba(0,0,0,0.06)` | 卡片、输入框聚焦 |
-| lg | `0 20px 60px rgba(0,0,0,0.10)` | 大型卡片悬停 |
-| xl | `0 30px 100px rgba(0,0,0,0.12)` | 突出显示结果、模态框 |
-| button | `0 8px 30px rgba(0,0,0,0.12)` | 主按钮常态 |
-| button-hover | `0 12px 40px rgba(0,0,0,0.18)` | 主按钮悬停 |
-
-#### 4.1.10 动效规范
-
-##### 悬停反馈
+#### 4.1.2 阴影系统（自定义变量）
 ```css
-.hover-scale {
-    transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-.hover-scale:hover {
-    transform: scale(1.02-1.05);
-}
+--shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+--shadow-md: 0 8px 32px rgba(0,0,0,0.06);
+--shadow-lg: 0 20px 60px rgba(0,0,0,0.10);
+--shadow-xl: 0 30px 100px rgba(0,0,0,0.12);
 ```
+Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 
-##### 点击反馈
+#### 4.1.3 动画曲线
 ```css
-.active-scale:active {
-    transform: scale(0.95);
-    transition-duration: 100ms;
-}
+--ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);  /* 标准 Apple 缓动 */
+/* Motion (Framer) spring 参数: stiffness=300~400, damping=16~30, mass=0.55~0.8 */
 ```
 
-##### 浮动效果
-```css
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-}
-.anim-float { animation: float 4s ease-in-out infinite; }
-```
+### 4.2 类型系统（Modular Scale 1.25）
 
-##### 脉冲效果
-```css
-@keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(0.95); }
-}
-.anim-pulse { animation: pulse 2s ease-in-out infinite; }
-```
+| Token | Size | Weight | Line Height | 使用场景 |
+|-------|------|--------|-------------|----------|
+| — | 12px | 400/600 | 1.33 | 辅助文字、页码 |
+| `text-sm` | 14px | 400/500 | 1.4 | 标签、设置项 |
+| `text-base` | 16px | 400/500 | 1.5 | 正文 |
+| `text-lg` | 18px | 500/600 | 1.4 | 突出正文 |
+| `text-xl` | 20px | 600 | 1.3 | 小标题 |
+| `text-2xl` | 24px | 600/700 | 1.2 | 标题 |
+| `text-4xl` | 36px | 700 | 1.1 | 页标题 |
+| `text-7xl` | 48px | 700 | 1 | 抽签数字(移动端) |
+| `text-8xl` | 60px | 700 | 1 | 抽签数字(桌面) |
+| `text-9xl / [12vw]` | 72px+ | 700 | 1 | 抽签数字(大屏) |
 
-##### 发光效果
-```css
-@keyframes glow {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0); }
-    50% { box-shadow: 0 0 30px 10px rgba(0, 113, 227, 0.3); }
-}
-.anim-glow { animation: glow 2s ease-in-out infinite; }
-```
+### 4.3 间距与布局
 
-##### 滑入效果
-```css
-@keyframes slide-in {
-    0% { transform: translateX(-30px); opacity: 0; }
-    100% { transform: translateX(0); opacity: 1; }
-}
-.anim-slide { animation: slide-in 0.6s cubic-bezier(0.25, 0.1, 0.25, 1); }
-```
+#### 4.3.1 间距模式
+| 场景 | Tailwind | 说明 |
+|------|----------|------|
+| 内聚 | `gap-1` ~ `gap-2` (4–8px) | 关联紧密元素（图标+文字） |
+| 舒适 | `gap-3` ~ `gap-4` (12–16px) | 列表项、表单行 |
+| 呼吸 | `gap-6` ~ `gap-8` (24–32px) | 区块间、section 间距 |
+| 留白 | `gap-12` ~ `gap-16` (48–64px) | 主要区域间隔 |
 
-### 4.2 布局规范
-
-#### 4.2.1 响应式断点
+#### 4.3.2 响应式断点
 | 设备 | 断点 | 布局变化 |
-|------|------|---------|
+|------|------|----------|
 | 移动端 | < 768px | 全屏侧边栏、单列布局 |
-| 平板/桌面 | >= 768px | 380px 侧边栏宽度、双列布局 |
-| 大屏 | >= 1200px | 结果卡片更大留白 |
+| 平板/桌面 | ≥ 768px | 380px 侧边栏宽度、双列布局 |
+| 大屏 | ≥ 1200px | 更大留白 |
 
-#### 4.2.2 主显示区域规范
-- **最大宽度**: max-w-4xl (896px) - 结果展示容器
-- **垂直内边距**: py-12 (48px) - 结果区上下留白
-- **按钮容器**: max-w-md (448px) - 底部操作区宽度
-- **顶部导航高度**: h-14 (56px) - Desktop / h-12 (48px) - Mobile
-- **侧边栏宽度**: w-full (Mobile) / sm:w-[380px] (Desktop)
+#### 4.3.3 圆角系统
+| 名称 | 值 | 适用场景 |
+|------|-----|---------|
+| rounded-lg | 0.5rem | 小按钮、标签 |
+| rounded-xl | 0.75rem | 小卡片、输入框 |
+| rounded-2xl | 1rem | 输入框、中等卡片 |
+| rounded-[2rem] | 2rem | 结果卡片主显示区 |
+| rounded-full | ∞ | 胶囊/圆形按钮 |
 
-#### 4.2.3 结果卡片规范
-- **圆角**: rounded-[2rem] - 大圆角 Apple 风格
-- **内边距**: px-12 py-10 sm:px-16 sm:py-12 - 响应式 padding
-- **边框**: border border-border/15 - 极细边框增加层次
-- **背景**: bg-background - 与页面一致，毛玻璃效果
-- **阴影**: shadow-[0_8px_32px_rgba(0,0,0,0.06)] - 柔和投影
+### 4.4 交互标准
 
-### 4.3 主题预设规范
-
-#### 4.3.1 默认主题 (Default)
-- **风格**: 黑白极简、高对比度
-- **用途**: 默认推荐，适合正式场合
-- **背景**: 浅灰 (#FBFBFD) / 深黑 (#1D1D1F)
-- **强调色**: 深蓝灰 (#1D1D1F)
-
-#### 4.3.2 海洋蓝主题 (Ocean)
-- **风格**: 清新、专业
-- **背景**: 冷色调蓝灰
-- **强调色**: oklch(0.5 0.15 220) - 明亮蓝色
-- **用途**: 商务活动、企业年会
-
-#### 4.3.3 森林绿主题 (Forest)
-- **风格**: 自然、活力
-- **背景**: 冷色调绿灰
-- **强调色**: oklch(0.5 0.15 140) - 自然绿色
-- **用途**: 户外活动、环保主题
-
-#### 4.3.4 落日橙主题 (Sunset)
-- **风格**: 温暖、活泼
-- **背景**: 暖色调橙灰
-- **强调色**: oklch(0.6 0.15 40) - 温暖橙色
-- **用途**: 庆祝活动、节日抽奖
-
-#### 4.3.5 紫罗兰主题 (Purple)
-- **风格**: 优雅、神秘
-- **背景**: 紫色调灰
-- **强调色**: oklch(0.5 0.2 300) - 优雅紫色
-- **用途**: 品牌活动、创意展示
-
-#### 4.3.6 霓虹主题 (Neon)
-- **风格**: 赛博朋克、高对比
-- **背景**: 深色背景 (#121212)
-- **强调色**: oklch(0.7 0.35 200) - 霓虹青色
-- **用途**: 游戏活动、科技活动
-
-### 4.4 组件规范
-
-#### 4.4.1 按钮样式
-```tsx
-// 主要操作按钮 (胶囊形) - 开始抽奖按钮
-className="h-16 sm:h-[72px] rounded-full font-semibold 
-         shadow-[0_8px_30px_rgba(0,0,0,0.12)]
-         hover:shadow-[0_12px_40px_rgba(0,0,0,0.18)]
-         transition-all duration-300"
-
-// 次要按钮
-className="h-11 rounded-xl border border-border/30 hover:bg-muted/50"
-
-// 图标按钮（顶部导航）
-className="h-10 w-10 rounded-xl hover:bg-muted transition-colors"
-```
-
-#### 4.4.2 输入框样式
-```tsx
-// 数字输入框
-className="h-11 rounded-2xl bg-muted/40 border border-border/20 
-         focus:ring-2 focus:ring-primary/15 focus:bg-background 
-         transition-all placeholder:text-muted-foreground/50"
-
-// 自定义名单文本域
-className="min-h-[200px] rounded-xl resize-none bg-muted/40 border-0 
-         focus:ring-2 focus:ring-primary/20"
-```
-
-#### 4.4.3 卡片样式
-```tsx
-// 结果展示卡片
-className="bg-background rounded-[2rem] px-12 py-10 sm:px-16 sm:py-12 
-         text-center border border-border/15 backdrop-blur-xl 
-         shadow-[0_8px_32px_rgba(0,0,0,0.06)] min-w-[240px] sm:min-w-[300px]"
-
-// 历史记录卡片
-className="p-5 rounded-2xl bg-muted/20 hover:bg-muted/40 
-         border border-transparent hover:border-border/30 transition-colors"
-
-// 设置分组卡片
-className="space-y-5 pt-6"
-```
-
-#### 4.4.4 顶部导航栏
-```tsx
-// 导航栏容器
-className="absolute top-0 left-0 right-0 h-14 px-6 
-         flex items-center justify-between z-50 
-         border-b border-border/50 
-         bg-background/80 backdrop-blur-xl"
-
-// 品牌标识
-className="flex items-center gap-3"
-// Logo: w-8 h-8 rounded-[10px] + Dices icon
-// Title: text-base font-semibold tracking-tight
-// Version: text-[10px] text-muted-foreground/60 font-mono
-
-// 控制按钮组
-className="flex items-center gap-2"
-// 语言切换: Button variant="ghost" + Languages icon
-// 设置切换: Button variant="secondary/ghost" + Menu/Settings icon
-```
-
-#### 4.4.5 侧边栏面板
-```tsx
-// 侧边栏容器
-className="absolute inset-y-0 right-0 z-40 w-full sm:w-[380px] 
-         bg-background/92 backdrop-blur-xl 
-         border-l border-border/30 flex flex-col"
-// 动画: animate x: 0 <-> 100%, spring(300, 30, 0.8)
-
-// 侧边栏标题
-className="px-6 py-5 border-b border-border/30"
-// Title: text-2xl font-semibold tracking-tight
-
-// Tabs 切换
-className="w-full flex gap-1 p-1 bg-muted/40 rounded-xl m-5 mb-0"
-
-// Tab 选项卡
-className="flex-1 rounded-lg data-[state=active]:bg-background 
-         data-[state=active]:shadow-sm text-sm font-medium"
-```
-
-#### 4.4.6 数字滚动组件 (NumberRoller)
-```tsx
-// 主容器
-className="flex items-center justify-center tabular-nums"
-
-// 数字大小
-className="text-7xl sm:text-8xl md:text-9xl lg:text-[12vw] 
-         font-bold tracking-tighter leading-none"
-
-// 渐变色
-className="bg-clip-text text-transparent 
-         bg-gradient-to-b from-foreground to-foreground/80"
-
-// 滚动动画参数
-// 数字滚动: linear duration 0.1s + index * 0.03s
-// 结果出现: spring(300, 20, 1)
-```
-
----
-
-## 5. 组件库规范 (v3.0)
-
-### 5.1 基础组件
-
-#### Button 按钮
-| 变体 | 样式 | 适用场景 |
+#### 4.4.1 八种状态
+| 状态 | 触发 | 视觉反馈 |
 |------|------|----------|
-| Primary | `h-16 sm:h-[72px] rounded-full` | 主要操作（开始抽奖） |
-| Secondary | `h-11 rounded-xl border border-border/30` | 次要操作 |
-| Ghost | `h-10 w-10 rounded-xl` | 图标按钮 |
-| Destructive | `bg-red-500 text-white` | 危险操作 |
+| Default | 静态 | 基础样式 |
+| Hover | 鼠标悬停 | `translateY(-2px)` + shadow 增强 |
+| Focus | Tab 键盘导航 | `focus-visible:ring-2 ring-ring ring-offset-2` |
+| Active | 按下 | `scale(0.97~0.98)` |
+| Disabled | 无效 | `opacity-50 pointer-events-none` |
+| Loading | 处理中 | 按钮脉冲动画 |
+| Error | 无效输入 | `border-destructive` + `aria-invalid` |
+| Success | 操作完成 | 绿色徽章 + 庆祝光晕 |
 
-#### Input 输入框
-```tsx
-// 数字输入框
-className="h-11 rounded-2xl bg-muted/40 border border-border/20 
-         focus:ring-2 focus:ring-primary/15 focus:bg-background 
-         transition-all placeholder:text-muted-foreground/50"
-
-// 自定义名单文本域
-className="min-h-[200px] rounded-xl resize-none bg-muted/40 border-0 
-         focus:ring-2 focus:ring-primary/20"
-```
-
-#### Switch 开关
-```tsx
-className="w-11 h-6 rounded-full bg-primary data-[state=checked]:bg-primary 
-         data-[state=unchecked]:bg-input"
-```
-
-#### Select 选择器
-```tsx
-className="h-11 rounded-2xl bg-muted/40 border border-border/20"
-```
-
-### 5.2 复合组件
-
-#### Card 卡片
-```tsx
-// 结果展示卡片
-className="bg-background rounded-[2rem] px-12 py-10 sm:px-16 sm:py-12 
-         text-center border border-border/15 backdrop-blur-xl 
-         shadow-[0_8px_32px_rgba(0,0,0,0.06)] min-w-[240px] sm:min-w-[300px]"
-
-// 历史记录卡片
-className="p-5 rounded-2xl bg-muted/20 hover:bg-muted/40 
-         border border-transparent hover:border-border/30 transition-colors"
-```
-
-#### Tabs 选项卡
-```tsx
-className="w-full flex gap-1 p-1 bg-muted/40 rounded-xl"
-className="flex-1 rounded-lg data-[state=active]:bg-background 
-         data-[state=active]:shadow-sm text-sm font-medium"
-```
-
-#### Alert 提示框
-```tsx
-className="rounded-xl border-l-4 bg-muted/20 p-4"
-```
-
-#### Avatar 头像
-```tsx
-className="size-12 rounded-xl"
-<AvatarFallback className="bg-gradient-to-br from-primary to-primary/60 text-primary-foreground">
-  {initials}
-</AvatarFallback>
-```
-
-#### Badge 徽章
-```tsx
-className="px-3 py-1 rounded-full text-xs font-medium"
-// 变体: default, secondary, outline, destructive
-```
-
-### 5.3 业务组件
-
-#### NumberRoller 数字滚动组件
-```tsx
-// 主容器
-className="flex items-center justify-center tabular-nums"
-
-// 数字大小
-className="text-7xl sm:text-8xl md:text-9xl lg:text-[12vw] 
-         font-bold tracking-tighter leading-none"
-
-// 滚动动画参数
-// 数字滚动: linear duration 0.1s + index * 0.03s
-// 结果出现: spring(300, 20, 1)
-```
-
-#### SidebarPanel 侧边栏面板
-```tsx
-className="absolute inset-y-0 right-0 z-40 w-full sm:w-[380px] 
-         bg-background/92 backdrop-blur-xl 
-         border-l border-border/30 flex flex-col"
-// 动画: animate x: 0 <-> 100%, spring(300, 30, 0.8)
-```
-
-#### TopBar 顶部导航栏
-```tsx
-className="absolute top-0 left-0 right-0 h-14 px-6 
-         flex items-center justify-between z-50 
-         border-b border-border/50 
-         bg-background/80 backdrop-blur-xl"
-```
-
-### 5.4 组件使用规则
-
-#### ✅ 正确做法
-- 使用 `gap-*` 而非 `space-y-*` 进行间距控制
-- 使用 `size-*` 而非 `w-* h-*` 设置等宽高
-- 使用语义化颜色变量：`bg-primary`、`text-muted-foreground`
-- 组合使用现有组件而非重新发明
-- 使用 `cn()` 处理条件类名
-
-#### ❌ 避免做法
-- 手动覆盖组件颜色
-- 使用 raw hex 值如 `bg-blue-500`
-- 手动设置 z-index（Dialog、Sheet 等处理自己的层级）
-- 缺少 AvatarFallback
-
-#### 组件结构规则
-| 规则 | 说明 |
+#### 4.4.2 键盘导航
+| 按键 | 操作 |
 |------|------|
-| Items 在 Group 内 | `SelectItem` → `SelectGroup` |
-| 使用 asChild/render | 自定义触发器使用 Radix 的 `asChild` |
-| Dialog 需有 Title | `DialogTitle` 或 `className="sr-only"` |
-| Card 完整结构 | `CardHeader`/`CardTitle`/`CardDescription`/`CardContent`/`CardFooter` |
-| Tabs 在 TabsList 内 | `TabsTrigger` 必须包裹在 `TabsList` 中 |
-| Avatar 需 Fallback | 始终包含 `AvatarFallback` |
+| `Space` / `Enter` | 抽取按钮触发（原生 `<button>` 自动支持） |
+| `Escape` | 返回欢迎状态 / 关闭弹窗 |
+| `Tab` | 控件间导航 |
+
+### 4.5 配色方案（10 种主题）
+
+| # | 类名 | 名称 | 风格 | 强调色（OKLCH） |
+|---|------|------|------|-----------------|
+| 1 | `.theme-default` | Default | 黑白极简 | oklch(0.205 0 0) |
+| 2 | `.theme-ocean` | Ocean | 明亮蓝调 | oklch(0.5 0.15 220) |
+| 3 | `.theme-forest` | Forest | 自然绿调 | oklch(0.5 0.15 140) |
+| 4 | `.theme-sunset` | Sunset | 温暖橙调 | oklch(0.6 0.15 40) |
+| 5 | `.theme-purple` | Purple | 优雅紫调 | oklch(0.5 0.2 300) |
+| 6 | `.theme-neon` | Neon | 霓虹赛博 | oklch(0.7 0.35 200) |
+| 7 | `.theme-sakura` | Sakura | 柔和粉调 | oklch(0.7 0.15 10) |
+| 8 | `.theme-midnight` | Midnight | 深邃暗蓝 | oklch(0.5 0.1 260) |
+| 9 | `.theme-retro` | Retro | 复古暖棕 | oklch(0.6 0.1 70) |
+| 10 | `.theme-pixel` | Pixel | 像素游戏绿 | oklch(0.7 0.25 140) |
+
+### 4.6 动效规范
+
+| 场景 | 时长 | 缓动函数 | 说明 |
+|------|------|----------|------|
+| 悬停过渡 | 200ms | ease-out | 按钮、卡片 hover |
+| 按下反馈 | 100ms | ease-out | `scale(0.98)` |
+| 按钮脉冲 | 2.8s | ease-in-out | 空闲时呼吸光晕 |
+| 面板滑入 | 300ms | spring(300,30,0.8) | Sheet 侧边栏 |
+| 数字滚动 | 80ms/帧 | steps(1) | 老虎机效果 |
+| 逐字定格 | 80ms 延迟/字 | spring(400,16,0.55) | 弹性 overshoot |
+| 结果揭示 | 700ms | ease-out | `scale(0.9→1)` + fade |
+| 庆祝光晕 | 1.2s | spring | 径向渐变闪烁 |
+| 页面入场 | 600ms | ease-out | `fadeUp(translateY 16px)` |
+
+### 4.7 图标系统
+- **库**: Lucide React
+- **尺寸**: 按钮 16px、导航图标 18px、状态图标 28–36px
+- **规则**: 装饰性图标设 `aria-hidden="true"`；操作图标配 `aria-label`
 
 ---
 
-## 6. 交互标准规范 (v3.0)
+## 5. shadcn/ui 组件库 (v4 base-nova)
 
-### 6.1 交互模式库
+### 5.1 基础组件清单
 
-#### 悬停反馈
-```css
-.hover-scale {
-    transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+| 组件 | 文件 | 使用 @base-ui/react |
+|------|------|-------------------|
+| Alert | `ui/alert.tsx` | 否（原生 div） |
+| Badge | `ui/badge.tsx` | 是（useRender） |
+| Button | `ui/button.tsx` | 是（ButtonPrimitive） |
+| Card | `ui/card.tsx` | 否（原生 div） |
+| Dialog | `ui/dialog.tsx` | 是（Dialog 系列） |
+| Input | `ui/input.tsx` | 否（原生 input） |
+| Label | `ui/label.tsx` | 否（原生 label） |
+| Select | `ui/select.tsx` | 是（SelectPrimitive） |
+| Separator | `ui/separator.tsx` | 是（Separator） |
+| Sheet | `ui/sheet.tsx` | 是（Drawer） |
+| Slider | `ui/slider.tsx` | 是（Slider） |
+| Switch | `ui/switch.tsx` | 是（Switch） |
+| Tabs | `ui/tabs.tsx` | 是（Tabs） |
+| Textarea | `ui/textarea.tsx` | 否（原生 textarea） |
+
+### 5.2 业务组件规范
+
+| 组件 | 位置 | 关键样式 | 说明 |
+|------|------|----------|------|
+| DrawButton | `draw/draw-button.tsx` | `px-12 py-5 rounded-[1.75rem]` | 胶囊形脉冲大按钮，`aria-pressed` |
+| NumberRoller | `number-roller.tsx` | `tabular-nums` + 渐变色 | 字符级滚动动画，尊重 reduce-motion |
+| DrawDisplay | `draw/draw-display/` | 居中布局 | 按状态展示不同视图 |
+| SettingsPanel | `draw/settings-panel/` | Tabs 切换 | prop-drilling 模式（20+ props） |
+| HistoryCard | `draw/history-list/history-card.tsx` | `p-5 rounded-2xl bg-muted/15` | 结果卡片 + 复制 |
+| CustomListModal | `draw/custom-list-settings.tsx` | `role="dialog" aria-modal="true"` | 导入弹窗 + 自动聚焦 |
+
+---
+
+## 6. 状态管理
+
+### 6.1 Reducer 状态结构
+```typescript
+interface DrawState {
+  status: 'idle' | 'drawing' | 'result' | 'error';
+  min: number;                      // 最小值
+  max: number;                      // 最大值
+  count: number;                    // 抽取数量
+  allowDuplicates: boolean;          // 允许重复
+  autoHide: boolean;                // 自动隐藏侧边栏
+  duration: number;                 // 动画时长（秒）
+  customList: string[];             // 自定义名单
+  useCustomList: boolean;           // 使用自定义名单
+  digits: number;                   // 补零位数
+  prefix: string;                   // 前缀
+  suffix: string;                   // 后缀
+  language: 'zh' | 'en';           // 语言
+  history: HistoryEntry[];          // 历史记录
+  results: string[];                // 当前结果
+  error: string | null;             // 错误信息
 }
-.hover-scale:hover {
-    transform: scale(1.02-1.05);
-}
 ```
 
-#### 点击反馈
-```css
-.active-scale:active {
-    transform: scale(0.95);
-    transition-duration: 100ms;
-}
+### 6.2 Action 类型
+- `SET_FIELD<K>` — 更新单个字段（泛型约束）
+- `START_DRAW` / `STOP_DRAW` — 状态转换
+- `SET_RESULTS` / `SET_ERROR` — 结果/错误
+- `SET_HISTORY` — 设置历史记录
+- `RESET` — 重置到 idle
+
+### 6.3 持久化（localStorage）
+所有 key 以 `zendraw-` 为前缀，共 13 组：
+`min`, `max`, `count`, `duplicates`, `autohide`, `duration`,
+`custom-list`, `use-custom`, `digits`, `prefix`, `suffix`,
+`language`, `history`
+
+跨标签同步: 通过 `window.addEventListener('storage', ...)` 实现。
+
+---
+
+## 7. 国际化
+
+### 7.1 支持语言
+- `en` — English
+- `zh` — 简体中文
+
+### 7.2 翻译键（49 个）
+```
+title, settings, history,
+rangeCount, rangeDesc, minVal, maxVal, drawCount,
+allowDup, autoHide, autoHideDesc,
+clickToExpand, configureHint,
+custom, display, drawAgain, drawSettings, appearance,
+drawDuration, drawDurationDesc,
+theme, themeMode, themeLight, themeDark, themeSystem,
+themePreset, themeDefault, themeOcean, themeForest,
+themeSunset, themePurple, themeNeon,
+themeSakura, themeMidnight, themeRetro, themePixel,
+fontFamily, fontSans, fontMono, fontSerif,
+listImport, listImportDesc, useCustomList,
+export, displayRules, displayDesc,
+minDigits, minDigitsDesc, prefix, suffix,
+drawHistory, historyDesc, noHistory,
+ready, drawing, startDraw, stopDraw, startHint, stopHint,
+recordLabel, resultsCount, copiedToClipboard, copyResult, copied,
+import_, importDesc, listPlaceholder, confirmImport,
+cancel, ok, notice, itemsLoaded, noItems, clearHistory,
+toggleUI, switchLang, minMaxError, rangeError
 ```
 
-#### 加载状态
-```tsx
-// 使用 Skeleton 而非自定义 animate-pulse divs
-<Skeleton className="h-4 w-[100px] rounded" />
-
-// 加载指示器
-<div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-```
-
-#### Toast 提示
-```tsx
-// 使用 sonner
-import { toast } from 'sonner'
-toast.success('操作成功')
-toast.error('操作失败')
-toast.warning('请检查输入')
-```
-
-### 6.2 交互反馈规范
-
-#### 状态颜色语义化
-| 状态 | 颜色 | 使用场景 |
-|------|------|----------|
-| Success | `#34C759` | 成功反馈、绿色徽章 |
-| Warning | `#FF9F0A` | 警告提示、橙色边框 |
-| Error | `#FF3B30` | 错误提示、红色边框 |
-| Info | `#007AFF` | 信息提示、蓝色强调 |
-
-#### 操作反馈时机
-| 操作类型 | 反馈时机 | 反馈方式 |
-|----------|----------|----------|
-| 表单提交 | 即时 | 禁用按钮 + 显示 spinner |
-| 保存成功 | 即时 | Toast 成功提示 |
-| 保存失败 | 即时 | Toast 错误提示 + 保持表单状态 |
-| 数据加载 | 加载中 | Skeleton 占位 |
-| 网络错误 | 错误时 | Toast + 重试按钮 |
-
-### 6.3 错误处理规范
-
-#### 错误类型与处理
-| 错误类型 | 处理方式 | UI 表现 |
-|----------|----------|---------|
-| 输入验证错误 | 实时校验 | 红色边框 + 错误提示文字 |
-| 范围不足警告 | 实时校验 | 橙色边框 + 警告提示 |
-| 禁用状态 | 条件渲染 | 灰色 + 禁用光标 |
-| 网络错误 | 错误捕获 | Toast + 重试按钮 |
-
-#### 错误提示规范
-```tsx
-// 输入框错误状态
-<div className="data-[invalid]:border-red-500">
-  <input aria-invalid />
-  <p className="text-sm text-red-500">错误信息</p>
-</div>
-
-// Alert 错误提示
-<div className="flex gap-3 p-4 rounded-xl border-l-4 border-red-500 bg-red-50 dark:bg-red-950">
-  <AlertTriangle className="text-red-500" />
-  <div>
-    <p className="font-medium">错误标题</p>
-    <p className="text-sm text-muted-foreground">详细错误信息</p>
-  </div>
-</div>
-```
-
-### 6.4 空状态设计规范
-
-#### 空状态组件
-```tsx
-// 使用 Empty 组件
-<Empty
-  icon={InboxIcon}
-  title="暂无历史记录"
-  description="开始抽奖后结果将显示在这里"
-  action={
-    <Button variant="outline">
-      <PlusIcon data-icon="inline-start" />
-      新建抽奖
-    </Button>
-  }
-/>
-```
-
-#### 空状态场景
-| 场景 | 图标 | 文案建议 |
-|------|------|----------|
-| 无历史记录 | InboxIcon | "暂无历史记录" |
-| 无搜索结果 | SearchIcon | "未找到匹配结果" |
-| 无数据 | DatabaseIcon | "暂无数据" |
-| 无网络 | WifiOffIcon | "网络连接失败" |
-
-### 6.5 表单交互规范
-
-#### 表单结构
-```tsx
-<FieldGroup>
-  <Field>
-    <FieldLabel htmlFor="email">邮箱</FieldLabel>
-    <Input id="email" />
-    <FieldDescription>请输入有效的邮箱地址</FieldDescription>
-  </Field>
-</FieldGroup>
-```
-
-#### 验证状态
-```tsx
-// 错误状态
-<Field data-invalid>
-  <FieldLabel>邮箱</FieldLabel>
-  <Input aria-invalid />
-  <FieldDescription className="text-red-500">请输入有效的邮箱地址</FieldDescription>
-</Field>
-
-// 禁用状态
-<Field data-disabled>
-  <FieldLabel>邮箱</FieldLabel>
-  <Input disabled />
-</Field>
-```
-
-#### 提交处理
-```tsx
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault()
-  setIsPending(true)
-  try {
-    await saveData()
-    toast.success('保存成功')
-  } catch (error) {
-    toast.error('保存失败')
-  } finally {
-    setIsPending(false)
-  }
-}
+### 7.3 使用方式
+```typescript
+import { createTranslator } from "@/lib/i18n";
+const t = React.useMemo(() => createTranslator(language), [language]);
+// 普通: t("title")
+// 参数: t("resultsCount", "5")  → 支持 {0} 占位符
 ```
 
 ---
 
-## 7. 数据管理
+## 8. 代码质量规范
 
-### 7.1 本地存储键名
-| 键名 | 类型 | 默认值 | 描述 |
+### 8.1 TypeScript 严格配置
+```json
+{
+  "strict": true,
+  "noUncheckedIndexedAccess": true,
+  "exactOptionalPropertyTypes": true,
+  "noImplicitReturns": true,
+  "forceConsistentCasingInFileNames": true
+}
+```
+
+### 8.2 ESLint 规则（Flat Config）
+- **TypeScript**: no-explicit-any (warn), no-non-null-assertion (error), no-unused-vars (warn)
+- **React Hooks**: rules-of-hooks (error), exhaustive-deps (error)
+- **安全**: no-eval (error), no-new-func (error), no-restricted-syntax (warn Math.random)
+- **无障碍**: jsx-a11y (warn)
+- **代码质量**: no-console (warn), no-debugger (error), no-var (error), prefer-const (warn)
+
+### 8.3 安全头（next.config.ts）
+| 头 | 值 |
+|----|-----|
+| Content-Security-Policy | `default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; ...` |
+| X-Frame-Options | `DENY` |
+| X-Content-Type-Options | `nosniff` |
+| Referrer-Policy | `strict-origin-when-cross-origin` |
+| Permissions-Policy | `camera=(), microphone=(), geolocation=(), interest-cohort=()` |
+| Strict-Transport-Security | `max-age=63072000; includeSubDomains; preload` |
+
+### 8.4 安全编码规范
+- **随机数**: 必须使用 `crypto.getRandomValues()` + 拒绝采样
+- **输入验证**: `parseFiniteNumber()`、`sanitizeListInput()`、prefix/suffix 控制字符过滤
+- **XSS 防护**: 零处 `dangerouslySetInnerHTML`、零处 `eval`/`new Function`
+- **localStorage**: 敏感数据（custom-list）可选清除
+
+### 8.5 错误边界
+- `app/error.tsx` — 全局错误捕获 + 重试按钮 + 返回首页
+- `app/not-found.tsx` — 404 友好提示
+
+### 8.6 CI/CD（GitHub Actions）
+每次 PR 自动运行：
+1. `npm run type-check` → 类型检查
+2. `npm run lint` → ESLint（最多 20 警告）
+3. `npm run build` → 构建验证
+4. `npm audit --audit-level=high` → 安全审计
+
+---
+
+## 9. 本地存储键名对照
+
+| 键名 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| zendraw-lang | Language | "zh" | 语言设置 |
 | zendraw-min | number | 1 | 最小值 |
 | zendraw-max | number | 100 | 最大值 |
 | zendraw-count | number | 1 | 抽取数量 |
 | zendraw-duplicates | boolean | true | 允许重复 |
 | zendraw-autohide | boolean | true | 自动隐藏 |
-| zendraw-duration | number | 5 | 动画时长 |
-| zendraw-theme-preset | string | "default" | 配色方案 |
-| zendraw-font-family | string | "sans" | 字体样式 |
+| zendraw-duration | number | 5 | 动画时长(秒) |
 | zendraw-custom-list | string[] | [] | 自定义名单 |
-| zendraw-use-custom | boolean | false | 使用自定义名单 |
-| zendraw-digits | number | 3 | 位数补零 |
+| zendraw-use-custom | boolean | false | 启用自定义名单 |
+| zendraw-digits | number | 0 | 补零位数 |
 | zendraw-prefix | string | "" | 前缀 |
 | zendraw-suffix | string | "" | 后缀 |
-| zendraw-history | HistoryItem[] | [] | 抽取历史 |
-
-### 7.2 历史记录结构
-```typescript
-interface HistoryItem {
-  id: string;          // 随机ID
-  timestamp: string;   // ISO时间戳
-  results: string[];   // 结果数组
-}
-```
+| zendraw-language | "zh"\|"en" | "zh" | 语言 |
+| zendraw-history | HistoryEntry[] | [] | 历史记录 |
+| zendraw-theme-preset | string | "default" | 配色方案 |
+| zendraw-font-family | string | "sans" | 字体 |
 
 ---
 
-## 8. 国际化
+## 10. 原型对照
 
-### 8.1 支持语言
-- `en` - English
-- `zh` - 简体中文
-
-### 8.2 翻译键名
-| 键名 | 英文 | 中文 |
+### 10.1 原型文件
+| 文件 | 位置 | 说明 |
 |------|------|------|
-| title | ZenDraw | 禅抽 |
-| settings | Settings | 设置 |
-| history | History | 历史记录 |
-| rangeCount | Range & Count | 范围与数量 |
-| rangeDesc | Define the pool of numbers. | 定义抽取数字的范围。 |
-| minVal | Min Value | 最小值 |
-| maxVal | Max Value | 最大值 |
-| drawCount | Draw Count | 抽取数量 |
-| allowDup | Allow Duplicates | 允许重复 |
-| autoHide | Auto-hide Sidebar | 自动隐藏侧边栏 |
-| autoHideDesc | Hide sidebar automatically when drawing or idle. | 开始抽签或长时间无操作时自动隐藏侧边栏。 |
-| clickToExpand | Click to expand options | 点击展开选项 |
-| drawDuration | Draw Duration (s) | 抽签时长 (秒) |
-| drawDurationDesc | Set the duration of the rolling animation. | 设置数字滚动的动画时长。 |
-| theme | Theme | 主题 |
-| themeMode | Theme Mode | 深浅模式 |
-| themeLight | Light | 浅色 |
-| themeDark | Dark | 深色 |
-| themeSystem | System | 跟随系统 |
-| themePreset | Theme Preset | 配色方案 |
-| themeDefault | Default | 默认 |
-| themeOcean | Ocean | 海洋蓝 |
-| themeForest | Forest | 森林绿 |
-| themeSunset | Sunset | 落日橙 |
-| themePurple | Purple | 紫罗兰 |
-| themeNeon | Neon | 霓虹 |
-| fontFamily | Font Family | 字体样式 |
-| fontSans | Sans (Inter) | 无衬线 (Inter) |
-| fontMono | Mono (JetBrains) | 等宽 (JetBrains) |
-| fontSerif | Serif (Playfair) | 衬线 (Playfair) |
-| listImport | List Import | 名单导入 |
-| listImportDesc | Paste items separated by newlines. | 粘贴名单，每行一个。 |
-| useCustomList | Use Custom List | 使用自定义名单 |
-| export | Export Results | 导出结果 |
-| displayRules | Display Rules | 显示规则 |
-| displayDesc | Customize how numbers appear. | 自定义数字的显示方式。 |
-| minDigits | Minimum Digits (Padding) | 最小位数 (补零) |
-| minDigitsDesc | Set to 0 for no padding. | 设置为 0 则不补零。 |
-| prefix | Prefix | 前缀 |
-| suffix | Suffix | 后缀 |
-| drawHistory | Draw History | 抽签历史 |
-| historyDesc | Recent results. | 最近的抽签结果。 |
-| noHistory | No history yet. | 暂无历史记录。 |
-| ready | Ready to draw | 准备就绪 |
-| drawing | Drawing... | 抽取中... |
-| startDraw | START DRAW | 开始抽签 |
-| minMaxError | Minimum value cannot be greater than maximum value. | 最小值不能大于最大值。 |
-| rangeError | Cannot draw more unique numbers than the available range. | 抽取的不重复数字数量不能超过可用范围。 |
-| clearHistory | Clear History | 清空历史 |
-| toggleUI | Toggle UI | 切换控制面板 |
-| switchLang | Switch Language | 切换语言 |
+| 线框图 | `prototype/v1/wireframes.html` | 低保真布局探索 |
+| 初始原型 | `prototype/v1/prototype.html` | v3.0 设计系统展示 |
+| 交互原型 | `prototype/v2/prototypes.html` | v3.0 交互流程 |
+| 高保真原型 | `prototype/interactive/index.html` | **v4.0 可交互原型（主参考）** |
+| 设计系统 | `prototype/design-system.md` | 完整设计系统文档 |
+
+### 10.2 代码与原型对齐清单
+| 特性 | 原型状态 | 代码状态 | 说明 |
+|------|----------|----------|------|
+| 欢迎页图标 + 脉冲光晕 | ✅ | ✅ | 代码使用 motion 实现 |
+| 圆形抽取按钮 | ✅ | ✅ | `rounded-[1.75rem]` 胶囊 |
+| 数字滚动动画 | ✅ | ✅ | 逐字定格老虎机效果 |
+| 结果揭示动效 | ✅ | ✅ | 庆祝光晕 + 粒子 |
+| 10 种主题切换 | ✅ | ✅ | CSS 变量驱动 |
+| 深浅色切换 | ✅ | ✅ | next-themes |
+| 侧边栏设置面板 | ✅ | ✅ | Sheet 组件 + Tabs |
+| 自定义名单导入 | ✅ | ✅ | 含 a11y 对话框 |
+| 历史记录列表 | ✅ | ✅ | 含空状态 |
+| 键盘快捷键 | ✅ | ✅ | Space/Enter/Escape |
+| 音效系统 | — | ✅ | Web Audio API |
+| 错误边界 | ✅ | ✅ | error.tsx + not-found.tsx |
+| 安全头 | ✅ | ✅ | CSP + HSTS + 7 条 |
 
 ---
 
-## 9. SEO与元数据
+## 11. SEO 与元数据
 
-### 9.1 Viewport
 ```typescript
-{
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false
-}
-```
-
-### 9.2 Metadata
-```typescript
-{
-  title: 'ZenDraw | 禅抽 v3.0',
-  description: '一款专业的全屏随机抽奖应用，采用 Apple 设计风格...',
-  keywords: ['ZenDraw', '禅抽', 'random draw', 'lucky draw', ...],
-  authors: [{ name: 'Sut' }]
-}
+// layout.tsx
+export const metadata: Metadata = {
+  title: "ZenDraw | 禅抽 v3.3.0",
+  description: "A professional, full-screen random draw application with Apple-inspired design...",
+  keywords: ["ZenDraw", "禅抽", "random draw", "lucky draw", ...],
+};
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,         // 保留缩放能力（WCAG 无障碍要求）
+};
 ```
 
 ---
 
-## 10. 规范要求
+## 12. npm 脚本
 
-### 10.1 代码规范
-- 使用 ESLint 进行代码检查
-- TypeScript strict mode
-- React hooks 规范:
-  - 不在 useEffect 中同步调用 setState
-  - 使用 useCallback/useMemo 优化性能
-
-### 10.2 命名规范
-- 组件名: PascalCase
-- 文件名: kebab-case
-- 变量名: camelCase
-- 常量: UPPER_SNAKE_CASE
-
-### 10.3 提交规范
-遵循 Semantic Versioning:
-- MAJOR: 不兼容的API更改
-- MINOR: 向后兼容的功能添加
-- PATCH: 向后兼容的bug修复
-
----
-
-## 11. 更新日志
-
-### v3.0 (当前版本)
-**设计重构 - Apple Design Style**
-
-#### 设计变更
-- 顶部导航栏重新设计，56px 高度毛玻璃效果，border-border/50 分隔线
-- 设置面板宽度调整为 380px，采用 Apple 风格分组
-- 结果展示区域优化，大尺寸居中布局，圆角统一 rounded-[2rem]
-- 圆角系统统一，输入框 rounded-2xl，卡片 rounded-[2rem]
-- 按钮样式改为胶囊形 (rounded-full)，高度 h-16 / sm:h-[72px]
-- 阴影系统重新定义，4 级阴影变量（sm/md/lg/xl）
-- 数字显示渐变优化，from-foreground to-foreground/80 垂直渐变
-- Ready 状态图标透明度降低至 10%，更柔和不抢视线
-
-#### 交互优化
-- 动画曲线采用 Apple 标准 cubic-bezier(0.25, 0.1, 0.25, 1)
-- 过渡动画时长调整为 300-500ms
-- 浮动动画优化，4 秒循环，更柔和的浮动效果
-- 按钮阴影随 hover 变化，常态 `0 8px 30px` → hover `0 12px 40px`
-- 输入框增加细边框 border-border/20，聚焦效果更柔和
-
-#### 原型更新
-- 重新设计原型图 prototype.html v3.0
-- 新增设计规范页面（字体、间距、动效）
-- 优化移动端预览展示
-
-### v2.7.0
-- 新增 6 种配色方案
-- 新增 3 种字体样式
-- 优化侧边栏动画
-- 修复 SSR 水合错误
-- 优化移动端体验
-
-### 早期版本
-参见 CHANGELOG.md
-
----
-
-## 12. 附录
-
-### 12.1 npm scripts
-| 命令 | 描述 |
+| 命令 | 说明 |
 |------|------|
-| npm run dev | 启动开发服务器 |
-| npm run build | 构建生产版本 |
-| npm run start | 启动生产服务器 |
-| npm run lint | 运行 ESLint 检查 |
-| npm run lint:fix | 自动修复 lint 错误 |
-
-### 12.2 依赖版本
-- next: ^15.x
-- react: ^19.x
-- react-dom: ^19.x
-- tailwindcss: ^4.x
-- framer-motion: ^12.x
-- lucide-react: latest
-- next-themes: ^0.4.x
-- typescript: ^5.x
+| `npm run dev` | 启动开发服务器 |
+| `npm run build` | 构建生产版本 |
+| `npm run start` | 启动生产服务器 |
+| `npm run lint` | ESLint 检查 |
+| `npm run lint:fix` | 自动修复 |
+| `npm run type-check` | TypeScript 类型检查 |
+| `npm run test` | Vitest 运行测试 |
+| `npm run test:watch` | 测试 watch 模式 |
+| `npm run test:coverage` | 测试覆盖率 |
+| `npm run clean` | 清理构建缓存 |
 
 ---
 
-## 13. 设计参考
+## 13. 版本历史
 
-### 13.1 Apple Human Interface Guidelines 关键点
-1. **清晰度**: 内容优先，界面服务于内容
-2. **遵从**: 界面响应自然，符合用户预期
-3. **深度**: 层次分明，过渡自然流畅
-4. **美学**: 整体协调，细节精致
+### v3.3.0 (当前)
+- 组件拆分（大文件 → 子组件目录）
+- 音效系统（Web Audio API）
+- 动效优化（逐字定格 + 庆祝光晕）
+- 国际化重构（49 翻译键 + createTranslator）
+- 安全加固（secureRandomInt 全面替换 Math.random）
 
-### 13.2 常用 Apple 动画模式
-- **Enter**: opacity 0→1, scale 0.95→1
-- **Exit**: opacity 1→0, scale 1→0.95
-- **Interactive**: scale 1→1.02 hover, scale 1→0.98 active
-- **Panel**: translateX slide with spring physics
+### v3.2.0
+- 代码质量体系（ESLint 强化 / 严格 TypeScript / CI/CD）
+- 代码审查标准 + PR 模板
+
+### v3.1.0
+- Apple Design 风格重设计
+- 圆角/阴影/间距系统统一
 
 ---
 
-*本文档最后更新: v3.0.1*
+*本文档最后更新: 2026-06-30 · 与 prototype/interactive/index.html 和 app/ 代码保持对齐*

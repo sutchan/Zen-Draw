@@ -1,4 +1,4 @@
-// hooks/use-local-storage.ts v1.0 — 本地存储 Hook
+// hooks/use-local-storage.ts v3.3.0 — 本地存储 Hook
 "use client";
 
 import * as React from "react";
@@ -49,8 +49,13 @@ export function useLocalStorage<T>(
           if (typeof window !== "undefined") {
             window.localStorage.setItem(key, JSON.stringify(next));
           }
-        } catch {
-          // 存储失败时仍保持状态，但不抛出错误
+        } catch (e) {
+          // localStorage 可能已满（QuotaExceededError）或在隐私模式下不可用
+          if (e instanceof DOMException && e.name === "QuotaExceededError") {
+            console.warn(`[useLocalStorage] localStorage 已满，无法保存键"${key}"`);
+          } else {
+            console.warn(`[useLocalStorage] 写入失败（键"${key}"）:`, e);
+          }
         }
         return next;
       });

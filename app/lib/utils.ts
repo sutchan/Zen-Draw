@@ -1,4 +1,4 @@
-// lib/utils.ts v1.0 — 工具函数模块
+// lib/utils.ts v3.3.0 — 工具函数模块
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -28,21 +28,28 @@ export function secureRandomInt(max: number): number {
     let value: number;
     do {
       crypto.getRandomValues(arr);
-      value = arr[0];
+      value = arr[0] as number;
     } while (value >= limit);
     return value % max;
   }
-  // 降级方案：Node.js 环境或旧浏览器
+  // 降级方案：使用简单 PRNG（仅在极旧环境触发，此时无法使用 crypto）
+  // eslint-disable-next-line no-restricted-syntax -- 降级方案，非主路径
   return Math.floor(Math.random() * max);
 }
 
 /**
  * 生成本地唯一 ID（不需要 UUID 完整标准）
- * 使用时间戳 + 随机数组合，保证本地唯一性
+ * 使用时间戳 + 密码学安全随机数组合，保证本地唯一性
  */
 export function generateLocalId(): string {
   const timePart = Date.now().toString(36);
-  const randomPart = Math.random().toString(36).slice(2, 10);
+  // 使用 crypto.getRandomValues() 生成安全随机字符串
+  const randomBytes = new Uint32Array(2);
+  crypto.getRandomValues(randomBytes);
+  const randomPart = Array.from(randomBytes)
+    .map((n) => n.toString(36))
+    .join("")
+    .slice(0, 10);
   return `${timePart}-${randomPart}`;
 }
 

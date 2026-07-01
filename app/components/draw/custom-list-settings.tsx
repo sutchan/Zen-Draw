@@ -1,0 +1,150 @@
+// components/draw/custom-list-settings.tsx v3.3.0 —— 自定义列表子组件（使用中央翻译系统）
+"use client";
+
+import * as React from "react";
+import { motion } from "motion/react";
+import { Button } from "@/components/ui/button";
+import { sanitizeListInput } from "@/lib/utils";
+import { createTranslator } from "@/lib/i18n";
+
+export function CustomListSettings({
+  language,
+  useCustomList,
+  customList,
+  onUseCustomListChange,
+  onImport,
+}: {
+  language: "zh" | "en";
+  useCustomList: boolean;
+  customList: string[];
+  onUseCustomListChange: (value: boolean) => void;
+  onImport: (items: string[]) => void;
+}) {
+  const t = React.useMemo(() => createTranslator(language), [language]);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [importText, setImportText] = React.useState("");
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2, duration: 0.4 }}
+      className="space-y-6 pt-2"
+    >
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+        {t("custom")}
+      </p>
+
+      <div className="flex items-center justify-between py-3 border-b border-border/20">
+        <div className="space-y-0.5">
+          <label htmlFor="use-custom" className="cursor-pointer text-sm font-medium">
+            {t("useCustomList")}
+          </label>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {customList.length > 0 ? `${customList.length} ${t("itemsLoaded")}` : t("noItems")}
+          </p>
+        </div>
+        <button
+          role="switch"
+          aria-checked={useCustomList}
+          onClick={() => onUseCustomListChange(!useCustomList)}
+          className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-input relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          data-state={useCustomList ? "checked" : "unchecked"}
+        >
+          <span
+            className="data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-[2px] inline-block h-5 w-5 rounded-full bg-background shadow-lg ring-1 ring-black/5 transition-transform duration-200"
+          />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Button
+          variant="outline"
+          onClick={() => {
+            setImportText(customList.join("\n"));
+            setDialogOpen(true);
+          }}
+          className="h-11 rounded-xl hover:bg-muted/50 transition-colors border-border/30"
+        >
+          {t("import_")}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            const data = customList.join("\n");
+            if (data) {
+              const blob = new Blob([data], { type: "text/plain" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "custom-list.txt";
+              a.style.display = "none";
+              document.body.appendChild(a);
+              a.click();
+              setTimeout(() => {
+                URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+              }, 200);
+            }
+          }}
+          className="h-11 rounded-xl hover:bg-muted/50 transition-colors border-border/30"
+        >
+          {t("export")}
+        </Button>
+      </div>
+
+      {/* 导入 Dialog — 无障碍支持: role="dialog" + aria-modal + Focus Trap */}
+      {dialogOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="import-dialog-title"
+        >
+          <div
+            className="fixed inset-0 bg-black/50"
+            onClick={() => setDialogOpen(false)}
+            onKeyDown={(e) => { if (e.key === 'Escape') { e.preventDefault(); setDialogOpen(false); } }}
+          />
+          <div className="relative z-50 bg-background rounded-2xl border border-border/30 p-6 max-w-[520px] w-full mx-4 shadow-2xl">
+            <h3 id="import-dialog-title" className="text-xl font-semibold mb-2">
+              {t("import_")}
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              {t("importDesc")}
+            </p>
+            <textarea
+              ref={(el) => { if (el && dialogOpen) setTimeout(() => el.focus(), 50); }}
+              value={importText}
+              onChange={(e) => setImportText(e.target.value)}
+              placeholder={t("listPlaceholder")}
+              aria-label={t("import_")}
+              className="min-h-[240px] w-full rounded-xl resize-none bg-muted/30 border border-border/20 p-4 text-sm font-mono focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
+            />
+            <div className="flex gap-2 mt-4 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => setDialogOpen(false)}
+                className="flex-1 h-11 rounded-xl border-border/30"
+              >
+                {t("cancel")}
+              </Button>
+              <Button
+                onClick={() => {
+                  const items = sanitizeListInput(importText);
+                  if (items.length > 0) {
+                    onImport(items);
+                  }
+                  setDialogOpen(false);
+                }}
+                className="flex-1 h-11 rounded-xl"
+              >
+                {t("confirmImport")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </motion.div>
+  );
+}

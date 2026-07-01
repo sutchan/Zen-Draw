@@ -1,21 +1,119 @@
 # Changelog
 
-## [5.0.0] - 2026-06-24
+## [3.3.0] - 2026-06-28
 
-### Performance Optimization (Vercel Best Practices)
-- 动态导入 `SettingsPanel` 和 `HistoryList` 组件，减少初始 bundle 大小
-- 移除未使用的 Card 组件导入和未使用的依赖包
-- useReducer 模式重构 `use-draw.ts`，消除 13 个独立 useEffect 同步问题
-- 正则表达式提升到组件外作为常量（NumberRoller）
-- 添加 `content-visibility: auto` 优化长列表渲染
-- localStorage 版本化与迁移框架实现
-- ARIA 无障碍优化：`aria-live: "assertive"` → `"polite"`
-- 支持 `prefers-reduced-motion` 用户动画偏好
+### Security Fixes
 
-### Code Quality
-- 修复所有 ESLint exhaustive-deps 警告
-- 移除无效的 `@import "shadcn/tailwind.css";`
-- 统一版本号至 v5.0.0
+#### Replace Math.random() with Cryptographically Secure Random
+- `app/components/number-roller.tsx`: Replace `Math.random()` in `rollChar` with `secureRandomInt()` from `utils.ts`
+- `app/lib/utils.ts`: Update `generateLocalId()` to use `crypto.getRandomValues()` for secure random string generation
+- Align with project security standard (SPEC.md section 6.5)
+
+### Bug Fixes
+
+#### Fix Broken setHistory Function
+- `app/hooks/use-draw.ts`: Add `SET_HISTORY` action to `DrawAction` type
+- Handle `SET_HISTORY` in `drawReducer`
+- Fix `setHistory` function to properly update history via reducer (was previously only clearing history)
+
+### Code Refactoring
+
+#### Split Large Files (Over 200 Lines)
+- **`app/hooks/use-draw.ts` (634 lines)**:
+  - Extract types to `app/hooks/draw-types.ts`
+  - Extract helper functions to `app/hooks/draw-helpers.ts`
+  - Extract reducer to `app/hooks/draw-reducer.ts`
+  - Keep `useDraw` hook in `app/hooks/use-draw.ts` (now ~150 lines)
+- **`app/components/draw/settings-panel.tsx` (781 lines)**:
+  - Extract `DrawSettings` to `app/components/draw/draw-settings.tsx`
+  - Extract `AppearanceSettings` to `app/components/draw/appearance-settings.tsx`
+  - Extract `CustomListSettings` to `app/components/draw/custom-list-settings.tsx`
+  - Keep `SettingsPanel` main component in `app/components/draw/settings-panel.tsx` (now ~250 lines)
+
+#### Sound Effects System
+- Add `app/hooks/use-sound.ts` — Web Audio API sound synthesis, no external files needed
+- 5 sound types: start (rising tone), tick (rolling click), result (C5→E5→G5→C6 arpeggio), error (falling tone), stop
+- Integrate into draw flow via `onSound` callback in `useDraw`
+
+#### Animation Optimization
+- Staggered stop effect: characters settle left-to-right with 80ms delay (slot machine style)
+- Enhanced spring animation on settle: stiffness 400, damping 16, mass 0.55 with overshoot bounce
+- Celebration effect: radial glow + Sparkles icon pulse (1.2s) when results are revealed
+- Result card micro-bounce (1.025×) + box-shadow transition to primary highlight
+
+#### i18n Refactoring
+- Add `app/lib/i18n.ts` — `createTranslator` utility with `{0}` `{1}` parameter substitution
+- Restructure `app/locales/` — split into `types.ts` (type defs), `en.ts` (English), `zh.ts` (Chinese)
+- Add 21 new translation keys (header, buttons, welcome/error screens, result labels, theme toggle, footer)
+- Migrate `draw-display.tsx`, `draw-button.tsx`, `page.tsx` to use centralized translations
+
+#### Code Cleanup
+- Remove unused imports: `Volume2`, `VolumeX`, `Card`, `CardContent`, `CardHeader`, `CardTitle`, `CardDescription`, `usePresetTheme`, `useThemeMounted`, `THEME_PRESETS`, `ThemePreset`, `useTheme`, `NumberRoller`
+- Remove unused `total` prop from `HistoryCardProps`
+- Fix `metadata.json` version (v3.2 → v3.3.0)
+- Delete large original files and restructure as component directories
+
+### Version Update
+- Bump version from `3.2.0` to `3.3.0`
+- Update `package.json`, `README.md`, `README_CN.md`, `app/layout.tsx`
+
+---
+
+## [3.2.0] - 2026-06-26
+
+### Code Quality System
+
+#### Code Review Standards
+- 新增 [代码审查标准](./.github/CODE_REVIEW_STANDARD.md) — 定义三级问题分类（🔴必须修复 / 🟡应该修复 / 💭可选优化）
+- 新增 [PR 提交模板](./.github/PULL_REQUEST_TEMPLATE.md) — 结构化 PR 描述和自查清单
+- 新增 [CI/CD 工作流](./.github/workflows/ci.yml) — 自动运行类型检查、ESLint、构建、安全审计
+- 新增 [CODEOWNERS](./.github/CODEOWNERS) — 自动分配代码审查者
+- 新增 [代码审查体系搭建总结](./.github/CODE_REVIEW_SETUP.md) — 使用指南
+
+#### ESLint Enhancement
+- 重写 `eslint.config.js`（Flat Config 格式）
+- 新增 TypeScript 严格规则（`no-explicit-any` 警告、`no-non-null-assertion` 错误）
+- 新增 React Hooks 依赖检查（严格模式）
+- 新增无障碍规则（jsx-a11y 系列）
+- 新增安全规则（禁止 eval、警告 Math.random() 使用）
+- 新增代码质量规则（禁止 console.log、禁止 var、自动移除未使用导入）
+- 删除冲突的旧 `.eslintrc.json`
+
+#### TypeScript Strict Mode
+- `tsconfig.json` 新增 `noUncheckedIndexedAccess: true`
+- 新增 `exactOptionalPropertyTypes: true`
+- 新增 `noImplicitReturns: true`
+- 新增 `forceConsistentCasingInFileNames: true`
+
+#### Package Scripts
+- 新增 `npm run lint:fix` — 自动修复 ESLint 错误
+- 新增 `npm run type-check` — TypeScript 类型检查
+
+### Security Enhancement
+
+#### Secure Random Number Generation
+- 强化随机数生成规范，要求使用 `crypto.getRandomValues()`
+- 新增安全编码规范章节到 `openspec/SPEC.md`
+
+#### Input Validation
+- 新增输入验证规范（范围限制、长度限制）
+- 新增 XSS 防护规范（不使用 `dangerouslySetInnerHTML`）
+
+### Documentation
+
+#### README Updates
+- 更新 `README.md` 和 `README_CN.md` 到 v3.2
+- 新增"代码质量"章节，说明项目质量标准
+- 新增"贡献指南"章节，链接到代码审查标准
+- 新增"安全说明"章节
+
+#### OpenSpec Updates
+- 更新 `openspec/SPEC.md` 到 v3.2
+- 新增第 6 章"代码质量规范"
+- 更新目录结构（添加 .github/ 目录）
+- 更新 CHANGELOG 部分
+
+---
 
 ## [3.1.0] - 2026-06-11
 
