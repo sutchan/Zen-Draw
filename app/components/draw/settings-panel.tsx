@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { Menu, X, Settings2, History, Languages, Sun, Moon } from "lucide-react";
+import { Menu, X, Settings2, History, Languages } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // UI Components（简化版）
@@ -80,6 +80,9 @@ export interface SettingsPanelProps extends SettingsPanelState {
   // 语言切换
   language: "zh" | "en";
   onLanguageToggle: () => void;
+  // 历史
+  history: Array<{ id: string; timestamp: string; results: string[] }>;
+  onClearHistory: () => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -126,9 +129,8 @@ function SidebarToggle({
 // 子组件: 标题栏（顶部）
 // ---------------------------------------------------------------------------
 
-function HeaderBar({ t, language, onLanguageToggle }: {
+function HeaderBar({ t, onLanguageToggle }: {
   t: { title: string; version: string };
-  language: "zh" | "en";
   onLanguageToggle: () => void;
 }) {
   return (
@@ -304,8 +306,6 @@ function AppearanceSettings({
   onPrefix: (value: string) => void;
   onSuffix: (value: string) => void;
 }) {
-  const shouldReduceMotion = useReducedMotion();
-
   // 使用 theme
   const { theme, setTheme } = useTheme();
   const { preset, setPreset, font, setFont } = usePresetTheme();
@@ -352,7 +352,7 @@ function AppearanceSettings({
       <div className="space-y-3">
         <Label htmlFor="theme-mode">{displayT.themeMode}</Label>
         {mounted && (
-          <Select value={theme ?? "system"} onValueChange={(v) => setTheme(v)}>
+          <Select value={theme ?? "system"} onValueChange={(v) => setTheme(v as "light" | "dark" | "system")}>
             <SelectTrigger id="theme-mode" className="h-11 rounded-xl bg-muted/30 border border-border/20">
               <SelectValue />
             </SelectTrigger>
@@ -630,7 +630,7 @@ export function SettingsPanel(props: SettingsPanelProps) {
   return (
     <>
       {/* 顶部标题栏 */}
-      <HeaderBar t={t} language={language} onLanguageToggle={onLanguageToggle} />
+      <HeaderBar t={t} onLanguageToggle={onLanguageToggle} />
 
       {/* 侧边栏开关按钮 */}
       <SidebarToggle open={open} onToggle={onToggle} t={{
@@ -666,13 +666,14 @@ export function SettingsPanel(props: SettingsPanelProps) {
         )}
         initial={false}
         animate={{ x: open ? 0 : "100%" }}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-          mass: 0.9,
-          duration: shouldReduceMotion ? 0 : undefined,
-        }}
+        transition={shouldReduceMotion
+          ? { duration: 0 }
+          : {
+              type: "spring",
+              stiffness: 300,
+              damping: 30,
+              mass: 0.9,
+            }}
       >
         <Tabs defaultValue="settings" className="w-full h-full flex flex-col">
           {/* Tab List */}
