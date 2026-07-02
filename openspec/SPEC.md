@@ -1,10 +1,10 @@
-# ZenDraw | 禅抽 v3.3.0 — 项目规范文档
+# ZenDraw | 禅抽 v5.0.0 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v3.3.0
+- **当前版本**: v5.0.0
 - **上次更新**: 2026-06-30
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、10 种主题配色、Web Audio API 音效。
 - **许可证**: MIT License
@@ -121,14 +121,16 @@ zen-draw/
 │   │   └── zh.ts                 # 中文翻译
 │   └── test/
 │       └── setup.ts              # 测试环境配置
-├── prototype/                    # 设计原型（v4.0 重构）
+├── prototype/                    # 设计原型（v5.0 重构）
 │   ├── v1/                       # 线框图 + 初始原型
 │   │   ├── wireframes.html
 │   │   └── prototype.html
 │   ├── v2/                       # 交互原型
 │   │   └── prototypes.html
-│   ├── interactive/              # v4.0 高保真可交互原型
+│   ├── interactive/              # v5.0 高保真可交互原型
 │   │   └── index.html
+│   ├── minimal-design-system.md   # 极简设计系统规范
+│   ├── minimal-prototype.html     # 极简原型演示
 │   ├── design-system.md          # 完整设计系统规范
 │   └── assets/
 ├── docs/design/                  # 设计参考文档
@@ -549,7 +551,7 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 | 线框图 | `prototype/v1/wireframes.html` | 低保真布局探索 |
 | 初始原型 | `prototype/v1/prototype.html` | v3.0 设计系统展示 |
 | 交互原型 | `prototype/v2/prototypes.html` | v3.0 交互流程 |
-| 高保真原型 | `prototype/interactive/index.html` | **v4.0 可交互原型（主参考）** |
+| 高保真原型 | `prototype/interactive/index.html` | **v5.0 可交互原型（主参考）** |
 | 设计系统 | `prototype/design-system.md` | 完整设计系统文档 |
 
 ### 10.2 代码与原型对齐清单
@@ -576,7 +578,7 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 ```typescript
 // layout.tsx
 export const metadata: Metadata = {
-  title: "ZenDraw | 禅抽 v3.3.0",
+  title: "ZenDraw | 禅抽 v5.0",
   description: "A professional, full-screen random draw application with Apple-inspired design...",
   keywords: ["ZenDraw", "禅抽", "random draw", "lucky draw", ...],
 };
@@ -607,12 +609,24 @@ export const viewport: Viewport = {
 
 ## 13. 版本历史
 
-### v3.3.0 (当前)
+### v5.0.0 (当前)
+- 极简设计系统重构（minimal-design-system.md）
+- 原型优化（minimal-prototype.html）
+- 代码与原型对齐（shadcn/ui 组件替换）
+- 响应式设计优化（移动端/桌面端完美适配）
+- 性能优化（移除渐变背景，使用纯色）
+
+### v4.0.0
+- 高保真可交互原型（prototype/interactive/）
+- 组件库完善（shadcn/ui v4 base-nova 风格）
+- 动效系统升级（Apple 式缓动函数）
+- 无障碍设计强化（WCAG AA 标准）
+
+### v3.3.0
 - 组件拆分（大文件 → 子组件目录）
 - 音效系统（Web Audio API）
 - 动效优化（逐字定格 + 庆祝光晕）
 - 国际化重构（49 翻译键 + createTranslator）
-- 安全加固（secureRandomInt 全面替换 Math.random）
 
 ### v3.2.0
 - 代码质量体系（ESLint 强化 / 严格 TypeScript / CI/CD）
@@ -622,6 +636,11 @@ export const viewport: Viewport = {
 - Apple Design 风格重设计
 - 圆角/阴影/间距系统统一
 
+### v3.0.0
+- 初始版本
+- 基础随机抽取功能
+- 自定义名单导入导出
+
 ---
 
-*本文档最后更新: 2026-06-30 · 与 prototype/interactive/index.html 和 app/ 代码保持对齐*
+*本文档最后更新: 2026-07-02 · 与 prototype/ 和 app/ 代码保持对齐*

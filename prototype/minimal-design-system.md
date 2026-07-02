@@ -35,19 +35,24 @@
 
 ```css
 /* 中性色 — cool-tinted, 非纯灰 */
---color-bg: #fafbfc;               /* 背景 */
---color-bg-subtle: #f4f5f7;        /* 次级背景 */
---color-bg-elevated: #ffffff;      /* 卡片/弹窗 */
---color-text: #1a1d23;             /* 主要文字 */
---color-text-secondary: #5a5f6b;   /* 次要文字 */
---color-text-tertiary: #8e939f;    /* 辅助文字 */
---color-border: #e2e5ea;           /* 边框 */
---color-border-subtle: #eef0f4;    /* 弱边框 */
+--bg: #fafbfc;               /* 背景 */
+--bg-subtle: #f4f5f7;        /* 次级背景 */
+--bg-elevated: #ffffff;      /* 卡片/弹窗 */
+--bg-muted: #eef0f4;         /* 悬停背景 */
+--fg: #1a1d23;               /* 主要文字 */
+--fg-secondary: #5a5f6b;     /* 次要文字 */
+--fg-tertiary: #8e939f;    /* 辅助文字 */
+--fg-quaternary: #b4b8c2;    /* 占位符/禁用 */
+--border: #e2e5ea;           /* 边框 */
+--border-subtle: #eef0f4;    /* 弱边框 */
+--border-strong: #c4c8d0;    /* 强调边框 */
+--ring: #1a1d23;              /* 焦点环 */
 
 /* 品牌色 — Zen Indigo */
---color-primary: #4f6ef7;          /* 品牌色 */
---color-primary-hover: #3b5ae0;    /* 悬停 */
---color-primary-subtle: rgba(79, 110, 247, 0.08);
+--accent: #4f6ef7;          /* 品牌强调色 — 冷静的靛蓝 */
+--accent-hover: #3b5ae0;     /* 悬停 */
+--accent-subtle: rgba(79, 110, 247, 0.08);
+--accent-soft: rgba(79, 110, 247, 0.06);
 
 /* 深色模式 */
 [data-theme="dark"] {
@@ -458,5 +463,5 @@
 *此设计系统作为前端开发的唯一设计参考，确保代码与原型完全对齐。*
 
 **版本**: v5.0  
-**更新日期**: 2026-06-30  
+**更新日期**: 2026-07-02  
 **设计理念**: 极简 · 精准 · 禅意
