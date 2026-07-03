@@ -1,4 +1,4 @@
-// locales/index.ts v3.3.0 — 国际化翻译模块（入口）
+// locales/index.ts v5.0.0 — 国际化翻译模块（入口）
 export { type Language, type TranslationKey, type TranslationDict } from "./types";
 export { enTranslations } from "./en";
 export { zhTranslations } from "./zh";

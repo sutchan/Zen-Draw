@@ -1,4 +1,4 @@
-// components/draw/history-list/empty-state.tsx v3.3.0 —— 空状态显示（使用中央翻译系统）
+// components/draw/history-list/empty-state.tsx v5.0.0 —— 空状态显示（使用中央翻译系统）
 "use client";
 
 import * as React from "react";

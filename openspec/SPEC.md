@@ -1,11 +1,11 @@
-# ZenDraw | 禅抽 v3.3.0 — 项目规范文档
+# ZenDraw | 禅抽 v5.0.0 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v3.3.0
-- **上次更新**: 2026-06-30
+- **当前版本**: v5.0.0
+- **上次更新**: 2026-07-02
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、10 种主题配色、Web Audio API 音效。
 - **许可证**: MIT License
 - **代码质量**: 严格 TypeScript (strict mode) + ESLint + CI/CD + 代码审查标准 + 安全头
@@ -109,8 +109,8 @@ zen-draw/
 │   │   ├── use-draw-actions.ts    # 动作回调（start/stop/setters）
 │   │   ├── use-draw-persistence.ts# 持久化设置（13 组 localStorage）
 │   │   ├── use-local-storage.ts   # localStorage Hook（含跨标签同步）
-│   │   ├── use-persist-settings.ts# 批量持久化副作用
-│   │   └── use-sound.ts          # Web Audio API 音效合成
+│   │   ├── use-sound.ts          # Web Audio API 音效合成
+│   │   └── use-keyboard-shortcuts.ts # 全局键盘快捷键（Esc/Space）
 │   ├── lib/
 │   │   ├── utils.ts              # 工具函数（cn / secureRandomInt / sanitizeListInput）
 │   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
@@ -436,7 +436,7 @@ interface DrawState {
 - `en` — English
 - `zh` — 简体中文
 
-### 7.2 翻译键（49 个）
+### 7.2 翻译键（99 个）
 ```
 title, settings, history,
 rangeCount, rangeDesc, minVal, maxVal, drawCount,
@@ -453,11 +453,19 @@ listImport, listImportDesc, useCustomList,
 export, displayRules, displayDesc,
 minDigits, minDigitsDesc, prefix, suffix,
 drawHistory, historyDesc, noHistory,
-ready, drawing, startDraw, stopDraw, startHint, stopHint,
-recordLabel, resultsCount, copiedToClipboard, copyResult, copied,
-import_, importDesc, listPlaceholder, confirmImport,
-cancel, ok, notice, itemsLoaded, noItems, clearHistory,
-toggleUI, switchLang, minMaxError, rangeError
+ready, drawing, startDraw,
+minMaxError, rangeError, clearHistory,
+toggleUI, switchLang, notice, ok, cancel,
+import_, itemsLoaded, noItems,
+appTitle, appSubtitle, drawMainArea, drawDisplayArea,
+stopDraw, startHint, stopHint,
+welcomeHint, errorTitle, errorMessage,
+resultLabel, resultRegion, drawResults,
+switchLight, switchDark, footerInfo,
+importDesc, confirmImport, exportList,
+errCustomListEmpty, errCustomListTooMany, errCustomListRange, errRangeInvalid,
+autoSaveDesc, clickToCopy, copied, copiedToClipboard, copyResult,
+listPlaceholder, recordLabel, resultsCount, settingsPanel
 ```
 
 ### 7.3 使用方式
@@ -576,7 +584,7 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 ```typescript
 // layout.tsx
 export const metadata: Metadata = {
-  title: "ZenDraw | 禅抽 v3.3.0",
+  title: "ZenDraw | 禅抽 v5.0.0",
   description: "A professional, full-screen random draw application with Apple-inspired design...",
   keywords: ["ZenDraw", "禅抽", "random draw", "lucky draw", ...],
 };
@@ -607,11 +615,19 @@ export const viewport: Viewport = {
 
 ## 13. 版本历史
 
-### v3.3.0 (当前)
+### v5.0.0 (当前)
+- 极简设计优化（圆形抽取按钮 + 顶部导航精简）
+- 删除遗留单体重复文件（settings-panel/history-list/draw-display 的旧 .tsx），统一使用模块化 `*/index.tsx` 版本
+- 修复 `hsl(var(--primary))` 与 oklch 颜色变量不匹配的 CSS 问题（改用 `color-mix`）
+- 移除失效的 `shadcn/tailwind.css` 导入
+- 全部组件统一使用 `createTranslator` 中央翻译系统
+- 版本号统一对齐至 v5.0.0
+
+### v3.3.0
 - 组件拆分（大文件 → 子组件目录）
 - 音效系统（Web Audio API）
 - 动效优化（逐字定格 + 庆祝光晕）
-- 国际化重构（49 翻译键 + createTranslator）
+- 国际化重构（createTranslator，键数扩展至 99）
 - 安全加固（secureRandomInt 全面替换 Math.random）
 
 ### v3.2.0
@@ -624,4 +640,4 @@ export const viewport: Viewport = {
 
 ---
 
-*本文档最后更新: 2026-06-30 · 与 prototype/interactive/index.html 和 app/ 代码保持对齐*
+*本文档最后更新: 2026-07-02 · 与 prototype/interactive/index.html 和 app/ 代码保持对齐*

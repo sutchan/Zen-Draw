@@ -103,7 +103,8 @@ app/
 │   ├── use-draw-actions.ts # 动作回调
 │   ├── use-draw-persistence.ts # 持久化
 │   ├── use-local-storage.ts# 本地存储
-│   └── use-sound.ts        # 音效合成
+│   ├── use-sound.ts        # 音效合成
+│   └── use-keyboard-shortcuts.ts # 全局键盘快捷键
 ├── lib/                    # 工具函数
 └── locales/                # 国际化翻译
 ```

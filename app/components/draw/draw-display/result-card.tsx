@@ -1,4 +1,4 @@
-// components/draw/draw-display/result-card.tsx v3.3.0 —— 单个结果卡片
+// components/draw/draw-display/result-card.tsx v5.0.0 —— 单个结果卡片
 "use client";
 
 import * as React from "react";
@@ -53,7 +53,7 @@ export function ResultCard({
           boxShadow: celebrating
             ? [
                 "0 8px 32px rgba(0,0,0,0.06)",
-                "0 8px 48px hsl(var(--primary) / 0.2)",
+                "0 8px 48px color-mix(in srgb, var(--primary) 20%, transparent)",
                 "0 8px 32px rgba(0,0,0,0.06)",
               ]
             : "0 8px 32px rgba(0,0,0,0.06)",

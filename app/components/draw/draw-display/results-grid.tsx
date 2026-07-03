@@ -1,4 +1,4 @@
-// components/draw/draw-display/results-grid.tsx v3.3.0 —— 所有结果网格
+// components/draw/draw-display/results-grid.tsx v5.0.0 —— 所有结果网格
 "use client";
 
 import * as React from "react";

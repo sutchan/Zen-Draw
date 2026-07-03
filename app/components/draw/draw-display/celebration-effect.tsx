@@ -22,7 +22,7 @@ export function CelebrationEffect({ active }: { active: boolean }) {
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(ellipse, hsl(var(--primary) / 0.15) 0%, transparent 70%)",
+                "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 15%, transparent) 0%, transparent 70%)",
             }}
           />
           {/* 闪烁星星 */}

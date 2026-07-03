@@ -52,7 +52,7 @@ export function DrawButton({
             height: "90px",
             marginLeft: "-140px",
             marginTop: "-45px",
-            background: "radial-gradient(ellipse, hsl(var(--primary) / 0.12) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 70%)",
           }}
           animate={{
             scale: [1, 1.1, 1],
@@ -79,16 +79,16 @@ export function DrawButton({
           "rounded-full",
           "font-semibold text-lg sm:text-xl",
           "text-primary-foreground",
-          "shadow-[0_8px_32px_hsl(var(--primary)/0.3)]",
+          "shadow-[0_8px_32px_color-mix(in_srgb,var(--primary)_30%,transparent)]",
           "transition-all duration-300 ease-out",
           // 焦点样式（无障碍）
           "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 focus-visible:ring-offset-4 focus-visible:ring-offset-background",
           // 状态样式
           canDraw || isDrawing
-            ? "cursor-pointer bg-primary hover:shadow-[0_12px_48px_hsl(var(--primary)/0.4)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.98]"
+            ? "cursor-pointer bg-primary hover:shadow-[0_12px_48px_color-mix(in_srgb,var(--primary)_40%,transparent)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.98]"
             : "cursor-not-allowed opacity-50 bg-muted text-muted-foreground",
           // 抽取中 — 破坏性色彩
-          isDrawing && "bg-destructive hover:bg-destructive text-white shadow-[0_8px_32px_hsl(var(--destructive)/0.4)]"
+          isDrawing && "bg-destructive hover:bg-destructive text-white shadow-[0_8px_32px_color-mix(in_srgb,var(--destructive)_40%,transparent)]"
         )}
         {...(!shouldReduceMotion && (canDraw || isDrawing) ? {
           whileHover: { scale: 1.05 },

@@ -1,5 +1,28 @@
 # Changelog
 
+## [5.0.0] - 2026-07-02
+
+### Code Health
+
+#### Remove Duplicate Legacy Files
+- Delete monolithic `app/components/draw/settings-panel.tsx` (736 lines) — superseded by modular `settings-panel/index.tsx` (185 lines)
+- Delete monolithic `app/components/draw/history-list.tsx` (219 lines) — superseded by modular `history-list/index.tsx`
+- Delete monolithic `app/components/draw/draw-display.tsx` (218 lines, no error screen) — superseded by modular `draw-display/index.tsx` (with `ErrorScreen`)
+- Module resolution now correctly targets the modular `*/index.tsx` versions; `page.tsx` no longer imports the legacy hardcoded-translation copies
+
+#### Split Over-200-Lines Source File
+- Extract keyboard shortcut logic from `app/page.tsx` (203 lines) into new `app/hooks/use-keyboard-shortcuts.ts` (60 lines). `page.tsx` now 174 lines. All project source files outside `app/components/ui/**` (shadcn-generated) are ≤200 lines.
+
+#### CSS Bug Fixes
+- `app/style.css`: Remove broken `@import "shadcn/tailwind.css"` (shadcn package was uninstalled; all tokens already defined inline). Eliminates build warning `Can't resolve 'shadcn/tailwind.css'`.
+- `draw-button.tsx`, `draw-display/result-card.tsx`, `draw-display/celebration-effect.tsx`: Replace invalid `hsl(var(--primary) / 0.x)` (the `--primary` token is `oklch(...)`, not hsl channels, so these shadows/glows silently failed to render) with `color-mix(in srgb, var(--primary) X%, transparent)`.
+
+### Version Alignment
+- Bump version from `3.3.0` to `5.0.0` across `package.json`, `metadata.json`, `app/layout.tsx` (SEO title), `header-bar.tsx` (UI version badge), `openspec/SPEC.md`, and all source file header comments.
+- `openspec/SPEC.md`: Update translation key count (49 → 99), remove non-existent `use-persist-settings.ts` from directory tree, add v5.0.0 history entry.
+
+---
+
 ## [3.3.0] - 2026-06-28
 
 ### Security Fixes

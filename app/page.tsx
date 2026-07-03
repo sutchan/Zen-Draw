@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useDraw } from "@/hooks/use-draw";
 import { useSound } from "@/hooks/use-sound";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { DrawButton } from "@/components/draw/draw-button";
 import { SettingsPanel } from "@/components/draw/settings-panel";
 import { HistoryList } from "@/components/draw/history-list";
@@ -33,37 +34,7 @@ export default function HomePage() {
   const t = React.useMemo(() => createTranslator(draw.language), [draw.language]);
 
   // 3. 键盘快捷键
-  const drawRef = React.useRef(draw);
-  React.useEffect(() => {
-    drawRef.current = draw;
-  }, [draw]);
-
-  React.useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement | null;
-      const isTyping =
-        target?.tagName === "INPUT" ||
-        target?.tagName === "TEXTAREA" ||
-        target?.isContentEditable;
-
-      if (e.key === "Escape") {
-        if (panelOpen) {
-          setPanelOpen(false);
-          e.preventDefault();
-        }
-        return;
-      }
-
-      if (e.key === " " && !isTyping && !panelOpen && target?.tagName !== "BUTTON") {
-        e.preventDefault();
-        const currentDraw = drawRef.current;
-        if (currentDraw.status === "drawing") currentDraw.stopDraw();
-        else if (currentDraw.canDraw) currentDraw.startDraw();
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [panelOpen]);
+  useKeyboardShortcuts({ draw, panelOpen, setPanelOpen });
 
   const lang = draw.language;
 

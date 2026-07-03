@@ -1,4 +1,4 @@
-// components/draw/settings-panel/header-bar.tsx v3.3.0 —— 顶部标题栏（使用中央翻译系统）
+// components/draw/settings-panel/header-bar.tsx v5.0.0 —— 顶部标题栏（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -24,7 +24,7 @@ export function HeaderBar({ language, onLanguageToggle }: {
       </div>
       <div>
         <h1 className="text-base font-semibold tracking-tight leading-none">{t("appTitle")}</h1>
-        <span className="text-[10px] text-muted-foreground/60 font-mono">v3.3.0</span>
+        <span className="text-[10px] text-muted-foreground/60 font-mono">v5.0.0</span>
       </div>
       <Button
         variant="ghost"

@@ -103,7 +103,8 @@ app/
 │   ├── use-draw-actions.ts # Draw action callbacks
 │   ├── use-draw-persistence.ts # localStorage persistence
 │   ├── use-local-storage.ts# Local storage hook
-│   └── use-sound.ts        # Web Audio API sounds
+│   ├── use-sound.ts        # Web Audio API sounds
+│   └── use-keyboard-shortcuts.ts # Global keyboard shortcuts
 ├── lib/                    # Utility functions
 └── locales/                # i18n translations
 ```
