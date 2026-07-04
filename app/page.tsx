@@ -1,4 +1,4 @@
-// page.tsx v5.0 —— 抽取主页面（极简设计优化）
+// page.tsx v5.0 —— 抽取主页面（极简设计 + a11y 优化）
 "use client";
 
 import * as React from "react";
@@ -16,13 +16,20 @@ import { useTheme } from "next-themes";
 import { useDraw } from "@/hooks/use-draw";
 import { useSound } from "@/hooks/use-sound";
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
+import {
+  THEME_PRESETS,
+  FONT_FAMILIES,
+  useThemeMounted,
+} from "@/components/theme-provider";
 import { DrawButton } from "@/components/draw/draw-button";
 import { SettingsPanel } from "@/components/draw/settings-panel";
 import { HistoryList } from "@/components/draw/history-list";
 import { DrawDisplay } from "@/components/draw/draw-display";
 import { createTranslator } from "@/lib/i18n";
+
 export default function HomePage() {
   const shouldReduceMotion = useReducedMotion();
+  const mounted = useThemeMounted();
   const { theme, setTheme } = useTheme();
 
   // 1. 统一状态管理
@@ -37,13 +44,19 @@ export default function HomePage() {
   useKeyboardShortcuts({ draw, panelOpen, setPanelOpen });
 
   const lang = draw.language;
+  // SSR 安全的主题判断：mount 前用 undefined 避免 hydration mismatch
+  const isDark = mounted && theme === "dark";
 
   return (
-    <div
-      className="min-h-screen w-full bg-background text-foreground antialiased"
-      role="application"
-      aria-label={t("appTitle")}
-    >
+    <div className="min-h-screen w-full bg-background text-foreground antialiased">
+      {/* Skip to content — 无障碍快捷导航 (WCAG 2.4.1) */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:shadow-lg"
+      >
+        {t("skipToContent")}
+      </a>
+
       {/* Header — 极简设计 */}
       <header className="sticky top-0 z-30 backdrop-blur-md bg-background/80 border-b border-border/50">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
@@ -70,15 +83,12 @@ export default function HomePage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label={
-                theme === "dark"
-                  ? t("switchLight")
-                  : t("switchDark")
-              }
+              onClick={() => setTheme(isDark ? "light" : "dark")}
+              aria-label={isDark ? t("switchLight") : t("switchDark")}
+              title={isDark ? t("switchLight") : t("switchDark")}
               className="rounded-full"
             >
-              {theme === "dark" ? (
+              {isDark ? (
                 <Sun className="size-4" aria-hidden="true" />
               ) : (
                 <Moon className="size-4" aria-hidden="true" />
@@ -143,7 +153,7 @@ export default function HomePage() {
       </header>
 
       {/* Main Content — 极简布局 */}
-      <main className="mx-auto max-w-6xl px-4 pt-8 sm:pt-12 pb-16">
+      <main id="main-content" aria-label={t("drawMainArea")} className="mx-auto max-w-6xl px-4 pt-8 sm:pt-12 pb-16">
         <section aria-label={t("drawMainArea")} className="flex flex-col items-center">
           <DrawDisplay draw={draw} />
 
@@ -166,7 +176,7 @@ export default function HomePage() {
       {/* Footer — 极简 */}
       <footer className="py-6 text-center text-xs text-muted-foreground/70 border-t border-border/30">
         <p>
-          {t("footerInfo", String(10), String(6))}
+          {t("footerInfo", String(THEME_PRESETS.length), String(FONT_FAMILIES.length))}
         </p>
       </footer>
     </div>
