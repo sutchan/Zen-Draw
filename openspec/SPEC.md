@@ -110,13 +110,14 @@ zen-draw/
 │   │   ├── use-draw-persistence.ts# 持久化设置（13 组 localStorage）
 │   │   ├── use-local-storage.ts   # localStorage Hook（含跨标签同步）
 │   │   ├── use-sound.ts          # Web Audio API 音效合成
-│   │   └── use-keyboard-shortcuts.ts # 全局键盘快捷键（Esc/Space）
+│   │   ├── use-keyboard-shortcuts.ts # 全局键盘快捷键（Esc/Space）
+│   │   ├── use-language.ts           # SSR 安全语言读取 Hook + LanguageSync 组件
 │   ├── lib/
 │   │   ├── utils.ts              # 工具函数（cn / secureRandomInt / sanitizeListInput）
 │   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
 │   ├── locales/                  # 国际化数据
 │   │   ├── index.ts              # re-export
-│   │   ├── types.ts              # TranslationKey（49 键）
+│   │   ├── types.ts              # TranslationKey（108 键）
 │   │   ├── en.ts                 # 英文翻译
 │   │   └── zh.ts                 # 中文翻译
 │   └── test/
@@ -436,7 +437,7 @@ interface DrawState {
 - `en` — English
 - `zh` — 简体中文
 
-### 7.2 翻译键（99 个）
+### 7.2 翻译键（108 个）
 ```
 title, settings, history,
 rangeCount, rangeDesc, minVal, maxVal, drawCount,
@@ -465,7 +466,10 @@ switchLight, switchDark, footerInfo,
 importDesc, confirmImport, exportList,
 errCustomListEmpty, errCustomListTooMany, errCustomListRange, errRangeInvalid,
 autoSaveDesc, clickToCopy, copied, copiedToClipboard, copyResult,
-listPlaceholder, recordLabel, resultsCount, settingsPanel
+listPlaceholder, recordLabel, resultsCount, settingsPanel,
+errorPageTitle, errorPageDesc, errorRetry, errorBackHome, errorIdLabel,
+notFoundTitle, notFoundDesc, notFoundBackHome,
+skipToContent
 ```
 
 ### 7.3 使用方式
@@ -515,8 +519,9 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 - **localStorage**: 敏感数据（custom-list）可选清除
 
 ### 8.5 错误边界
-- `app/error.tsx` — 全局错误捕获 + 重试按钮 + 返回首页
-- `app/not-found.tsx` — 404 友好提示
+- `app/error.tsx` — 全局错误捕获 + i18n + 重试按钮 + 返回首页 + error.digest 展示 + reduce-motion 支持
+- `app/not-found.tsx` — 404 友好提示 + i18n + lucide 图标 + Button 样式
+- `app/hooks/use-language.ts` — SSR 安全语言读取 Hook（供 error/not-found 共用）
 
 ### 8.6 CI/CD（GitHub Actions）
 每次 PR 自动运行：
