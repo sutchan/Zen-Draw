@@ -113,4 +113,14 @@ export const zhTranslations: TranslationDict = {
   copyResult: "复制",
   listPlaceholder: "苹果\n香蕉\n橙子...",
   settingsPanel: "设置面板",
+  // 页面级
+  errorPageTitle: "出了点问题",
+  errorPageDesc: "应用遇到了意外错误。请尝试刷新页面或重置状态。",
+  errorRetry: "重试",
+  errorBackHome: "返回首页",
+  errorIdLabel: "错误编号",
+  notFoundTitle: "页面未找到",
+  notFoundDesc: "您访问的页面不存在。ZenDraw 是一个单页应用，返回首页即可使用。",
+  notFoundBackHome: "返回首页",
+  skipToContent: "跳到主内容",
 };

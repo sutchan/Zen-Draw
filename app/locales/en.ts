@@ -113,4 +113,14 @@ export const enTranslations: TranslationDict = {
   copyResult: "Copy",
   listPlaceholder: "Apple\nBanana\nOrange...",
   settingsPanel: "Settings panel",
+  // Page-level
+  errorPageTitle: "Something Went Wrong",
+  errorPageDesc: "An unexpected error occurred. Please refresh the page or reset the state.",
+  errorRetry: "Retry",
+  errorBackHome: "Back to Home",
+  errorIdLabel: "Error ID",
+  notFoundTitle: "Page Not Found",
+  notFoundDesc: "The page you requested does not exist. ZenDraw is a single-page app — return home to use it.",
+  notFoundBackHome: "Back to Home",
+  skipToContent: "Skip to main content",
 };

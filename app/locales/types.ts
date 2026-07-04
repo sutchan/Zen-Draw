@@ -40,6 +40,10 @@ export type TranslationKey =
   | "errRangeInvalid"
   // 通用
   | "autoSaveDesc" | "clickToCopy" | "copied" | "copiedToClipboard" | "copyResult"
-  | "listPlaceholder" | "recordLabel" | "resultsCount" | "settingsPanel";
+  | "listPlaceholder" | "recordLabel" | "resultsCount" | "settingsPanel"
+  // 页面级（404 / 错误 / 无障碍）
+  | "errorPageTitle" | "errorPageDesc" | "errorRetry" | "errorBackHome" | "errorIdLabel"
+  | "notFoundTitle" | "notFoundDesc" | "notFoundBackHome"
+  | "skipToContent";
 
 export type TranslationDict = Record<TranslationKey, string>;
