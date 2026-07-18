@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang="en"
+      lang="zh-CN"
       className={cn("font-sans", geist.variable, jetBrainsMono.variable, playfairDisplay.variable)}
       suppressHydrationWarning
     >

@@ -40,7 +40,6 @@ export function DrawButton({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: shouldReduceMotion ? 0 : 0.5 }}
       className="relative flex flex-col items-center"
-      aria-hidden="false"
     >
       {/* 脉冲背景光晕（仅非抽取状态且无忧动画偏好时显示） */}
       {!isDrawing && canDraw && !shouldReduceMotion && (
@@ -94,8 +93,6 @@ export function DrawButton({
           whileHover: { scale: 1.05 },
           whileTap: { scale: 0.98 },
         } : {})}
-        role="button"
-        tabIndex={0}
       >
         {/* 按钮内部 */}
         <div className="flex flex-col items-center justify-center gap-2">

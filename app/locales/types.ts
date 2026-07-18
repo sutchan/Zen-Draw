@@ -28,7 +28,7 @@ export type TranslationKey =
   // 欢迎/错误
   | "welcomeHint" | "errorTitle" | "errorMessage"
   // 结果
-  | "resultLabel" | "resultRegion" | "drawResults"
+  | "resultLabel" | "resultRegion"
   // 主题
   | "switchLight" | "switchDark"
   // 页脚

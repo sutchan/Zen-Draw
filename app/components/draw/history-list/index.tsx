@@ -8,22 +8,18 @@ import { cn } from "@/lib/utils";
 import { HistoryCard } from "./history-card";
 import { EmptyState } from "./empty-state";
 import { createTranslator } from "@/lib/i18n";
+import type { HistoryEntry } from "@/hooks/draw-types";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export interface HistoryEntry {
-  id: string;
-  timestamp: string;
-  results: string[];
-}
+export type { HistoryEntry };
 
 export interface HistoryListProps {
   history: HistoryEntry[];
   onClear: () => void;
   language?: "zh" | "en";
-  onSetHistory?: (updater: (prev: HistoryEntry[]) => HistoryEntry[]) => void;
 }
 
 // ---------------------------------------------------------------------------

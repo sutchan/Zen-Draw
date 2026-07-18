@@ -85,7 +85,6 @@ export const enTranslations: TranslationDict = {
   // 结果
   resultLabel: "Result {0}: {1}",
   resultRegion: "Draw results",
-  drawResults: "Draw Results",
   // 主题
   switchLight: "Switch to light mode",
   switchDark: "Switch to dark mode",

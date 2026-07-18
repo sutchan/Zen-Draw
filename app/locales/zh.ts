@@ -85,7 +85,6 @@ export const zhTranslations: TranslationDict = {
   // 结果
   resultLabel: "结果 {0}: {1}",
   resultRegion: "抽取结果",
-  drawResults: "抽取结果",
   // 主题
   switchLight: "切换到浅色模式",
   switchDark: "切换到深色模式",

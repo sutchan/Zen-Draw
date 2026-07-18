@@ -25,7 +25,6 @@ export function ResultCard({
 
   return (
     <motion.div
-      key={value + index}
       initial={{ opacity: 0, y: 30, scale: 0.85 }}
       animate={{
         opacity: 1,
