@@ -1,4 +1,4 @@
-// components/layout/app-header.tsx v5.1 —— 顶部导航栏（Logo + 主题切换 + 设置面板）
+// components/layout/app-header.tsx v5.1.0 —— 顶部导航栏（Logo + 主题切换 + 设置面板）
 "use client";
 
 import * as React from "react";

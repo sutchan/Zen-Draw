@@ -1,4 +1,4 @@
-// components/ui/sheet/parts.tsx v5.1 —— Sheet 布局部件（Header/Title/Description/Footer/Close）
+// components/ui/sheet/parts.tsx v5.1.0 —— Sheet 布局部件（Header/Title/Description/Footer/Close）
 "use client";
 
 import * as React from "react";

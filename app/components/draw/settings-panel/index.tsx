@@ -1,4 +1,4 @@
-// components/draw/settings-panel/index.tsx v5.0.0 —— 设置侧边栏（重构拆分版）
+// components/draw/settings-panel/index.tsx v5.1.0 —— 设置侧边栏（重构拆分版）
 "use client";
 
 import * as React from "react";

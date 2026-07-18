@@ -1,4 +1,4 @@
-// components/draw/draw-display/index.tsx v5.0.0 —— 主显示区（统一 draw 对象 + 增强 ARIA）
+// components/draw/draw-display/index.tsx v5.1.0 —— 主显示区（统一 draw 对象 + 增强 ARIA）
 "use client";
 
 import * as React from "react";

@@ -1,4 +1,4 @@
-// app/layout.tsx v5.0.0
+// app/layout.tsx v5.1.0
 import type { Metadata, Viewport } from "next";
 import "./style.css";
 import { Geist, JetBrains_Mono, Playfair_Display } from "next/font/google";

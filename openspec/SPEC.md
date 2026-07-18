@@ -1,11 +1,11 @@
-# ZenDraw | 禅抽 v5.0.0 — 项目规范文档
+# ZenDraw | 禅抽 v5.1.0 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.0.0
-- **上次更新**: 2026-06-30
+- **当前版本**: v5.1.0
+- **上次更新**: 2026-07-18
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、10 种主题配色、Web Audio API 音效。
 - **许可证**: MIT License
 - **代码质量**: 严格 TypeScript (strict mode) + ESLint + CI/CD + 代码审查标准 + 安全头
@@ -74,9 +74,13 @@ zen-draw/
 │   ├── components/
 │   │   ├── ui/                    # shadcn/ui v4 组件（base-nova 风格）
 │   │   │   ├── alert.tsx, badge.tsx, button.tsx, card.tsx
-│   │   │   ├── dialog.tsx, input.tsx, label.tsx, select.tsx
-│   │   │   ├── separator.tsx, sheet.tsx, slider.tsx
+│   │   │   ├── dialog.tsx, input.tsx, label.tsx
+│   │   │   ├── select.tsx, select-scroll-buttons.tsx  # Select（拆分滚动按钮）
+│   │   │   ├── sheet/             # 侧边抽屉（context/parts/index，拆分）
+│   │   │   ├── separator.tsx, slider.tsx
 │   │   │   ├── switch.tsx, tabs.tsx, textarea.tsx
+│   │   ├── layout/                # 布局组件
+│   │   │   └── app-header.tsx            # 顶部导航栏（Logo + 主题切换 + 设置）
 │   │   ├── draw/                  # 抽签业务组件
 │   │   │   ├── draw-button.tsx           # 核心抽取按钮（脉冲动画 + aria）
 │   │   │   ├── draw-settings.tsx         # 抽取参数设置
@@ -109,14 +113,13 @@ zen-draw/
 │   │   ├── use-draw-actions.ts    # 动作回调（start/stop/setters）
 │   │   ├── use-draw-persistence.ts# 持久化设置（13 组 localStorage）
 │   │   ├── use-local-storage.ts   # localStorage Hook（含跨标签同步）
-│   │   ├── use-persist-settings.ts# 批量持久化副作用
 │   │   └── use-sound.ts          # Web Audio API 音效合成
 │   ├── lib/
 │   │   ├── utils.ts              # 工具函数（cn / secureRandomInt / sanitizeListInput）
 │   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
 │   ├── locales/                  # 国际化数据
 │   │   ├── index.ts              # re-export
-│   │   ├── types.ts              # TranslationKey（49 键）
+│   │   ├── types.ts              # TranslationKey（97 键）
 │   │   ├── en.ts                 # 英文翻译
 │   │   └── zh.ts                 # 中文翻译
 │   └── test/
@@ -438,7 +441,7 @@ interface DrawState {
 - `en` — English
 - `zh` — 简体中文
 
-### 7.2 翻译键（49 个）
+### 7.2 翻译键（97 个）
 ```
 title, settings, history,
 rangeCount, rangeDesc, minVal, maxVal, drawCount,
@@ -609,7 +612,16 @@ export const viewport: Viewport = {
 
 ## 13. 版本历史
 
-### v5.0.0 (当前)
+### v5.1.0 (当前)
+- 模块化拆分：`ui/sheet.tsx`（252 行）→ `ui/sheet/`（context/parts/index）；`ui/select.tsx`（201 行）→ 抽出 `select-scroll-buttons.tsx`
+- 页面结构重构：`page.tsx` 抽出 `layout/app-header.tsx`（顶部导航栏），主页面精简至 ~104 行
+- 清理死代码：删除未引用的 `use-persist-settings.ts`、死翻译键 `drawResults`、冗余无障碍属性
+- Bug 修复：页脚字体数（6→3）、`layout.tsx` 根语言（`en`→`zh-CN`）、`history-list` 重复类型声明
+- 版本号统一：全项目源文件头注释、`package.json`、文档统一至 v5.1.0
+- 翻译键更新：实际 97 个键（zh/en 完全对齐，编译期强约束）
+- 所有源文件均 ≤ 200 行
+
+### v5.0.0
 - 极简设计系统重构（minimal-design-system.md）
 - 原型优化（minimal-prototype.html）
 - 代码与原型对齐（shadcn/ui 组件替换）

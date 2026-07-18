@@ -1,5 +1,47 @@
 # Changelog
 
+## [5.1.0] - 2026-07-18
+
+### Code Refactoring
+
+#### Split Remaining Files Over 200 Lines
+- `app/components/ui/sheet.tsx` (252 lines) → `app/components/ui/sheet/` (`context.tsx`, `parts.tsx`, `index.tsx`)
+- `app/components/ui/select.tsx` (201 lines) → extract `select-scroll-buttons.tsx`
+- `app/page.tsx` → extract top nav into `app/components/layout/app-header.tsx` (main page now ~104 lines)
+- Removed stale duplicate `sheet.tsx` that shadowed the new `sheet/` module (imports now resolve to the split version)
+- All source files are now ≤ 200 lines
+
+#### Dead Code Removal
+- Delete unused `app/hooks/use-persist-settings.ts` (no references; effect without deps risked infinite localStorage writes)
+- Remove dead translation key `drawResults` from `types.ts` / `zh.ts` / `en.ts`
+- Remove redundant a11y attributes (`aria-hidden="false"`, redundant `role="button"`/`tabIndex` on native `<button>`)
+
+### Bug Fixes
+- Fix footer font count (`6` → `3`, actual font families: sans/mono/serif)
+- Fix root `<html lang>` (`en` → `zh-CN`) for correct SEO / screen-reader default
+- Remove duplicate `HistoryEntry` interface in `history-list` (import from `draw-types`)
+
+### Documentation & Versioning
+- Unify version headers across all source files, `package.json`, SPEC.md, README to **v5.1.0**
+- Update SPEC.md translation-key count (49 → 97), add v5.1.0 history entry
+- Sync CHANGELOG with v4.0.0 / v5.0.0 / v5.1.0
+
+## [5.0.0] - 2026-06-30
+
+### Design & Prototype
+- Minimal design system refactor (`minimal-design-system.md`)
+- Prototype optimization (`minimal-prototype.html`), code aligned to prototype (shadcn/ui component replacement)
+- Responsive design optimization (mobile / desktop parity)
+- Performance: remove gradient backgrounds in favor of solid colors
+
+## [4.0.0] - 2026-06-15
+
+### Prototype & Components
+- High-fidelity interactive prototype (`prototype/interactive/`)
+- Component library completion (shadcn/ui v4 base-nova style)
+- Motion system upgrade (Apple-style easing functions)
+- Accessibility hardening (WCAG AA)
+
 ## [3.3.0] - 2026-06-28
 
 ### Security Fixes

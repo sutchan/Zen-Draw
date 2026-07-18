@@ -1,8 +1,8 @@
-# ZenDraw | 禅抽 v5.0
+# ZenDraw | 禅抽 v5.1
 
 [English Version](./README.md)
 
-禅抽 (ZenDraw) 是一款采用 Apple 设计风格的专业全屏随机抽签应用。基于 Next.js、Tailwind CSS 和 Framer Motion 构建，专为抽奖、课堂活动或任何需要随机选择的场景设计，提供极具冲击力的视觉呈现。
+禅抽 (ZenDraw) 是一款采用 Apple 设计风格的专业全屏随机抽签应用。基于 Next.js、Tailwind CSS 和 Motion 构建，专为抽奖、课堂活动或任何需要随机选择的场景设计，提供极具冲击力的视觉呈现。
 
 ## 设计理念
 
@@ -80,10 +80,12 @@
 
 ```
 app/
-├── layout.tsx              # 根布局
-├── page.tsx                # 主页面
+├── layout.tsx              # 根布局 (lang="zh-CN")
+├── page.tsx                # 主页面（状态编排 + 键盘快捷键）
 ├── style.css               # 全局样式
 ├── components/
+│   ├── layout/             # 布局组件
+│   │   └── app-header.tsx  # 顶部导航栏（Logo + 主题切换 + 设置）
 │   ├── draw/               # 抽签功能组件
 │   │   ├── draw-button.tsx  # 抽取按钮
 │   │   ├── draw-settings.tsx# 抽取参数设置
@@ -95,6 +97,9 @@ app/
 │   ├── number-roller.tsx   # 数字滚动动画
 │   ├── theme-provider.tsx  # 主题提供者
 │   └── ui/                 # shadcn/ui 组件
+│       ├── sheet/          # 侧边抽屉（context/parts/index，拆分）
+│       ├── select.tsx      # 选择器 + select-scroll-buttons.tsx（拆分）
+│       └── ...             # alert、slider、switch、tabs、textarea 等
 ├── hooks/                  # 自定义 React Hooks
 │   ├── draw-types.ts       # 类型定义
 │   ├── draw-helpers.ts     # 纯函数逻辑

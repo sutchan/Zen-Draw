@@ -1,8 +1,8 @@
-# ZenDraw | 禅抽 v5.0
+# ZenDraw | 禅抽 v5.1
 
 [中文版本](./README_CN.md)
 
-ZenDraw is a professional, full-screen random draw application with Apple-inspired design. Built with Next.js, Tailwind CSS, and Framer Motion. Designed for high-impact visual presentations during lucky draws, classroom activities, or any event requiring a random selection.
+ZenDraw is a professional, full-screen random draw application with Apple-inspired design. Built with Next.js, Tailwind CSS, and Motion. Designed for high-impact visual presentations during lucky draws, classroom activities, or any event requiring a random selection.
 
 ## Design Philosophy
 
@@ -80,10 +80,12 @@ See [Code Review Standard](./.github/CODE_REVIEW_STANDARD.md) for details.
 
 ```
 app/
-├── layout.tsx              # Root layout
-├── page.tsx                # Main page
+├── layout.tsx              # Root layout (lang="zh-CN")
+├── page.tsx                # Main page (state orchestration + shortcuts)
 ├── style.css               # Global styles
 ├── components/
+│   ├── layout/             # Layout components
+│   │   └── app-header.tsx  # Top nav bar (logo + theme toggle + settings)
 │   ├── draw/               # Draw feature components
 │   │   ├── draw-button.tsx  # Draw action button
 │   │   ├── draw-settings.tsx# Draw parameter settings
@@ -95,6 +97,9 @@ app/
 │   ├── number-roller.tsx   # Number rolling animation
 │   ├── theme-provider.tsx  # Theme provider
 │   └── ui/                 # shadcn/ui components
+│       ├── sheet/          # Sheet drawer (context/parts/index, split)
+│       ├── select.tsx      # Select + select-scroll-buttons.tsx (split)
+│       └── ...             # alert, slider, switch, tabs, textarea, etc.
 ├── hooks/                  # Custom React hooks
 │   ├── draw-types.ts       # Draw type definitions
 │   ├── draw-helpers.ts     # Draw logic pure functions
