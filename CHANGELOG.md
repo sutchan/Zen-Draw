@@ -11,6 +11,7 @@
 
 ### Bug Fixes
 - Fix `ConfettiBurst` primary-color sampling: Tailwind v4 `--primary` is `oklch(...)`, previously wrapped into invalid `hsl(oklch(...))` and silently dropped; now uses the verified festive palette only
+- Remove dead `@import "shadcn/tailwind.css"` in `app/style.css`: package is not installed and all its theme mappings (`@theme inline`, `@custom-variant dark`) are already inlined locally — eliminates the `Can't resolve 'shadcn/tailwind.css'` build warning
 - Add `secureRandomFloat` to `lib/utils.ts`; all decorative randomness uses crypto (no `Math.random` warnings, consistent with project security rule)
 
 ### Versioning
