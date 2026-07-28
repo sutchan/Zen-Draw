@@ -1,4 +1,4 @@
-// hooks/draw-types.ts v5.1.0 — 抽签模块类型定义
+// hooks/draw-types.ts v5.1.1 — 抽签模块类型定义
 
 export type DrawStatus = "idle" | "drawing" | "result" | "error";
 

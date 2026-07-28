@@ -1,4 +1,4 @@
-// locales/types.ts v5.1.0 — 国际化类型定义
+// locales/types.ts v5.1.1 — 国际化类型定义
 export type Language = "en" | "zh";
 
 export type TranslationKey =
@@ -29,6 +29,8 @@ export type TranslationKey =
   | "welcomeHint" | "errorTitle" | "errorMessage"
   // 结果
   | "resultLabel" | "resultRegion"
+  // 惊艳体验升级包
+  | "revealTitle" | "milestoneDraws" | "emptyStateHint"
   // 主题
   | "switchLight" | "switchDark"
   // 页脚

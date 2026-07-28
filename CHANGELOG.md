@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.1.1] - 2026-07-28
+
+### Delightful Experience Upgrade (愉悦体验升级包)
+- **🎉 ConfettiBurst**: canvas 粒子彩屑在结果揭晓瞬间喷射 130+ 彩色粒子（重力回落 / 旋转 / 淡出），`prefers-reduced-motion` 下完全不渲染
+- **✨ Reveal title**: 结果落定时弹出俏皮标题「揭晓时刻 ✨ / And the winner is…」
+- **🏆 Milestone badges**: 会话内第 1 / 10 / 20… 次抽签弹出成就徽章
+- **🎈 Pleasant empty state**: 历史空态改为浮动骰子插画 + 俏皮文案，取代纯文字
+- **🔔 Sparkle tail sound**: 揭晓音效追加高频「叮」泛音尾音，增强开奖仪式感
+
+### Bug Fixes
+- Fix `ConfettiBurst` primary-color sampling: Tailwind v4 `--primary` is `oklch(...)`, previously wrapped into invalid `hsl(oklch(...))` and silently dropped; now uses the verified festive palette only
+- Add `secureRandomFloat` to `lib/utils.ts`; all decorative randomness uses crypto (no `Math.random` warnings, consistent with project security rule)
+
+### Versioning
+- Unify version headers across all 39 source files, `package.json`, SPEC.md, README×2 to **v5.1.1**
+
 ## [5.1.0] - 2026-07-18
 
 ### Code Refactoring

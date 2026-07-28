@@ -1,4 +1,4 @@
-// locales/zh.ts v5.1.0 — 中文翻译
+// locales/zh.ts v5.1.1 — 中文翻译
 import type { TranslationDict } from "./types";
 
 export const zhTranslations: TranslationDict = {
@@ -85,6 +85,10 @@ export const zhTranslations: TranslationDict = {
   // 结果
   resultLabel: "结果 {0}: {1}",
   resultRegion: "抽取结果",
+  // 惊艳体验升级包
+  revealTitle: "揭晓时刻 ✨",
+  milestoneDraws: "第 {0} 次抽签 🎉",
+  emptyStateHint: "第一次抽签，往往最有仪式感",
   // 主题
   switchLight: "切换到浅色模式",
   switchDark: "切换到深色模式",

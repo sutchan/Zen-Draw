@@ -1,4 +1,4 @@
-// locales/en.ts v5.1.0 — 英文翻译
+// locales/en.ts v5.1.1 — 英文翻译
 import type { TranslationDict } from "./types";
 
 export const enTranslations: TranslationDict = {
@@ -85,6 +85,10 @@ export const enTranslations: TranslationDict = {
   // 结果
   resultLabel: "Result {0}: {1}",
   resultRegion: "Draw results",
+  // 惊艳 experience upgrade
+  revealTitle: "And the winner is…",
+  milestoneDraws: "Draw #{0} unlocked 🎉",
+  emptyStateHint: "Your very first draw is the most ceremonial one",
   // 主题
   switchLight: "Switch to light mode",
   switchDark: "Switch to dark mode",

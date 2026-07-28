@@ -1,4 +1,4 @@
-// lib/utils.ts v5.1.0 — 工具函数模块
+// lib/utils.ts v5.1.1 — 工具函数模块
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -35,6 +35,24 @@ export function secureRandomInt(max: number): number {
   // 降级方案：使用简单 PRNG（仅在极旧环境触发，此时无法使用 crypto）
   // eslint-disable-next-line no-restricted-syntax -- 降级方案，非主路径
   return Math.floor(Math.random() * max);
+}
+
+/**
+ * 加密安全的随机浮点数，区间 [min, max)
+ * 用于纯装饰性动画（如彩屑粒子），遵循项目的安全随机约定
+ * @param min - 下界（包含）
+ * @param max - 上界（不包含）
+ * @returns [min, max) 范围内的浮点数
+ */
+export function secureRandomFloat(min: number, max: number): number {
+  if (max <= min) return min;
+  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+    const arr = new Uint32Array(1);
+    crypto.getRandomValues(arr);
+    return min + (arr[0] as number) / 0xffffffff * (max - min);
+  }
+  // eslint-disable-next-line no-restricted-syntax -- 降级方案，非主路径
+  return min + Math.random() * (max - min);
 }
 
 /**

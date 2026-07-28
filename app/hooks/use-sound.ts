@@ -92,7 +92,7 @@ function playTick(ctx: AudioContext) {
   osc.stop(now + 0.04);
 }
 
-/** 抽取结果：上升琶音（C5 → E5 → G5 → C6） */
+/** 抽取结果：上升琶音（C5 → E5 → G5 → C6）+ 轻柔"叮"泛音尾音 */
 function playResult(ctx: AudioContext) {
   const now = ctx.currentTime;
   const notes = [523.25, 659.25, 783.99, 1046.5];
@@ -108,6 +108,23 @@ function playResult(ctx: AudioContext) {
     gain.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
     osc.start(t);
     osc.stop(t + 0.25);
+  });
+
+  // ✨ 开奖尾音：两枚高频泛音轻轻敲响，营造"叮"的闪亮收尾
+  const sparkleNotes = [1568.0, 2093.0]; // G6, C7
+  sparkleNotes.forEach((freq, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "triangle";
+    const t = now + 0.42 + i * 0.06;
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.08, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
+    osc.start(t);
+    osc.stop(t + 0.62);
   });
 }
 

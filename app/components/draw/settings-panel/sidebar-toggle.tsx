@@ -1,4 +1,4 @@
-// components/draw/settings-panel/sidebar-toggle.tsx v5.1.0 —— 侧边栏开关按钮
+// components/draw/settings-panel/sidebar-toggle.tsx v5.1.1 —— 侧边栏开关按钮
 "use client";
 
 import * as React from "react";
