@@ -29,6 +29,8 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
     prefix: persisted.persistedPrefix,
     suffix: persisted.persistedSuffix,
     language: persisted.persistedLanguage,
+    soundEnabled: persisted.persistedSoundEnabled,
+    density: persisted.persistedDensity,
   };
 
   const [state, dispatch] = React.useReducer(
@@ -63,6 +65,8 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
     if (state.prefix !== prev.prefix) persisted.setPersistedPrefix(state.prefix);
     if (state.suffix !== prev.suffix) persisted.setPersistedSuffix(state.suffix);
     if (state.language !== prev.language) persisted.setPersistedLanguage(state.language);
+    if (state.soundEnabled !== prev.soundEnabled) persisted.setPersistedSoundEnabled(state.soundEnabled);
+    if (state.density !== prev.density) persisted.setPersistedDensity(state.density);
     if (state.history !== prev.history) persisted.setPersistedHistory(state.history);
   }, [state, persisted]);
 
@@ -92,11 +96,13 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
       autoHide: state.autoHide, customList: state.customList,
       useCustomList: state.useCustomList, digits: state.digits,
       prefix: state.prefix, suffix: state.suffix, language: state.language,
+      soundEnabled: state.soundEnabled, density: state.density,
     }),
     [
       state.min, state.max, state.count, state.duration,
       state.allowDuplicates, state.autoHide, state.customList,
       state.useCustomList, state.digits, state.prefix, state.suffix, state.language,
+      state.soundEnabled, state.density,
     ]
   );
 

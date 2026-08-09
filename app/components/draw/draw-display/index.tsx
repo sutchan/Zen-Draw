@@ -19,6 +19,7 @@ type DrawLike = {
   results: string[];
   status: "idle" | "drawing" | "result" | "error";
   language: "zh" | "en";
+  density: "comfortable" | "compact";
 };
 
 export interface DrawDisplayProps {
@@ -31,7 +32,7 @@ export interface DrawDisplayProps {
 
 export function DrawDisplay({ draw }: DrawDisplayProps) {
   const shouldReduceMotion = useMountedReducedMotion();
-  const { results, status, language } = draw;
+  const { results, status, language, density } = draw;
   const isDrawing = status === "drawing";
   const t = React.useMemo(() => createTranslator(language), [language]);
 
@@ -72,6 +73,7 @@ export function DrawDisplay({ draw }: DrawDisplayProps) {
                 results={results}
                 isDrawing={isDrawing}
                 language={language}
+                density={density}
               />
             </div>
           )}

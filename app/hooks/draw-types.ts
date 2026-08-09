@@ -8,6 +8,8 @@ export interface HistoryEntry {
   results: string[];
 }
 
+export type Density = "comfortable" | "compact";
+
 export interface DrawSettings {
   // 抽取范围
   min: number;
@@ -16,7 +18,7 @@ export interface DrawSettings {
   count: number;
   // 是否允许重复
   allowDuplicates: boolean;
-  // 自动隐藏 UI
+  // 自动隐藏 UI（开始抽取后自动收起面板）
   autoHide: boolean;
   // 动画持续时间（秒）
   duration: number;
@@ -31,6 +33,10 @@ export interface DrawSettings {
   suffix: string;
   // 界面语言
   language: "zh" | "en";
+  // 音效开关
+  soundEnabled: boolean;
+  // 结果显示密度
+  density: Density;
 }
 
 export interface DrawState extends DrawSettings {
@@ -66,6 +72,9 @@ export type DrawAction =
   | { type: "SET_USE_CUSTOM_LIST"; value: boolean }
   | { type: "SET_CUSTOM_LIST"; value: string[] }
   | { type: "SET_LANGUAGE"; value: "zh" | "en" }
+  | { type: "SET_SOUND_ENABLED"; value: boolean }
+  | { type: "SET_DENSITY"; value: Density }
+  | { type: "RESET_SETTINGS" }
   | { type: "CLEAR_HISTORY" }
   | { type: "DISMISS_ERROR" };
 
@@ -88,6 +97,9 @@ export interface UseDrawReturn extends DrawState {
   setUseCustomList: (value: boolean) => void;
   setCustomList: (value: string[]) => void;
   setLanguage: (value: "zh" | "en") => void;
+  setSoundEnabled: (value: boolean) => void;
+  setDensity: (value: Density) => void;
+  resetSettings: () => void;
   // --- 便捷属性（避免在消费端重复计算）---
   // 是否正在抽取（别名，对应 status === "drawing"）
   isDrawing: boolean;
@@ -109,6 +121,8 @@ export interface UseDrawReturn extends DrawState {
     prefix: string;
     suffix: string;
     language: "zh" | "en";
+    soundEnabled: boolean;
+    density: Density;
   };
 }
 

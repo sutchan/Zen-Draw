@@ -59,6 +59,12 @@ export default function HomePage() {
 
   const lang = draw.language;
 
+  // 自动隐藏面板：开启 autoHide 且处于抽取/结果态时，派生关闭面板（无需副作用 setState）
+  const effectivePanelOpen = panelOpen && !(
+    draw.autoHide &&
+    (draw.status === "drawing" || draw.status === "result")
+  );
+
   return (
     <div
       className="min-h-screen w-full bg-background text-foreground antialiased"
@@ -67,7 +73,7 @@ export default function HomePage() {
     >
       <AppHeader
         draw={draw}
-        panelOpen={panelOpen}
+        panelOpen={effectivePanelOpen}
         onPanelOpenChange={setPanelOpen}
         theme={theme}
         onThemeToggle={() => setTheme(theme === "dark" ? "light" : "dark")}

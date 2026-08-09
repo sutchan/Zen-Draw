@@ -22,7 +22,15 @@ export function useDrawActions(
   animationRef: React.MutableRefObject<number | null>,
   onSoundRef: React.MutableRefObject<((type: SoundType) => void) | undefined>,
 ) {
-  const { status, min, max, count, allowDuplicates, autoHide, duration, customList, useCustomList, digits, prefix, suffix, language } = state;
+  const { status, min, max, count, allowDuplicates, autoHide, duration, customList, useCustomList, digits, prefix, suffix, language, soundEnabled, density } = state;
+
+  // 音效门控：开关关闭时静默
+  const sound = React.useCallback(
+    (type: SoundType) => {
+      if (soundEnabled) onSoundRef.current?.(type);
+    },
+    [soundEnabled, onSoundRef],
+  );
 
   // --- 抽取核心动作 ---
 
@@ -33,6 +41,7 @@ export function useDrawActions(
       duration, customList,
       useCustomList, digits,
       prefix, suffix, language,
+      soundEnabled, density,
     };
 
     if (status === "drawing") {
@@ -50,11 +59,11 @@ export function useDrawActions(
       const _t = createTranslator(currentSettings.language);
       const errorMessage = _t(error);
       dispatch({ type: "ERROR", message: errorMessage });
-      onSoundRef.current?.("error");
+      sound("error");
       return { ok: false, error: errorMessage };
     }
 
-    onSoundRef.current?.("start");
+    sound("start");
     dispatch({ type: "START_DRAW" });
 
     const totalMs = Math.max(1000, duration * 1000);
@@ -70,7 +79,7 @@ export function useDrawActions(
       });
       // 每 3 次嘀嗒（约 240ms）播放一次滴答声
       if (ticks % 3 === 0) {
-        onSoundRef.current?.("tick");
+        sound("tick");
       }
       if (ticks >= totalTicks) {
         if (animationRef.current !== null) {
@@ -79,11 +88,11 @@ export function useDrawActions(
         }
         const finalResults = finalizeDraw(currentSettings);
         dispatch({ type: "FINALIZE_DRAW", results: finalResults });
-        onSoundRef.current?.("result");
+        sound("result");
       }
     }, tickMs);
     return { ok: true };
-  }, [status, min, max, count, allowDuplicates, autoHide, duration, customList, useCustomList, digits, prefix, suffix, language, dispatch, animationRef, onSoundRef]);
+  }, [status, min, max, count, allowDuplicates, autoHide, duration, customList, useCustomList, digits, prefix, suffix, language, soundEnabled, density, sound, dispatch, animationRef]);
 
   const stopDraw = React.useCallback(() => {
     if (animationRef.current !== null) {
@@ -91,8 +100,8 @@ export function useDrawActions(
       animationRef.current = null;
     }
     dispatch({ type: "CANCEL" });
-    onSoundRef.current?.("stop");
-  }, [dispatch, animationRef, onSoundRef]);
+    sound("stop");
+  }, [dispatch, animationRef, sound]);
 
   // --- 设置更新方法 ---
 
@@ -154,6 +163,18 @@ export function useDrawActions(
     dispatch({ type: "SET_LANGUAGE", value });
   }, [dispatch]);
 
+  const setSoundEnabled = React.useCallback((value: boolean) => {
+    dispatch({ type: "SET_SOUND_ENABLED", value });
+  }, [dispatch]);
+
+  const setDensity = React.useCallback((value: "comfortable" | "compact") => {
+    dispatch({ type: "SET_DENSITY", value });
+  }, [dispatch]);
+
+  const resetSettings = React.useCallback(() => {
+    dispatch({ type: "RESET_SETTINGS" });
+  }, [dispatch]);
+
   const dismissError = React.useCallback(() => {
     dispatch({ type: "DISMISS_ERROR" });
   }, [dispatch]);
@@ -168,6 +189,7 @@ export function useDrawActions(
     setPrefix, setSuffix,
     setAllowDuplicates, setAutoHide,
     setUseCustomList, setCustomList, setLanguage,
+    setSoundEnabled, setDensity, resetSettings,
     dismissError, clearHistory,
   };
 }

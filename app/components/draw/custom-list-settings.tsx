@@ -1,4 +1,4 @@
-// components/draw/custom-list-settings.tsx v5.5.0 —— 自定义列表设置子组件（使用中央翻译系统 + base-ui Dialog）
+// components/draw/custom-list-settings.tsx v5.6.0 —— 自定义列表设置子组件（使用中央翻译系统 + base-ui Dialog）
 "use client";
 
 import * as React from "react";

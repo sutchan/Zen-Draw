@@ -1,4 +1,4 @@
-// components/draw/settings-panel/index.tsx v5.5.0 —— 设置面板（Tabs + 子设置区，无嵌套 Sheet）
+// components/draw/settings-panel/index.tsx v5.6.0 —— 设置面板（Tabs + 子设置区，无嵌套 Sheet）
 "use client";
 
 import * as React from "react";
@@ -6,6 +6,9 @@ import { Settings, Trash2 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Card } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { createTranslator } from "@/lib/i18n";
 import type { UseDrawReturn } from "@/hooks/draw-types";
 import { DrawSettings } from "@/components/draw/draw-settings";
@@ -21,6 +24,9 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
     allowDuplicates, autoHide, useCustomList,
     customList,
     digits, prefix, suffix,
+    soundEnabled, setSoundEnabled,
+    density, setDensity,
+    resetSettings,
     setMin, setMax, setCount,
     setDuration,
     setAllowDuplicates, setAutoHide, setUseCustomList,
@@ -68,6 +74,12 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
                 {t("appearance")}
               </TabsTrigger>
               <TabsTrigger
+                value="experience"
+                className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
+              >
+                {t("experience")}
+              </TabsTrigger>
+              <TabsTrigger
                 value="history"
                 className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
               >
@@ -84,14 +96,12 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
                   count={count}
                   duration={duration}
                   allowDuplicates={allowDuplicates}
-                  autoHide={autoHide}
                   useCustomList={useCustomList}
                   onMin={setMin}
                   onMax={setMax}
                   onCount={setCount}
                   onDuration={setDuration}
                   onAllowDuplicates={setAllowDuplicates}
-                  onAutoHide={setAutoHide}
                   onUseCustomList={setUseCustomList}
                 />
                 <div className="mt-5">
@@ -116,6 +126,19 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
                   onPrefix={setPrefix}
                   onSuffix={setSuffix}
                   onLanguageChange={onLanguageToggle}
+                />
+              </TabsContent>
+
+              <TabsContent value="experience" className="px-6 py-6 pb-12 focus-visible:outline-none">
+                <ExperienceSettings
+                  language={language}
+                  soundEnabled={soundEnabled}
+                  onSoundEnabled={setSoundEnabled}
+                  autoHide={autoHide}
+                  onAutoHide={setAutoHide}
+                  density={density}
+                  onDensity={setDensity}
+                  onReset={resetSettings}
                 />
               </TabsContent>
 
@@ -189,6 +212,109 @@ function CustomListInline({
           {t("clearList")}
         </button>
       </div>
+    </div>
+  );
+}
+
+function ExperienceSettings({
+  language,
+  soundEnabled,
+  onSoundEnabled,
+  autoHide,
+  onAutoHide,
+  density,
+  onDensity,
+  onReset,
+}: {
+  language: "zh" | "en";
+  soundEnabled: boolean;
+  onSoundEnabled: (value: boolean) => void;
+  autoHide: boolean;
+  onAutoHide: (value: boolean) => void;
+  density: "comfortable" | "compact";
+  onDensity: (value: "comfortable" | "compact") => void;
+  onReset: () => void;
+}) {
+  const t = React.useMemo(() => createTranslator(language), [language]);
+
+  return (
+    <div className="space-y-5 pt-2">
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+        {t("experience")}
+      </p>
+
+      {/* 音效 */}
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Label>{t("sound")}</Label>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("soundDesc")}</p>
+          </div>
+          <Switch
+            checked={soundEnabled}
+            onCheckedChange={onSoundEnabled}
+            aria-label={t("sound")}
+          />
+        </div>
+      </Card>
+
+      {/* 自动收起面板 */}
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Label>{t("autoHide")}</Label>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("autoHideDesc")}</p>
+          </div>
+          <Switch
+            checked={autoHide}
+            onCheckedChange={onAutoHide}
+            aria-label={t("autoHide")}
+          />
+        </div>
+      </Card>
+
+      {/* 结果显示密度 */}
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20 space-y-3">
+        <div>
+          <Label>{t("density")}</Label>
+          <p className="text-xs text-muted-foreground mt-0.5">{t("densityDesc")}</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2.5">
+          {(["comfortable", "compact"] as const).map((d) => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => onDensity(d)}
+              className={[
+                "h-10 rounded-xl text-sm font-medium transition-colors border",
+                density === d
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "border-border/30 text-muted-foreground hover:bg-background",
+              ].join(" ")}
+              aria-pressed={density === d}
+            >
+              {t(d === "comfortable" ? "densityComfortable" : "densityCompact")}
+            </button>
+          ))}
+        </div>
+      </Card>
+
+      {/* 重置所有选项 */}
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Label>{t("resetSettings")}</Label>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("resetSettingsDesc")}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onReset}
+            className="h-9 px-3 rounded-xl text-sm font-medium border border-border/30 text-destructive hover:bg-destructive/10 transition-colors"
+          >
+            {t("resetSettings")}
+          </button>
+        </div>
+      </Card>
     </div>
   );
 }

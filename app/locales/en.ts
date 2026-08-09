@@ -1,4 +1,4 @@
-// locales/en.ts v5.5.0 — 英文翻译
+// locales/en.ts v5.6.0 — 英文翻译
 import type { TranslationDict } from "./types";
 
 export const enTranslations: TranslationDict = {
@@ -122,5 +122,16 @@ export const enTranslations: TranslationDict = {
   listHintEmpty: "Import a list, then draw names or items from it",
   colorPreview: "Color Preview",
   duplicateItemsWarning: "Removed {0} duplicate entries",
+
+  // Experience settings
+  experience: "Experience",
+  sound: "Sound",
+  soundDesc: "Play cues during draws (start, tick, result, error).",
+  density: "Result Density",
+  densityDesc: "Compact mode saves space when many results appear.",
+  densityComfortable: "Comfortable",
+  densityCompact: "Compact",
+  resetSettings: "Reset All Options",
+  resetSettingsDesc: "Restore all settings to defaults (history is kept).",
 };
 

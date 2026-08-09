@@ -21,6 +21,8 @@ export function usePersistedSettings() {
   const [persistedPrefix, setPersistedPrefix] = useLocalStorage<string>("zendraw-prefix", DEFAULT_SETTINGS.prefix);
   const [persistedSuffix, setPersistedSuffix] = useLocalStorage<string>("zendraw-suffix", DEFAULT_SETTINGS.suffix);
   const [persistedLanguage, setPersistedLanguage] = useLocalStorage<"zh" | "en">("zendraw-language", DEFAULT_SETTINGS.language);
+  const [persistedSoundEnabled, setPersistedSoundEnabled] = useLocalStorage<boolean>("zendraw-sound", DEFAULT_SETTINGS.soundEnabled);
+  const [persistedDensity, setPersistedDensity] = useLocalStorage<"comfortable" | "compact">("zendraw-density", DEFAULT_SETTINGS.density);
   const [persistedHistory, setPersistedHistory] = useLocalStorage<HistoryEntry[]>(
     "zendraw-history",
     [],
@@ -40,6 +42,8 @@ export function usePersistedSettings() {
     persistedPrefix, setPersistedPrefix,
     persistedSuffix, setPersistedSuffix,
     persistedLanguage, setPersistedLanguage,
+    persistedSoundEnabled, setPersistedSoundEnabled,
+    persistedDensity, setPersistedDensity,
     persistedHistory, setPersistedHistory,
   };
 }

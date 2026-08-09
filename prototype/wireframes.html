@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- prototype/wireframes.html v5.3.7 —— 组件库规范（与 index/prototypes 共享 tokens.css） -->
+<!-- prototype/wireframes.html v5.5.0 —— 组件库规范（与 index/prototypes 共享 tokens.css） -->
 <html lang="zh-CN" data-theme="default" data-mode="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZenDraw｜禅抽 · 组件库规范 v5.3.7</title>
+  <title>ZenDraw｜禅抽 · 组件库规范 v5.5.0</title>
   <link rel="stylesheet" href="tokens.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -173,6 +173,61 @@
     </section>
 
     <section class="section">
+      <h2>设置容器 Settings Container（右侧抽屉 + Tabs）</h2>
+      <p class="intro" style="margin-bottom:var(--space-4)">
+        应用全局设置入口为<strong>右侧滑入抽屉</strong>，由顶部导航的齿轮按钮触发。结构固定为：
+        <strong>HeaderBar（应用标识 + 版本号 + 语言切换）</strong> → <strong>Tabs（抽取 / 外观 / 历史）</strong>。
+        下方按钮可预览真实抽屉（含 Tab 切换、Esc 关闭、遮罩点击关闭）。
+      </p>
+      <div class="grid">
+        <div class="card">
+          <div class="label">触发与结构</div>
+          <button class="btn btn-primary" id="openSettings">打开设置容器</button>
+          <p style="color:var(--color-muted);font-size:var(--text-xs);margin-top:var(--space-3);line-height:1.6">
+            • 位置：右侧（<code>side="right"</code>）<br>
+            • 宽度：移动端全宽；≥640px 为 <code>26rem</code><br>
+            • 动效：<code>300ms</code> 滑入（<code>--dur-slow</code>）<br>
+            • 关闭：Esc / 遮罩点击 / 无独立关闭按钮（HeaderBar 语言键在右）<br>
+            • 语义：<code>role="dialog" aria-modal="true"</code> + 遮罩 <code>aria-hidden</code>
+          </p>
+        </div>
+        <div class="card">
+          <div class="label">Tabs 分区</div>
+          <div class="select" style="width:100%">
+            <ul class="menu" style="position:static;box-shadow:none;display:block" aria-label="设置分区">
+              <li aria-selected="true">抽取 · min/max/count/duration/允许重复/自定义名单/自动隐藏</li>
+              <li aria-selected="false">外观 · 主题模式/预设色块/字体/语言/数字格式/预览</li>
+              <li aria-selected="false">历史 · 列表 + 清空</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-backdrop" id="settingsBackdrop" hidden>
+        <aside class="dialog" role="dialog" aria-modal="true" aria-label="设置" style="max-width:420px;width:100%;display:flex;flex-direction:column;max-height:90vh">
+          <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);border-bottom:1px solid var(--color-border)">
+            <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:var(--color-fg);color:var(--color-bg);display:flex;align-items:center;justify-content:center;font-weight:700">抽</div>
+            <div style="flex:1">
+              <div style="font-weight:600">ZenDraw｜禅抽</div>
+              <div style="font-size:10px;color:var(--color-muted)">v5.5.0</div>
+            </div>
+            <button class="switch" role="switch" aria-checked="false" tabindex="0" data-switch aria-label="界面语言">
+              <span class="track" aria-hidden="true"></span><span>EN</span>
+            </button>
+          </div>
+          <div class="stepper" id="settingsTabs" style="margin:var(--space-3) var(--space-4);gap:var(--space-2)">
+            <div class="step-dot active" data-tab="draw" style="min-width:0;flex:1">抽取</div>
+            <div class="step-dot" data-tab="appearance" style="min-width:0;flex:1">外观</div>
+            <div class="step-dot" data-tab="history" style="min-width:0;flex:1">历史</div>
+          </div>
+          <div id="settingsBody" style="padding:var(--space-4);overflow-y:auto;flex:1">
+            <p style="color:var(--color-muted);font-size:var(--text-sm)">抽取设置：范围 / 数量 / 时长 / 允许重复 / 自定义名单 / 自动隐藏。</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section">
       <h2>响应式预览（真机视图切换）</h2>
       <div class="frame-switch" role="group" aria-label="设备视图切换">
         <button data-w="375" class="active">375 手机</button>
@@ -185,7 +240,7 @@
     </section>
   </main>
 
-  <footer>ZenDraw｜禅抽 v5.3.7 · 组件库规范 · 设计令牌见 tokens.css</footer>
+  <footer>ZenDraw｜禅抽 v5.5.0 · 组件库规范 · 设计令牌见 tokens.css</footer>
 
   <script>
     (function () {
@@ -272,6 +327,28 @@
           vpW.textContent = w;
         });
       });
+
+      // 设置容器预览
+      var settingsBackdrop = document.getElementById('settingsBackdrop');
+      var openSettings = document.getElementById('openSettings');
+      var settingsTabs = document.getElementById('settingsTabs');
+      var settingsBody = document.getElementById('settingsBody');
+      var TAB_BODY = {
+        draw: '抽取设置：范围 / 数量 / 时长 / 允许重复 / 自定义名单 / 自动隐藏。',
+        appearance: '外观设置：主题模式 / 预设色块 / 字体 / 语言 / 数字格式 / 预览。',
+        history: '历史设置：本会话抽签记录列表 + 清空入口。'
+      };
+      openSettings.addEventListener('click', function () { settingsBackdrop.removeAttribute('hidden'); });
+      function closeSettings() { settingsBackdrop.setAttribute('hidden', ''); }
+      settingsBackdrop.addEventListener('click', function (e) { if (e.target === settingsBackdrop) closeSettings(); });
+      settingsTabs.querySelectorAll('.step-dot').forEach(function (dot) {
+        dot.addEventListener('click', function () {
+          settingsTabs.querySelectorAll('.step-dot').forEach(function (d) { d.classList.remove('active'); });
+          dot.classList.add('active');
+          settingsBody.innerHTML = '<p style="color:var(--color-muted);font-size:var(--text-sm)">' + TAB_BODY[dot.getAttribute('data-tab')] + '</p>';
+        });
+      });
+      document.addEventListener('keydown', function (e) { if (e.code === 'Escape' && !settingsBackdrop.hasAttribute('hidden')) closeSettings(); });
     })();
   </script>
 </body>

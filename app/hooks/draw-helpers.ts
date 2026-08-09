@@ -162,5 +162,7 @@ export const DEFAULT_SETTINGS: DrawSettings = {
   prefix: "",
   suffix: "",
   language: "zh",
+  soundEnabled: true,
+  density: "comfortable",
 };
 

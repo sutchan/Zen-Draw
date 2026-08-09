@@ -1,4 +1,4 @@
-// locales/zh.ts v5.5.0 — 中文翻译
+// locales/zh.ts v5.6.0 — 中文翻译
 import type { TranslationDict } from "./types";
 
 export const zhTranslations: TranslationDict = {
@@ -122,5 +122,16 @@ export const zhTranslations: TranslationDict = {
   listHintEmpty: "导入列表后，即可在此抽取姓名或内容",
   colorPreview: "配色预览",
   duplicateItemsWarning: "已自动去除 {0} 个重复项",
+
+  // 体验设置
+  experience: "体验",
+  sound: "音效",
+  soundDesc: "抽取时播放提示音（开始、滴答、结果、错误）。",
+  density: "结果显示密度",
+  densityDesc: "紧凑模式在结果较多时更节省空间。",
+  densityComfortable: "舒适",
+  densityCompact: "紧凑",
+  resetSettings: "重置所有选项",
+  resetSettingsDesc: "将所有设置恢复为默认值（不影响历史记录）。",
 };
 

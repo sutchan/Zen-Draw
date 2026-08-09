@@ -1,4 +1,4 @@
-// locales/types.ts v5.5.0 — 国际化类型定义（TranslationKey 联合类型，单一事实来源）
+// locales/types.ts v5.6.0 — 国际化类型定义（TranslationKey 联合类型，单一事实来源）
 export type Language = "en" | "zh";
 
 export type TranslationKey =
@@ -46,6 +46,9 @@ export type TranslationKey =
   | "formatPreview" | "languageLabel" | "langZh" | "langEn"
   | "clearList" | "removeItem" | "editList" | "listHintEmpty" | "colorPreview"
   | "duplicateItemsWarning"
+  // 体验设置
+  | "experience" | "sound" | "soundDesc" | "density" | "densityDesc"
+  | "densityComfortable" | "densityCompact" | "resetSettings" | "resetSettingsDesc"
   // 抽取模式
   | "drawMode" | "modeNumber" | "modeList"
   // 列表模式与格式预览

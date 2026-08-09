@@ -1,6 +1,7 @@
 // hooks/draw-reducer.ts v5.3.7 — 抽签状态 Reducer
 
 import type { DrawState, DrawAction, DrawSettings } from "./draw-types";
+import { DEFAULT_SETTINGS } from "./draw-helpers";
 
 export function createInitialState(settings: DrawSettings): DrawState {
   return {
@@ -65,6 +66,15 @@ export function drawReducer(state: DrawState, action: DrawAction): DrawState {
       return { ...state, customList: action.value };
     case "SET_LANGUAGE":
       return { ...state, language: action.value };
+    case "SET_SOUND_ENABLED":
+      return { ...state, soundEnabled: action.value };
+    case "SET_DENSITY":
+      return { ...state, density: action.value };
+    case "RESET_SETTINGS":
+      return {
+        ...state,
+        ...DEFAULT_SETTINGS,
+      };
     case "CLEAR_HISTORY":
       return { ...state, history: [] };
     default:

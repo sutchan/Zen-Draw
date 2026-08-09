@@ -13,12 +13,14 @@ export function ResultCard({
   index,
   language,
   celebrating,
+  density,
 }: {
   value: string;
   isDrawing: boolean;
   index: number;
   language: "zh" | "en";
   celebrating: boolean;
+  density: "comfortable" | "compact";
 }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
   const label = t("resultLabel", String(index + 1), value);
@@ -44,8 +46,11 @@ export function ResultCard({
     >
       <motion.div
         className={cn(
-          "bg-background border rounded-[calc(var(--radius)*3.33)] min-w-[220px] sm:min-w-[300px] px-10 py-8 sm:px-16 sm:py-12 text-center",
+          "bg-background border rounded-[calc(var(--radius)*3.33)] text-center",
           "border-border/20",
+          density === "compact"
+            ? "min-w-[160px] sm:min-w-[220px] px-6 py-5 sm:px-10 sm:py-8"
+            : "min-w-[220px] sm:min-w-[300px] px-10 py-8 sm:px-16 sm:py-12",
           isDrawing && "scale-[1.02]"
         )}
         animate={{
@@ -63,7 +68,12 @@ export function ResultCard({
           value={value}
           isDrawing={isDrawing}
           ariaLabel={t("resultLabel", String(index + 1), value)}
-          className="text-6xl sm:text-7xl md:text-8xl lg:text-[12vw] font-bold tracking-tighter tabular-nums leading-none"
+          className={cn(
+            "font-bold tracking-tighter tabular-nums leading-none",
+            density === "compact"
+              ? "text-5xl sm:text-6xl md:text-7xl"
+              : "text-6xl sm:text-7xl md:text-8xl lg:text-[12vw]"
+          )}
         />
       </motion.div>
     </motion.div>

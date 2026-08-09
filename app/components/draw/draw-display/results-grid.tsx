@@ -13,10 +13,12 @@ export function ResultsGrid({
   results,
   isDrawing,
   language,
+  density,
 }: {
   results: string[];
   isDrawing: boolean;
   language: "zh" | "en";
+  density: "comfortable" | "compact";
 }) {
   // 检测是否刚从滚动状态变为结果状态（揭晓时刻）
   const [celebrating, setCelebrating] = React.useState(false);
@@ -118,23 +120,28 @@ export function ResultsGrid({
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
       >
-        <div
-          className={[
-            "flex flex-wrap justify-center items-center",
-            results.length === 1 ? "gap-0" : "gap-6 sm:gap-10",
-          ].join(" ")}
-        >
-          {results.map((result, idx) => (
-            <ResultCard
-              key={idx + "-" + result}
-              value={result}
-              isDrawing={isDrawing}
-              index={idx}
-              language={language}
-              celebrating={celebrating}
-            />
-          ))}
-        </div>
+          <div
+            className={[
+              "flex flex-wrap justify-center items-center",
+              results.length === 1
+                ? "gap-0"
+                : density === "compact"
+                  ? "gap-3 sm:gap-5"
+                  : "gap-6 sm:gap-10",
+            ].join(" ")}
+          >
+            {results.map((result, idx) => (
+              <ResultCard
+                key={idx + "-" + result}
+                value={result}
+                isDrawing={isDrawing}
+                index={idx}
+                language={language}
+                celebrating={celebrating}
+                density={density}
+              />
+            ))}
+          </div>
       </motion.div>
     </div>
   );

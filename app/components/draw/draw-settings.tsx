@@ -1,4 +1,4 @@
-// components/draw/draw-settings.tsx v5.5.0 —— 抽取设置子组件（使用中央翻译系统）
+// components/draw/draw-settings.tsx v5.6.0 —— 抽取设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -15,12 +15,11 @@ export function DrawSettings({
   min, max,
   count,
   duration,
-  allowDuplicates, autoHide, useCustomList,
+  allowDuplicates, useCustomList,
   onMin, onMax,
   onCount,
   onDuration,
   onAllowDuplicates,
-  onAutoHide,
   onUseCustomList,
 }: {
   language: "zh" | "en";
@@ -29,14 +28,12 @@ export function DrawSettings({
   count: number;
   duration: number;
   allowDuplicates: boolean;
-  autoHide: boolean;
   useCustomList: boolean;
   onMin: (value: number | string) => void;
   onMax: (value: number | string) => void;
   onCount: (value: number | string) => void;
   onDuration: (value: number | string) => void;
   onAllowDuplicates: (value: boolean) => void;
-  onAutoHide: (value: boolean) => void;
   onUseCustomList: (value: boolean) => void;
 }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
@@ -140,21 +137,6 @@ export function DrawSettings({
             checked={useCustomList}
             onCheckedChange={onUseCustomList}
             aria-label={t("useCustomList")}
-          />
-        </div>
-      </Card>
-
-      {/* 自动隐藏侧栏 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <Label>{t("autoHide")}</Label>
-            <p className="text-xs text-muted-foreground mt-0.5">{t("autoHideDesc")}</p>
-          </div>
-          <Switch
-            checked={autoHide}
-            onCheckedChange={onAutoHide}
-            aria-label={t("autoHide")}
           />
         </div>
       </Card>

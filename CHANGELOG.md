@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.6.0] - 2026-08-10
+
+### Features（设置窗口重规划 + 新增常用项）
+- **设置窗口信息架构重规划为 4 个 Tab**：抽取 / 外观 / 体验（新增）/ 历史，原散落的自动隐藏移到「体验」
+- **新增「音效」开关**：补齐此前缺失的音效总开关（音效基础设施已存在，此前始终播放）；在动作层用 `soundEnabled` 门控所有提示音
+- **新增「结果显示密度」**：舒适 / 紧凑两档，接入结果卡片尺寸与网格间距
+- **「自动隐藏面板」真正生效**：开始抽取或产生结果后若开启则自动收起面板（此前仅占位未接线）
+- **新增「重置所有选项」**：一键恢复默认设置（保留历史记录）
+- **全链路打通**：state/reducer/helpers/persistence/use-draw/actions 新增 `soundEnabled`、`density` 与 `RESET_SETTINGS`
+- 新增翻译键 `experience`/`sound`/`soundDesc`/`density`/`densityDesc`/`densityComfortable`/`densityCompact`/`resetSettings`/`resetSettingsDesc`
+
 ## [5.5.0] - 2026-08-09
 
 ### Features & Fixes（设置模块修复与完善）
@@ -10,6 +21,9 @@
 - **数字格式预览在名单模式提示不生效**：外观设置预览在自定义名单模式下显示「格式不生效」
 - **滑块上限对齐体验**：抽取数量上限 20→100、时长上限 10→30，避免 UI 范围过窄
 - 新增翻译键 `allowDupDesc`/`listModeFormatNote`/`notApplicable`/`listNotEnabledHint`，并补全 `duplicateItemsWarning` 占位符
+- **原型规划设置容器规范**：`wireframes.html` 新增「设置容器 Settings Container」区块（可开预览 + Tabs 切换 + Esc/遮罩关闭）；`design-system.md` 新增 §12 设置容器规范（结构/尺寸/动效/a11y 与代码对齐核对表）
+- **原型版本对齐代码真值**：`prototype/` 四文件（index/prototypes/wireframes/tokens/design-system）版本号 `v5.3.7` → `v5.5.0`，修复此前原型滞后于代码的版本漂移（代码侧自 5.4.x 起已 bump 至 5.5.0，原型未同步）
+- 设置容器代码侧经核对已与规范一致（右侧 Sheet + HeaderBar + Tabs(draw/appearance/history) + Esc + 遮罩 blur + `w-[26rem]` + 自定义名单独立 Dialog），无需改动
 
 ## [5.4.1] - 2026-08-09
 

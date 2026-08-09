@@ -1,6 +1,6 @@
 # ZenDraw 设计系统规范（DESIGN-SYSTEM）
 
-> 适用产品：ZenDraw｜禅抽 v5.3.7
+> 适用产品：ZenDraw｜禅抽 v5.5.0
 > 定位：高保真可交互原型的设计令牌、组件库、交互与无障碍基准。
 > 配套原型：`index.html`（主流程 + 主题演示）、`prototypes.html`（状态机图示）、`wireframes.html`（组件库规范）。
 > 代码对应：`app/lib/version.ts` 的 `THEME_PRESETS`（由 `theme-provider.tsx` 消费）。
@@ -197,7 +197,56 @@
 
 ---
 
-## 12. 与代码仓库的对应核对
+## 12. 设置容器 Settings Container
+
+应用全局设置入口为**右侧滑入抽屉**，由顶部导航齿轮按钮触发。结构固定，原型（`wireframes.html` 设置容器区块）与代码（`settings-panel/index.tsx`）必须一致。
+
+### 12.1 结构
+
+```
+Sheet (side="right", aria-modal="true", role="dialog")
+├── HeaderBar
+│   ├── 应用标识（「抽」徽标 + 标题 ZenDraw｜禅抽）
+│   ├── 版本号（mono 小字，读 APP_VERSION）
+│   └── 语言切换按钮（右上，lucide Languages）
+└── Tabs
+    ├── 抽取 (draw)   ：范围 / 数量 / 时长 / 允许重复 / 自定义名单 / 自动隐藏
+    ├── 外观 (appearance)：主题模式 / 预设色块 / 字体 / 语言 / 数字格式 / 实时预览
+    └── 历史 (history) ：本会话记录列表 + 清空入口
+```
+
+> 自定义名单编辑为独立 Dialog（非嵌套 Sheet），避免与原 Sheet 的 open 状态冲突。
+
+### 12.2 尺寸与动效
+
+| 维度 | 规范 | 令牌/值 |
+|------|------|---------|
+| 位置 | 右侧滑入 | `side="right"` |
+| 宽度 | 移动端全宽；≥640px 固定 | `w-full sm:w-[26rem]` |
+| 滑入时长 | 300ms 缓动 | `--dur-slow` (500ms 代码侧用 0.3s，原型统一 300ms) |
+| 遮罩 | 半透明 + 背景模糊 | `bg-black/50 backdrop-blur-sm` |
+| 关闭 | Esc / 遮罩点击（无独立关闭按钮） | 代码侧 `SheetContent` 已绑 Esc |
+
+### 12.3 无障碍
+
+- `role="dialog"` + `aria-modal="true"`；遮罩 `aria-hidden="true"`。
+- Esc 键关闭（代码侧 `SheetContent` useEffect 已绑定；原型 `wireframes` 已演示）。
+- Tabs 用标准 tab 语义；自定义控件（Switch/Select/Slider）键盘可达见 §7.1。
+- 聚焦管理：打开时焦点进入抽屉，关闭后回落触发按钮（代码侧 next-themes/base-ui 处理；原型以 Tab 切换演示）。
+
+### 12.4 与代码对齐核对
+
+| 规范项 | 代码侧事实 | 结论 |
+|--------|------------|------|
+| 右侧 Sheet + Tabs(draw/appearance/history) | `settings-panel/index.tsx` 一致 | ✅ |
+| HeaderBar（标识+版本+语言） | `header-bar.tsx` 读 `APP_VERSION`、右上语言键 | ✅ |
+| Esc / 遮罩关闭 | `sheet/index.tsx` Esc 绑定 + 遮罩 onClick | ✅ |
+| 宽度 26rem | `className="w-full sm:w-[26rem]"` | ✅ |
+| 自定义名单独立 Dialog | `custom-list-settings.tsx` base-ui Dialog | ✅ |
+
+---
+
+## 13. 与代码仓库的对应核对
 
 | 文档声明 | 代码侧事实 | 结论 |
 |----------|------------|------|
