@@ -1,8 +1,8 @@
-// components/draw/draw-display/confetti-burst.tsx v5.1.1 —— 揭晓彩屑爆发（canvas 粒子）
+// components/draw/draw-display/confetti-burst.tsx v5.2.0 —— 揭晓彩屑爆发（canvas 粒子）
 "use client";
 
 import * as React from "react";
-import { useReducedMotion } from "motion/react";
+import { useMountedReducedMotion } from "@/hooks/use-mounted-reduced-motion";
 import { secureRandomInt, secureRandomFloat } from "@/lib/utils";
 
 /**
@@ -72,7 +72,7 @@ function spawnParticles(cx: number, cy: number): Particle[] {
 }
 
 export function ConfettiBurst({ active }: { active: boolean }) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useMountedReducedMotion();
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const rafRef = React.useRef<number | null>(null);
   const prevActiveRef = React.useRef(false);
@@ -168,3 +168,4 @@ export function ConfettiBurst({ active }: { active: boolean }) {
     />
   );
 }
+

@@ -1,4 +1,4 @@
-// components/ui/sheet/parts.tsx v5.1.1 —— Sheet 布局部件（Header/Title/Description/Footer/Close）
+// components/ui/sheet/parts.tsx v5.2.0 —— Sheet 布局部件（Header/Title/Close）
 "use client";
 
 import * as React from "react";
@@ -30,30 +30,6 @@ export function SheetTitle({
   );
 }
 
-export function SheetDescription({
-  className,
-  ...rest
-}: React.HTMLAttributes<HTMLParagraphElement>) {
-  return (
-    <p className={cn("text-sm text-muted-foreground", className)} {...rest} />
-  );
-}
-
-export function SheetFooter({
-  className,
-  ...rest
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn(
-        "flex flex-col-reverse gap-2 p-4 border-t border-border sm:flex-row sm:justify-end",
-        className
-      )}
-      {...rest}
-    />
-  );
-}
-
 export const SheetClose = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
@@ -77,3 +53,4 @@ export const SheetClose = React.forwardRef<
     </button>
   );
 });
+

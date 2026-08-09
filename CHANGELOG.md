@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.2.0] - 2026-08-09
+
+### Code Quality & Robustness
+- **Security hardening**: `useLocalStorage` 新增可选校验器参数，为 `customList` / `history` 数组加入类型守卫，防止 localStorage 被污染（如外部写入非数组）导致下游白屏
+- **Perf fix**: `use-draw` 持久化 effect 补齐依赖数组 `[state, persisted]`，避免每次 render 都执行字段比较
+- **Bug fix**: 修复 `SettingsPanel` 未向 `CustomListSettings` 传递 `onUseCustomListChange` 的预存在缺陷，使「使用自定义名单」开关可正常切换
+- **Dead code removal**: 删除无消费端的 `setHistory` 回调及其 `SET_HISTORY` action/reducer 分支，移除未使用的 `SidebarToggle` 组件与 `SheetDescription` / `SheetFooter` 导出
+- **i18n cleanup**: 移除 9 个未被引用的死翻译键（`notice` / `ok` / `display` / `drawAgain` / `clickToExpand` / `configureHint` / `recordLabel` / `exportList` / `settingsPanel`），`types.ts` / `zh.ts` / `en.ts` 键集对齐至 88 个
+
+### Docs & Versioning
+- 新增 `app/lib/version.ts` 作为应用版本单一事实来源（已用于页脚）
+- SPEC.md 状态管理（§6）、国际化翻译键清单（§7.2）、目录结构同步至实际代码
+- 统一所有源文件头注释、`package.json`、`metadata.json`、README×2、SPEC.md、CHANGELOG 至 **v5.2.0**
+
 ## [5.1.1] - 2026-07-28
 
 ### Delightful Experience Upgrade (愉悦体验升级包)
@@ -15,7 +29,7 @@
 - Add `secureRandomFloat` to `lib/utils.ts`; all decorative randomness uses crypto (no `Math.random` warnings, consistent with project security rule)
 
 ### Versioning
-- Unify version headers across all 39 source files, `package.json`, SPEC.md, README×2 to **v5.1.1**
+- Unify version headers across all 39 source files, `package.json`, SPEC.md, README×2 to **v5.2.0**
 
 ## [5.1.0] - 2026-07-18
 
@@ -309,3 +323,4 @@
 - feat: Add draw count and allow duplicates toggle
 - feat: Add history panel
 - feat: Support dark/light mode toggle
+

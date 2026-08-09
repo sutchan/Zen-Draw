@@ -1,4 +1,4 @@
-// hooks/use-draw-persistence.ts v5.1.1 — localStorage 持久化设置管理
+// hooks/use-draw-persistence.ts v5.2.0 — localStorage 持久化设置管理
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_SETTINGS } from "./draw-helpers";
 import type { HistoryEntry } from "./draw-types";
@@ -10,13 +10,22 @@ export function usePersistedSettings() {
   const [persistedAllowDup, setPersistedAllowDup] = useLocalStorage<boolean>("zendraw-duplicates", DEFAULT_SETTINGS.allowDuplicates);
   const [persistedAutoHide, setPersistedAutoHide] = useLocalStorage<boolean>("zendraw-autohide", DEFAULT_SETTINGS.autoHide);
   const [persistedDuration, setPersistedDuration] = useLocalStorage<number>("zendraw-duration", DEFAULT_SETTINGS.duration);
-  const [persistedCustomList, setPersistedCustomList] = useLocalStorage<string[]>("zendraw-custom-list", DEFAULT_SETTINGS.customList);
+  // 数组类结构（customList / history）易被外部污染，传入类型守卫防白屏
+  const [persistedCustomList, setPersistedCustomList] = useLocalStorage<string[]>(
+    "zendraw-custom-list",
+    DEFAULT_SETTINGS.customList,
+    (v): v is string[] => Array.isArray(v) && v.every((item) => typeof item === "string"),
+  );
   const [persistedUseCustom, setPersistedUseCustom] = useLocalStorage<boolean>("zendraw-use-custom", DEFAULT_SETTINGS.useCustomList);
   const [persistedDigits, setPersistedDigits] = useLocalStorage<number>("zendraw-digits", DEFAULT_SETTINGS.digits);
   const [persistedPrefix, setPersistedPrefix] = useLocalStorage<string>("zendraw-prefix", DEFAULT_SETTINGS.prefix);
   const [persistedSuffix, setPersistedSuffix] = useLocalStorage<string>("zendraw-suffix", DEFAULT_SETTINGS.suffix);
   const [persistedLanguage, setPersistedLanguage] = useLocalStorage<"zh" | "en">("zendraw-language", DEFAULT_SETTINGS.language);
-  const [persistedHistory, setPersistedHistory] = useLocalStorage<HistoryEntry[]>("zendraw-history", []);
+  const [persistedHistory, setPersistedHistory] = useLocalStorage<HistoryEntry[]>(
+    "zendraw-history",
+    [],
+    (v): v is HistoryEntry[] => Array.isArray(v) && v.every((item) => item && Array.isArray((item as HistoryEntry).results)),
+  );
 
   return {
     persistedMin, setPersistedMin,
@@ -34,3 +43,4 @@ export function usePersistedSettings() {
     persistedHistory, setPersistedHistory,
   };
 }
+

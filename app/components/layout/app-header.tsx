@@ -1,15 +1,16 @@
-// components/layout/app-header.tsx v5.1.1 —— 顶部导航栏（Logo + 主题切换 + 设置面板）
+// components/layout/app-header.tsx v5.2.0 —— 顶部导航栏（Logo + 主题切换 + 设置面板）
 "use client";
 
 import * as React from "react";
 import { motion } from "motion/react";
-import { Sun, Moon, Settings2, Sparkles } from "lucide-react";
+import { Sun, Moon, Settings2, Sparkles, X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { SettingsPanel } from "@/components/draw/settings-panel";
@@ -64,6 +65,7 @@ export function AppHeader({
             size="sm"
             onClick={onThemeToggle}
             aria-label={theme === "dark" ? t("switchLight") : t("switchDark")}
+            data-testid="theme-toggle"
             className="rounded-full"
           >
             {theme === "dark" ? (
@@ -77,13 +79,20 @@ export function AppHeader({
             <SheetTrigger
               className="inline-flex items-center justify-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label={t("settings")}
+              data-testid="settings-trigger"
             >
               <Settings2 className="size-4" aria-hidden="true" />
               <span className="hidden sm:inline">{t("settings")}</span>
             </SheetTrigger>
             <SheetContent side="right" className="w-full sm:w-[420px] overflow-y-auto">
-              <SheetHeader>
+              <SheetHeader className="flex-row items-center justify-between space-y-0">
                 <SheetTitle className="text-lg">{t("settings")}</SheetTitle>
+                <SheetClose
+                  aria-label={t("close")}
+                  className="static ml-auto rounded-full p-2 opacity-100 hover:bg-accent transition-colors"
+                >
+                  <X className="size-4" aria-hidden="true" />
+                </SheetClose>
               </SheetHeader>
               <div className="py-4">
                 <SettingsPanel
@@ -98,8 +107,6 @@ export function AppHeader({
                   digits={draw.digits}
                   prefix={draw.prefix}
                   suffix={draw.suffix}
-                  open={panelOpen}
-                  onToggle={() => onPanelOpenChange(!panelOpen)}
                   onMinChange={draw.setMin}
                   onMaxChange={draw.setMax}
                   onCountChange={draw.setCount}
@@ -126,3 +133,4 @@ export function AppHeader({
     </header>
   );
 }
+

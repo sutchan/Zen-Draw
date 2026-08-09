@@ -1,12 +1,11 @@
-// locales/types.ts v5.1.1 — 国际化类型定义
+// locales/types.ts v5.2.0 — 国际化类型定义
 export type Language = "en" | "zh";
 
 export type TranslationKey =
-  | "title" | "settings" | "history"
+  | "title" | "settings" | "history" | "close"
   | "rangeCount" | "rangeDesc" | "minVal" | "maxVal" | "drawCount"
   | "allowDup" | "autoHide" | "autoHideDesc"
-  | "clickToExpand" | "configureHint"
-  | "custom" | "display" | "drawAgain" | "drawSettings" | "appearance"
+  | "custom" | "drawSettings" | "appearance"
   | "drawDuration" | "drawDurationDesc"
   | "theme" | "themeMode" | "themeLight" | "themeDark" | "themeSystem"
   | "themePreset" | "themeDefault" | "themeOcean" | "themeForest"
@@ -19,7 +18,7 @@ export type TranslationKey =
   | "drawHistory" | "historyDesc" | "noHistory"
   | "ready" | "drawing" | "startDraw"
   | "minMaxError" | "rangeError" | "clearHistory"
-  | "toggleUI" | "switchLang" | "notice" | "ok" | "cancel"
+  | "toggleUI" | "switchLang" | "cancel"
   | "import_" | "itemsLoaded" | "noItems"
   // 主界面
   | "appTitle" | "appSubtitle" | "drawMainArea" | "drawDisplayArea"
@@ -36,12 +35,13 @@ export type TranslationKey =
   // 页脚
   | "footerInfo"
   // 导入
-  | "importDesc" | "confirmImport" | "exportList"
+  | "importDesc" | "confirmImport"
   // 错误
   | "errCustomListEmpty" | "errCustomListTooMany" | "errCustomListRange"
   | "errRangeInvalid"
   // 通用
   | "autoSaveDesc" | "clickToCopy" | "copied" | "copiedToClipboard" | "copyResult"
-  | "listPlaceholder" | "recordLabel" | "resultsCount" | "settingsPanel";
+  | "listPlaceholder" | "resultsCount";
 
 export type TranslationDict = Record<TranslationKey, string>;
+

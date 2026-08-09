@@ -1,8 +1,9 @@
-// components/draw/draw-button.tsx v5.1.1 —— 抽取主按钮（极简设计优化）
+// components/draw/draw-button.tsx v5.2.0 —— 抽取主按钮（极简设计优化）
 "use client";
 
 import * as React from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
+import { useMountedReducedMotion } from "@/hooks/use-mounted-reduced-motion";
 import { cn } from "@/lib/utils";
 import { createTranslator } from "@/lib/i18n";
 export interface DrawButtonProps {
@@ -24,7 +25,7 @@ export function DrawButton({
   canDraw,
   language,
 }: DrawButtonProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useMountedReducedMotion();
   const t = React.useMemo(() => createTranslator(language), [language]);
 
   // 处理点击
@@ -71,6 +72,7 @@ export function DrawButton({
         disabled={!canDraw && !isDrawing}
         aria-pressed={isDrawing}
         aria-label={isDrawing ? t("stopDraw") : t("startDraw")}
+        data-testid="draw-button"
         className={cn(
           "relative z-10",
           // 圆形按钮 — 极简设计
@@ -139,3 +141,4 @@ export function DrawButton({
     </motion.div>
   );
 }
+

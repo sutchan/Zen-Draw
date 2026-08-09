@@ -1,8 +1,9 @@
-// components/draw/draw-display/results-grid.tsx v5.1.1 —— 所有结果网格（惊艳升级：彩屑+揭晓标题+里程碑）
+// components/draw/draw-display/results-grid.tsx v5.2.0 —— 所有结果网格（惊艳升级：彩屑+揭晓标题+里程碑）
 "use client";
 
 import * as React from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
+import { useMountedReducedMotion } from "@/hooks/use-mounted-reduced-motion";
 import { createTranslator } from "@/lib/i18n";
 import { CelebrationEffect } from "./celebration-effect";
 import { ConfettiBurst } from "./confetti-burst";
@@ -24,7 +25,7 @@ export function ResultsGrid({
   const [milestone, setMilestone] = React.useState<number | null>(null);
 
   const prevDrawingRef = React.useRef(isDrawing);
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useMountedReducedMotion();
   const t = React.useMemo(() => createTranslator(language), [language]);
 
   React.useEffect(() => {
@@ -138,3 +139,4 @@ export function ResultsGrid({
     </div>
   );
 }
+

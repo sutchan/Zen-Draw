@@ -1,4 +1,4 @@
-// components/draw/custom-list-settings.tsx v5.1.1 —— 自定义列表子组件（使用中央翻译系统）
+// components/draw/custom-list-settings.tsx v5.2.0 —— 自定义列表子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -148,3 +148,4 @@ export function CustomListSettings({
     </motion.div>
   );
 }
+

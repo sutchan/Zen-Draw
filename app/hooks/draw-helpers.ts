@@ -1,4 +1,4 @@
-// hooks/draw-helpers.ts v5.1.1 — 抽取逻辑纯函数
+// hooks/draw-helpers.ts v5.2.0 — 抽取逻辑纯函数
 
 import { secureRandomInt } from "@/lib/utils";
 import type { DrawSettings } from "./draw-types";
@@ -163,3 +163,4 @@ export const DEFAULT_SETTINGS: DrawSettings = {
   suffix: "",
   language: "zh",
 };
+

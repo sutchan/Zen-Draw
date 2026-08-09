@@ -1,4 +1,4 @@
-# ZenDraw | 禅抽 v5.1.1
+# ZenDraw | 禅抽 v5.2.0
 
 [中文版本](./README_CN.md)
 
@@ -135,3 +135,4 @@ Please read our [Code Review Standard](./.github/CODE_REVIEW_STANDARD.md) and [P
 ## License
 
 MIT License
+

@@ -1,4 +1,4 @@
-// components/draw/draw-settings.tsx v5.1.1 —— 抽取设置子组件（使用中央翻译系统）
+// components/draw/draw-settings.tsx v5.2.0 —— 抽取设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -130,3 +130,4 @@ export function DrawSettings({
     </motion.div>
   );
 }
+

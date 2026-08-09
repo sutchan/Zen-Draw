@@ -1,4 +1,4 @@
-// locales/index.ts v5.1.1 — 国际化翻译模块（入口）
+// locales/index.ts v5.2.0 — 国际化翻译模块（入口）
 export { type Language, type TranslationKey, type TranslationDict } from "./types";
 export { enTranslations } from "./en";
 export { zhTranslations } from "./zh";
@@ -11,3 +11,4 @@ export const translations: Record<Language, TranslationDict> = {
   en: enTranslations,
   zh: zhTranslations,
 };
+

@@ -1,4 +1,4 @@
-// components/ui/sheet/context.tsx v5.1.1 —— Sheet 上下文与根组件
+// components/ui/sheet/context.tsx v5.2.0 —— Sheet 上下文与根组件
 "use client";
 
 import * as React from "react";
@@ -42,3 +42,4 @@ export function Sheet({ open: controlledOpen, onOpenChange, children }: SheetPro
 
   return <SheetContext.Provider value={value}>{children}</SheetContext.Provider>;
 }
+

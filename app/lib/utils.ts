@@ -1,4 +1,4 @@
-// lib/utils.ts v5.1.1 — 工具函数模块
+// lib/utils.ts v5.2.0 — 工具函数模块
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -101,3 +101,4 @@ export function sanitizeListInput(input: string): string[] {
     .filter((line) => line.length > 0)
     .slice(0, 1000);
 }
+

@@ -1,11 +1,11 @@
-# ZenDraw | 禅抽 v5.1.1 — 项目规范文档
+# ZenDraw | 禅抽 v5.2.0 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.1.1
-- **上次更新**: 2026-07-18
+- **当前版本**: v5.2.0
+- **上次更新**: 2026-08-09
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、10 种主题配色、Web Audio API 音效。
 - **许可证**: MIT License
 - **代码质量**: 严格 TypeScript (strict mode) + ESLint + CI/CD + 代码审查标准 + 安全头
@@ -99,8 +99,7 @@ zen-draw/
 │   │   │   │   └── empty-state.tsx       # 空状态
 │   │   │   ├── settings-panel/           # 设置面板组件集
 │   │   │   │   ├── index.tsx             # 主面板（Tabs 切换）
-│   │   │   │   ├── header-bar.tsx        # 面板标题栏
-│   │   │   │   └── sidebar-toggle.tsx    # 侧边栏开关按钮
+│   │   │   │   └── header-bar.tsx        # 面板标题栏
 │   │   │   └── __tests__/
 │   │   │       └── draw-button.test.tsx  # 按钮单元测试
 │   │   ├── number-roller.tsx      # 数字滚动动画组件
@@ -116,10 +115,11 @@ zen-draw/
 │   │   └── use-sound.ts          # Web Audio API 音效合成
 │   ├── lib/
 │   │   ├── utils.ts              # 工具函数（cn / secureRandomInt / sanitizeListInput）
+│   │   ├── version.ts            # 应用版本常量（单一来源）
 │   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
 │   ├── locales/                  # 国际化数据
 │   │   ├── index.ts              # re-export
-│   │   ├── types.ts              # TranslationKey（97 键）
+│   │   ├── types.ts              # TranslationKey（88 键）
 │   │   ├── en.ts                 # 英文翻译
 │   │   └── zh.ts                 # 中文翻译
 │   └── test/
@@ -399,22 +399,22 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 ### 6.1 Reducer 状态结构
 ```typescript
 interface DrawState {
-  status: 'idle' | 'drawing' | 'result' | 'error';
   min: number;                      // 最小值
   max: number;                      // 最大值
   count: number;                    // 抽取数量
   allowDuplicates: boolean;          // 允许重复
   autoHide: boolean;                // 自动隐藏侧边栏
-  duration: number;                 // 动画时长（秒）
+  duration: number;                 // 动画时长（毫秒）
   customList: string[];             // 自定义名单
   useCustomList: boolean;           // 使用自定义名单
   digits: number;                   // 补零位数
   prefix: string;                   // 前缀
   suffix: string;                   // 后缀
   language: 'zh' | 'en';           // 语言
-  history: HistoryEntry[];          // 历史记录
-  results: string[];                // 当前结果
-  error: string | null;             // 错误信息
+  isDrawing: boolean;               // 是否正在抽取（派生状态）
+  history: HistoryEntry[];          // 历史记录（最多 100 条）
+  results: number[];                // 当前抽取结果
+  error: string | null;             // 错误信息（派生状态）
 }
 ```
 
@@ -422,7 +422,8 @@ interface DrawState {
 - `SET_FIELD<K>` — 更新单个字段（泛型约束）
 - `START_DRAW` / `STOP_DRAW` — 状态转换
 - `SET_RESULTS` / `SET_ERROR` — 结果/错误
-- `SET_HISTORY` — 设置历史记录
+- `CLEAR_HISTORY` — 清空历史记录
+- `DISMISS_ERROR` — 清除错误信息
 - `RESET` — 重置到 idle
 
 ### 6.3 持久化（localStorage）
@@ -441,13 +442,12 @@ interface DrawState {
 - `en` — English
 - `zh` — 简体中文
 
-### 7.2 翻译键（97 个）
+### 7.2 翻译键（88 个）
 ```
 title, settings, history,
 rangeCount, rangeDesc, minVal, maxVal, drawCount,
 allowDup, autoHide, autoHideDesc,
-clickToExpand, configureHint,
-custom, display, drawAgain, drawSettings, appearance,
+custom, drawSettings, appearance,
 drawDuration, drawDurationDesc,
 theme, themeMode, themeLight, themeDark, themeSystem,
 themePreset, themeDefault, themeOcean, themeForest,
@@ -459,10 +459,18 @@ export, displayRules, displayDesc,
 minDigits, minDigitsDesc, prefix, suffix,
 drawHistory, historyDesc, noHistory,
 ready, drawing, startDraw, stopDraw, startHint, stopHint,
-recordLabel, resultsCount, copiedToClipboard, copyResult, copied,
+resultsCount, copiedToClipboard, copyResult, copied,
 import_, importDesc, listPlaceholder, confirmImport,
-cancel, ok, notice, itemsLoaded, noItems, clearHistory,
-toggleUI, switchLang, minMaxError, rangeError
+cancel, itemsLoaded, noItems, clearHistory,
+toggleUI, switchLang, minMaxError, rangeError,
+appTitle, appSubtitle, drawMainArea, drawDisplayArea,
+welcomeHint, errorTitle, errorMessage,
+resultLabel, resultRegion,
+revealTitle, milestoneDraws, emptyStateHint,
+switchLight, switchDark,
+footerInfo,
+autoSaveDesc, clickToCopy,
+errCustomListEmpty, errCustomListTooMany, errCustomListRange, errRangeInvalid
 ```
 
 ### 7.3 使用方式
@@ -612,12 +620,12 @@ export const viewport: Viewport = {
 
 ## 13. 版本历史
 
-### v5.1.1 (当前)
+### v5.2.0 (当前)
 - 模块化拆分：`ui/sheet.tsx`（252 行）→ `ui/sheet/`（context/parts/index）；`ui/select.tsx`（201 行）→ 抽出 `select-scroll-buttons.tsx`
 - 页面结构重构：`page.tsx` 抽出 `layout/app-header.tsx`（顶部导航栏），主页面精简至 ~104 行
 - 清理死代码：删除未引用的 `use-persist-settings.ts`、死翻译键 `drawResults`、冗余无障碍属性
 - Bug 修复：页脚字体数（6→3）、`layout.tsx` 根语言（`en`→`zh-CN`）、`history-list` 重复类型声明
-- 版本号统一：全项目源文件头注释、`package.json`、文档统一至 v5.1.1
+- 版本号统一：全项目源文件头注释、`package.json`、文档统一至 v5.2.0
 - 翻译键更新：实际 97 个键（zh/en 完全对齐，编译期强约束）
 - 所有源文件均 ≤ 200 行
 
@@ -656,3 +664,4 @@ export const viewport: Viewport = {
 ---
 
 *本文档最后更新: 2026-07-02 · 与 prototype/ 和 app/ 代码保持对齐*
+

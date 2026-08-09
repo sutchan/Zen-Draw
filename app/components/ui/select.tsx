@@ -1,4 +1,4 @@
-// components/ui/select.tsx v5.1.1 —— Select 选择器组件（拆分滚动按钮）
+// components/ui/select.tsx v5.2.0 —— Select 选择器组件（拆分滚动按钮）
 "use client"
 
 import * as React from "react"
@@ -166,3 +166,4 @@ export {
   SelectTrigger,
   SelectValue,
 }
+

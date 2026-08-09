@@ -1,4 +1,4 @@
-// hooks/draw-types.ts v5.1.1 — 抽签模块类型定义
+// hooks/draw-types.ts v5.2.0 — 抽签模块类型定义
 
 export type DrawStatus = "idle" | "drawing" | "result" | "error";
 
@@ -67,7 +67,6 @@ export type DrawAction =
   | { type: "SET_CUSTOM_LIST"; value: string[] }
   | { type: "SET_LANGUAGE"; value: "zh" | "en" }
   | { type: "CLEAR_HISTORY" }
-  | { type: "SET_HISTORY"; value: HistoryEntry[] }
   | { type: "DISMISS_ERROR" };
 
 export interface UseDrawReturn extends DrawState {
@@ -111,6 +110,5 @@ export interface UseDrawReturn extends DrawState {
     suffix: string;
     language: "zh" | "en";
   };
-  // 历史记录的 set 方法（供 page.tsx 使用）
-  setHistory: (updater: (prev: HistoryEntry[]) => HistoryEntry[]) => void;
 }
+

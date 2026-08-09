@@ -1,14 +1,15 @@
-// components/draw/history-list/empty-state.tsx v5.1.1 —— 愉悦空状态（浮动骰子 + 俏皮文案）
+// components/draw/history-list/empty-state.tsx v5.2.0 —— 愉悦空状态（浮动骰子 + 俏皮文案）
 "use client";
 
 import * as React from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
+import { useMountedReducedMotion } from "@/hooks/use-mounted-reduced-motion";
 import { Dices } from "lucide-react";
 import { createTranslator } from "@/lib/i18n";
 
 export function EmptyState({ language }: { language: "zh" | "en" }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useMountedReducedMotion();
 
   return (
     <motion.div
@@ -50,3 +51,4 @@ export function EmptyState({ language }: { language: "zh" | "en" }) {
     </motion.div>
   );
 }
+

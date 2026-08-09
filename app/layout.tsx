@@ -1,9 +1,10 @@
-// app/layout.tsx v5.1.1
+// app/layout.tsx v5.2.0
 import type { Metadata, Viewport } from "next";
 import "./style.css";
 import { Geist, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
+import { APP_VERSION } from "@/lib/version";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const jetBrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
@@ -17,7 +18,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "ZenDraw | 禅抽 v5.0",
+  title: `ZenDraw | 禅抽 v${APP_VERSION}`,
   description:
     "A professional, full-screen random draw application with Apple-inspired design, customizable rules, multi-language support, slot-machine style rolling animations, and persistent settings.",
   keywords: [
@@ -60,3 +61,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+

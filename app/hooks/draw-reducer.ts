@@ -1,4 +1,4 @@
-// hooks/draw-reducer.ts v5.1.1 — 抽签状态 Reducer
+// hooks/draw-reducer.ts v5.2.0 — 抽签状态 Reducer
 
 import type { DrawState, DrawAction, DrawSettings } from "./draw-types";
 
@@ -67,9 +67,8 @@ export function drawReducer(state: DrawState, action: DrawAction): DrawState {
       return { ...state, language: action.value };
     case "CLEAR_HISTORY":
       return { ...state, history: [] };
-    case "SET_HISTORY":
-      return { ...state, history: action.value };
     default:
       return state;
   }
 }
+

@@ -1,4 +1,4 @@
-// components/draw/history-list/index.tsx v5.1.1 —— 历史记录列表（极简设计优化）
+// components/draw/history-list/index.tsx v5.2.0 —— 历史记录列表（极简设计优化）
 "use client";
 
 import * as React from "react";
@@ -78,3 +78,4 @@ export function HistoryList({ history, onClear, language = "zh" }: HistoryListPr
     </div>
   );
 }
+

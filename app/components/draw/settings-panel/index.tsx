@@ -1,16 +1,13 @@
-// components/draw/settings-panel/index.tsx v5.1.1 —— 设置侧边栏（重构拆分版）
+// components/draw/settings-panel/index.tsx v5.2.0 —— 设置面板内容（重构：仅渲染内容，面板外壳由 AppHeader 的 Sheet 提供）
 "use client";
 
 import * as React from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Settings2, History } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HistoryList, type HistoryEntry } from "@/components/draw/history-list";
 import { DrawSettings } from "../draw-settings";
 import { AppearanceSettings } from "../appearance-settings";
 import { CustomListSettings } from "../custom-list-settings";
-import { SidebarToggle } from "./sidebar-toggle";
 import { HeaderBar } from "./header-bar";
 import { createTranslator } from "@/lib/i18n";
 
@@ -33,9 +30,6 @@ export interface SettingsPanelProps {
   digits: number;
   prefix: string;
   suffix: string;
-  // 控制
-  open: boolean;
-  onToggle: () => void;
   // 设置更新
   onMinChange: (value: number | string) => void;
   onMaxChange: (value: number | string) => void;
@@ -61,10 +55,7 @@ export interface SettingsPanelProps {
 // ---------------------------------------------------------------------------
 
 export function SettingsPanel(props: SettingsPanelProps) {
-  const shouldReduceMotion = useReducedMotion();
   const {
-    open,
-    onToggle,
     min, max, count, duration,
     allowDuplicates, autoHide,
     customList, useCustomList,
@@ -80,106 +71,67 @@ export function SettingsPanel(props: SettingsPanelProps) {
   const t = React.useMemo(() => createTranslator(language), [language]);
 
   return (
-    <>
-      {/* 顶部标题栏 */}
+    <div className="flex h-full flex-col">
+      {/* 顶部品牌栏（静态，含语言切换） */}
       <HeaderBar language={language} onLanguageToggle={onLanguageToggle} />
 
-      {/* 侧边栏开关按钮 */}
-      <SidebarToggle open={open} onToggle={onToggle} language={language} />
+      {/* 选项卡内容 */}
+      <Tabs defaultValue="settings" className="flex h-full flex-col">
+        <TabsList className="w-full flex gap-1 p-2 bg-muted/30 rounded-none border-b border-border/20 m-0">
+          <TabsTrigger
+            value="settings"
+            className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
+          >
+            <Settings2 className="w-4 h-4 mr-1.5" aria-hidden="true" />
+            {t("drawSettings")}
+          </TabsTrigger>
+          <TabsTrigger
+            value="history"
+            className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
+          >
+            <History className="w-4 h-4 mr-1.5" aria-hidden="true" />
+            {t("history")}
+          </TabsTrigger>
+        </TabsList>
 
-      {/* 移动端遮罩 */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
-            onClick={onToggle}
-            className="fixed inset-0 bg-black/10 backdrop-blur-sm z-30 lg:hidden"
-            aria-hidden="true"
-          />
-        )}
-      </AnimatePresence>
+        <div className="flex-1 overflow-y-auto">
+          <TabsContent value="settings" className="px-6 py-6 pb-12 focus-visible:outline-none">
+            <DrawSettings
+              language={language}
+              useCustomList={useCustomList}
+              min={min} max={max} count={count} duration={duration}
+              allowDuplicates={allowDuplicates} autoHide={autoHide}
+              onMin={onMinChange} onMax={onMaxChange}
+              onCount={onCountChange} onDuration={onDurationChange}
+              onAllowDuplicates={onAllowDuplicatesChange}
+              onAutoHide={onAutoHideChange}
+            />
 
-      {/* 侧边栏面板 */}
-      <motion.aside
-        id="settings-panel"
-        role="complementary"
-        aria-label={t("settingsPanel")}
-        className={cn(
-          "absolute top-0 right-0 z-40 h-full w-full sm:w-[400px]",
-          "bg-background/94 backdrop-blur-xl border-l border-border/25",
-          "flex flex-col overflow-hidden shadow-2xl",
-          open ? "translate-x-0" : "translate-x-full pointer-events-none"
-        )}
-        initial={false}
-        animate={{ x: open ? 0 : "100%" }}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-          mass: 0.9,
-          ...(shouldReduceMotion ? { duration: 0 } : {}),
-        }}
-      >
-        <Tabs defaultValue="settings" className="w-full h-full flex flex-col">
-          {/* Tab List */}
-          <TabsList className="w-full flex gap-1 p-2 bg-muted/30 rounded-none border-b border-border/20 m-0">
-            <TabsTrigger
-              value="settings"
-              className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
-            >
-              <Settings2 className="w-4 h-4 mr-1.5" aria-hidden="true" />
-              {t("drawSettings")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="history"
-              className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
-            >
-              <History className="w-4 h-4 mr-1.5" aria-hidden="true" />
-              {t("history")}
-            </TabsTrigger>
-          </TabsList>
+            <AppearanceSettings
+              language={language}
+              useCustomList={useCustomList}
+              digits={digits} prefix={prefix} suffix={suffix}
+              onDigits={onDigitsChange} onPrefix={onPrefixChange} onSuffix={onSuffixChange}
+            />
 
-          <div className="flex-1 overflow-y-auto">
-            <TabsContent value="settings" className="px-6 py-6 pb-12 focus-visible:outline-none">
-              <DrawSettings
-                language={language}
-                useCustomList={useCustomList}
-                min={min} max={max} count={count} duration={duration}
-                allowDuplicates={allowDuplicates} autoHide={autoHide}
-                onMin={onMinChange} onMax={onMaxChange}
-                onCount={onCountChange} onDuration={onDurationChange}
-                onAllowDuplicates={onAllowDuplicatesChange}
-                onAutoHide={onAutoHideChange}
-              />
+            <CustomListSettings
+              language={language}
+              useCustomList={useCustomList} customList={customList}
+              onUseCustomListChange={onUseCustomListChange}
+              onImport={onCustomListChange}
+            />
+          </TabsContent>
 
-              <AppearanceSettings
-                language={language}
-                useCustomList={useCustomList}
-                digits={digits} prefix={prefix} suffix={suffix}
-                onDigits={onDigitsChange} onPrefix={onPrefixChange} onSuffix={onSuffixChange}
-              />
-
-              <CustomListSettings
-                language={language}
-                useCustomList={useCustomList} customList={customList}
-                onUseCustomListChange={onUseCustomListChange}
-                onImport={onCustomListChange}
-              />
-            </TabsContent>
-
-            <TabsContent value="history" className="px-6 py-6 pb-12 focus-visible:outline-none">
-              <HistoryList
-                history={history}
-                onClear={onClearHistory}
-                language={language}
-              />
-            </TabsContent>
-          </div>
-        </Tabs>
-      </motion.aside>
-    </>
+          <TabsContent value="history" className="px-6 py-6 pb-12 focus-visible:outline-none">
+            <HistoryList
+              history={history}
+              onClear={onClearHistory}
+              language={language}
+            />
+          </TabsContent>
+        </div>
+      </Tabs>
+    </div>
   );
 }
+

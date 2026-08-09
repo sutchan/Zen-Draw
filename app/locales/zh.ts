@@ -1,9 +1,10 @@
-// locales/zh.ts v5.1.1 — 中文翻译
+// locales/zh.ts v5.2.0 — 中文翻译
 import type { TranslationDict } from "./types";
 
 export const zhTranslations: TranslationDict = {
   title: "禅抽",
   settings: "设置",
+  close: "关闭",
   history: "历史记录",
   rangeCount: "范围与数量",
   rangeDesc: "定义抽取数字的范围。",
@@ -13,11 +14,7 @@ export const zhTranslations: TranslationDict = {
   allowDup: "允许重复",
   autoHide: "自动隐藏侧边栏",
   autoHideDesc: "空闲或抽取时自动隐藏控制面板。",
-  clickToExpand: "点击展开选项",
-  configureHint: "设置范围和选项后开始抽取",
   custom: "自定义名单",
-  display: "显示选项",
-  drawAgain: "再抽一次",
   drawSettings: "抽取设置",
   appearance: "外观",
   drawDuration: "抽取时长（秒）",
@@ -63,8 +60,6 @@ export const zhTranslations: TranslationDict = {
   clearHistory: "清空历史",
   toggleUI: "切换控制面板",
   switchLang: "切换语言",
-  notice: "提示",
-  ok: "确定",
   cancel: "取消",
   import_: "导入",
   itemsLoaded: "项已加载",
@@ -97,7 +92,6 @@ export const zhTranslations: TranslationDict = {
   // 导入
   importDesc: "每行一个项目，提交后将作为抽取池",
   confirmImport: "确认导入",
-  exportList: "导出列表",
   // 错误
   errCustomListEmpty: "请先在设置中导入自定义列表",
   errCustomListTooMany: "自定义列表项数过多，请减少到 1000 项以内",
@@ -107,7 +101,6 @@ export const zhTranslations: TranslationDict = {
   // 历史记录
   clickToCopy: "点击任意记录可复制结果",
   resultsCount: "共 {0} 项",
-  recordLabel: "历史记录：{0} 个结果，{1}",
   autoSaveDesc: "抽取结果会自动保存在这里",
 
   // 通用
@@ -115,5 +108,5 @@ export const zhTranslations: TranslationDict = {
   copiedToClipboard: "已复制到剪贴板",
   copyResult: "复制",
   listPlaceholder: "苹果\n香蕉\n橙子...",
-  settingsPanel: "设置面板",
 };
+

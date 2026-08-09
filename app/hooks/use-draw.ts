@@ -1,4 +1,4 @@
-// hooks/use-draw.ts v5.1.1 —— 统一管理抽奖流程状态与逻辑（重构拆分版）
+// hooks/use-draw.ts v5.2.0 —— 统一管理抽奖流程状态与逻辑（重构拆分版）
 "use client";
 
 import * as React from "react";
@@ -46,7 +46,7 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
     onSoundRef.current = onSound;
   }, [onSound]);
 
-  // 当设置变化时，持久化到 localStorage
+  // 当设置变化时，持久化到 localStorage（仅在 state 变化时执行）
   const prevPersistRef = React.useRef(state);
   React.useEffect(() => {
     const prev = prevPersistRef.current;
@@ -64,7 +64,7 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
     if (state.suffix !== prev.suffix) persisted.setPersistedSuffix(state.suffix);
     if (state.language !== prev.language) persisted.setPersistedLanguage(state.language);
     if (state.history !== prev.history) persisted.setPersistedHistory(state.history);
-  });
+  }, [state, persisted]);
 
   // 组件卸载时清理动画
   React.useEffect(() => {
@@ -93,18 +93,10 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
     prefix: state.prefix, suffix: state.suffix, language: state.language,
   };
 
-  const setHistory = React.useCallback(
-    (updater: (prev: import("./draw-types").HistoryEntry[]) => import("./draw-types").HistoryEntry[]) => {
-      const newHistory = updater(state.history);
-      dispatch({ type: "SET_HISTORY", value: newHistory.slice(0, 100) });
-    },
-    [state.history],
-  );
-
   return {
     ...state,
     ...actions,
-    setHistory,
     isDrawing, results, canDraw, settings,
   };
 }
+

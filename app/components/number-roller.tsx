@@ -1,8 +1,9 @@
-// components/number-roller.tsx v5.1.1 —— 数字滚动动画组件（字符级滚动 + 逐字定格）
+// components/number-roller.tsx v5.2.0 —— 数字滚动动画组件（字符级滚动 + 逐字定格）
 "use client";
 
 import * as React from "react";
-import { motion, useReducedMotion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
+import { useMountedReducedMotion } from "@/hooks/use-mounted-reduced-motion";
 import { cn, secureRandomInt } from "@/lib/utils";
 
 export interface NumberRollerProps {
@@ -26,7 +27,7 @@ export interface NumberRollerProps {
  * 4. 尊重 prefers-reduced-motion：偏好减少动画的用户直接显示文本
  */
 export function NumberRoller({ value, isDrawing, className, ariaLabel }: NumberRollerProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useMountedReducedMotion();
 
   // 1. 尊重无障碍偏好：如果用户偏好减少动画，直接渲染静态文本
   if (shouldReduceMotion) {
@@ -188,3 +189,4 @@ function RollingChar({ target, isDrawing, stopDelay }: RollingCharProps) {
     </span>
   );
 }
+

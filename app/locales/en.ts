@@ -1,9 +1,10 @@
-// locales/en.ts v5.1.1 — 英文翻译
+// locales/en.ts v5.2.0 — 英文翻译
 import type { TranslationDict } from "./types";
 
 export const enTranslations: TranslationDict = {
   title: "ZenDraw",
   settings: "Settings",
+  close: "Close",
   history: "History",
   rangeCount: "Range & Count",
   rangeDesc: "Define the pool of numbers.",
@@ -13,11 +14,7 @@ export const enTranslations: TranslationDict = {
   allowDup: "Allow Duplicates",
   autoHide: "Auto-hide UI",
   autoHideDesc: "Hide control panel automatically when idle or drawing.",
-  clickToExpand: "Click to expand options",
-  configureHint: "Configure range and options to start drawing",
   custom: "Custom List",
-  display: "Display Options",
-  drawAgain: "Draw Again",
   drawSettings: "Draw Settings",
   appearance: "Appearance",
   drawDuration: "Draw Duration (s)",
@@ -63,8 +60,6 @@ export const enTranslations: TranslationDict = {
   clearHistory: "Clear History",
   toggleUI: "Toggle Control Panel",
   switchLang: "Switch Language",
-  notice: "Notice",
-  ok: "OK",
   cancel: "Cancel",
   import_: "Import",
   itemsLoaded: "items loaded",
@@ -97,7 +92,6 @@ export const enTranslations: TranslationDict = {
   // 导入
   importDesc: "One item per line, will be used as the draw pool",
   confirmImport: "Import",
-  exportList: "Export Results",
   // 错误
   errCustomListEmpty: "Please import a custom list first",
   errCustomListTooMany: "Custom list is too large. Please reduce to 1000 items or fewer",
@@ -107,7 +101,6 @@ export const enTranslations: TranslationDict = {
   // 历史记录
   clickToCopy: "Click any record to copy results",
   resultsCount: "{0} items",
-  recordLabel: "Record: {0} results, {1}",
   autoSaveDesc: "Draw results are saved here automatically",
 
   // 通用
@@ -115,5 +108,5 @@ export const enTranslations: TranslationDict = {
   copiedToClipboard: "Copied to clipboard",
   copyResult: "Copy",
   listPlaceholder: "Apple\nBanana\nOrange...",
-  settingsPanel: "Settings panel",
 };
+

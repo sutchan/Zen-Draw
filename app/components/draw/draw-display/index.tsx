@@ -1,8 +1,9 @@
-// components/draw/draw-display/index.tsx v5.1.1 —— 主显示区（统一 draw 对象 + 增强 ARIA）
+// components/draw/draw-display/index.tsx v5.2.0 —— 主显示区（统一 draw 对象 + 增强 ARIA）
 "use client";
 
 import * as React from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
+import { useMountedReducedMotion } from "@/hooks/use-mounted-reduced-motion";
 import { cn } from "@/lib/utils";
 import { createTranslator } from "@/lib/i18n";
 import { WelcomeScreen } from "./welcome-screen";
@@ -29,7 +30,7 @@ export interface DrawDisplayProps {
 // ---------------------------------------------------------------------------
 
 export function DrawDisplay({ draw }: DrawDisplayProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useMountedReducedMotion();
   const { results, status, language } = draw;
   const isDrawing = status === "drawing";
   const t = React.useMemo(() => createTranslator(language), [language]);
@@ -79,3 +80,4 @@ export function DrawDisplay({ draw }: DrawDisplayProps) {
     </motion.div>
   );
 }
+

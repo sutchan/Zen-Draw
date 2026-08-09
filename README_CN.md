@@ -1,4 +1,4 @@
-# ZenDraw | 禅抽 v5.1.1
+# ZenDraw | 禅抽 v5.2.0
 
 [English Version](./README.md)
 
@@ -135,3 +135,4 @@ app/
 ## 开源协议
 
 MIT License
+

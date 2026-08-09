@@ -1,4 +1,4 @@
-// components/ui/sheet/index.tsx v5.1.1 —— 侧边抽屉组件（Trigger + Content + 部件聚合导出）
+// components/ui/sheet/index.tsx v5.2.0 —— 侧边抽屉组件（Trigger + Content + 部件聚合导出）
 "use client";
 
 import * as React from "react";
@@ -10,8 +10,6 @@ export type { SheetProps } from "./context";
 export {
   SheetHeader,
   SheetTitle,
-  SheetDescription,
-  SheetFooter,
   SheetClose,
 } from "./parts";
 
@@ -130,3 +128,4 @@ export function SheetContent({
     </>
   );
 }
+
