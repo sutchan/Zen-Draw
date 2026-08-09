@@ -1,10 +1,16 @@
-// locales/zh.ts v5.3.6 — 中文翻译
+// locales/zh.ts v5.4.0 — 中文翻译
 import type { TranslationDict } from "./types";
 
 export const zhTranslations: TranslationDict = {
   title: "禅抽",
   settings: "设置",
   close: "关闭",
+  drawMode: "抽取模式",
+  modeNumber: "数字",
+  modeList: "名单",
+  customList: "自定义列表",
+  customListHint: "每行一个项目，作为抽取池使用",
+  save: "保存",
   history: "历史记录",
   minVal: "最小值",
   maxVal: "最大值",
@@ -100,5 +106,17 @@ export const zhTranslations: TranslationDict = {
   copiedToClipboard: "已复制到剪贴板",
   copyResult: "复制",
   listPlaceholder: "苹果\n香蕉\n橙子...",
+
+  // 设置增强
+  formatPreview: "格式预览",
+  languageLabel: "界面语言",
+  langZh: "中文",
+  langEn: "English",
+  clearList: "清空列表",
+  removeItem: "删除该项",
+  editList: "编辑列表",
+  listHintEmpty: "导入列表后，即可在此抽取姓名或内容",
+  colorPreview: "配色预览",
+  duplicateItemsWarning: "已自动去除重复项",
 };
 

@@ -1,542 +1,278 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<!-- prototype/wireframes.html v5.3.7 —— 组件库规范（与 index/prototypes 共享 tokens.css） -->
+<html lang="zh-CN" data-theme="default" data-mode="dark">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ZenDraw · 组件库规范 v5.3.6</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<style>
-/* ===== TOKENS — 与 index.html / prototypes.html / DESIGN-SYSTEM.md 一致 ===== */
-:root {
-  --bg:#fafbfc;--bg-subtle:#f4f5f7;--bg-elevated:#ffffff;--bg-muted:#eef0f4;
-  --fg:#1a1d23;--fg-secondary:#5a5f6b;--fg-tertiary:#8e939f;--fg-quaternary:#b4b8c2;
-  --border:#e2e5ea;--border-subtle:#eef0f4;--border-strong:#c4c8d0;--ring:#1a1d23;
-  --accent:#4f6ef7;--accent-fg:#ffffff;--accent-subtle:rgba(79,110,247,0.10);--accent-hover:#3b5ae0;--accent-soft:rgba(79,110,247,0.06);
-  --success:#22a06b;--success-subtle:rgba(34,160,107,0.10);
-  --warning:#e8a313;--warning-subtle:rgba(232,163,19,0.10);
-  --danger:#c9374b;--danger-subtle:rgba(201,55,75,0.10);
-  --info:#4f6ef7;--info-subtle:rgba(79,110,247,0.10);
-  --radius-xs:4px;--radius-sm:6px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-2xl:24px;--radius-full:9999px;
-  --space-05:2px;--space-1:4px;--space-1_5:6px;--space-2:8px;--space-2_5:10px;--space-3:12px;--space-3_5:14px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
-  --shadow-xs:0 1px 2px rgba(0,0,0,0.04);--shadow-sm:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);--shadow-md:0 4px 8px -2px rgba(0,0,0,0.08),0 2px 4px -2px rgba(0,0,0,0.04);--shadow-lg:0 12px 24px -6px rgba(0,0,0,0.10),0 4px 8px -4px rgba(0,0,0,0.06);--shadow-xl:0 24px 48px -12px rgba(0,0,0,0.14),0 8px 16px -8px rgba(0,0,0,0.08);--shadow-2xl:0 40px 80px -20px rgba(0,0,0,0.18);
-  --ease-out:cubic-bezier(0.16,1,0.3,1);--ease-in-out:cubic-bezier(0.65,0,0.35,1);
-  --dur-50:50ms;--dur-100:100ms;--dur-150:150ms;--dur-200:200ms;--dur-300:300ms;--dur-500:500ms;--dur-700:700ms;--dur-1000:1000ms;
-  --font-sans:'Inter','Noto Sans SC',system-ui,sans-serif;--font-mono:'JetBrains Mono',ui-monospace,monospace;
-  --text-xs:0.75rem;--text-sm:0.875rem;--text-base:1rem;--text-lg:1.125rem;--text-xl:1.25rem;--text-2xl:1.5rem;--text-3xl:1.875rem;--text-4xl:2.25rem;--text-5xl:3rem;
-}
-[data-theme="dark"]{--bg:#0c0d0f;--bg-subtle:#141519;--bg-elevated:#1a1c22;--bg-muted:#23252b;--fg:#e8eaed;--fg-secondary:#9ca0ab;--fg-tertiary:#6b7080;--fg-quaternary:#464b58;--border:#2e3038;--border-subtle:#23252b;--border-strong:#3e414b;--ring:#e8eaed;--accent:#6b87ff;--accent-fg:#0c0d0f;--accent-subtle:rgba(107,135,255,0.12);--accent-hover:#85a0ff;--accent-soft:rgba(107,135,255,0.06);--success:#2ec483;--success-subtle:rgba(46,196,131,0.12);--warning:#f5b820;--warning-subtle:rgba(245,184,32,0.12);--danger:#e05a6d;--danger-subtle:rgba(224,90,109,0.12);--shadow-xs:0 1px 2px rgba(0,0,0,0.3);--shadow-sm:0 1px 3px rgba(0,0,0,0.4);--shadow-md:0 4px 8px -2px rgba(0,0,0,0.5);--shadow-lg:0 12px 24px -6px rgba(0,0,0,0.6);--shadow-xl:0 24px 48px -12px rgba(0,0,0,0.7);--shadow-2xl:0 40px 80px -20px rgba(0,0,0,0.8);}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZenDraw｜禅抽 · 组件库规范 v5.3.7</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); background: var(--color-bg); color: var(--color-fg); min-height: 100vh; transition: background var(--dur) var(--ease), color var(--dur) var(--ease); }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-6); border-bottom: 1px solid var(--color-border); }
+    nav .brand { font-size: var(--text-lg); font-weight: 700; }
+    nav .brand span { color: var(--color-primary); }
+    nav .links { display: flex; gap: var(--space-4); align-items: center; }
+    nav a { color: var(--color-muted); text-decoration: none; font-size: var(--text-sm); }
+    nav a:hover { color: var(--color-fg); }
+    .theme-toggle { background: var(--color-surface); color: var(--color-fg); border: 1px solid var(--color-border); border-radius: var(--radius-pill); padding: var(--space-2) var(--space-4); font-size: var(--text-sm); cursor: pointer; font-family: inherit; }
+    .theme-toggle:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
-body{font-family:var(--font-sans);color:var(--fg);background:var(--bg);transition:background var(--dur-300),color var(--dur-300);}
-a{color:inherit;text-decoration:none;}
-button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
-ul,ol{list-style:none;}
-:focus-visible{outline:2px solid var(--ring);outline-offset:2px;border-radius:var(--radius-sm);}
+    main { max-width: 1080px; margin: 0 auto; padding: var(--space-8) var(--space-4); }
+    .intro { color: var(--color-muted); font-size: var(--text-base); margin: var(--space-3) 0 var(--space-8); line-height: 1.6; }
+    h1.page-title { font-size: var(--text-3xl); margin-bottom: var(--space-2); }
+    .section { margin-bottom: var(--space-8); }
+    .section h2 { font-size: var(--text-2xl); margin-bottom: var(--space-4); padding-bottom: var(--space-2); border-bottom: 1px solid var(--color-border); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-4); }
+    .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); box-shadow: var(--shadow-card); }
+    .card .label { font-size: var(--text-xs); color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-3); }
 
-.proto-nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:var(--space-4);padding:var(--space-3) var(--space-6);background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
-.proto-nav .brand{display:flex;align-items:center;gap:var(--space-2);font-weight:700;font-size:var(--text-lg);}
-.proto-nav .brand svg{color:var(--accent);}
-.proto-nav .nav-links{display:flex;gap:var(--space-1);margin-left:auto;flex-wrap:wrap;}
-.proto-nav .nav-links a{padding:var(--space-1_5) var(--space-3);border-radius:var(--radius-full);font-size:var(--text-sm);color:var(--fg-secondary);transition:all var(--dur-150);}
-.proto-nav .nav-links a:hover{background:var(--bg-muted);color:var(--fg);}
+    .btn { font-family: inherit; font-size: var(--text-base); font-weight: 600; border-radius: var(--radius-pill); padding: var(--space-3) var(--space-6); border: 1px solid transparent; cursor: pointer; transition: transform var(--dur-fast) var(--ease); }
+    .btn:active { transform: scale(0.97); }
+    .btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+    .btn-primary { background: var(--color-primary); color: var(--color-primary-fg); }
+    .btn-ghost { background: transparent; color: var(--color-fg); border-color: var(--color-border); }
 
-.section{max-width:1080px;margin:0 auto;padding:var(--space-16) var(--space-6);}
-.section h2{font-size:var(--text-3xl);font-weight:700;letter-spacing:-0.02em;margin-bottom:var(--space-2);}
-.section .lead{color:var(--fg-secondary);max-width:64ch;margin-bottom:var(--space-8);}
-.grid{display:grid;gap:var(--space-6);}
-.grid-2{grid-template-columns:repeat(2,1fr);}
-.grid-3{grid-template-columns:repeat(3,1fr);}
-.grid-4{grid-template-columns:repeat(4,1fr);}
-@media (max-width:768px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+    .switch { display: inline-flex; align-items: center; gap: var(--space-3); font-size: var(--text-sm); color: var(--color-muted); cursor: pointer; }
+    .switch .track { width: 42px; height: 24px; border-radius: var(--radius-pill); background: var(--color-border); position: relative; transition: background var(--dur) var(--ease); }
+    .switch .track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform var(--dur) var(--ease); }
+    .switch[aria-checked="true"] .track { background: var(--color-primary); }
+    .switch[aria-checked="true"] .track::after { transform: translateX(18px); }
+    .switch:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: var(--radius-sm); }
 
-.wf{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);box-shadow:var(--shadow-sm);}
-.wf .wf-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-subtle);padding:2px var(--space-2);border-radius:var(--radius-full);margin-bottom:var(--space-4);}
-.wf .wf-title{font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-1);}
-.wf .wf-desc{font-size:var(--text-sm);color:var(--fg-secondary);margin-bottom:var(--space-4);}
-.stage{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;padding:var(--space-4);background:var(--bg-subtle);border-radius:var(--radius-lg);min-height:80px;}
-.code-spec{margin-top:var(--space-4);font-family:var(--font-mono);font-size:var(--text-xs);color:var(--fg-tertiary);background:var(--bg-subtle);border-radius:var(--radius-md);padding:var(--space-3);white-space:pre-wrap;line-height:1.6;}
+    .checkbox { display: inline-flex; align-items: center; gap: var(--space-3); font-size: var(--text-sm); color: var(--color-muted); cursor: pointer; }
+    .checkbox .box { width: 20px; height: 20px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-bg); display: inline-flex; align-items: center; justify-content: center; transition: all var(--dur) var(--ease); }
+    .checkbox[aria-checked="true"] .box { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-primary-fg); }
+    .checkbox:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: var(--radius-sm); }
 
-/* tokens reused */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);font-weight:600;border-radius:var(--radius-full);transition:all var(--dur-200) var(--ease-out);white-space:nowrap;}
-.btn:active{transform:scale(0.97);}
-.btn-primary{background:var(--accent);color:var(--accent-fg);padding:var(--space-3) var(--space-6);}
-.btn-primary:hover{transform:translateY(-1px);}
-.btn-secondary{background:var(--bg-muted);color:var(--fg);padding:var(--space-3) var(--space-5);}
-.btn-secondary:hover{background:var(--bg-elevated);}
-.btn-ghost{background:transparent;color:var(--fg-secondary);padding:var(--space-2) var(--space-3);}
-.btn-ghost:hover{background:var(--bg-muted);color:var(--fg);}
-.btn:disabled{opacity:0.4;cursor:not-allowed;}
-.input{padding:var(--space-2_5) var(--space-3);background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-md);width:100%;}
-.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
-.input.error{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-subtle);}
-.input:disabled{opacity:0.5;background:var(--bg-muted);cursor:not-allowed;}
-.field{display:flex;flex-direction:column;gap:var(--space-2);width:100%;max-width:240px;}
-.field label{font-size:var(--text-sm);font-weight:500;color:var(--fg-secondary);}
-.input-msg{font-size:var(--text-xs);color:var(--danger);}
-.switch{width:44px;height:26px;background:var(--bg-muted);border-radius:var(--radius-full);position:relative;cursor:pointer;flex-shrink:0;transition:background var(--dur-200);}
-.switch.active{background:var(--accent);}
-.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:var(--shadow-sm);transition:transform var(--dur-200);}
-.switch.active::after{transform:translateX(18px);}
-.checkbox{width:20px;height:20px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;transition:all var(--dur-150);cursor:pointer;background:var(--bg-elevated);}
-.checkbox.active{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);}
-.badge{display:inline-flex;align-items:center;padding:2px var(--space-2_5);border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:600;}
-.badge-accent{background:var(--accent-subtle);color:var(--accent);}
-.badge-success{background:var(--success-subtle);color:var(--success);}
-.badge-danger{background:var(--danger-subtle);color:var(--danger);}
-.badge-neutral{background:var(--bg-muted);color:var(--fg-secondary);}
-.card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-5);box-shadow:var(--shadow-xs);}
-.card .card-title{font-weight:600;margin-bottom:var(--space-1);}
-.card .card-desc{font-size:var(--text-sm);color:var(--fg-secondary);}
-.alert{display:flex;gap:var(--space-3);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);font-size:var(--text-sm);align-items:flex-start;}
-.alert svg{margin-top:1px;flex-shrink:0;}
-.alert-danger{background:var(--danger-subtle);color:var(--danger);}
-.alert-success{background:var(--success-subtle);color:var(--success);}
-.sep{height:1px;background:var(--border);width:100%;}
-.slider{-webkit-appearance:none;appearance:none;width:200px;height:6px;border-radius:var(--radius-full);background:var(--bg-muted);outline:none;}
-.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:var(--shadow-sm);cursor:pointer;}
-.slider::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:var(--accent);cursor:pointer;}
-.slider:disabled{opacity:0.5;cursor:not-allowed;}
-.tabs{display:flex;gap:var(--space-1);padding:var(--space-1);background:var(--bg-subtle);border-radius:var(--radius-lg);width:fit-content;}
-.tab{padding:var(--space-2) var(--space-4);border-radius:var(--radius-md);font-size:var(--text-sm);font-weight:500;color:var(--fg-secondary);transition:all var(--dur-150);cursor:pointer;}
-.tab.active{background:var(--bg-elevated);color:var(--fg);box-shadow:var(--shadow-xs);}
-.icon-btn{width:40px;height:40px;border-radius:var(--radius-md);background:var(--bg-muted);color:var(--fg-secondary);display:flex;align-items:center;justify-content:center;transition:all var(--dur-150);}
-.icon-btn:hover{background:var(--bg-elevated);color:var(--fg);}
-.tip{position:relative;}
-.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--fg);color:var(--bg);padding:var(--space-1) var(--space-2);border-radius:var(--radius-sm);font-size:var(--text-xs);white-space:nowrap;opacity:0;pointer-events:none;transition:all var(--dur-150) var(--ease-out);}
-.tip:hover::after,.tip:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast-wrap{position:fixed;bottom:var(--space-6);left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:var(--space-2);align-items:center;}
-.toast{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-3) var(--space-4);background:var(--fg);color:var(--bg);border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:500;box-shadow:var(--shadow-lg);animation:toastIn var(--dur-300) var(--ease-out);}
-@keyframes toastIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .select { position: relative; display: inline-block; }
+    .select .trigger { font-family: inherit; font-size: var(--text-sm); background: var(--color-bg); color: var(--color-fg); border: 1px solid var(--color-border); border-radius: var(--radius-pill); padding: var(--space-3) var(--space-5); cursor: pointer; }
+    .select .trigger:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+    .select .menu { list-style: none; position: absolute; top: calc(100% + var(--space-2)); left: 0; min-width: 160px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-2); box-shadow: var(--shadow-float); z-index: 10; }
+    .select .menu li { padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); font-size: var(--text-sm); cursor: pointer; }
+    .select .menu li:hover, .select .menu li[aria-selected="true"] { background: var(--color-primary); color: var(--color-primary-fg); }
+    .select .menu[hidden] { display: none; }
 
-/* Select (real dropdown + outside close) */
-.select{position:relative;width:200px;}
-.select-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:var(--space-2_5) var(--space-3);background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-md);cursor:pointer;font-size:var(--text-sm);}
-.select-trigger:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
-.select-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);padding:var(--space-1);z-index:20;display:none;}
-.select-menu.open{display:block;animation:toastIn var(--dur-150) var(--ease-out);}
-.select-item{padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);font-size:var(--text-sm);cursor:pointer;}
-.select-item:hover{background:var(--bg-muted);}
-.select-item.active{color:var(--accent);font-weight:600;}
+    .slider { width: 100%; max-width: 260px; }
+    .slider input[type="range"] { width: 100%; accent-color: var(--color-primary); }
+    .slider .val { font-size: var(--text-sm); color: var(--color-muted); font-variant-numeric: tabular-nums; }
 
-/* Sheet (real drawer) */
-.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;display:none;animation:fadeIn var(--dur-200) var(--ease-out);}
-.sheet-overlay.open{display:block;}
-.sheet{position:fixed;top:0;right:0;height:100%;width:min(360px,90vw);background:var(--bg-elevated);border-left:1px solid var(--border);box-shadow:var(--shadow-xl);transform:translateX(100%);transition:transform var(--dur-300) var(--ease-out);z-index:201;padding:var(--space-6);overflow-y:auto;}
-.sheet.open{transform:translateX(0);}
-.sheet h3{font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+    .dialog-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 40; }
+    .dialog-backdrop[hidden] { display: none; }
+    .dialog { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); max-width: 360px; box-shadow: var(--shadow-float); }
+    .dialog h3 { font-size: var(--text-xl); margin-bottom: var(--space-3); }
+    .dialog p { color: var(--color-muted); font-size: var(--text-sm); margin-bottom: var(--space-5); }
 
-/* Dialog */
-.dialog-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:200;animation:fadeIn var(--dur-200) var(--ease-out);}
-.dialog{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);width:min(420px,90vw);box-shadow:var(--shadow-xl);}
-.dialog h3{font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-2);}
-.dialog p{font-size:var(--text-sm);color:var(--fg-secondary);margin-bottom:var(--space-5);}
-.dialog .actions{display:flex;gap:var(--space-2);justify-content:flex-end;}
+    .frame-switch { display: flex; gap: var(--space-2); margin-bottom: var(--space-4); }
+    .frame-switch button { font-family: inherit; font-size: var(--text-sm); padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-fg); cursor: pointer; }
+    .frame-switch button.active { border-color: var(--color-primary); color: var(--color-primary); font-weight: 700; }
+    .frame-switch button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+    .viewport { border: 1px dashed var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); overflow: auto; transition: max-width var(--dur) var(--ease); margin: 0 auto; }
+    .viewport .placeholder { text-align: center; color: var(--color-muted); font-size: var(--text-sm); padding: var(--space-8) 0; }
 
-/* Business comps */
-.history-item{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-subtle);}
-.history-item .nums{font-family:var(--font-mono);font-weight:600;color:var(--accent);}
-.history-item .time{margin-left:auto;font-size:var(--text-xs);color:var(--fg-tertiary);}
-.result-num{font-family:var(--font-mono);font-weight:700;font-size:var(--text-5xl);letter-spacing:-0.04em;}
-.swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--space-2);}
-.swatch{aspect-ratio:1.6;border-radius:var(--radius-md);}
-.draw-circle{width:120px;height:120px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:var(--text-lg);box-shadow:0 8px 24px var(--accent-subtle);}
-
-/* Do/Don't */
-.dodont{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);}
-@media(max-width:768px){.dodont{grid-template-columns:1fr;}}
-.do,.dont{border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-4);}
-.do{border-left:4px solid var(--success);}
-.dont{border-left:4px solid var(--danger);}
-.do h4,.dont h4{font-size:var(--text-sm);font-weight:700;margin-bottom:var(--space-2);}
-.do h4{color:var(--success);}.dont h4{color:var(--danger);}
-.do p,.dont p{font-size:var(--text-sm);color:var(--fg-secondary);}
-.divider{height:1px;background:var(--border);margin:var(--space-8) 0;}
-.badge-sec{display:inline-flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);font-weight:600;padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);background:var(--bg-muted);color:var(--fg-secondary);margin-bottom:var(--space-4);}
-.footer{border-top:1px solid var(--border);padding:var(--space-8) var(--space-6);text-align:center;color:var(--fg-tertiary);font-size:var(--text-sm);}
-@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;}}
-</style>
+    footer { text-align: center; padding: var(--space-4); color: var(--color-muted); font-size: var(--text-xs); border-top: 1px solid var(--color-border); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+  </style>
 </head>
 <body>
-
-<nav class="proto-nav">
-  <div class="brand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>ZenDraw <span style="color:var(--fg-tertiary);font-weight:400;font-size:var(--text-sm)">v5.3.6 组件库</span></div>
-  <div class="nav-links">
-    <a href="./index.html">原型总览</a>
-    <a href="./prototypes.html">视觉稿</a>
-    <a href="#base">基础组件</a>
-    <a href="#composite">复合组件</a>
-    <a href="#business">业务组件</a>
-    <a href="#rules">使用规则</a>
-  </div>
-</nav>
-
-<section class="section" style="text-align:center;padding-top:var(--space-20)">
-  <span class="badge badge-accent" style="margin-bottom:var(--space-4)">Component Library Spec</span>
-  <h1 style="font-size:clamp(2.5rem,7vw,4rem);font-weight:800;letter-spacing:-0.03em">组件库规范</h1>
-  <p class="lead" style="margin:var(--space-4) auto var(--space-8)">基础 / 复合 / 业务 三级组件分级 · 统一令牌 · 真实可交互示例 · 8 条使用规则（Do / Don't）</p>
-</section>
-
-<div class="divider"></div>
-
-<!-- ============ BASE ============ -->
-<section class="section" id="base">
-  <span class="badge-sec">Level 1 · 基础组件</span>
-  <h2>基础组件 Primitives</h2>
-  <p class="lead">原子级元素，无业务语义，可自由组合。所有尺寸遵循 4px 栅格。</p>
-  <div class="grid grid-2">
-
-    <div class="wf">
-      <span class="wf-tag">Button</span>
-      <div class="wf-title">按钮</div>
-      <div class="wf-desc">主/次/幽灵三档；最小触控 44px；圆角 full。</div>
-      <div class="stage">
-        <button class="btn btn-primary">抽取</button>
-        <button class="btn btn-secondary">取消</button>
-        <button class="btn btn-ghost">更多</button>
-        <button class="btn btn-primary" disabled>禁用</button>
-      </div>
-      <div class="code-spec">height ≥ 44px · radius: --radius-full
-.btn-primary  { bg: --accent; color: --accent-fg }
-.btn-secondary{ bg: --bg-muted; color: --fg }
-.btn-ghost    { bg: transparent }</div>
+  <nav aria-label="主导航">
+    <div class="brand">Zen<span>Draw</span>｜禅抽</div>
+    <div class="links">
+      <a href="index.html">主流程</a>
+      <a href="prototypes.html">状态机</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换深浅色">🌓 深浅色</button>
     </div>
+  </nav>
 
-    <div class="wf">
-      <span class="wf-tag">Input</span>
-      <div class="wf-title">输入框</div>
-      <div class="wf-desc">含 Default / Error / Disabled 三态。</div>
-      <div class="stage" style="flex-direction:column;align-items:stretch">
-        <div class="field"><label>最小值 Min</label><input class="input" value="1" /></div>
-        <div class="field"><label>最大值 Max（错误态）</label><input class="input error" value="0" /><span class="input-msg">最大值需大于最小值</span></div>
-        <div class="field"><label>名单（禁用）</label><input class="input" value="只读" disabled /></div>
+  <main aria-label="组件库规范">
+    <h1 class="page-title">组件库规范</h1>
+    <p class="intro">ZenDraw 全部 UI 组件的设计基准。所有组件均支持键盘操作并带焦点可见样式（见各组件 a11y 标注）。</p>
+
+    <section class="section">
+      <h2>按钮 Button</h2>
+      <div class="grid">
+        <div class="card"><div class="label">主操作</div><button class="btn btn-primary">开始抽取</button></div>
+        <div class="card"><div class="label">次要</div><button class="btn btn-ghost">查看历史</button></div>
       </div>
-      <div class="code-spec">border: 1px --border-subtle → focus: --accent + ring 3px --accent-subtle
-error: --danger border + ring 3px --danger-subtle</div>
-    </div>
+    </section>
 
-    <div class="wf">
-      <span class="wf-tag">Switch / Checkbox</span>
-      <div class="wf-title">开关与勾选</div>
-      <div class="wf-desc">44px 触控；aria-checked 同步。</div>
-      <div class="stage">
-        <div style="display:flex;align-items:center;gap:var(--space-2)"><div class="switch active" role="switch" aria-checked="true" tabindex="0" onclick="this.classList.toggle('active');this.setAttribute('aria-checked',this.classList.contains('active'))"></div><span style="font-size:var(--text-sm)">允许重复</span></div>
-        <div style="display:flex;align-items:center;gap:var(--space-2)"><div class="checkbox active" role="checkbox" aria-checked="true" tabindex="0" onclick="this.classList.toggle('active');this.setAttribute('aria-checked',this.classList.contains('active'))"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><span style="font-size:var(--text-sm)">自动隐藏</span></div>
-      </div>
-      <div class="code-spec">Switch: 44×26px, knob 20px, translateX 18px --accent
-Checkbox: 20px, --radius-sm, active bg --accent</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">Badge</span>
-      <div class="wf-title">标记</div>
-      <div class="wf-desc">状态/分类标签。</div>
-      <div class="stage">
-        <span class="badge badge-accent">抽取中</span>
-        <span class="badge badge-success">已完成</span>
-        <span class="badge badge-danger">错误</span>
-        <span class="badge badge-neutral">历史</span>
-      </div>
-      <div class="code-spec">radius: --radius-full · font 12px/600
-accent/success/danger → 对应语义色 --*-subtle 底 + 实色字</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">Tabs</span>
-      <div class="wf-title">选项卡</div>
-      <div class="wf-desc">分段控件样式。</div>
-      <div class="stage">
-        <div class="tabs"><div class="tab active">抽取</div><div class="tab" onclick="switchTab(this)">外观</div><div class="tab" onclick="switchTab(this)">历史</div></div>
-      </div>
-      <div class="code-spec">容器 bg --bg-subtle radius --radius-lg
-active tab: bg --bg-elevated + shadow-xs</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">Slider</span>
-      <div class="wf-title">滑块（可拖动 + 实时数值）</div>
-      <div class="wf-desc">真实交互：拖动更新数值文本；含禁用态。</div>
-      <div class="stage" style="flex-direction:column;align-items:stretch">
-        <div class="field" style="max-width:none">
-          <label>动画时长 <span class="mono" id="wf-dur" style="color:var(--accent)">5s</span></label>
-          <input type="range" class="slider" min="1" max="30" value="5" oninput="document.getElementById('wf-dur').textContent=this.value+'s'" />
+    <section class="section">
+      <h2>开关 Switch（role=switch，Enter/Space 切换）</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">开启</div>
+          <span class="switch" role="switch" aria-checked="true" tabindex="0" data-switch><span class="track" aria-hidden="true"></span><span>音效</span></span>
         </div>
-        <div class="field" style="max-width:none;margin-top:var(--space-2)">
-          <label>禁用滑块</label>
-          <input type="range" class="slider" min="1" max="30" value="5" disabled />
+        <div class="card">
+          <div class="label">关闭</div>
+          <span class="switch" role="switch" aria-checked="false" tabindex="0" data-switch><span class="track" aria-hidden="true"></span><span>音效</span></span>
         </div>
       </div>
-      <div class="code-spec">track 6px --bg-muted · thumb 18px --accent
-oninput → 实时更新绑定数值元素</div>
-    </div>
+    </section>
 
-    <div class="wf">
-      <span class="wf-tag">Tooltip / Separator</span>
-      <div class="wf-title">提示与分隔</div>
-      <div class="wf-desc">hover/focus 浮现；Separator 1px。</div>
-      <div class="stage">
-        <button class="icon-btn tip" data-tip="复制结果" onclick="toast('已复制')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-        <button class="icon-btn tip" data-tip="清空历史" onclick="toast('已清空')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
-      </div>
-      <div class="sep" style="margin-top:var(--space-4)"></div>
-      <div class="code-spec">Tooltip: bottom +8px, bg --fg color --bg, opacity 0→1
-Separator: height 1px --border</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">Alert</span>
-      <div class="wf-title">警告提示</div>
-      <div class="wf-desc">Error / Success / Info 三态。</div>
-      <div class="stage" style="flex-direction:column;align-items:stretch">
-        <div class="alert alert-danger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>范围无效，请检查参数</span></div>
-        <div class="alert alert-success"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>抽取完成，结果已保存</span></div>
-      </div>
-      <div class="code-spec">icon + text, radius --radius-md, bg --*-subtle</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">Card</span>
-      <div class="wf-title">卡片</div>
-      <div class="wf-desc">内容容器。</div>
-      <div class="stage"><div class="card" style="flex:1"><div class="card-title">快速抽取</div><div class="card-desc">从 1–100 随机抽 5 个不重复数字</div></div></div>
-      <div class="code-spec">bg --bg-elevated, border 1px --border, radius --radius-lg, shadow-xs</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">Dialog</span>
-      <div class="wf-title">对话框（真实模态）</div>
-      <div class="wf-desc">点击打开；点击遮罩或取消关闭。</div>
-      <div class="stage"><button class="btn btn-secondary" onclick="openDialog()">打开确认框</button></div>
-      <div class="code-spec">overlay rgba(0,0,0,.4) · dialog radius --radius-xl shadow-xl
-role="dialog" aria-modal="true"</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">Label</span>
-      <div class="wf-title">标签 Label</div>
-      <div class="wf-desc">表单字段说明。</div>
-      <div class="stage"><label style="font-size:var(--text-sm);font-weight:500;color:var(--fg-secondary)">抽取数量 Quantity</label></div>
-      <div class="code-spec">font 14px/500 --fg-secondary, 与 input 间距 --space-2</div>
-    </div>
-
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ============ COMPOSITE ============ -->
-<section class="section" id="composite">
-  <span class="badge-sec">Level 2 · 复合组件</span>
-  <h2>复合组件 Composite</h2>
-  <p class="lead">由基础组件组合，封装交互逻辑（下拉、抽屉、设置面板）。</p>
-  <div class="grid grid-2">
-
-    <div class="wf">
-      <span class="wf-tag">Form</span>
-      <div class="wf-title">表单</div>
-      <div class="wf-desc">Label + Input + 校验信息垂直堆叠。</div>
-      <div class="stage" style="flex-direction:column;align-items:stretch">
-        <div class="field" style="max-width:none"><label>最小值</label><input class="input" value="1" /></div>
-        <div class="field" style="max-width:none"><label>最大值</label><input class="input" value="100" /></div>
-        <button class="btn btn-primary" style="align-self:flex-start" onclick="toast('已应用')">应用</button>
-      </div>
-      <div class="code-spec">field gap --space-2 · label 14px/500 · input 100% 宽</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">Select</span>
-      <div class="wf-title">下拉选择（点击外部关闭）</div>
-      <div class="wf-desc">真实下拉菜单，点击空白处自动收起。</div>
-      <div class="stage">
-        <div class="select" id="wf-select">
-          <div class="select-trigger" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false" onclick="toggleSelect(this)">5 个 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
-          <div class="select-menu"><div class="select-item" onclick="pickSelect(this,5)">5 个</div><div class="select-item" onclick="pickSelect(this,10)">10 个</div><div class="select-item" onclick="pickSelect(this,20)">20 个</div></div>
+    <section class="section">
+      <h2>复选框 Checkbox（role=checkbox，Enter/Space 切换）</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">已选</div>
+          <span class="checkbox" role="checkbox" aria-checked="true" tabindex="0" data-checkbox><span class="box" aria-hidden="true">✓</span><span>允许重复</span></span>
+        </div>
+        <div class="card">
+          <div class="label">未选</div>
+          <span class="checkbox" role="checkbox" aria-checked="false" tabindex="0" data-checkbox><span class="box" aria-hidden="true"></span><span>允许重复</span></span>
         </div>
       </div>
-      <div class="code-spec">menu display none→block; document click 关闭非目标
-aria-expanded 同步</div>
-    </div>
+    </section>
 
-    <div class="wf">
-      <span class="wf-tag">Sheet</span>
-      <div class="wf-title">抽屉（移动端侧滑覆盖）</div>
-      <div class="wf-desc">真实演示：点击齿轮从右侧滑出设置面板，遮罩点击关闭。</div>
-      <div class="stage">
-        <button class="icon-btn tip" data-tip="打开设置" onclick="openSheet()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
-      </div>
-      <div class="code-spec">position fixed right:0, width min(360px,90vw)
-transform translateX(100%)→0, dur --dur-300</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">Settings Panel</span>
-      <div class="wf-title">设置面板</div>
-      <div class="wf-desc">Switch + Slider + Select 组合的复合面板（在 Sheet 内呈现）。</div>
-      <div class="stage" style="flex-direction:column;align-items:stretch;gap:var(--space-3)">
-        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:var(--text-sm)">允许重复</span><div class="switch active" role="switch" aria-checked="true" tabindex="0" onclick="this.classList.toggle('active');this.setAttribute('aria-checked',this.classList.contains('active'))"></div></div>
-        <div class="field" style="max-width:none"><label>动画时长 <span class="mono" id="wf-dur2" style="color:var(--accent)">5s</span></label><input type="range" class="slider" min="1" max="30" value="5" oninput="document.getElementById('wf-dur2').textContent=this.value+'s'" /></div>
-      </div>
-      <div class="code-spec">面板内控件间距 --space-3 · 两端对齐行布局</div>
-    </div>
-
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ============ BUSINESS ============ -->
-<section class="section" id="business">
-  <span class="badge-sec">Level 3 · 业务组件</span>
-  <h2>业务组件 Business</h2>
-  <p class="lead">承载 ZenDraw 核心抽签语义，组合基础与复合组件而成。</p>
-  <div class="grid grid-2">
-
-    <div class="wf">
-      <span class="wf-tag">DrawDisplay</span>
-      <div class="wf-title">抽签展示</div>
-      <div class="wf-desc">大号数字滚动显示区域。</div>
-      <div class="stage" style="justify-content:center">
-        <div class="result-num">42</div>
-      </div>
-      <div class="code-spec">font --font-mono 700, clamp(3rem,12vw,6rem)
-rolling 态 color --accent</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">DrawCircle</span>
-      <div class="wf-title">抽取按钮</div>
-      <div class="wf-desc">核心 CTA，圆形脉冲。</div>
-      <div class="stage" style="justify-content:center">
-        <div class="draw-circle">抽取</div>
-      </div>
-      <div class="code-spec">120–200px 圆, bg --accent, ::before pulse 2s</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">HistoryList</span>
-      <div class="wf-title">历史记录</div>
-      <div class="wf-desc">逐条展示抽取结果与时间。</div>
-      <div class="stage" style="flex-direction:column;align-items:stretch">
-        <div class="history-item"><span class="nums">07 · 23 · 58 · 73 · 94</span><span class="time">14:32</span></div>
-        <div class="history-item"><span class="nums">03 · 19 · 42 · 66 · 88</span><span class="time">14:28</span></div>
-      </div>
-      <div class="code-spec">item: border + radius --radius-md + bg --bg-subtle</div>
-    </div>
-
-    <div class="wf">
-      <span class="wf-tag">ThemeSwatches</span>
-      <div class="wf-title">主题选择器（11 套）</div>
-      <div class="wf-desc">11 色网格，点击切换 accent。</div>
-      <div class="stage">
-        <div class="swatches">
-          <div class="swatch" style="background:#4f6ef7"></div><div class="swatch" style="background:#00b4d8"></div><div class="swatch" style="background:#2d8a4e"></div><div class="swatch" style="background:#e07c3c"></div><div class="swatch" style="background:#7b2d8e"></div><div class="swatch" style="background:#ff2d55"></div><div class="swatch" style="background:#ff8fab"></div><div class="swatch" style="background:#6b6bd6"></div><div class="swatch" style="background:#a67c52"></div><div class="swatch" style="background:#33ff33"></div><div class="swatch" style="background:#c93d5f"></div>
+    <section class="section">
+      <h2>选择器 Select（button + listbox 模式）</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">主题</div>
+          <div class="select">
+            <button class="trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="selLabel" id="selTrigger">默认</button>
+            <ul class="menu" role="listbox" aria-label="主题" id="selMenu" hidden>
+              <li role="option" aria-selected="true" data-val="default">默认</li>
+              <li role="option" aria-selected="false" data-val="ocean">海蓝</li>
+              <li role="option" aria-selected="false" data-val="rose">玫瑰红</li>
+            </ul>
+          </div>
         </div>
       </div>
-      <div class="code-spec">grid 6 列, aspect 1.6, active border --fg 2px</div>
-    </div>
+    </section>
 
-    <div class="wf">
-      <span class="wf-tag">CelebrationEffect</span>
-      <div class="wf-title">庆祝动效</div>
-      <div class="wf-desc">结果揭晓时 Canvas 彩屑（见 prototypes.html ③）。</div>
-      <div class="stage" style="justify-content:center"><button class="btn btn-primary" onclick="toast('庆祝动效请见视觉稿')">查看演示</button></div>
-      <div class="code-spec">canvas 90 片 accent+多色, 3000ms 衰减</div>
-    </div>
+    <section class="section">
+      <h2>滑块 Slider（input[type=range]，含 aria-valuenow）</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">数量</div>
+          <div class="slider">
+            <input type="range" min="1" max="10" value="5" id="rangeInput"
+                   aria-label="抽签数量" aria-valuemin="1" aria-valuemax="10" aria-valuenow="5" />
+            <div class="val">当前：<span id="rangeVal">5</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <div class="wf">
-      <span class="wf-tag">Toast</span>
-      <div class="wf-title">轻提示</div>
-      <div class="wf-desc">底部居中浮层，2s 自动消失。</div>
-      <div class="stage" style="justify-content:center"><button class="btn btn-secondary" onclick="toast('操作成功')">触发 Toast</button></div>
-      <div class="code-spec">bg --fg color --bg, radius --radius-full, shadow-lg</div>
-    </div>
+    <section class="section">
+      <h2>对话框 Dialog（role=dialog，Esc 关闭）</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">演示</div>
+          <button class="btn btn-ghost" id="openDialog">打开对话框</button>
+        </div>
+      </div>
+      <div class="dialog-backdrop" id="dialogBackdrop" hidden>
+        <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle" aria-describedby="dlgDesc">
+          <h3 id="dlgTitle">确认操作</h3>
+          <p id="dlgDesc">这是 ZenDraw 对话框组件的规范示例。</p>
+          <button class="btn btn-primary" id="closeDialog">知道了</button>
+        </div>
+      </div>
+    </section>
 
-  </div>
-</section>
+    <section class="section">
+      <h2>响应式预览（真机视图切换）</h2>
+      <div class="frame-switch" role="group" aria-label="设备视图切换">
+        <button data-w="375" class="active">375 手机</button>
+        <button data-w="768">768 平板</button>
+        <button data-w="1280">1280 桌面</button>
+      </div>
+      <div class="viewport" id="viewport" style="max-width:375px">
+        <div class="placeholder">📱 当前视图宽度：<span id="vpW">375</span>px<br>切换上方按钮预览不同断点布局</div>
+      </div>
+    </section>
+  </main>
 
-<div class="divider"></div>
+  <footer>ZenDraw｜禅抽 v5.3.7 · 组件库规范 · 设计令牌见 tokens.css</footer>
 
-<!-- ============ RULES ============ -->
-<section class="section" id="rules">
-  <h2>组件使用规则</h2>
-  <p class="lead">8 条核心规范，覆盖圆角层级、栅格、触控、间距与状态。</p>
-  <div class="grid grid-2">
+  <script>
+    (function () {
+      var themeToggle = document.getElementById('themeToggle');
+      try {
+        var saved = JSON.parse(localStorage.getItem('zd-theme') || '{}');
+        if (saved.theme) document.documentElement.setAttribute('data-theme', saved.theme);
+        if (saved.mode) document.documentElement.setAttribute('data-mode', saved.mode);
+      } catch (e) {}
 
-    <div class="dodont">
-      <div class="do"><h4>✓ Do</h4><p>圆角分层：卡片/面板用 --radius-lg/xl，按钮/标签用 --radius-full，输入框用 --radius-md。</p></div>
-      <div class="dont"><h4>✗ Don't</h4><p>混用随机 px 圆角，如卡片用 10px、按钮用 4px，破坏统一感。</p></div>
-    </div>
-    <div class="dodont">
-      <div class="do"><h4>✓ Do</h4><p>间距严格走 4px 栅格（--space-2/3/4/6…），组件内边距 ≥ --space-4。</p></div>
-      <div class="dont"><h4>✗ Don't</h4><p>使用 5px / 7px 等非栅格间距，导致基线错位。</p></div>
-    </div>
-    <div class="dodont">
-      <div class="do"><h4>✓ Do</h4><p>所有可点击元素最小触控目标 ≥ 44×44px（图标按钮至少 40px 且留白）。</p></div>
-      <div class="dont"><h4>✗ Don't</h4><p>将图标按钮缩到 24px 且无内边距，移动端难以点击。</p></div>
-    </div>
-    <div class="dodont">
-      <div class="do"><h4>✓ Do</h4><p>状态反馈闭环：Hover 上浮、Focus 焦点环、Active scale .97、Disabled opacity .4。</p></div>
-      <div class="dont"><h4>✗ Don't</h4><p>仅做 hover 变色，忽略焦点可见性（键盘用户无法定位）。</p></div>
-    </div>
-    <div class="dodont">
-      <div class="do"><h4>✓ Do</h4><p>表单错误态：红框 + 图标 + 文案三件套，文案指出如何修正。</p></div>
-      <div class="dont"><h4>✗ Don't</h4><p>仅用红色文字提示，无边框/图标，弱视用户难以察觉。</p></div>
-    </div>
-    <div class="dodont">
-      <div class="do"><h4>✓ Do</h4><p>语义色来自令牌（--success/--danger/--warning），不硬编码 hex。</p></div>
-      <div class="dont"><h4>✗ Don't</h4><p>在组件内写死 #22c55e 等具体色值，破坏主题一致性。</p></div>
-    </div>
-    <div class="dodont">
-      <div class="do"><h4>✓ Do</h4><p>业务组件组合基础/复合组件，不重复造底层样式。</p></div>
-      <div class="dont"><h4>✗ Don't</h4><p>在 DrawDisplay 内重新定义按钮样式而非复用 .btn。</p></div>
-    </div>
-    <div class="dodont">
-      <div class="do"><h4>✓ Do</h4><p>动效时长取自 --dur-200/300，长动效 ≤ --dur-700，并尊重 prefers-reduced-motion。</p></div>
-      <div class="dont"><h4>✗ Don't</h4><p>使用 1200ms 以上无意义的位移动画，拖慢感知。</p></div>
-    </div>
+      themeToggle.addEventListener('click', function () {
+        var cur = document.documentElement.getAttribute('data-mode');
+        var next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-mode', next);
+        try {
+          var sv = JSON.parse(localStorage.getItem('zd-theme') || '{}');
+          sv.mode = next; localStorage.setItem('zd-theme', JSON.stringify(sv));
+        } catch (e) {}
+      });
 
-  </div>
-</section>
+      // Switch 键盘可达
+      document.querySelectorAll('[data-switch]').forEach(function (el) {
+        function toggle() { el.setAttribute('aria-checked', el.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); }
+        el.addEventListener('click', toggle);
+        el.addEventListener('keydown', function (e) { if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); toggle(); } });
+      });
 
-<div class="footer">ZenDraw · 禅抽 — 组件库规范 v5.3.6 · 与 index.html / prototypes.html / DESIGN-SYSTEM.md 令牌一致</div>
+      // Checkbox 键盘可达
+      document.querySelectorAll('[data-checkbox]').forEach(function (el) {
+        function toggle() { el.setAttribute('aria-checked', el.getAttribute('aria-checked') === 'true' ? 'false' : 'true'); }
+        el.addEventListener('click', toggle);
+        el.addEventListener('keydown', function (e) { if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); toggle(); } });
+      });
 
-<div class="toast-wrap" id="toast-wrap"></div>
-<div class="sheet-overlay" id="sheet-overlay" onclick="if(event.target===this)closeSheet()">
-  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="设置">
-    <h3>设置 Settings</h3>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4)"><span style="font-size:var(--text-sm)">允许重复</span><div class="switch active" role="switch" aria-checked="true" tabindex="0" onclick="this.classList.toggle('active');this.setAttribute('aria-checked',this.classList.contains('active'))"></div></div>
-    <div class="field" style="max-width:none;margin-bottom:var(--space-4)"><label>动画时长 <span class="mono" id="sheet-dur" style="color:var(--accent)">5s</span></label><input type="range" class="slider" min="1" max="30" value="5" oninput="document.getElementById('sheet-dur').textContent=this.value+'s'" /></div>
-    <div class="field" style="max-width:none;margin-bottom:var(--space-5)">
-      <label>抽取数量</label>
-      <div class="select" id="sheet-select"><div class="select-trigger" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false" onclick="toggleSelect(this)">5 个 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div><div class="select-menu"><div class="select-item" onclick="pickSelect(this,5)">5 个</div><div class="select-item" onclick="pickSelect(this,10)">10 个</div><div class="select-item" onclick="pickSelect(this,20)">20 个</div></div></div>
-    </div>
-    <button class="btn btn-primary" style="width:100%" onclick="closeSheet();toast('设置已保存')">完成</button>
-  </div>
-</div>
-<div id="dialog-root"></div>
+      // Select listbox
+      var selTrigger = document.getElementById('selTrigger');
+      var selMenu = document.getElementById('selMenu');
+      selTrigger.addEventListener('click', function () {
+        var open = selMenu.hasAttribute('hidden');
+        if (open) { selMenu.removeAttribute('hidden'); selTrigger.setAttribute('aria-expanded', 'true'); }
+        else { selMenu.setAttribute('hidden', ''); selTrigger.setAttribute('aria-expanded', 'false'); }
+      });
+      selMenu.querySelectorAll('[role="option"]').forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          selMenu.querySelectorAll('[role="option"]').forEach(function (o) { o.setAttribute('aria-selected', 'false'); });
+          opt.setAttribute('aria-selected', 'true');
+          selTrigger.textContent = opt.textContent;
+          selMenu.setAttribute('hidden', '');
+          selTrigger.setAttribute('aria-expanded', 'false');
+        });
+      });
+      document.addEventListener('click', function (e) {
+        if (!selTrigger.contains(e.target) && !selMenu.contains(e.target)) {
+          selMenu.setAttribute('hidden', ''); selTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
 
-<script>
-function switchTab(el){el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
-function toast(msg){const w=document.getElementById('toast-wrap');const t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>'+msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(20px)';setTimeout(()=>t.remove(),300);},2000);}
+      // Slider aria-valuenow
+      var rangeInput = document.getElementById('rangeInput');
+      var rangeVal = document.getElementById('rangeVal');
+      rangeInput.addEventListener('input', function () {
+        rangeVal.textContent = rangeInput.value;
+        rangeInput.setAttribute('aria-valuenow', rangeInput.value);
+      });
 
-// Select: toggle + outside click close
-function toggleSelect(trigger){const sel=trigger.closest('.select');const menu=sel.querySelector('.select-menu');const open=menu.classList.contains('open');document.querySelectorAll('.select-menu.open').forEach(m=>{m.classList.remove('open');m.previousElementSibling.setAttribute('aria-expanded','false');});if(!open){menu.classList.add('open');trigger.setAttribute('aria-expanded','true');}}
-function pickSelect(item,val){const sel=item.closest('.select');sel.querySelector('.select-trigger').firstChild.textContent=val+' 个 ';sel.querySelector('.select-menu').classList.remove('open');sel.querySelector('.select-trigger').setAttribute('aria-expanded','false');toast('已选 '+val+' 个');}
-document.addEventListener('click',(e)=>{if(!e.target.closest('.select')){document.querySelectorAll('.select-menu.open').forEach(m=>{m.classList.remove('open');m.previousElementSibling.setAttribute('aria-expanded','false');});}});
+      // Dialog
+      var backdrop = document.getElementById('dialogBackdrop');
+      var openDialog = document.getElementById('openDialog');
+      var closeDialog = document.getElementById('closeDialog');
+      openDialog.addEventListener('click', function () { backdrop.removeAttribute('hidden'); });
+      function closeDlg() { backdrop.setAttribute('hidden', ''); }
+      closeDialog.addEventListener('click', closeDlg);
+      document.addEventListener('keydown', function (e) { if (e.code === 'Escape' && !backdrop.hasAttribute('hidden')) closeDlg(); });
 
-// Sheet
-function openSheet(){document.getElementById('sheet-overlay').classList.add('open');document.getElementById('sheet').classList.add('open');}
-function closeSheet(){document.getElementById('sheet-overlay').classList.remove('open');document.getElementById('sheet').classList.remove('open');}
-
-// Dialog
-function openDialog(){document.getElementById('dialog-root').innerHTML='<div class="dialog-overlay" onclick="if(event.target===this)closeDialog()"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-t"><h3 id="dlg-t">确认导入名单</h3><p>将从文本框导入 12 个名字，覆盖当前设置。是否继续？</p><div class="actions"><button class="btn btn-ghost" onclick="closeDialog()">取消</button><button class="btn btn-primary" onclick="closeDialog();toast(\'名单已导入\')">确认</button></div></div></div>';}
-function closeDialog(){document.getElementById('dialog-root').innerHTML='';}
-
-// 键盘：Esc 关闭 drawer/dialog
-document.addEventListener('keydown',(e)=>{if(e.code==='Escape'){closeSheet();closeDialog();}});
-</script>
+      // 真机视图切换
+      var viewport = document.getElementById('viewport');
+      var vpW = document.getElementById('vpW');
+      document.querySelectorAll('.frame-switch button').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('.frame-switch button').forEach(function (x) { x.classList.remove('active'); });
+          b.classList.add('active');
+          var w = b.getAttribute('data-w');
+          viewport.style.maxWidth = w + 'px';
+          vpW.textContent = w;
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

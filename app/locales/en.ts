@@ -1,10 +1,16 @@
-// locales/en.ts v5.3.6 — 英文翻译
+// locales/en.ts v5.4.0 — 英文翻译
 import type { TranslationDict } from "./types";
 
 export const enTranslations: TranslationDict = {
   title: "ZenDraw",
   settings: "Settings",
   close: "Close",
+  drawMode: "Draw Mode",
+  modeNumber: "Numbers",
+  modeList: "List",
+  customList: "Custom List",
+  customListHint: "One item per line, used as the draw pool",
+  save: "Save",
   history: "History",
   minVal: "Min Value",
   maxVal: "Max Value",
@@ -100,5 +106,17 @@ export const enTranslations: TranslationDict = {
   copiedToClipboard: "Copied to clipboard",
   copyResult: "Copy",
   listPlaceholder: "Apple\nBanana\nOrange...",
+
+  // settings enhancement
+  formatPreview: "Format Preview",
+  languageLabel: "Language",
+  langZh: "中文",
+  langEn: "English",
+  clearList: "Clear List",
+  removeItem: "Remove item",
+  editList: "Edit List",
+  listHintEmpty: "Import a list, then draw names or items from it",
+  colorPreview: "Color Preview",
+  duplicateItemsWarning: "Duplicate entries were removed",
 };
 

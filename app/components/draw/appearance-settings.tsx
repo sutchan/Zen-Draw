@@ -1,4 +1,4 @@
-// components/draw/appearance-settings.tsx v5.3.6 —— 外观设置子组件（使用中央翻译系统）
+// components/draw/appearance-settings.tsx v5.4.1 —— 外观设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -6,53 +6,42 @@ import { motion } from "motion/react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  usePresetTheme,
-  useThemeMounted,
-  THEME_PRESETS,
-  FONT_FAMILIES,
-  type ThemePreset,
-  type FontFamily,
-} from "@/components/theme-provider";
+import { Button } from "@/components/ui/button";
+import { usePresetTheme, useThemeMounted, type ThemePreset } from "@/components/theme-provider";
 import { useTheme } from "next-themes";
 import { createTranslator } from "@/lib/i18n";
-import type { TranslationKey } from "@/locales";
-
-/** 主题预设 ID 到翻译键的映射 */
-const THEME_PRESET_KEYS: Record<string, TranslationKey> = {
-  default: "themeDefault",
-  ocean: "themeOcean",
-  forest: "themeForest",
-  sunset: "themeSunset",
-  purple: "themePurple",
-  neon: "themeNeon",
-  sakura: "themeSakura",
-  midnight: "themeMidnight",
-  retro: "themeRetro",
-  pixel: "themePixel",
-  rose: "themeRose",
-};
+import {
+  ThemePresetGrid,
+  FontFamilySelect,
+} from "@/components/draw/appearance-settings.parts";
 
 export function AppearanceSettings({
   language,
-  useCustomList,
   digits, prefix, suffix,
   onDigits, onPrefix, onSuffix,
+  onLanguageChange,
 }: {
   language: "zh" | "en";
-  useCustomList: boolean;
   digits: number;
   prefix: string;
   suffix: string;
   onDigits: (value: number | string) => void;
   onPrefix: (value: string) => void;
   onSuffix: (value: string) => void;
+  onLanguageChange: (lang: "zh" | "en") => void;
 }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
 
   const { theme, setTheme } = useTheme();
   const { preset, setPreset, font, setFont } = usePresetTheme();
   const mounted = useThemeMounted();
+
+  // 数字格式实时预览
+  const previewSample = React.useMemo(() => {
+    const raw = "7";
+    const padded = raw.padStart(Math.max(0, digits), "0");
+    return `${prefix || ""}${padded}${suffix || ""}` || "—";
+  }, [digits, prefix, suffix]);
 
   return (
     <motion.div
@@ -82,90 +71,78 @@ export function AppearanceSettings({
         )}
       </div>
 
-      {/* 主题预设 */}
-      <div className="space-y-3">
-        <Label htmlFor="theme-preset">{t("themePreset")}</Label>
-        <Select
-          value={preset}
-          onValueChange={(value) => {
-            const v = (value ?? "default") as ThemePreset;
-            if ((THEME_PRESETS as readonly string[]).includes(v)) setPreset(v);
-          }}
-        >
-          <SelectTrigger id="theme-preset" className="h-11 rounded-2xl bg-muted/30 border border-border/20">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {THEME_PRESETS.map((p) => (
-              <SelectItem key={p} value={p}>
-                {t(THEME_PRESET_KEYS[p] ?? "themeDefault")}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* 主题预设 —— 色块网格 */}
+      <ThemePresetGrid language={language} preset={preset} onSelect={(p: ThemePreset) => setPreset(p)} />
 
       {/* 字体风格 */}
+      <FontFamilySelect language={language} value={font} onChange={setFont} />
+
+      {/* 界面语言 */}
       <div className="space-y-3">
-        <Label htmlFor="font-family">{t("fontFamily")}</Label>
-        <Select
-          value={font}
-          onValueChange={(value) => {
-            const v = (value ?? "sans") as FontFamily;
-            if ((FONT_FAMILIES as readonly string[]).includes(v)) setFont(v);
-          }}
-        >
-          <SelectTrigger id="font-family" className="h-11 rounded-2xl bg-muted/30 border border-border/20">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="sans">{t("fontSans")}</SelectItem>
-            <SelectItem value="mono">{t("fontMono")}</SelectItem>
-            <SelectItem value="serif">{t("fontSerif")}</SelectItem>
-          </SelectContent>
-        </Select>
+        <Label>{t("languageLabel")}</Label>
+        <div className="grid grid-cols-2 gap-2.5">
+          <Button
+            type="button"
+            variant={language === "zh" ? "default" : "outline"}
+            onClick={() => onLanguageChange("zh")}
+            className="h-11 rounded-xl transition-colors"
+          >
+            {t("langZh")}
+          </Button>
+          <Button
+            type="button"
+            variant={language === "en" ? "default" : "outline"}
+            onClick={() => onLanguageChange("en")}
+            className="h-11 rounded-xl transition-colors"
+          >
+            {t("langEn")}
+          </Button>
+        </div>
       </div>
 
       {/* 数字显示格式 */}
-      {!useCustomList && (
-        <>
-          <div className="space-y-3 pt-2">
-            <Label htmlFor="digits">{t("minDigits")}</Label>
-            <Input
-              id="digits"
-              type="number"
-              min={0}
-              max={20}
-              value={digits}
-              onChange={(e) => onDigits(e.target.value)}
-              className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
-            />
-            <p className="text-xs text-muted-foreground leading-relaxed">{t("minDigitsDesc")}</p>
-          </div>
+      <div className="space-y-3 pt-2">
+        <Label htmlFor="digits">{t("minDigits")}</Label>
+        <Input
+          id="digits"
+          type="number"
+          min={0}
+          max={20}
+          value={digits}
+          onChange={(e) => onDigits(e.target.value)}
+          className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+        />
+        <p className="text-xs text-muted-foreground leading-relaxed">{t("minDigitsDesc")}</p>
+      </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="prefix">{t("prefix")}</Label>
-              <Input
-                id="prefix"
-                value={prefix}
-                onChange={(e) => onPrefix(e.target.value)}
-                className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="suffix">{t("suffix")}</Label>
-              <Input
-                id="suffix"
-                value={suffix}
-                onChange={(e) => onSuffix(e.target.value)}
-                className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
-              />
-            </div>
-          </div>
-        </>
-      )}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-2">
+          <Label htmlFor="prefix">{t("prefix")}</Label>
+          <Input
+            id="prefix"
+            value={prefix}
+            onChange={(e) => onPrefix(e.target.value)}
+            className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="suffix">{t("suffix")}</Label>
+          <Input
+            id="suffix"
+            value={suffix}
+            onChange={(e) => onSuffix(e.target.value)}
+            className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+          />
+        </div>
+      </div>
+
+      {/* 实时预览 */}
+      <div className="rounded-2xl border border-border/20 bg-muted/20 p-4">
+        <p className="text-xs font-medium text-muted-foreground mb-2">{t("formatPreview")}</p>
+        <p className="text-2xl font-bold tabular-nums tracking-tight">
+          {previewSample}
+        </p>
+      </div>
     </motion.div>
   );
 }
-

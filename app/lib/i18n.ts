@@ -1,4 +1,4 @@
-// lib/i18n.ts v5.3.6 — 国际化翻译工具
+// lib/i18n.ts v5.4.1 — 国际化翻译工具
 import { translations, type Language, type TranslationKey } from "@/locales";
 
 /**
@@ -9,7 +9,9 @@ import { translations, type Language, type TranslationKey } from "@/locales";
 export function createTranslator(language: Language) {
   const dict = translations[language];
   return (key: TranslationKey, ...args: string[]): string => {
-    let text = dict[key];
+    // 缺失 key 时回退到 key 本身，避免运行期 TypeError 导致白屏
+    const fallback = dict[key] ?? (key as string);
+    let text = fallback;
     // 支持参数替换：{0}, {1}, ...
     args.forEach((arg, i) => {
       text = text.replace(`{${i}}`, arg);

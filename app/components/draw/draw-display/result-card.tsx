@@ -1,4 +1,4 @@
-// components/draw/draw-display/result-card.tsx v5.3.6 —— 单个结果卡片
+// components/draw/draw-display/result-card.tsx v5.3.7 —— 单个结果卡片
 "use client";
 
 import * as React from "react";

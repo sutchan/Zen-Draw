@@ -1,8 +1,8 @@
-// locales/types.ts v5.3.6 — 国际化类型定义
+// locales/types.ts v5.4.0 — 国际化类型定义（TranslationKey 联合类型，单一事实来源）
 export type Language = "en" | "zh";
 
 export type TranslationKey =
-  | "title" | "settings" | "history" | "close"
+  | "title" | "settings" | "close" | "history"
   | "minVal" | "maxVal" | "drawCount"
   | "allowDup" | "autoHide" | "autoHideDesc"
   | "custom" | "drawSettings" | "appearance"
@@ -12,14 +12,13 @@ export type TranslationKey =
   | "themeSunset" | "themePurple" | "themeNeon"
   | "themeSakura" | "themeMidnight" | "themeRetro" | "themePixel" | "themeRose"
   | "fontFamily" | "fontSans" | "fontMono" | "fontSerif"
-  | "useCustomList"
-  | "export"
+  | "useCustomList" | "export" | "import_"
   | "minDigits" | "minDigitsDesc" | "prefix" | "suffix"
   | "historyDesc" | "noHistory"
   | "ready" | "drawing" | "startDraw"
   | "minMaxError" | "rangeError" | "clearHistory"
-  | "switchLang" | "cancel"
-  | "import_" | "itemsLoaded" | "noItems"
+  | "switchLang" | "cancel" | "save"
+  | "itemsLoaded" | "noItems"
   // 主界面
   | "appTitle" | "appSubtitle" | "drawMainArea" | "drawDisplayArea"
   // 按钮
@@ -35,13 +34,19 @@ export type TranslationKey =
   // 页脚
   | "footerInfo"
   // 导入
-  | "importDesc" | "confirmImport"
+  | "importDesc" | "confirmImport" | "customList" | "customListHint"
   // 错误
   | "errCustomListEmpty" | "errCustomListTooMany" | "errCustomListRange"
   | "errRangeInvalid"
+  // 历史记录
+  | "clickToCopy" | "autoSaveDesc"
   // 通用
-  | "autoSaveDesc" | "clickToCopy" | "copied" | "copiedToClipboard" | "copyResult"
-  | "listPlaceholder";
+  | "copied" | "copiedToClipboard" | "copyResult" | "listPlaceholder"
+  // 设置增强
+  | "formatPreview" | "languageLabel" | "langZh" | "langEn"
+  | "clearList" | "removeItem" | "editList" | "listHintEmpty" | "colorPreview"
+  | "duplicateItemsWarning"
+  // 抽取模式
+  | "drawMode" | "modeNumber" | "modeList";
 
 export type TranslationDict = Record<TranslationKey, string>;
-

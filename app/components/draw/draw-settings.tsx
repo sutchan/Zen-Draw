@@ -1,23 +1,28 @@
-// components/draw/draw-settings.tsx v5.3.6 —— 抽取设置子组件（使用中央翻译系统）
+// components/draw/draw-settings.tsx v5.4.0 —— 抽取设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
 import { motion } from "motion/react";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import { Card } from "@/components/ui/card";
 import { createTranslator } from "@/lib/i18n";
 
 export function DrawSettings({
   language,
-  useCustomList,
-  min, max, count, duration,
+  min, max,
+  count,
+  duration,
   allowDuplicates, autoHide,
-  onMin, onMax, onCount, onDuration,
-  onAllowDuplicates, onAutoHide,
+  onMin, onMax,
+  onCount,
+  onDuration,
+  onAllowDuplicates,
+  onAutoHide,
 }: {
   language: "zh" | "en";
-  useCustomList: boolean;
   min: number;
   max: number;
   count: number;
@@ -32,102 +37,109 @@ export function DrawSettings({
   onAutoHide: (value: boolean) => void;
 }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.4 }}
-      className="space-y-6 pt-2"
+      className="space-y-5 pt-2"
     >
       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
         {t("drawSettings")}
       </p>
 
-      {/* 数值范围 */}
-      {!useCustomList && (
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-2">
-            <Label htmlFor="min-value">{t("minVal")}</Label>
-            <Input
-              id="min-value"
-              type="number"
-              value={min}
-              onChange={(e) => onMin(e.target.value)}
-              className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="max-value">{t("maxVal")}</Label>
-            <Input
-              id="max-value"
-              type="number"
-              value={max}
-              onChange={(e) => onMax(e.target.value)}
-              className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
-            />
-          </div>
+      {/* 抽取范围 */}
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20 grid grid-cols-2 gap-3">
+        <div className="space-y-2">
+          <Label htmlFor="min-val">{t("minVal")}</Label>
+          <Input
+            id="min-val"
+            type="number"
+            value={min}
+            onChange={(e) => onMin(e.target.value)}
+            className="h-11 rounded-xl bg-background border-border/20 focus:ring-2 focus:ring-primary/15 transition-all"
+          />
         </div>
-      )}
+        <div className="space-y-2">
+          <Label htmlFor="max-val">{t("maxVal")}</Label>
+          <Input
+            id="max-val"
+            type="number"
+            value={max}
+            onChange={(e) => onMax(e.target.value)}
+            className="h-11 rounded-xl bg-background border-border/20 focus:ring-2 focus:ring-primary/15 transition-all"
+          />
+        </div>
+      </Card>
 
       {/* 抽取数量 */}
-      <div className="space-y-2">
-        <Label htmlFor="draw-count">{t("drawCount")}</Label>
-        <Input
-          id="draw-count"
-          type="number"
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20 space-y-3">
+        <div className="flex items-center justify-between">
+          <Label>{t("drawCount")}</Label>
+          <span className="text-sm font-semibold tabular-nums rounded-lg bg-background px-2.5 py-1 border border-border/20">
+            {count}
+          </span>
+        </div>
+        <Slider
+          value={[count]}
           min={1}
-          max={1000}
-          value={count}
-          onChange={(e) => onCount(e.target.value)}
-          className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+          max={20}
+          step={1}
+          onValueChange={(v) => onCount(String(v[0]))}
+          aria-label={t("drawCount")}
         />
-      </div>
+      </Card>
 
-      {/* 动画时长 */}
-      <div className="space-y-2">
-        <Label htmlFor="draw-duration">{t("drawDuration")}</Label>
-        <Input
-          id="draw-duration"
-          type="number"
-          min={1}
-          max={120}
-          value={duration}
-          onChange={(e) => onDuration(e.target.value)}
-          className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+      {/* 抽取时长 */}
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20 space-y-3">
+        <div className="flex items-center justify-between">
+          <Label>{t("drawDuration")}</Label>
+          <span className="text-sm font-semibold tabular-nums rounded-lg bg-background px-2.5 py-1 border border-border/20">
+            {duration}
+            <span className="text-muted-foreground font-normal"> s</span>
+          </span>
+        </div>
+        <Slider
+          value={[duration]}
+          min={0}
+          max={10}
+          step={1}
+          onValueChange={(v) => onDuration(String(v[0]))}
+          aria-label={t("drawDuration")}
         />
         <p className="text-xs text-muted-foreground leading-relaxed">{t("drawDurationDesc")}</p>
-      </div>
+      </Card>
 
-      {/* 选项开关 */}
-      <div className="space-y-4 pt-2">
-        <div className="flex items-center justify-between py-2 border-b border-border/20">
-          <div className="space-y-0.5">
-            <Label htmlFor="allow-duplicates" className="cursor-pointer text-sm font-medium">
-              {t("allowDup")}
-            </Label>
+      {/* 允许重复 */}
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Label>{t("allowDup")}</Label>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("customListHint")}</p>
           </div>
           <Switch
-            id="allow-duplicates"
             checked={allowDuplicates}
             onCheckedChange={onAllowDuplicates}
+            aria-label={t("allowDup")}
           />
         </div>
+      </Card>
 
-        <div className="flex items-center justify-between py-2">
-          <div className="space-y-0.5">
-            <Label htmlFor="auto-hide" className="cursor-pointer text-sm font-medium">
-              {t("autoHide")}
-            </Label>
-            <p className="text-xs text-muted-foreground leading-relaxed">{t("autoHideDesc")}</p>
+      {/* 自动隐藏侧栏 */}
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Label>{t("autoHide")}</Label>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("autoHideDesc")}</p>
           </div>
           <Switch
-            id="auto-hide"
             checked={autoHide}
             onCheckedChange={onAutoHide}
+            aria-label={t("autoHide")}
           />
         </div>
-      </div>
+      </Card>
     </motion.div>
   );
 }
-

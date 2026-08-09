@@ -1,5 +1,33 @@
 # Changelog
 
+## [5.4.0] - 2026-08-09
+
+### Features
+- 完善设置面板 UI：抽取设置（数量/时长）改用 Slider 并卡片化；外观设置新增数字格式实时预览与主题配色色块预览网格
+- 自定义列表编辑弹窗升级为 base-ui Dialog，支持条目计数、清空列表，新增中/EN 语言切换按钮于外观区
+
+### Bug Fixes & Code Quality
+- **编译错误修复**：`app-header.tsx` 向 `SettingsPanel` 传递的 setter prop 名（`onMinChange` 等）与 `UseDrawReturn` 接口（`setMin` 等）不匹配导致 tsc 失败；改为整体展开 `draw` 对象透传，消除 14 处类型错误
+- **i18n 鲁棒性**：`createTranslator` 对缺失 `key` 回退到 `key` 本身，避免运行期 `TypeError` 白屏
+- **性能**：`use-draw.ts` 的 `settings` 对象改用 `useMemo` 包裹，避免下游非必要重渲染
+- **输入校验**：`use-draw-actions.ts` 所有数值 setter（setMin/setMax/setCount/setDuration/setDigits）的 number 入增加 `Number.isFinite` 校验，防止 `NaN`/`Infinity` 写入状态
+- **模块拆分**：`appearance-settings.tsx`（246 行）拆分出 `appearance-settings.parts.tsx`，抽离 `THEME_PRESET_KEYS`/`THEME_SWATCHES`/`cn` 与子组件 `ThemePresetGrid`/`FontFamilySelect`，主文件降至 130 行（≤200）
+- **规范对齐**：SPEC.md §7.2 翻译键计数由过时的 90 修正为真实 112（zh/en/types 三处完全对齐，编译期强约束）
+
+## [5.3.7] - 2026-08-09
+
+### 文档同步与完善
+- SPEC.md 组件库清单对齐实际代码：§5.1 基础组件表补 `Checkbox`/`Tooltip`/`Toast` 三行（均基于 @base-ui/react）
+- SPEC.md §6 目录结构修正：补充遗漏的 `use-mounted-reduced-motion.ts`；`ui/` 组件列举补全（标明共 18 个）；`style.css` 主题数注释 10→11（含 Rose）
+- 全项目版本号统一至 `v5.3.7`：源文件头注释、`package.json`、`metadata.json`、README×2、SPEC.md、design-system.md、prototype 三套 HTML
+- **原型整改（prototype/）**：
+  - 抽取共享 `tokens.css`，三套 HTML 改 `<link>` 引用，消除令牌重复（约 150 行）
+  - design-system.md 合并重复的 v5.3.6 变更记录；删除未落地承诺（整页入场 fadeUp、结果揭示 scale 动画、深色 line-height +0.05、6xl/7xl 阶梯、↑/↓ 全量键盘），仅保留已实现动效与实际字号
+  - 状态机统一 4 态（含历史沉淀），index/prototypes 双原型一致；修复 prototypes 顶部「下一步」与屏幕按钮竞态（共享单一状态源）
+  - 主流程/状态机原型补充结果揭晓彩屑、↑/↓ 数值微调、Switch/Checkbox 键盘可达、`<main>` 语义、深浅色 localStorage 记忆
+  - wireframes 组件库补 Slider `aria-valuenow`、Select `listbox` 模式、Dialog Esc 关闭、Switch/Checkbox 键盘；保留真机视图切换（375/768/1280）
+  - 复审回写 design-system.md：§6/§7.1/§7.2/§11 同步实现（键盘表、`<main>` 语义、历史态双原型差异、错误态 clamp 兜底）；删除 main CSS 无效 aria-label 行、prototypes 未使用 ORDER 死代码
+
 ## [5.3.6] - 2026-08-09
 
 ### 文档同步与完善

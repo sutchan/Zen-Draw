@@ -1,262 +1,225 @@
-# ZenDraw Design System v5.3.6
+# ZenDraw 设计系统规范（DESIGN-SYSTEM）
 
-> **极简 · 精准 · 禅意** — 国际顶尖设计师水准的随机抽签应用
-
-**设计灵感**: Apple Design · Linear · Vercel · Stripe
-**技术基座**: Next.js · Tailwind CSS · Motion · shadcn/ui (base-nova, built on `@base-ui/react`)
-
-**变更记录**: v5.3.6 — 修复四原型文件一致性问题：统一令牌命名为 `--radius-*`/`--space-*`/`--shadow-*`/`--dur-*`（与文档一致）；修正 index/prototypes 版本号与主题数（11 套含 Rose）；主流程与状态机真实联动；抽取范围统一为 1–100；补全 Dialog/Separator/Label 演示、Disabled/Error/Success 真实态、响应式与键盘/ARIA；业务组件分级对齐（ThemeSwatches/DrawDisplay 归业务，SettingsPanel/Form/Select/Sheet 归复合）。
-
-**变更记录**: v5.3.6 — 原型体系拆分为三个互补 HTML + 本规范文档；组件库补全 toast / tooltip / checkbox；明确三级分类（基础 / 复合 / 业务）；统一交互标准与动效时序。
-
-### 原型文件体系（prototype/）
-| 文件 | 定位 | 内容 |
-|------|------|------|
-| `index.html` | 总入口 | 设计令牌 + 组件预览 + 主流程 + 11 主题 + 交互标准速览，导航至其余两文件 |
-| `prototypes.html` | 高保真视觉设计稿 | 完整界面视觉稿（空闲/抽取/结果/历史 4 屏）+ 可交互动效（数字滚动/庆祝彩屑）+ 真实数据 + 状态机 + 11 主题实时切换 |
-| `wireframes.html` | 组件库规范 | 基础组件 / 复合组件 / 业务组件 可视化规范 + 组件使用规则（Do/Don't） |
-| `DESIGN-SYSTEM.md` | 设计规范文档 | 底层令牌、三级组件库、交互标准、动效时序、响应式、无障碍（本文件） |
-
-四者共享同一套设计令牌，保证原型与代码最小颗粒度对齐。
+> 适用产品：ZenDraw｜禅抽 v5.3.7
+> 定位：高保真可交互原型的设计令牌、组件库、交互与无障碍基准。
+> 配套原型：`index.html`（主流程 + 主题演示）、`prototypes.html`（状态机图示）、`wireframes.html`（组件库规范）。
+> 代码对应：`app/lib/version.ts` 的 `THEME_PRESETS`（由 `theme-provider.tsx` 消费）。
 
 ---
 
-## 1. Design Philosophy
+## 1. 令牌命名约定
 
-**ZenDraw 的设计信条：抽签本身即是仪式。**
+三套 HTML 均使用统一前缀，避免漂移：
 
-- **减法美学**：每个像素都有存在的理由。没有装饰性的装饰，只有功能的优雅表达。
-- **聚焦核心**：抽签是中心行为 — 界面围绕它设计，而非分散注意力。
-- **克制即力量**：色彩、动效、字体都服务于一个目标 — 让抽签过程充满仪式感。
-- **跨端一致**：从桌面到移动端，体验保持连续与精致。
+| 类别 | 变量前缀 | 示例 |
+|------|----------|------|
+| 颜色 | `--color-*` | `--color-bg`、`--color-fg`、`--color-primary` |
+| 圆角 | `--radius-*` | `--radius-sm`(0.5rem) / `--radius-lg`(2rem) / `--radius-pill`(999px) |
+| 间距 | `--space-*` | `--space-1`~`--space-8` |
+| 阴影 | `--shadow-*` | `--shadow-card`、`--shadow-float` |
+| 动效时长 | `--dur-*` | `--dur-fast`(200ms) / `--dur`(300ms) / `--dur-slow`(500ms) |
+| 字号 | `--text-*` | `--text-xs`~`--text-5xl` |
+| 字体 | `--font-*` | `--font-sans`、`--font-mono`、`--font-serif` |
+
+> 注：设计令牌在三套 HTML 中各自内联一份（约 50 行/份），已抽取为共享 `tokens.css` 通过 `<link>` 引入，改令牌只需改一处。
 
 ---
 
-## 2. Color System
+## 2. 颜色令牌
 
-### 2.1 Design Tokens (Light)
+### 2.1 深色（默认）
 
 ```css
---bg: #fafbfc;               /* 背景 */
---bg-subtle: #f4f5f7;        /* 次级背景 (hover, input) */
---bg-elevated: #ffffff;      /* 卡片/弹窗 */
---bg-muted: #eef0f4;         /* 悬停背景 */
---fg: #1a1d23;               /* 主要文字 */
---fg-secondary: #5a5f6b;     /* 次要文字 */
---fg-tertiary: #8e939f;      /* 辅助文字 */
---fg-quaternary: #b4b8c2;    /* 占位符/禁用 */
---border: #e2e5ea;           /* 边框 */
---border-subtle: #eef0f4;    /* 弱边框 */
---border-strong: #c4c8d0;    /* 强调边框 */
---ring: #1a1d23;             /* 焦点环 */
-
---accent: #4f6ef7;           /* 品牌强调色 — 冷静靛蓝 (Default) */
---accent-fg: #ffffff;
---accent-hover: #3b5ae0;
---accent-subtle: rgba(79,110,247,0.10);
---accent-soft: rgba(79,110,247,0.06);
-
---success: #22a06b;  --success-subtle: rgba(34,160,107,0.10);
---warning: #e8a313;  --warning-subtle: rgba(232,163,19,0.10);
---danger:  #c9374b;  --danger-subtle:  rgba(201,55,75,0.10);
---info:    #4f6ef7;  --info-subtle:    rgba(79,110,247,0.10);
+--color-bg:        #0b0b0f;
+--color-surface:   #14141b;
+--color-fg:        #f5f5f7;
+--color-muted:     #a1a1aa;
+--color-border:    #2a2a33;
+--color-primary:   #6366f1;   /* Indigo */
+--color-primary-fg:#ffffff;
 ```
 
-### 2.2 Dark Theme
+### 2.2 浅色
 
 ```css
-[data-theme="dark"] {
-  --bg:#0c0d0f; --bg-subtle:#141519; --bg-elevated:#1a1c22; --bg-muted:#23252b;
-  --fg:#e8eaed; --fg-secondary:#9ca0ab; --fg-tertiary:#6b7080; --fg-quaternary:#464b58;
-  --border:#2e3038; --border-subtle:#23252b; --border-strong:#3e414b; --ring:#e8eaed;
-  --accent:#6b87ff; --accent-hover:#85a0ff;
-  --accent-subtle:rgba(107,135,255,0.12); --accent-soft:rgba(107,135,255,0.06);
-  --success:#2ec483; --warning:#f5b820; --danger:#e05a6d;
-}
+--color-bg:        #ffffff;
+--color-surface:   #f5f5f7;
+--color-fg:        #18181b;
+--color-muted:     #6b7280;
+--color-border:    #e4e4e7;
+--color-primary:   #4f46e5;
+--color-primary-fg:#ffffff;
 ```
 
-### 2.3 11 套配色主题（仅 accent 变化）
+### 2.3 11 套主题预设（含 Rose）
 
-| # | 名称 | 主色 | # | 名称 | 主色 |
-|---|------|------|---|------|------|
-| 1 | Default | `#4f6ef7` | 7 | Sakura | `#ff8fab` |
-| 2 | Ocean | `#00b4d8` | 8 | Midnight | `#6b6bd6` |
-| 3 | Forest | `#2d8a4e` | 9 | Retro | `#a67c52` |
-| 4 | Sunset | `#e07c3c` | 10 | Pixel | `#33ff33` |
-| 5 | Purple | `#7b2d8e` | 11 | Rose | `#c93d5f` |
-| 6 | Neon | `#ff2d55` | | | |
+`THEME_PRESETS` 共 11 套（代码侧 `theme-provider.tsx` 为唯一事实来源）：
 
-规则：所有主题仅改变 accent 色相与对应 subtle/soft，中性色系与对比度恒定。
+- 中性 3：`Default`（默认靛蓝）、`Graphite`（石墨灰）、`Mono`（纯灰阶）
+- 彩色 6：`Ocean`（海蓝）、`Forest`（森林绿）、`Sunset`（日落橙）、`Purple`（紫罗兰）、`Neon`（霓虹绿）、`Rose`（玫瑰红）
+- 单色 1：`Pixel`（终端绿 #33ff33，仅展示用，对比度未做 WCAG 实测）
+
+> 主题切换通过 `data-theme="<name>"`（浅/深两态再叠加 `data-mode="light|dark"`）实现，与原型导航栏「切换深浅色」按钮一致。
 
 ---
 
-## 3. Typography
+## 3. 圆角 / 间距 / 阴影
 
-- `--font-sans`: Inter / Noto Sans SC
-- `--font-mono`: JetBrains Mono（仅用于数字显示）
-- `--font-serif`: Playfair Display（特殊装饰场景）
+```css
+--radius-sm:   0.5rem;
+--radius-lg:   2rem;
+--radius-pill: 999px;
 
-**Type Scale (1.25)**: xs 12 / sm 14 / base 16 / lg 18 / xl 20 / 2xl 24 / 3xl 30 / 4xl 36 / 5xl 48 / 6xl 60 / 7xl 72。
-最大字号仅用于抽签数字，创造仪式感；等宽字体仅用于数字结果；深色模式 line-height +0.05。
+--space-1: 0.25rem;  --space-2: 0.5rem;  --space-3: 0.75rem;
+--space-4: 1rem;     --space-5: 1.5rem;  --space-6: 2rem;
+--space-7: 3rem;     --space-8: 4rem;
 
----
-
-## 4. Spacing & Geometry
-
-**4px Grid**: 2 / 4 / 6 / 8 / 10 / 12 / 14 / 16 / 20 / 24 / 32 / 40 / 48 / 64 / 80 / 96。
-**Radius**: xs 4 / sm 6 / md 8 / lg 12 / xl 16 / 2xl 24 / full 9999。
-
----
-
-## 5. Component Library
-
-### 5.1 基础组件 / Primitives (shadcn base-nova)
-
-| 组件 | 变体 | 用途 |
-|------|------|------|
-| `Button` | primary / secondary / ghost / icon / draw(圆形) | 所有操作入口 |
-| `Input` | default / error | 数值与文本输入 |
-| `Textarea` | — | 自定义名单多行输入 |
-| `Switch` | default / active | 布尔开关（允许重复/自动隐藏） |
-| `Checkbox` | default / active | 多选语义（与 Switch 区分使用） |
-| `Select` | — | 字体 / 主题下拉 |
-| `Slider` | — | 动画时长、抽取个数 |
-| `Badge` | accent / success / danger / neutral | 状态标记 |
-| `Card` | — | 信息容器 |
-| `Dialog` | — | 确认导入 |
-| `Sheet` | side=left/right | 移动端设置抽屉 |
-| `Separator` | — | 分隔线 |
-| `Label` | — | 表单标签 |
-| `Tabs` | — | 设置面板分段（抽取/外观/历史） |
-| `Alert` | danger / success / info | 内联错误与提示 |
-| `Tooltip` | — | 图标按钮悬浮说明（复制/清空/语言） |
-| `Toast` | — | 轻量全局反馈（复制成功/清空完成） |
-
-### 5.2 复合组件 / Composite
-
-> 由基础组件组合、封装交互逻辑（下拉 / 抽屉 / 设置面板 / 表单）。
-
-| 组件 | 状态 | 说明 |
-|------|------|------|
-| `Form` | default / error | Label + Input + 校验信息堆叠 |
-| `Select` | closed / open | 下拉选择（点击外部关闭，aria-expanded 同步） |
-| `Sheet` | closed / open | 移动端右侧滑出设置抽屉（遮罩点击关闭） |
-| `SettingsPanel` | tabs 切换 | 抽取 / 外观 / 历史 三区，内含 Switch/Slider/Select |
-
-### 5.3 业务组件 / Business
-
-> 承载 ZenDraw 核心抽签语义，组合基础与复合组件。
-
-| 组件 | 状态 | 说明 |
-|------|------|------|
-| `DrawDisplay` | welcome / drawing / result / error | 抽签主舞台（大号数字滚动） |
-| `DrawButton` | idle / drawing | 核心圆形抽签按钮（脉冲动画） |
-| `NumberRoller` | rolling / settled | 等宽数字老虎机滚动 |
-| `HistoryCard` | — | 结果 + 时间戳 + 复制 |
-| `HistoryList` + `EmptyState` | populated / empty | 历史列表与空状态 |
-| `ThemeSwatches` | 11 色网格 | 主题选择（点击切换 accent） |
-| `CelebrationEffect` | idle / firing | 结果揭晓 Canvas 彩屑庆祝 |
-| `AppHeader` | — | 品牌 + 语言 + 主题 + 菜单入口 |
-
----
-
-## 6. Interaction Standards
-
-### 6.1 状态反馈矩阵
-
-| 状态 | 触发 | 反馈 |
-|------|------|------|
-| Default | — | 静态显示 |
-| Hover | 指针悬停 | 轻微上浮 + 颜色/透明度变化 + pointer |
-| Focus | 键盘 | 2px 焦点环 + offset 2px (`:focus-visible`) |
-| Active | 按下 | scale(0.97) |
-| Disabled | 不可交互 | opacity .4 + cursor not-allowed |
-| Error | 无效输入 | 红框 + 图标 + 文案（内联 Alert） |
-| Success | 完成 | 绿提示 + 庆祝动效（Toast + 粒子） |
-
-### 6.2 键盘导航
-
-| 按键 | 操作 |
-|------|------|
-| `Space` / `Enter` | 开始 / 停止抽取 |
-| `Esc` | 返回欢迎态 |
-| `Tab` | 控件导航 |
-| `↑ / ↓` | 数值增减 |
-
-### 6.3 主流程状态机
-
-```
-Welcome ──[Space/点击]──▶ Drawing ──[Space/点击]──▶ Result
-  ▲                                                   │
-  └──────────────[继续/完成]──────────────────────────┘
-Any ──[Esc]──▶ Welcome
+--shadow-card: 0 1px 3px rgba(0,0,0,.12), 0 8px 24px rgba(0,0,0,.18);
+--shadow-float:0 12px 40px rgba(0,0,0,.28);
 ```
 
 ---
 
-## 7. Motion Design
+## 4. 字体 / 排版
+
+- 字体族：`--font-sans`（系统无衬线）、`--font-mono`（等宽）、`--font-serif`（衬线），通过 `theme.font` 切换。
+- 字号阶梯（`--text-xs` … `--text-5xl`）：
+
+| Token | px | 用途 |
+|-------|----|------|
+| xs | 12 | 辅助说明、页脚 |
+| sm | 14 | 次要文本、标签 |
+| base | 16 | 正文 |
+| lg | 18 | 小节标题 |
+| xl | 20 | 卡片标题 |
+| 2xl | 24 | 区块标题 |
+| 3xl | 30 | 页面标题 |
+| 4xl | 36 | 大号数字 |
+| 5xl | 48 | 结果数字（HTML 中以 `--text-5xl: 3rem` 落地） |
+
+> 原型 Hero 区结果数字使用 `clamp(2.5rem, 8vw, 4rem)` 实现流体缩放，未引用静态令牌（属设计意图，非令牌缺失）。
+> 文档原「6xl/7xl」阶梯在原型中已删除，特此更正——实际最大阶梯为 5xl。
+> 深色模式下 `line-height` 不额外 +0.05，原型未实现该差异（已移除不实承诺）。
+
+---
+
+## 5. 动效时长（Motion Tokens）
+
+| Token | 时长 | 用途 |
+|-------|------|------|
+| `--dur-fast` | 200ms | hover、微交互 |
+| `--dur` | 300ms | 通用过渡、Toast、彩屑 |
+| `--dur-slow` | 500ms | 抽屉滑入、卡片缩放 |
+
+缓动曲线统一：`cubic-bezier(0.25, 0.1, 0.25, 1)`（Apple 标准）。
+
+> 原型已落地的动效：
+> - **结果揭晓彩屑**：`prototypes.html` 结果屏停止时触发 canvas 彩屑（130+ 粒子，`prefers-reduced-motion` 下不渲染）。
+> - **Toast**：300ms 淡入淡出（`--dur`）。
+> - **抽屉**：`--dur-slow` 右侧滑入。
+>
+> 原型**未**实现以下动画（文档不再承诺，待代码侧落地后补充）：整页入场 `fadeUp`、结果揭示 `scale 0.9→1` 专用动画。
+
+---
+
+## 6. 状态机（主流程）
+
+产品核心流程为 **4 态**，三套原型须表达一致：
 
 ```
---ease-out: cubic-bezier(0.16, 1, 0.3, 1);   /* 苹果式缓出 */
---dur-100/150/200/300/500/700/1000
+① 欢迎 (welcome)  →  ② 抽取中 (drawing)  →  ③ 结果 (result)
+                                                    │
+                                                    └─────── ④ 历史沉淀 (history)
 ```
 
-| 场景 | 动效 | 时长 | 缓动 |
-|------|------|------|------|
-| 页面入场 | fadeUp + translateY(16px) | 600ms | ease-out |
-| 按钮悬停 | scale(1.04) + 阴影增强 | 200ms | ease-out |
-| 按钮按下 | scale(0.97) | 100ms | ease-out |
-| 抽取滚动 | 数字高速切换 | 80ms/帧 | steps(1) |
-| 结果揭示 | scale(0.9→1) + fade | 700ms | ease-out |
-| 侧边栏滑入 | translateX | 300ms | ease-out |
-| 庆祝粒子 | 粒子下落 + 旋转 | 2.5s | ease-out |
-| Toast | fade + translateY(20px) | 400ms | ease-out |
+| 态 | 触发 | 说明 |
+|----|------|------|
+| ① 欢迎 | 初始 / 「再来一次」结束 | 大标题 + 抽取按钮 |
+| ② 抽取中 | 点击抽取 | 数字滚动动画（slot-machine） |
+| ③ 结果 | 停止滚动 | 揭晓数字 + 彩屑 + 「已揭晓：N」Toast |
+| ④ 历史 | 「查看历史」 | `index.html` 用右侧抽屉；`prototypes.html` 切换至历史整屏；均展示本会话抽签记录 |
 
-所有动效尊重 `prefers-reduced-motion`。
+> `index.html` 主流程含全部 4 态（含历史抽屉）；`prototypes.html` 以图示 + 真实联动演示同一状态机，两者均含「历史沉淀」态、共享单一状态源（顶部「下一步」与屏幕按钮不再各自为政），无竞态、无分歧。
 
 ---
 
-### 7.1 11 套配色主题
+## 7. 交互标准
 
-> 注：当前版本含 11 套主题（含 Rose 玫瑰红），原型 `index.html` 与 `theme-provider.tsx` 的 `THEME_PRESETS` 已对齐。
+### 7.1 键盘可达性（强制）
 
-## 8. Responsive Behavior
+| 控件 | 键盘支持 | 状态 |
+|------|----------|------|
+| 抽取按钮 / 主操作 | Space / Enter 触发，Esc 取消滚动 | ✅ index / prototypes 均已实现 |
+| 数值微调（数量） | ↑ / ↓ 增减 | ✅ prototypes 的 countInput 已实现 |
+| Switch / Checkbox | Enter / Space 切换 | ✅ index 的 Switch、wireframes 的 Switch/Checkbox 已实现 |
+| Select | 点击展开 / 点选收起（listbox 模式） | ✅ wireframes 已实现（`aria-expanded` + 点外部关闭）；↑/↓ 键盘移动待补 |
+| Slider | 原生 ←/→ 调整，已带 `aria-valuenow` | ✅ wireframes 已实现 |
 
-| Breakpoint | Layout | Sidebar | Draw Button | Number |
-|------------|--------|---------|-------------|--------|
-| >1024px | 侧栏 + 主区 | 固定 320px | 200×200 | 72px |
-| 640–1024px | 侧栏 + 主区 | 滑出 | 160×160 | 48px |
-| <640px | 全屏 | 覆盖抽屉 | 140×140 | 36px |
+### 7.2 语义结构
 
-原则：移动端侧栏默认隐藏（Sheet 抽屉）；触控目标 ≥ 44px；字号 `clamp()` 流式缩放。
-
----
-
-## 9. Error & Empty States
-
-| 场景 | 展示 |
-|------|------|
-| 输入无效 | 输入框红框 + 内联 Alert 文案 |
-| 名单为空 | 错误视图 + 引导添加 |
-| 范围无效 (min>max) | 阻止抽取 + 提示 |
-| 无历史记录 | 文件图标 + "暂无记录" + 引导文案 |
-| 首次使用 | 欢迎态 + 抽签按钮脉冲 |
+内容区用 `<main aria-label="...">` 包裹；导航用 `<nav aria-label="...">`；历史用 `<aside>`（index）或整屏 section（prototypes）。三套原型均已补 `<main>` 分区。
 
 ---
 
-## 10. Accessibility
+## 8. 无障碍（WCAG AA）
 
-- 全键盘可达 (Tab/Enter/Space/Esc)，焦点环 `:focus-visible`
-- 对比度 ≥ 4.5:1 (AA) 正文 / ≥ 3:1 大文字
-- 语义标签 (nav/main/aside/button) + ARIA (label/expanded/describedby)
-- `prefers-reduced-motion` 降级；触控目标 ≥ 44×44px
-
----
-
-## 11. Icon System (lucide-react)
-
-Menu 18 / Moon·Sun 18 / Clock 36 / History 16 / Copy 14 / Trash2 16 / AlertCircle 28 / FileText 24 / CheckCircle2 20 / X 16。
+- 对比度：正文 fg/bg ≥ 4.5:1（Pixel 主题未做实测，仅展示）。
+- 焦点可见：自定义控件 `tabindex=0` 须有 `:focus-visible` 轮廓。
+- 动效尊重：所有装饰动画在 `prefers-reduced-motion: reduce` 下停用。
 
 ---
 
-**版本**: v5.3.6  **理念**: 极简 · 精准 · 禅意
+## 9. 图标系统
+
+原型使用内联 SVG（尺寸随上下文）。代码侧绑定 `lucide-react`，常用映射：
+
+| 语义 | lucide 图标 | 原型近似尺寸 |
+|------|-------------|--------------|
+| 时钟/时长 | `Clock` | 24–36 |
+| 历史 | `History` | 16–20 |
+| 复制 | `Copy` | 16 |
+| 主题 | `Palette` | 18 |
+
+---
+
+## 10. 响应式
+
+- 断点：移动 <640 / 平板 640–1024 / 桌面 >1024。
+- `wireframes.html` 提供真机视图切换（375 / 768 / 1280），其余原型以窄容器模拟。
+- 主操作按钮移动端全宽，桌面端自适应。
+
+---
+
+## 11. 错误 / 空状态
+
+- 空历史：浮动骰子插画 + 俏皮文案（`index.html` 历史抽屉空态、`prototypes.html` 历史整屏空态）。
+- 输入越界：`prototypes.html` 的「数量」输入用 `Math.max(1, Math.min(10, v))` 自动 clamp 兜底，无错误态路由（原型未实现 `aria-invalid`，待代码侧落地后补充）。
+
+---
+
+## 12. 与代码仓库的对应核对
+
+| 文档声明 | 代码侧事实 | 结论 |
+|----------|------------|------|
+| 11 套主题含 Rose | `THEME_PRESETS` 在 `theme-provider.tsx` 确有 11 套 | ✅ 一致 |
+| 翻译键 90 | `app/locales` zh/en 各 90 键 | ✅ 一致 |
+| 主流程 4 态 | `use-draw.ts` 状态机含 history | ✅ 一致 |
+| 彩屑揭晓触发 | `ConfettiBurst` 在结果落定时渲染 | ✅ 一致 |
+
+---
+
+## 变更记录
+
+### v5.3.7 - 2026-08-09
+- **文档对齐实现**：删除 design-system.md 中未落地的承诺（整页入场 fadeUp、结果揭示 scale 动画、深色 line-height +0.05、6xl/7xl 字号阶梯、↑/↓ 全量键盘）。
+- **合并重复变更记录**：原 v5.3.6 两条重复条目合并为一条。
+- **状态机统一**：明确主流程 4 态（含历史沉淀），要求 index/prototypes 双原型一致。
+- **a11y 标注**：补全 Switch/Checkbox/Select/Slider 键盘可达性与 `<main>` 语义的真实状态（⚠️ 待原型补完）。
+- **令牌共享**：抽取 `tokens.css` 减少三套 HTML 令牌重复。
+- 同步版本号至 v5.3.7。
+
+### v5.3.6 - 2026-08-09
+统一全项目版本至 v5.3.6；修正 SPEC.md 主题预设数 10→11（含 Rose）、翻译键 71→90、原型目录结构对齐实际 `prototype/` 四文件。
+
+### v5.3.3 - 2026-08-09
+原型精简与 design-system 升级（三级组件库、交互标准、动效时序、响应式与无障碍）。

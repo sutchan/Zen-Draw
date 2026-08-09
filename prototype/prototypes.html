@@ -1,475 +1,364 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<!-- prototype/prototypes.html v5.3.7 —— 状态机图示 + 真实联动（与 index.html 共享 tokens.css） -->
+<html lang="zh-CN" data-theme="default" data-mode="dark">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ZenDraw · 高保真视觉稿 v5.3.6</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<style>
-/* ============================================================
-   DESIGN TOKENS — 与 index.html / design-system.md 严格一致
-   命名：--radius-* / --space-* / --shadow-* / --dur-*
-   ============================================================ */
-:root {
-  --bg: #fafbfc; --bg-subtle: #f4f5f7; --bg-elevated: #ffffff; --bg-muted: #eef0f4;
-  --fg: #1a1d23; --fg-secondary: #5a5f6b; --fg-tertiary: #8e939f; --fg-quaternary: #b4b8c2;
-  --border: #e2e5ea; --border-subtle: #eef0f4; --border-strong: #c4c8d0; --ring: #1a1d23;
-  --accent: #4f6ef7; --accent-fg: #ffffff; --accent-subtle: rgba(79,110,247,0.10);
-  --accent-hover: #3b5ae0; --accent-soft: rgba(79,110,247,0.06);
-  --success: #22a06b; --success-subtle: rgba(34,160,107,0.10);
-  --warning: #e8a313; --warning-subtle: rgba(232,163,19,0.10);
-  --danger: #c9374b; --danger-subtle: rgba(201,55,75,0.10);
-  --info: #4f6ef7; --info-subtle: rgba(79,110,247,0.10);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZenDraw｜禅抽 · 状态机原型 v5.3.7</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans); background: var(--color-bg); color: var(--color-fg);
+      min-height: 100vh; transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+    }
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--space-4) var(--space-6); border-bottom: 1px solid var(--color-border);
+    }
+    nav .brand { font-size: var(--text-lg); font-weight: 700; }
+    nav .brand span { color: var(--color-primary); }
+    nav .links { display: flex; gap: var(--space-4); align-items: center; }
+    nav a { color: var(--color-muted); text-decoration: none; font-size: var(--text-sm); }
+    nav a:hover { color: var(--color-fg); }
+    .theme-toggle {
+      background: var(--color-surface); color: var(--color-fg); border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill); padding: var(--space-2) var(--space-4); font-size: var(--text-sm);
+      cursor: pointer; font-family: inherit;
+    }
+    .theme-toggle:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
-  --radius-xs: 4px; --radius-sm: 6px; --radius-md: 8px; --radius-lg: 12px;
-  --radius-xl: 16px; --radius-2xl: 24px; --radius-full: 9999px;
+    main { max-width: 1080px; margin: 0 auto; padding: var(--space-8) var(--space-4); }
+    .intro { color: var(--color-muted); font-size: var(--text-base); margin: var(--space-3) 0 var(--space-8); line-height: 1.6; }
+    .intro strong { color: var(--color-fg); }
 
-  --space-05: 2px; --space-1: 4px; --space-1_5: 6px; --space-2: 8px;
-  --space-2_5: 10px; --space-3: 12px; --space-3_5: 14px; --space-4: 16px;
-  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
-  --space-12: 48px; --space-16: 64px; --space-20: 80px; --space-24: 96px;
+    .stepper { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-6); flex-wrap: wrap; }
+    .step-dot {
+      flex: 1; min-width: 160px; text-align: center; padding: var(--space-3);
+      border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+      background: var(--color-surface); font-size: var(--text-sm); transition: all var(--dur) var(--ease);
+    }
+    .step-dot.active { border-color: var(--color-primary); color: var(--color-primary); font-weight: 700; }
+    .arrow { color: var(--color-muted); font-size: var(--text-lg); }
 
-  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 8px -2px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.04);
-  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.10), 0 4px 8px -4px rgba(0,0,0,0.06);
-  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.14), 0 8px 16px -8px rgba(0,0,0,0.08);
-  --shadow-2xl: 0 40px 80px -20px rgba(0,0,0,0.18);
+    .stage {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); padding: var(--space-8); box-shadow: var(--shadow-card);
+      text-align: center; min-height: 320px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: var(--space-5);
+    }
+    .stage h2 { font-size: var(--text-3xl); font-weight: 800; }
+    .stage p { color: var(--color-muted); max-width: 460px; }
+    .screen-num {
+      font-size: clamp(3rem, 14vw, 6rem); font-weight: 800; font-variant-numeric: tabular-nums;
+      transition: transform var(--dur-slow) var(--ease);
+    }
+    .screen-num.celebrate { transform: scale(1.05); }
+    .live-number { font-size: var(--text-4xl); font-weight: 800; font-variant-numeric: tabular-nums; min-height: 1.2em; }
 
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-50: 50ms; --dur-100: 100ms; --dur-150: 150ms; --dur-200: 200ms;
-  --dur-300: 300ms; --dur-500: 500ms; --dur-700: 700ms; --dur-1000: 1000ms;
+    .chips { display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: center; }
+    .chip {
+      padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill);
+      background: var(--color-bg); border: 1px solid var(--color-border); font-size: var(--text-sm);
+      font-variant-numeric: tabular-nums;
+    }
 
-  --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
-  --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem; --text-4xl: 2.25rem;
-  --text-5xl: 3rem; --text-6xl: 3.75rem; --text-7xl: 4.5rem;
-}
-[data-theme="dark"] {
-  --bg: #0c0d0f; --bg-subtle: #141519; --bg-elevated: #1a1c22; --bg-muted: #23252b;
-  --fg: #e8eaed; --fg-secondary: #9ca0ab; --fg-tertiary: #6b7080; --fg-quaternary: #464b58;
-  --border: #2e3038; --border-subtle: #23252b; --border-strong: #3e414b; --ring: #e8eaed;
-  --accent: #6b87ff; --accent-fg: #0c0d0f; --accent-subtle: rgba(107,135,255,0.12);
-  --accent-hover: #85a0ff; --accent-soft: rgba(107,135,255,0.06);
-  --success: #2ec483; --success-subtle: rgba(46,196,131,0.12);
-  --warning: #f5b820; --warning-subtle: rgba(245,184,32,0.12);
-  --danger: #e05a6d; --danger-subtle: rgba(224,90,109,0.12);
-  --shadow-xs: 0 1px 2px rgba(0,0,0,0.3); --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
-  --shadow-md: 0 4px 8px -2px rgba(0,0,0,0.5); --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.6);
-  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.7); --shadow-2xl: 0 40px 80px -20px rgba(0,0,0,0.8);
-}
-[data-theme-preset="ocean"]{--accent:#00b4d8;--accent-subtle:rgba(0,180,216,0.12);--accent-hover:#0096c7;--accent-soft:rgba(0,180,216,0.06);}
-[data-theme-preset="forest"]{--accent:#2d8a4e;--accent-subtle:rgba(45,138,78,0.12);--accent-hover:#23703f;--accent-soft:rgba(45,138,78,0.06);}
-[data-theme-preset="sunset"]{--accent:#e07c3c;--accent-subtle:rgba(224,124,60,0.12);--accent-hover:#c9692f;--accent-soft:rgba(224,124,60,0.06);}
-[data-theme-preset="purple"]{--accent:#7b2d8e;--accent-subtle:rgba(123,45,142,0.12);--accent-hover:#642473;--accent-soft:rgba(123,45,142,0.06);}
-[data-theme-preset="neon"]{--accent:#ff2d55;--accent-subtle:rgba(255,45,85,0.12);--accent-hover:#e51e44;--accent-soft:rgba(255,45,85,0.06);}
-[data-theme-preset="sakura"]{--accent:#ff8fab;--accent-subtle:rgba(255,143,171,0.14);--accent-hover:#ff7497;--accent-soft:rgba(255,143,171,0.08);}
-[data-theme-preset="midnight"]{--accent:#6b6bd6;--accent-subtle:rgba(107,107,214,0.12);--accent-hover:#5555c0;--accent-soft:rgba(107,107,214,0.06);}
-[data-theme-preset="retro"]{--accent:#a67c52;--accent-subtle:rgba(166,124,82,0.12);--accent-hover:#8c6644;--accent-soft:rgba(166,124,82,0.06);}
-[data-theme-preset="pixel"]{--accent:#33ff33;--accent-subtle:rgba(51,255,51,0.12);--accent-hover:#1fe21f;--accent-soft:rgba(51,255,51,0.06);}
-[data-theme-preset="rose"]{--accent:#c93d5f;--accent-subtle:rgba(201,61,95,0.12);--accent-hover:#b3304f;--accent-soft:rgba(201,61,95,0.06);}
+    .controls { display: flex; gap: var(--space-3); justify-content: center; margin-top: var(--space-6); flex-wrap: wrap; }
+    .btn {
+      font-family: inherit; font-size: var(--text-base); font-weight: 600; border-radius: var(--radius-pill);
+      padding: var(--space-3) var(--space-6); border: 1px solid transparent; cursor: pointer;
+      transition: transform var(--dur-fast) var(--ease);
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+    .btn-primary { background: var(--color-primary); color: var(--color-primary-fg); }
+    .btn-ghost { background: transparent; color: var(--color-fg); border-color: var(--color-border); }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-body { font-family: var(--font-sans); color: var(--fg); background: var(--bg); transition: background var(--dur-300), color var(--dur-300); }
-a { color: inherit; text-decoration: none; }
-button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+    .count-input {
+      font-family: inherit; font-size: var(--text-base); padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-pill); border: 1px solid var(--color-border);
+      background: var(--color-bg); color: var(--color-fg); width: 90px; text-align: center;
+    }
+    .count-field { display: flex; align-items: center; gap: var(--space-3); font-size: var(--text-sm); color: var(--color-muted); }
 
-.proto-nav { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: var(--space-4); padding: var(--space-3) var(--space-6); background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-.proto-nav .brand { display: flex; align-items: center; gap: var(--space-2); font-weight: 700; font-size: var(--text-lg); }
-.proto-nav .brand svg { color: var(--accent); }
-.proto-nav .nav-links { display: flex; gap: var(--space-1); margin-left: auto; flex-wrap: wrap; }
-.proto-nav .nav-links a { padding: var(--space-1_5) var(--space-3); border-radius: var(--radius-full); font-size: var(--text-sm); color: var(--fg-secondary); transition: all var(--dur-150); }
-.proto-nav .nav-links a:hover { background: var(--bg-muted); color: var(--fg); }
+    .toast {
+      position: fixed; bottom: var(--space-6); left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--color-surface); color: var(--color-fg); border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill); padding: var(--space-3) var(--space-5); font-size: var(--text-sm);
+      opacity: 0; pointer-events: none; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+      box-shadow: var(--shadow-float);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-.section { max-width: 1080px; margin: 0 auto; padding: var(--space-16) var(--space-6); }
-.section h2 { font-size: var(--text-3xl); font-weight: 700; letter-spacing: -0.02em; margin-bottom: var(--space-2); }
-.section .lead { color: var(--fg-secondary); max-width: 62ch; margin-bottom: var(--space-8); }
+    aside.history {
+      position: fixed; top: 0; right: 0; height: 100vh; width: min(380px, 90vw);
+      background: var(--color-surface); border-left: 1px solid var(--color-border);
+      transform: translateX(100%); transition: transform var(--dur-slow) var(--ease);
+      padding: var(--space-6); overflow-y: auto; box-shadow: var(--shadow-float);
+    }
+    aside.history.open { transform: translateX(0); }
+    aside.history h2 { font-size: var(--text-xl); margin-bottom: var(--space-4); }
+    aside.history .entry { display: flex; justify-content: space-between; padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); font-size: var(--text-sm); }
+    aside.history .close { position: absolute; top: var(--space-4); right: var(--space-4); background: transparent; border: 1px solid var(--color-border); color: var(--color-fg); border-radius: var(--radius-pill); width: 32px; height: 32px; cursor: pointer; }
+    aside.history .close:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+    aside.history .empty { color: var(--color-muted); text-align: center; padding: var(--space-8) 0; }
 
-/* Device frame */
-.device { max-width: 420px; margin: 0 auto; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-2xl); padding: var(--space-3); box-shadow: var(--shadow-xl); }
-.screen { background: var(--bg); border-radius: var(--radius-xl); min-height: 620px; padding: var(--space-6); display: flex; flex-direction: column; position: relative; overflow: hidden; border: 1px solid var(--border-subtle); }
-
-/* Screen header */
-.screen-head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); }
-.screen-head .ico { width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--accent-subtle); color: var(--accent); display: flex; align-items: center; justify-content: center; }
-.screen-head .t { font-weight: 700; font-size: var(--text-lg); }
-.screen-head .sub { font-size: var(--text-xs); color: var(--fg-tertiary); }
-.screen-head .right { margin-left: auto; display: flex; gap: var(--space-2); }
-.icon-btn { width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--bg-muted); color: var(--fg-secondary); display: flex; align-items: center; justify-content: center; transition: all var(--dur-150); }
-.icon-btn:hover { background: var(--bg-elevated); color: var(--fg); }
-
-/* Draw button */
-.draw-btn { width: 168px; height: 168px; border-radius: 50%; background: var(--accent); color: var(--accent-fg); font-size: var(--text-xl); font-weight: 700; margin: var(--space-8) auto; position: relative; box-shadow: 0 8px 32px var(--accent-subtle); transition: transform var(--dur-200); }
-.draw-btn::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid var(--accent-subtle); animation: pulse 2s ease-in-out infinite; }
-.draw-btn:hover { transform: scale(1.03); }
-@keyframes pulse { 0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.07);opacity:0} }
-
-/* Result number */
-.result-num { font-family: var(--font-mono); font-weight: 700; font-size: clamp(4rem, 22vw, 6rem); letter-spacing: -0.04em; text-align: center; transition: color var(--dur-300); }
-.result-num.rolling { color: var(--accent); }
-.meta { text-align: center; color: var(--fg-tertiary); font-size: var(--text-sm); margin-top: var(--space-2); }
-.drawn-list { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; margin-top: var(--space-4); }
-.chip { font-family: var(--font-mono); font-weight: 600; background: var(--accent-subtle); color: var(--accent); padding: var(--space-1_5) var(--space-3); border-radius: var(--radius-full); font-size: var(--text-sm); animation: pop var(--dur-300) var(--ease-out) backwards; }
-@keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-/* Buttons */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); font-weight: 600; border-radius: var(--radius-full); transition: all var(--dur-200); }
-.btn:active { transform: scale(.97); }
-.btn-primary { background: var(--accent); color: var(--accent-fg); padding: var(--space-3) var(--space-6); }
-.btn-primary:hover { transform: translateY(-1px); }
-.btn-secondary { background: var(--bg-muted); color: var(--fg); padding: var(--space-3) var(--space-5); }
-.btn-ghost { background: transparent; color: var(--fg-secondary); padding: var(--space-2) var(--space-3); }
-.btn:disabled { opacity: .4; cursor: not-allowed; }
-
-/* History card */
-.hist-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-4); background: var(--bg-elevated); box-shadow: var(--shadow-xs); }
-.hist-card .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2); }
-.hist-card .date { font-weight: 600; font-size: var(--text-sm); }
-.hist-card .badge { font-size: 10px; font-weight: 600; padding: 2px var(--space-2); border-radius: var(--radius-full); background: var(--success-subtle); color: var(--success); }
-.hist-card .nums { font-family: var(--font-mono); font-weight: 600; color: var(--accent); font-size: var(--text-lg); }
-.hist-card .time { font-size: var(--text-xs); color: var(--fg-tertiary); margin-top: var(--space-1); }
-
-/* Confetti canvas */
-#confetti { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
-
-/* State machine viz */
-.flow-viz { display: flex; align-items: center; justify-content: center; gap: var(--space-3); flex-wrap: wrap; margin: var(--space-8) 0; }
-.flow-node { padding: var(--space-3) var(--space-5); border-radius: var(--radius-full); background: var(--bg-muted); font-size: var(--text-sm); font-weight: 600; transition: all var(--dur-200); }
-.flow-node.active { background: var(--accent); color: var(--accent-fg); box-shadow: 0 4px 16px var(--accent-subtle); }
-.flow-arrow { color: var(--fg-tertiary); }
-
-/* Theme switcher */
-.swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-3); max-width: 520px; margin: 0 auto; }
-.swatch { aspect-ratio: 1.6; border-radius: var(--radius-lg); border: 2px solid transparent; cursor: pointer; display: flex; align-items: flex-end; padding: var(--space-2); transition: transform var(--dur-150); }
-.swatch:hover { transform: translateY(-2px); }
-.swatch.active { border-color: var(--fg); }
-.swatch span { font-size: 10px; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
-
-.toast-wrap { position: fixed; bottom: var(--space-6); left: 50%; transform: translateX(-50%); z-index: 100; display: flex; flex-direction: column; gap: var(--space-2); align-items: center; }
-.toast { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); background: var(--fg); color: var(--bg); border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 500; box-shadow: var(--shadow-lg); animation: toast-in var(--dur-300) var(--ease-out); }
-@keyframes toast-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-.divider { height: 1px; background: var(--border); margin: var(--space-8) 0; }
-.footer { border-top: 1px solid var(--border); padding: var(--space-8) var(--space-6); text-align: center; color: var(--fg-tertiary); font-size: var(--text-sm); }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
-</style>
+    footer { text-align: center; padding: var(--space-4); color: var(--color-muted); font-size: var(--text-xs); border-top: 1px solid var(--color-border); }
+    #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+  </style>
 </head>
 <body>
+  <nav aria-label="主导航">
+    <div class="brand">Zen<span>Draw</span>｜禅抽</div>
+    <div class="links">
+      <a href="index.html">主流程</a>
+      <a href="wireframes.html">组件库</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换深浅色">🌓 深浅色</button>
+    </div>
+  </nav>
 
-<nav class="proto-nav">
-  <div class="brand">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>
-    ZenDraw <span style="color:var(--fg-tertiary);font-weight:400;font-size:var(--text-sm)">v5.3.6 视觉稿</span>
-  </div>
-  <div class="nav-links">
-    <a href="./index.html">原型总览</a>
-    <a href="./wireframes.html">组件库规范</a>
-    <a href="#screens">四屏视觉稿</a>
-    <a href="#flow">状态机</a>
-    <a href="#themes">主题切换</a>
-    <button class="icon-btn" onclick="toggleTheme()" aria-label="切换深浅色">
-      <svg id="ticon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
-    </button>
-  </div>
-</nav>
+  <main aria-label="状态机演示">
+    <section>
+      <h1 class="sr-only">ZenDraw 状态机原型</h1>
+      <p class="intro">
+        产品核心流程为 <strong>4 态</strong>：① 欢迎 → ② 抽取中 → ③ 结果 → ④ 历史沉淀。
+        下方顶部「下一步」按钮按状态机顺序推进，屏幕内按钮（开始/停止/查看历史）与顶部按钮
+        <strong>共享同一状态源</strong>，不再各自为政，避免竞态。
+      </p>
+    </section>
 
-<section class="section" style="text-align:center;padding-top:var(--space-20)">
-  <span style="display:inline-block;padding:2px var(--space-3);border-radius:var(--radius-full);background:var(--accent-subtle);color:var(--accent);font-size:var(--text-sm);font-weight:600;margin-bottom:var(--space-4)">Hi-Fi Visual Prototype</span>
-  <h1 style="font-size:clamp(2.5rem,7vw,4rem);font-weight:800;letter-spacing:-0.03em">高保真视觉稿</h1>
-  <p class="lead" style="margin:var(--space-4) auto var(--space-8)">四屏真实视觉 · 数字滚动动效 · Canvas 彩屑庆祝 · Toast 反馈 · 11 套主题实时切换</p>
-</section>
+    <div class="stepper" id="stepper" aria-hidden="true">
+      <div class="step-dot" data-state="welcome">① 欢迎</div>
+      <span class="arrow">→</span>
+      <div class="step-dot" data-state="drawing">② 抽取中</div>
+      <span class="arrow">→</span>
+      <div class="step-dot" data-state="result">③ 结果</div>
+      <span class="arrow">→</span>
+      <div class="step-dot" data-state="history">④ 历史沉淀</div>
+    </div>
 
-<div class="divider"></div>
-
-<!-- ============ SCREENS ============ -->
-<section class="section" id="screens">
-  <h2>四大核心屏幕</h2>
-  <p class="lead">采用桌面/iOS 常见的「状态栏 + 标题 + 内容 + 操作」结构。下方为移动端 420px 真机视图模拟。</p>
-
-  <!-- ① 空闲 -->
-  <h3 style="margin:var(--space-8) 0 var(--space-4)">① 空闲态 Idle</h3>
-  <div class="device">
-    <div class="screen">
-      <div class="screen-head">
-        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg></div>
-        <div><div class="t">禅抽</div><div class="sub">极简 · 精准 · 禅意</div></div>
-        <div class="right">
-          <button class="icon-btn" data-tip="主题" onclick="toast('主题面板')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></button>
-        </div>
+    <div class="stage" id="stage" aria-live="polite">
+      <div id="screen-welcome">
+        <h2>静心一刻</h2>
+        <p>准备好后点击下方「开始抽取」，或按 Space / Enter。</p>
+        <div class="screen-num">🎲</div>
       </div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
-        <div style="font-family:var(--font-serif);font-size:var(--text-3xl);font-weight:700;opacity:.9">让抽签成为仪式</div>
-        <div class="meta">从 1 – 100 抽取 5 个不重复数字</div>
-        <button class="draw-btn" onclick="flowStep(1)">抽取</button>
-        <div class="meta">点击按钮或按 Space 开始</div>
+      <div id="screen-drawing" style="display:none">
+        <h2>抽取中…</h2>
+        <div class="live-number" id="liveNum">—</div>
+        <p>按 Esc 或再次点击「停止」揭晓结果。</p>
+      </div>
+      <div id="screen-result" style="display:none">
+        <h2>结果揭晓</h2>
+        <div class="screen-num" id="resultNum">73</div>
+        <p>真实数据示例 · 07·23·58·73·94</p>
+        <div class="chips" id="resultChips"></div>
+      </div>
+      <div id="screen-history" style="display:none">
+        <h2>历史沉淀</h2>
+        <p>本会话累计抽签记录，演示 ④ 历史沉淀态。</p>
+        <div class="chips" id="historyChips"></div>
       </div>
     </div>
-  </div>
 
-  <!-- ② 抽取中 -->
-  <h3 style="margin:var(--space-12) 0 var(--space-4)">② 抽取中 Drawing</h3>
-  <div class="device">
-    <div class="screen">
-      <div class="screen-head">
-        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M12 7v5l3 3"/></svg></div>
-        <div><div class="t">抽取中</div><div class="sub">滚动态 · 每 80ms 切换</div></div>
-      </div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
-        <div class="result-num rolling" id="p-num">—</div>
-        <div class="meta" id="p-meta">数字滚动中…</div>
-      </div>
-      <button class="btn btn-secondary" id="p-stop" style="margin:var(--space-4) auto 0" onclick="flowStep(2)">停止</button>
-    </div>
-  </div>
-
-  <!-- ③ 结果（彩屑联动） -->
-  <h3 style="margin:var(--space-12) 0 var(--space-4)">③ 结果 Result（庆祝动效联动）</h3>
-  <div class="device">
-    <div class="screen" id="result-screen">
-      <canvas id="confetti"></canvas>
-      <div class="screen-head">
-        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
-        <div><div class="t">抽取完成</div><div class="sub">本轮第 1 / 5 个</div></div>
-        <div class="right">
-          <button class="icon-btn" onclick="copyResult()" aria-label="复制"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-        </div>
-      </div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
-        <div class="result-num" id="p-result">73</div>
-        <div class="meta">真实数据示例 · 07 · 23 · 58 · 73 · 94</div>
-        <div class="drawn-list" id="p-chips"></div>
-      </div>
-      <div style="display:flex;gap:var(--space-3);justify-content:center;margin-top:var(--space-4)">
-        <button class="btn btn-primary" onclick="flowStep(1)">继续</button>
-        <button class="btn btn-ghost" onclick="flowStep(0)">完成</button>
+    <div class="controls">
+      <button class="btn btn-primary" id="nextBtn" aria-keyshortcuts="Space Enter">开始抽取</button>
+      <button class="btn btn-ghost" id="historyBtn" aria-haspopup="dialog">查看历史</button>
+      <div class="count-field">
+        <label for="countInput">数量</label>
+        <input class="count-input" id="countInput" type="number" min="1" max="10" value="5" inputmode="numeric" aria-label="抽签数量" />
+        <span>（↑/↓ 微调）</span>
       </div>
     </div>
-  </div>
+  </main>
 
-  <!-- ④ 历史 -->
-  <h3 style="margin:var(--space-12) 0 var(--space-4)">④ 历史 History</h3>
-  <div class="device">
-    <div class="screen">
-      <div class="screen-head">
-        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg></div>
-        <div><div class="t">历史记录</div><div class="sub">最近 3 次抽取</div></div>
-        <div class="right"><button class="icon-btn" onclick="toast('历史已清空')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:var(--space-3)">
-        <div class="hist-card"><div class="top"><span class="date">今日 14:32</span><span class="badge">已保存</span></div><div class="nums">07 · 23 · 58 · 73 · 94</div><div class="time">5 个不重复数字 · 范围 1–100</div></div>
-        <div class="hist-card"><div class="top"><span class="date">今日 14:28</span><span class="badge">已保存</span></div><div class="nums">03 · 19 · 42 · 66 · 88</div><div class="time">5 个不重复数字 · 范围 1–100</div></div>
-        <div class="hist-card"><div class="top"><span class="date">今日 14:21</span><span class="badge">已保存</span></div><div class="nums">11 · 27 · 35 · 52 · 99</div><div class="time">5 个不重复数字 · 范围 1–100</div></div>
-      </div>
-    </div>
-  </div>
-</section>
+  <aside class="history" id="historyPanel" role="dialog" aria-label="抽签历史" aria-modal="false">
+    <button class="close" id="historyClose" aria-label="关闭历史">×</button>
+    <h2>抽签历史</h2>
+    <div id="historyList"></div>
+  </aside>
 
-<div class="divider"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <footer>ZenDraw｜禅抽 v5.3.7 · 状态机原型 · 设计令牌见 tokens.css</footer>
 
-<!-- ============ STATE MACHINE ============ -->
-<section class="section" id="flow">
-  <h2>状态机 State Machine</h2>
-  <p class="lead">欢迎 → 抽取 → 结果 →（继续回到抽取 / 完成沉淀到历史并回到欢迎）。图示与下方按钮真实联动：点击「下一步」或屏幕按钮推进流程，结果屏揭晓时触发彩屑。</p>
-  <div class="flow-viz">
-    <div class="flow-node" data-step="0">① 欢迎</div>
-    <span class="flow-arrow">→</span>
-    <div class="flow-node" data-step="1">② 抽取</div>
-    <span class="flow-arrow">→</span>
-    <div class="flow-node" data-step="2">③ 结果</div>
-    <span class="flow-arrow">↺</span>
-    <div class="flow-node" data-step="3">④ 历史</div>
-  </div>
-  <div style="text-align:center;margin-top:var(--space-4)">
-    <button class="btn btn-primary" onclick="flowStep()">下一步 ▶</button>
-    <span style="margin-left:var(--space-3);color:var(--fg-tertiary);font-size:var(--text-sm)">当前：<span id="flow-label">① 欢迎</span></span>
-  </div>
-</section>
+  <script>
+    (function () {
+      var MIN = 1, MAX = 100;
+      var screens = {
+        welcome: document.getElementById('screen-welcome'),
+        drawing: document.getElementById('screen-drawing'),
+        result: document.getElementById('screen-result'),
+        history: document.getElementById('screen-history')
+      };
+      var nextBtn = document.getElementById('nextBtn');
+      var historyBtn = document.getElementById('historyBtn');
+      var historyClose = document.getElementById('historyClose');
+      var historyPanel = document.getElementById('historyPanel');
+      var historyList = document.getElementById('historyList');
+      var historyChips = document.getElementById('historyChips');
+      var resultNum = document.getElementById('resultNum');
+      var resultChips = document.getElementById('resultChips');
+      var liveNum = document.getElementById('liveNum');
+      var countInput = document.getElementById('countInput');
+      var toast = document.getElementById('toast');
+      var themeToggle = document.getElementById('themeToggle');
+      var confettiCanvas = document.getElementById('confetti');
+      var stepperDots = document.querySelectorAll('#stepper .step-dot');
 
-<div class="divider"></div>
+      // 状态机：单一状态源
+      var state = 'welcome';
+      var rafId = null;
+      var sessionResults = [];
 
-<!-- ============ THEME SWITCHER ============ -->
-<section class="section" id="themes">
-  <h2>11 套主题实时预览</h2>
-  <p class="lead">点击切换，所有屏幕与强调色即时响应（仅 accent 色相变化）。</p>
-  <div class="swatches" id="theme-swatches">
-    <div class="swatch active" data-preset="default" style="background:#4f6ef7" onclick="setPreset(this)"><span>Default</span></div>
-    <div class="swatch" data-preset="ocean" style="background:#00b4d8" onclick="setPreset(this)"><span>Ocean</span></div>
-    <div class="swatch" data-preset="forest" style="background:#2d8a4e" onclick="setPreset(this)"><span>Forest</span></div>
-    <div class="swatch" data-preset="sunset" style="background:#e07c3c" onclick="setPreset(this)"><span>Sunset</span></div>
-    <div class="swatch" data-preset="purple" style="background:#7b2d8e" onclick="setPreset(this)"><span>Purple</span></div>
-    <div class="swatch" data-preset="neon" style="background:#ff2d55" onclick="setPreset(this)"><span>Neon</span></div>
-    <div class="swatch" data-preset="sakura" style="background:#ff8fab" onclick="setPreset(this)"><span>Sakura</span></div>
-    <div class="swatch" data-preset="midnight" style="background:#6b6bd6" onclick="setPreset(this)"><span>Midnight</span></div>
-    <div class="swatch" data-preset="retro" style="background:#a67c52" onclick="setPreset(this)"><span>Retro</span></div>
-    <div class="swatch" data-preset="pixel" style="background:#33ff33" onclick="setPreset(this)"><span>Pixel</span></div>
-    <div class="swatch" data-preset="rose" style="background:#c93d5f" onclick="setPreset(this)"><span>Rose</span></div>
-  </div>
-</section>
+      try {
+        var saved = JSON.parse(localStorage.getItem('zd-theme') || '{}');
+        if (saved.theme) document.documentElement.setAttribute('data-theme', saved.theme);
+        if (saved.mode) document.documentElement.setAttribute('data-mode', saved.mode);
+      } catch (e) {}
 
-<div class="footer">ZenDraw · 禅抽 — 高保真视觉稿 v5.3.6 · 与 index.html / wireframes.html / DESIGN-SYSTEM.md 保持令牌一致</div>
-
-<div class="toast-wrap" id="toast-wrap"></div>
-
-<script>
-const STEP_LABELS = ['① 欢迎', '② 抽取', '③ 结果', '④ 历史'];
-let step = 0;          // 0 welcome, 1 drawing, 2 result, 3 history
-let drawnResults = []; // 本轮已抽取数字
-let drawTimer = null;
-
-// 抽取范围 1-100（不含 0 与 100）
-function randDraw() { return Math.floor(Math.random() * 100) + 1; }
-
-function setStepUI() {
-  document.querySelectorAll('.flow-node').forEach(n => {
-    const s = parseInt(n.getAttribute('data-step'));
-    n.classList.toggle('active', s === step);
-  });
-  document.getElementById('flow-label').textContent = STEP_LABELS[Math.min(step, 3)];
-}
-
-function flowStep(force) {
-  // force 来自屏幕按钮（0/1/2）时直接跳转目标态
-  if (force !== undefined) {
-    if (force === 0) { resetFlow(); return; }
-    if (force === 1) { startDrawing(); return; }
-    if (force === 2) { stopDrawing(); return; }
-  }
-  // 顶部「下一步」按钮顺序推进
-  if (step === 0) { startDrawing(); }
-  else if (step === 1) { stopDrawing(); }
-  else if (step === 2) {
-    if (drawnResults.length >= 5) { toast('本轮 5 个已完成'); goHistory(); }
-    else { startDrawing(); }
-  }
-}
-
-function resetFlow() {
-  clearInterval(drawTimer);
-  step = 0; drawnResults = [];
-  setStepUI(); toast('已返回欢迎态');
-}
-
-function startDrawing() {
-  clearInterval(drawTimer);
-  step = 1; setStepUI();
-  const numEl = document.getElementById('p-num');
-  const metaEl = document.getElementById('p-meta');
-  const btn = document.getElementById('p-stop');
-  if (numEl) { numEl.classList.add('rolling'); drawTimer = setInterval(() => numEl.textContent = randDraw(), 80); }
-  if (metaEl) metaEl.textContent = '数字滚动中…';
-  if (btn) btn.disabled = false;
-  toast('开始抽取');
-}
-
-function stopDrawing() {
-  clearInterval(drawTimer);
-  step = 2; setStepUI();
-  const v = randDraw();
-  drawnResults.push(v);
-  const numEl = document.getElementById('p-num');
-  const resultEl = document.getElementById('p-result');
-  const metaEl = document.getElementById('p-meta');
-  const btn = document.getElementById('p-stop');
-  if (numEl) { numEl.classList.remove('rolling'); numEl.textContent = v; }
-  if (resultEl) resultEl.textContent = v;
-  if (metaEl) metaEl.textContent = '已停止 · 本轮第 ' + drawnResults.length + ' / 5 个';
-  if (btn) btn.disabled = true;
-  // 更新 chips
-  const chips = document.getElementById('p-chips');
-  if (chips) {
-    const c = document.createElement('span');
-    c.className = 'chip'; c.textContent = v; c.style.animationDelay = '0ms';
-    chips.appendChild(c);
-  }
-  toast('结果揭晓：' + v);
-  fireConfetti();
-}
-
-function goHistory() {
-  clearInterval(drawTimer);
-  step = 3; setStepUI(); toast('已沉淀到历史');
-}
-
-function copyResult() {
-  const v = document.getElementById('p-result')?.textContent || '';
-  navigator.clipboard?.writeText(v).catch(() => {});
-  toast('已复制：' + v);
-}
-
-// 彩屑：仅在结果揭晓时触发
-let confettiRAF = null;
-function fireConfetti() {
-  const canvas = document.getElementById('confetti');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width; canvas.height = rect.height;
-  const colors = [getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), '#ffd166', '#06d6a0', '#ef476f', '#118ab2'];
-  const parts = Array.from({ length: 90 }, () => ({
-    x: rect.width / 2, y: rect.height * 0.35,
-    vx: (Math.random() - 0.5) * 9, vy: Math.random() * -9 - 3,
-    size: Math.random() * 6 + 4, color: colors[Math.floor(Math.random() * colors.length)],
-    rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.3, life: 1
-  }));
-  const start = performance.now();
-  function frame(now) {
-    const t = now - start;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let alive = false;
-    parts.forEach(p => {
-      p.vy += 0.25; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
-      if (t > 600) p.life -= 0.02;
-      if (p.life > 0 && p.y < canvas.height + 20) {
-        alive = true;
-        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.globalAlpha = Math.max(p.life, 0);
-        ctx.fillStyle = p.color; ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6); ctx.restore();
+      function secureRand() {
+        var buf = new Uint32Array(1);
+        crypto.getRandomValues(buf);
+        return MIN + (buf[0] % (MAX - MIN + 1));
       }
-    });
-    if (alive && t < 3000) confettiRAF = requestAnimationFrame(frame);
-    else ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-  cancelAnimationFrame(confettiRAF);
-  confettiRAF = requestAnimationFrame(frame);
-}
 
-function setPreset(el) {
-  document.querySelectorAll('#theme-swatches .swatch').forEach(s => s.classList.remove('active'));
-  el.classList.add('active');
-  const p = el.getAttribute('data-preset');
-  if (p === 'default') document.documentElement.removeAttribute('data-theme-preset');
-  else document.documentElement.setAttribute('data-theme-preset', p);
-}
-function toggleTheme() {
-  const html = document.documentElement;
-  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', next);
-  document.getElementById('ticon').innerHTML = next === 'dark'
-    ? '<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>'
-    : '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>';
-}
-function toast(msg) {
-  const wrap = document.getElementById('toast-wrap');
-  const t = document.createElement('div');
-  t.className = 'toast'; t.setAttribute('role', 'status');
-  t.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>' + msg;
-  wrap.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(() => t.remove(), 300); }, 2000);
-}
+      function setScreen(s) {
+        state = s;
+        Object.keys(screens).forEach(function (k) {
+          screens[k].style.display = (k === s) ? '' : 'none';
+        });
+        stepperDots.forEach(function (d) {
+          d.classList.toggle('active', d.getAttribute('data-state') === s);
+        });
+        // 顶部按钮文案随态变化，与屏幕内按钮语义一致
+        if (s === 'welcome') nextBtn.textContent = '开始抽取';
+        else if (s === 'drawing') nextBtn.textContent = '停止';
+        else if (s === 'result') nextBtn.textContent = '查看历史';
+        else if (s === 'history') nextBtn.textContent = '再来一次';
+      }
 
-// 键盘：Space/Enter 推进，Esc 重置
-document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT') return;
-  if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); flowStep(); }
-  else if (e.code === 'Escape') { resetFlow(); }
-});
-setStepUI();
-</script>
+      // 顶部「下一步」按状态机顺序推进（与屏幕按钮共享 setScreen，无竞态）
+      function advance() {
+        if (state === 'welcome') {
+          state = 'drawing'; setScreen('drawing'); roll();
+        } else if (state === 'drawing') {
+          stopDraw();
+        } else if (state === 'result') {
+          openHistory();
+        } else if (state === 'history') {
+          closeHistory(); setScreen('welcome');
+        }
+      }
+
+      function roll() {
+        liveNum.textContent = secureRand();
+        rafId = requestAnimationFrame(roll);
+      }
+
+      function stopDraw() {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = null;
+        var n = parseInt(countInput.value, 10) || 5;
+        n = Math.max(1, Math.min(10, n));
+        var nums = [];
+        for (var i = 0; i < n; i++) nums.push(secureRand());
+        resultNum.textContent = nums[nums.length - 1];
+        resultChips.innerHTML = nums.map(function (x) { return '<span class="chip">' + x + '</span>'; }).join('');
+        sessionResults = sessionResults.concat(nums);
+        if (sessionResults.length > 20) sessionResults = sessionResults.slice(-20);
+        historyChips.innerHTML = sessionResults.map(function (x) { return '<span class="chip">' + x + '</span>'; }).join('');
+        renderHistoryPanel();
+        setScreen('result');
+        burstConfetti();
+        resultNum.classList.add('celebrate');
+        setTimeout(function () { resultNum.classList.remove('celebrate'); }, 500);
+        showToast('已揭晓：' + nums[nums.length - 1]);
+      }
+
+      function openHistory() {
+        renderHistoryPanel();
+        historyPanel.classList.add('open');
+        setScreen('history');
+      }
+      function closeHistory() {
+        historyPanel.classList.remove('open');
+      }
+      function renderHistoryPanel() {
+        if (!sessionResults.length) {
+          historyList.innerHTML = '<div class="empty">🎲 暂无记录</div>';
+          return;
+        }
+        historyList.innerHTML = sessionResults.slice().reverse().map(function (x) {
+          return '<div class="entry"><span>' + x + '</span></div>';
+        }).join('');
+      }
+
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(function () { toast.classList.remove('show'); }, 1600);
+      }
+
+      nextBtn.addEventListener('click', advance);
+      historyBtn.addEventListener('click', function () {
+        if (state === 'history') { closeHistory(); setScreen('welcome'); }
+        else openHistory();
+      });
+      historyClose.addEventListener('click', function () { closeHistory(); });
+
+      // 键盘：Space/Enter 推进主流程，Esc 停止
+      document.addEventListener('keydown', function (e) {
+        var tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+        if (e.code === 'Space' || e.code === 'Enter') {
+          if (e.target === nextBtn) return;
+          e.preventDefault(); advance();
+        } else if (e.code === 'Escape' && state === 'drawing') {
+          stopDraw();
+        }
+      });
+
+      // countInput ↑/↓ 微调
+      countInput.addEventListener('keydown', function (e) {
+        var v = parseInt(countInput.value, 10) || 5;
+        if (e.code === 'ArrowUp') { e.preventDefault(); countInput.value = Math.min(10, v + 1); }
+        else if (e.code === 'ArrowDown') { e.preventDefault(); countInput.value = Math.max(1, v - 1); }
+      });
+
+      themeToggle.addEventListener('click', function () {
+        var cur = document.documentElement.getAttribute('data-mode');
+        var next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-mode', next);
+        try {
+          var sv = JSON.parse(localStorage.getItem('zd-theme') || '{}');
+          sv.mode = next; localStorage.setItem('zd-theme', JSON.stringify(sv));
+        } catch (e) {}
+      });
+
+      function burstConfetti() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var ctx = confettiCanvas.getContext('2d');
+        var W = confettiCanvas.width = window.innerWidth;
+        var H = confettiCanvas.height = window.innerHeight;
+        var colors = ['#6366f1', '#f43f5e', '#22c55e', '#f97316', '#a855f7'];
+        var parts = [];
+        for (var i = 0; i < 130; i++) {
+          parts.push({ x: W / 2, y: H / 3, vx: (Math.random() - 0.5) * 12, vy: Math.random() * -12 - 4, s: Math.random() * 4 + 3, c: colors[i % colors.length], a: 1 });
+        }
+        var t0 = performance.now();
+        (function frame(t) {
+          ctx.clearRect(0, 0, W, H);
+          var alive = false;
+          parts.forEach(function (p) { p.vy += 0.4; p.x += p.vx; p.y += p.vy; p.a -= 0.012; if (p.a > 0) { alive = true; ctx.globalAlpha = Math.max(p.a, 0); ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, p.s, p.s); } });
+          ctx.globalAlpha = 1;
+          if (alive && t - t0 < 2000) requestAnimationFrame(frame); else ctx.clearRect(0, 0, W, H);
+        })(t0);
+      }
+
+      setScreen('welcome');
+    })();
+  </script>
 </body>
 </html>

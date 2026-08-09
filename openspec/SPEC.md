@@ -1,10 +1,10 @@
-# ZenDraw | 禅抽 v5.3.6 — 项目规范文档
+# ZenDraw | 禅抽 v5.4.0 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.3.6
+- **当前版本**: v5.4.0
 - **上次更新**: 2026-08-09
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、11 种主题配色、Web Audio API 音效。
 - **许可证**: MIT License
@@ -70,15 +70,15 @@ zen-draw/
 │   ├── page.tsx                   # 主页面（状态编排 + 键盘快捷键）
 │   ├── error.tsx                  # ⭐ 全局错误边界 (v4.0)
 │   ├── not-found.tsx              # ⭐ 404 页面 (v4.0)
-│   ├── style.css                  # 全局样式（Tailwind v4 + shadcn/ui + 10 主题）
+│   ├── style.css                  # 全局样式（Tailwind v4 + shadcn/ui + 11 主题）
 │   ├── components/
-│   │   ├── ui/                    # shadcn/ui v4 组件（base-nova 风格）
+│   │   ├── ui/                    # shadcn/ui v4 组件（base-nova 风格，共 18 个）
 │   │   │   ├── alert.tsx, badge.tsx, button.tsx, card.tsx
 │   │   │   ├── dialog.tsx, input.tsx, label.tsx
 │   │   │   ├── select.tsx, select-scroll-buttons.tsx  # Select（拆分滚动按钮）
+│   │   │   ├── checkbox.tsx, tooltip.tsx, toast.tsx  # 缺口补齐组件
+│   │   │   ├── separator.tsx, slider.tsx, switch.tsx, tabs.tsx, textarea.tsx
 │   │   │   ├── sheet/             # 侧边抽屉（context/parts/index，拆分）
-│   │   │   ├── separator.tsx, slider.tsx
-│   │   │   ├── switch.tsx, tabs.tsx, textarea.tsx
 │   │   ├── layout/                # 布局组件
 │   │   │   └── app-header.tsx            # 顶部导航栏（Logo + 主题切换 + 设置）
 │   │   ├── draw/                  # 抽签业务组件
@@ -113,13 +113,14 @@ zen-draw/
 │   │   ├── use-draw-persistence.ts# 持久化设置（13 组 localStorage）
 │   │   ├── use-local-storage.ts   # localStorage Hook（含跨标签同步）
 │   │   └── use-sound.ts          # Web Audio API 音效合成
+│   │   └── use-mounted-reduced-motion.ts # 减少动效偏好 Hook
 │   ├── lib/
 │   │   ├── utils.ts              # 工具函数（cn / secureRandomInt / sanitizeListInput）
 │   │   ├── version.ts            # 应用版本常量（单一来源）
 │   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
 │   ├── locales/                  # 国际化数据
 │   │   ├── index.ts              # re-export
-│   │   ├── types.ts              # TranslationKey（90 键）
+│   │   ├── types.ts              # TranslationKey（112 键）
 │   │   ├── en.ts                 # 英文翻译
 │   │   └── zh.ts                 # 中文翻译
 │   └── test/
@@ -374,6 +375,9 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 | Switch | `ui/switch.tsx` | 是（Switch） |
 | Tabs | `ui/tabs.tsx` | 是（Tabs） |
 | Textarea | `ui/textarea.tsx` | 否（原生 textarea） |
+| Checkbox | `ui/checkbox.tsx` | 是（Checkbox） |
+| Tooltip | `ui/tooltip.tsx` | 是（Tooltip） |
+| Toast | `ui/toast.tsx` | 是（Toast 系列） |
 
 ### 5.2 业务组件规范
 
@@ -436,35 +440,9 @@ interface DrawState {
 - `en` — English
 - `zh` — 简体中文
 
-### 7.2 翻译键（90 个）
-```
-title, settings, history, close,
-minVal, maxVal, drawCount,
-allowDup, autoHide, autoHideDesc,
-custom, drawSettings, appearance,
-drawDuration, drawDurationDesc,
-theme, themeMode, themeLight, themeDark, themeSystem,
-themePreset, themeDefault, themeOcean, themeForest,
-themeSunset, themePurple, themeNeon,
-themeSakura, themeMidnight, themeRetro, themePixel, themeRose,
-fontFamily, fontSans, fontMono, fontSerif,
-useCustomList, export,
-minDigits, minDigitsDesc, prefix, suffix,
-historyDesc, noHistory,
-ready, drawing, startDraw, stopDraw, startHint, stopHint,
-copiedToClipboard, copyResult, copied,
-import_, importDesc, listPlaceholder, confirmImport,
-cancel, itemsLoaded, noItems, clearHistory,
-switchLang, minMaxError, rangeError,
-appTitle, appSubtitle, drawMainArea, drawDisplayArea,
-welcomeHint, errorTitle, errorMessage,
-resultLabel, resultRegion,
-revealTitle, milestoneDraws, emptyStateHint,
-switchLight, switchDark,
-footerInfo,
-autoSaveDesc, clickToCopy,
-errCustomListEmpty, errCustomListTooMany, errCustomListRange, errRangeInvalid
-```
+### 7.2 翻译键（112 个）
+
+翻译键由 `app/locales/types.ts` 中的 `TranslationKey` 联合类型强约束，`zh.ts` 与 `en.ts` 必须完全对齐（缺失或多余都会在编译期报错）。当前共 **112 个**键，涵盖：界面导航（title/settings/history/close）、范围与计数（minVal/maxVal/drawCount/allowDup/autoHide/custom/useCustomList）、外观（theme*/font*）、抽签流程（ready/drawing/startDraw/stopDraw/copy*）、名单导入（import*/confirmImport/itemsLoaded）、错误提示（err*/minMaxError/rangeError）、无障碍（appTitle/resultRegion/welcomeHint）等。新增键须同步加入 `TranslationKey`、`zh.ts`、`en.ts` 三处。
 
 ### 7.3 使用方式
 ```typescript

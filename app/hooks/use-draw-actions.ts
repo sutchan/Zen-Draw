@@ -1,4 +1,4 @@
-// hooks/use-draw-actions.ts v5.3.6 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
+// hooks/use-draw-actions.ts v5.3.7 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
 "use client";
 
 import * as React from "react";
@@ -97,29 +97,29 @@ export function useDrawActions(
   // --- 设置更新方法 ---
 
   const setMin = React.useCallback((value: number | string) => {
-    const n = typeof value === "number" ? value : parseFiniteNumber(value, 0);
+    const n = typeof value === "number" ? (Number.isFinite(value) ? value : 0) : parseFiniteNumber(value, 0);
     dispatch({ type: "SET_MIN", value: n });
   }, [dispatch]);
 
   const setMax = React.useCallback((value: number | string) => {
-    const n = typeof value === "number" ? value : parseFiniteNumber(value, 0);
+    const n = typeof value === "number" ? (Number.isFinite(value) ? value : 0) : parseFiniteNumber(value, 0);
     dispatch({ type: "SET_MAX", value: n });
   }, [dispatch]);
 
   const setCount = React.useCallback((value: number | string) => {
-    const n = typeof value === "number" ? value : parseFiniteNumber(value, 1);
+    const n = typeof value === "number" ? (Number.isFinite(value) ? value : 1) : parseFiniteNumber(value, 1);
     const clamped = Math.max(1, Math.min(1000, n));
     dispatch({ type: "SET_COUNT", value: clamped });
   }, [dispatch]);
 
   const setDuration = React.useCallback((value: number | string) => {
-    const n = typeof value === "number" ? value : parseFiniteNumber(value, 5);
+    const n = typeof value === "number" ? (Number.isFinite(value) ? value : 5) : parseFiniteNumber(value, 5);
     const clamped = Math.max(1, Math.min(120, n));
     dispatch({ type: "SET_DURATION", value: clamped });
   }, [dispatch]);
 
   const setDigits = React.useCallback((value: number | string) => {
-    const n = typeof value === "number" ? value : parseFiniteNumber(value, 0);
+    const n = typeof value === "number" ? (Number.isFinite(value) ? value : 0) : parseFiniteNumber(value, 0);
     const clamped = Math.max(0, Math.min(20, n));
     dispatch({ type: "SET_DIGITS", value: clamped });
   }, [dispatch]);

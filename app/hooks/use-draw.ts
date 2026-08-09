@@ -1,4 +1,4 @@
-// hooks/use-draw.ts v5.3.6 —— 统一管理抽奖流程状态与逻辑（重构拆分版）
+// hooks/use-draw.ts v5.3.7 —— 统一管理抽奖流程状态与逻辑（重构拆分版）
 "use client";
 
 import * as React from "react";
@@ -85,13 +85,20 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
     state.rollingValues.length > 0 ? state.rollingValues : state.currentResults;
   const canDraw = state.status === "idle" || state.status === "result";
 
-  const settings = {
-    min: state.min, max: state.max, count: state.count,
-    duration: state.duration, allowDuplicates: state.allowDuplicates,
-    autoHide: state.autoHide, customList: state.customList,
-    useCustomList: state.useCustomList, digits: state.digits,
-    prefix: state.prefix, suffix: state.suffix, language: state.language,
-  };
+  const settings = React.useMemo(
+    () => ({
+      min: state.min, max: state.max, count: state.count,
+      duration: state.duration, allowDuplicates: state.allowDuplicates,
+      autoHide: state.autoHide, customList: state.customList,
+      useCustomList: state.useCustomList, digits: state.digits,
+      prefix: state.prefix, suffix: state.suffix, language: state.language,
+    }),
+    [
+      state.min, state.max, state.count, state.duration,
+      state.allowDuplicates, state.autoHide, state.customList,
+      state.useCustomList, state.digits, state.prefix, state.suffix, state.language,
+    ]
+  );
 
   return {
     ...state,
