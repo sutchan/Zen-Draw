@@ -1,254 +1,542 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ZenDraw · 组件库规范 wireframes v5.3.2</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<title>ZenDraw · 组件库规范 v5.3.3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-/* ============ TOKENS (与 design-system.md 一致) ============ */
-:root{
-  --bg:#fafbfc;--bg-subtle:#f4f5f7;--bg-elevated:#fff;--bg-muted:#eef0f4;
+/* ===== TOKENS — 与 index.html / prototypes.html / DESIGN-SYSTEM.md 一致 ===== */
+:root {
+  --bg:#fafbfc;--bg-subtle:#f4f5f7;--bg-elevated:#ffffff;--bg-muted:#eef0f4;
   --fg:#1a1d23;--fg-secondary:#5a5f6b;--fg-tertiary:#8e939f;--fg-quaternary:#b4b8c2;
   --border:#e2e5ea;--border-subtle:#eef0f4;--border-strong:#c4c8d0;--ring:#1a1d23;
-  --accent:#4f6ef7;--accent-fg:#fff;--accent-subtle:rgba(79,110,247,.10);--accent-hover:#3b5ae0;--accent-soft:rgba(79,110,247,.06);
-  --success:#22a06b;--success-subtle:rgba(34,160,107,.10);
-  --warning:#e8a313;--warning-subtle:rgba(232,163,19,.10);
-  --danger:#c9374b;--danger-subtle:rgba(201,55,75,.10);
-  --info:#4f6ef7;--info-subtle:rgba(79,110,247,.10);
-  --r-xs:4px;--r-sm:6px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:24px;--r-full:9999px;
-  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-8:32px;--s-10:40px;--s-12:48px;--s-16:64px;
-  --sh-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
-  --sh-md:0 4px 8px -2px rgba(0,0,0,.08);
-  --sh-lg:0 12px 24px -6px rgba(0,0,0,.10);
-  --ease:cubic-bezier(.16,1,.3,1);--d-150:150ms;--d-200:200ms;--d-300:300ms;
-  --fs:Inter,Noto Sans SC,system-ui,sans-serif;--mono:JetBrains Mono,monospace;
+  --accent:#4f6ef7;--accent-fg:#ffffff;--accent-subtle:rgba(79,110,247,0.10);--accent-hover:#3b5ae0;--accent-soft:rgba(79,110,247,0.06);
+  --success:#22a06b;--success-subtle:rgba(34,160,107,0.10);
+  --warning:#e8a313;--warning-subtle:rgba(232,163,19,0.10);
+  --danger:#c9374b;--danger-subtle:rgba(201,55,75,0.10);
+  --info:#4f6ef7;--info-subtle:rgba(79,110,247,0.10);
+  --radius-xs:4px;--radius-sm:6px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-2xl:24px;--radius-full:9999px;
+  --space-05:2px;--space-1:4px;--space-1_5:6px;--space-2:8px;--space-2_5:10px;--space-3:12px;--space-3_5:14px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
+  --shadow-xs:0 1px 2px rgba(0,0,0,0.04);--shadow-sm:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);--shadow-md:0 4px 8px -2px rgba(0,0,0,0.08),0 2px 4px -2px rgba(0,0,0,0.04);--shadow-lg:0 12px 24px -6px rgba(0,0,0,0.10),0 4px 8px -4px rgba(0,0,0,0.06);--shadow-xl:0 24px 48px -12px rgba(0,0,0,0.14),0 8px 16px -8px rgba(0,0,0,0.08);--shadow-2xl:0 40px 80px -20px rgba(0,0,0,0.18);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);--ease-in-out:cubic-bezier(0.65,0,0.35,1);
+  --dur-50:50ms;--dur-100:100ms;--dur-150:150ms;--dur-200:200ms;--dur-300:300ms;--dur-500:500ms;--dur-700:700ms;--dur-1000:1000ms;
+  --font-sans:'Inter','Noto Sans SC',system-ui,sans-serif;--font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --text-xs:0.75rem;--text-sm:0.875rem;--text-base:1rem;--text-lg:1.125rem;--text-xl:1.25rem;--text-2xl:1.5rem;--text-3xl:1.875rem;--text-4xl:2.25rem;--text-5xl:3rem;
 }
-[data-theme="dark"]{
-  --bg:#0c0d0f;--bg-subtle:#141519;--bg-elevated:#1a1c22;--bg-muted:#23252b;
-  --fg:#e8eaed;--fg-secondary:#9ca0ab;--fg-tertiary:#6b7080;--fg-quaternary:#464b58;
-  --border:#2e3038;--border-subtle:#23252b;--border-strong:#3e414b;--ring:#e8eaed;
-  --accent:#6b87ff;--accent-hover:#85a0ff;--accent-subtle:rgba(107,135,255,.12);--accent-soft:rgba(107,135,255,.06);
-  --success:#2ec483;--warning:#f5b820;--danger:#e05a6d;
-  --sh-sm:0 1px 3px rgba(0,0,0,.4);--sh-md:0 4px 8px -2px rgba(0,0,0,.5);--sh-lg:0 12px 24px -6px rgba(0,0,0,.6);
-}
-/* ============ BASE ============ */
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--fs);background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:var(--accent);text-decoration:none}
-button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit}
-code,.mono{font-family:var(--mono)}
-/* ============ LAYOUT ============ */
-.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:var(--s-4);padding:var(--s-3) var(--s-6);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-.brand{display:flex;align-items:center;gap:var(--s-2);font-weight:700}
-.brand svg{color:var(--accent)}
-.nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
-.nav a{padding:6px 12px;border-radius:var(--r-full);font-size:var(--fs);color:var(--fg-secondary);font-size:.85rem}
-.nav a:hover{background:var(--bg-muted);color:var(--fg)}
-.theme-btn{width:36px;height:36px;border-radius:var(--r-md);background:var(--bg-subtle);color:var(--fg-secondary);display:grid;place-items:center}
-.theme-btn:hover{background:var(--bg-muted);color:var(--fg)}
-.wrap{max-width:1120px;margin:0 auto;padding:var(--s-16) var(--s-6)}
-.section{margin-bottom:var(--s-16)}
-.sec-head h2{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
-.sec-head p{color:var(--fg-secondary);max-width:64ch;margin-bottom:var(--s-8)}
-.kicker{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:var(--s-2)}
-/* ============ GRID ============ */
-.grid{display:grid;gap:var(--s-6)}
-.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
-@media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr}}
-/* ============ SPEC CARD ============ */
-.spec{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-sm)}
-.spec .stage{display:flex;flex-wrap:wrap;gap:var(--s-3);align-items:center;padding:var(--s-6);min-height:120px;background:linear-gradient(0deg,var(--bg-subtle),var(--bg-subtle))}
-.spec .meta{padding:var(--s-4) var(--s-5);border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:4px}
-.spec .meta .name{font-weight:600;font-size:.9rem}
-.spec .meta .desc{font-size:.8rem;color:var(--fg-tertiary)}
-.spec .meta .use{font-size:.78rem;color:var(--fg-secondary);background:var(--bg-subtle);border-radius:var(--r-sm);padding:6px 8px;font-family:var(--mono);white-space:pre-wrap}
-/* ============ COMPONENTS ============ */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;border-radius:var(--r-full);transition:all var(--d-200) var(--ease);white-space:nowrap}
-.btn:active{transform:scale(.97)}
-.btn-primary{background:var(--accent);color:var(--accent-fg);padding:10px 22px;box-shadow:0 2px 8px var(--accent-subtle)}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-subtle)}
-.btn-secondary{background:var(--bg-subtle);color:var(--fg);border:1px solid var(--border-subtle);padding:10px 18px}
-.btn-secondary:hover{background:var(--bg-muted)}
-.btn-ghost{background:transparent;color:var(--fg-secondary);padding:8px 12px;border-radius:var(--r-md)}
-.btn-ghost:hover{background:var(--bg-muted);color:var(--fg)}
-.btn-icon{width:40px;height:40px;border-radius:var(--r-md);background:var(--bg-subtle);color:var(--fg-secondary);display:grid;place-items:center}
-.btn-icon:hover{background:var(--bg-muted);color:var(--fg)}
-.btn-draw{width:180px;height:180px;border-radius:50%;background:var(--accent);color:var(--accent-fg);font-size:1.3rem;font-weight:700;box-shadow:0 8px 32px var(--accent-subtle);position:relative}
-.btn-draw::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--accent-subtle);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.06);opacity:0}}
-.field{display:flex;flex-direction:column;gap:6px;width:100%}
-.field label{font-size:.85rem;font-weight:500;color:var(--fg-secondary)}
-.input,.textarea{padding:9px 12px;background:var(--bg-subtle);border:1px solid var(--border-subtle);border-radius:var(--r-md);transition:border-color var(--d-150),box-shadow var(--d-150);width:100%}
-.input:focus,.textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle)}
-.input::placeholder,.textarea::placeholder{color:var(--fg-quaternary)}
-.input.error{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-subtle)}
-.err-msg{font-size:.72rem;color:var(--danger)}
-.switch{width:44px;height:26px;background:var(--bg-muted);border-radius:var(--r-full);position:relative;cursor:pointer;transition:background var(--d-200)}
-.switch.on{background:var(--accent)}
-.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:var(--sh-sm);transition:transform var(--d-200)}
-.switch.on::after{transform:translateX(18px)}
-.checkbox{width:20px;height:20px;border-radius:var(--r-sm);border:1.5px solid var(--border-strong);background:var(--bg-elevated);display:inline-grid;place-items:center;cursor:pointer;color:var(--accent-fg);transition:all var(--d-150)}
-.checkbox.on{background:var(--accent);border-color:var(--accent)}
-.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:var(--r-full);font-size:.72rem;font-weight:600}
-.badge-accent{background:var(--accent-subtle);color:var(--accent)}
-.badge-success{background:var(--success-subtle);color:var(--success)}
-.badge-danger{background:var(--danger-subtle);color:var(--danger)}
-.badge-neutral{background:var(--bg-muted);color:var(--fg-secondary)}
-.card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-5);box-shadow:var(--sh-sm)}
-.card h4{font-weight:600;margin-bottom:4px}.card p{font-size:.85rem;color:var(--fg-secondary)}
-.tabs{display:inline-flex;gap:4px;padding:4px;background:var(--bg-subtle);border-radius:var(--r-lg)}
-.tab{padding:8px 16px;border-radius:var(--r-md);font-size:.85rem;font-weight:500;color:var(--fg-secondary);cursor:pointer}
-.tab.on{background:var(--bg-elevated);color:var(--fg);box-shadow:var(--sh-sm)}
-.slider{-webkit-appearance:none;appearance:none;width:160px;height:6px;border-radius:var(--r-full);background:var(--bg-muted);outline:none}
-.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:var(--sh-sm);cursor:pointer}
-.alert{display:flex;gap:10px;padding:10px 14px;border-radius:var(--r-md);font-size:.82rem;align-items:flex-start}
-.alert svg{margin-top:1px;flex-shrink:0}
-.alert-danger{background:var(--danger-subtle);color:var(--danger)}
-.alert-success{background:var(--success-subtle);color:var(--success)}
-.alert-info{background:var(--info-subtle);color:var(--info)}
-.tip{position:relative}
-.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--fg);color:var(--bg);padding:4px 8px;border-radius:var(--r-sm);font-size:.72rem;white-space:nowrap;opacity:0;pointer-events:none;transition:all var(--d-150)}
-.tip:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast-demo{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:var(--fg);color:var(--bg);border-radius:var(--r-full);font-size:.82rem;font-weight:500;box-shadow:var(--sh-lg)}
-.select{position:relative;width:200px}
-.select .sel{padding:9px 12px;background:var(--bg-subtle);border:1px solid var(--border-subtle);border-radius:var(--r-md);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
-.select .menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-md);box-shadow:var(--sh-lg);padding:4px;display:none;z-index:5}
-.select.open .menu{display:block}
-.select .opt{padding:8px 10px;border-radius:var(--r-sm);font-size:.85rem;cursor:pointer}
-.select .opt:hover{background:var(--bg-muted)}
-/* ============ FORM (composite) ============ */
-.form{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-xl);padding:var(--s-6);box-shadow:var(--sh-sm);max-width:380px}
-.form h3{font-size:1.05rem;font-weight:700;margin-bottom:var(--s-4)}
-.form .row{display:flex;gap:var(--s-3);margin-bottom:var(--s-4)}
-.form .actions{display:flex;gap:var(--s-2);margin-top:var(--s-2)}
-/* ============ BUSINESS ============ */
-.hist{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg-subtle)}
-.hist .nums{font-family:var(--mono);font-weight:600;color:var(--accent)}
-.hist .t{margin-left:auto;font-size:.72rem;color:var(--fg-tertiary)}
-.empty{display:flex;flex-direction:column;align-items:center;gap:12px;padding:48px;border:1px dashed var(--border-strong);border-radius:var(--r-xl);color:var(--fg-tertiary);text-align:center}
-.empty svg{opacity:.5}
-.display{display:flex;flex-direction:column;align-items:center;gap:24px;padding:48px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-2xl);box-shadow:var(--sh-md)}
-.num{font-family:var(--mono);font-weight:700;font-size:clamp(3rem,10vw,5rem);line-height:1;letter-spacing:-.04em}
-/* ============ RULES ============ */
-.rule{display:flex;gap:14px;padding:16px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm)}
-.rule .ic{flex-shrink:0;width:32px;height:32px;border-radius:var(--r-md);background:var(--accent-subtle);color:var(--accent);display:grid;place-items:center}
-.rule h4{font-size:.92rem;font-weight:600;margin-bottom:3px}
-.rule p{font-size:.82rem;color:var(--fg-secondary)}
-.do{color:var(--success)}.dont{color:var(--danger)}
-.footer{border-top:1px solid var(--border);padding:var(--s-8);text-align:center;color:var(--fg-tertiary);font-size:.85rem}
-.divider{height:1px;background:var(--border);margin:var(--s-12) 0}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+[data-theme="dark"]{--bg:#0c0d0f;--bg-subtle:#141519;--bg-elevated:#1a1c22;--bg-muted:#23252b;--fg:#e8eaed;--fg-secondary:#9ca0ab;--fg-tertiary:#6b7080;--fg-quaternary:#464b58;--border:#2e3038;--border-subtle:#23252b;--border-strong:#3e414b;--ring:#e8eaed;--accent:#6b87ff;--accent-fg:#0c0d0f;--accent-subtle:rgba(107,135,255,0.12);--accent-hover:#85a0ff;--accent-soft:rgba(107,135,255,0.06);--success:#2ec483;--success-subtle:rgba(46,196,131,0.12);--warning:#f5b820;--warning-subtle:rgba(245,184,32,0.12);--danger:#e05a6d;--danger-subtle:rgba(224,90,109,0.12);--shadow-xs:0 1px 2px rgba(0,0,0,0.3);--shadow-sm:0 1px 3px rgba(0,0,0,0.4);--shadow-md:0 4px 8px -2px rgba(0,0,0,0.5);--shadow-lg:0 12px 24px -6px rgba(0,0,0,0.6);--shadow-xl:0 24px 48px -12px rgba(0,0,0,0.7);--shadow-2xl:0 40px 80px -20px rgba(0,0,0,0.8);}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--font-sans);color:var(--fg);background:var(--bg);transition:background var(--dur-300),color var(--dur-300);}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+ul,ol{list-style:none;}
+:focus-visible{outline:2px solid var(--ring);outline-offset:2px;border-radius:var(--radius-sm);}
+
+.proto-nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:var(--space-4);padding:var(--space-3) var(--space-6);background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.proto-nav .brand{display:flex;align-items:center;gap:var(--space-2);font-weight:700;font-size:var(--text-lg);}
+.proto-nav .brand svg{color:var(--accent);}
+.proto-nav .nav-links{display:flex;gap:var(--space-1);margin-left:auto;flex-wrap:wrap;}
+.proto-nav .nav-links a{padding:var(--space-1_5) var(--space-3);border-radius:var(--radius-full);font-size:var(--text-sm);color:var(--fg-secondary);transition:all var(--dur-150);}
+.proto-nav .nav-links a:hover{background:var(--bg-muted);color:var(--fg);}
+
+.section{max-width:1080px;margin:0 auto;padding:var(--space-16) var(--space-6);}
+.section h2{font-size:var(--text-3xl);font-weight:700;letter-spacing:-0.02em;margin-bottom:var(--space-2);}
+.section .lead{color:var(--fg-secondary);max-width:64ch;margin-bottom:var(--space-8);}
+.grid{display:grid;gap:var(--space-6);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+@media (max-width:768px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+.wf{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);box-shadow:var(--shadow-sm);}
+.wf .wf-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-subtle);padding:2px var(--space-2);border-radius:var(--radius-full);margin-bottom:var(--space-4);}
+.wf .wf-title{font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-1);}
+.wf .wf-desc{font-size:var(--text-sm);color:var(--fg-secondary);margin-bottom:var(--space-4);}
+.stage{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;padding:var(--space-4);background:var(--bg-subtle);border-radius:var(--radius-lg);min-height:80px;}
+.code-spec{margin-top:var(--space-4);font-family:var(--font-mono);font-size:var(--text-xs);color:var(--fg-tertiary);background:var(--bg-subtle);border-radius:var(--radius-md);padding:var(--space-3);white-space:pre-wrap;line-height:1.6;}
+
+/* tokens reused */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);font-weight:600;border-radius:var(--radius-full);transition:all var(--dur-200) var(--ease-out);white-space:nowrap;}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--accent);color:var(--accent-fg);padding:var(--space-3) var(--space-6);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-secondary{background:var(--bg-muted);color:var(--fg);padding:var(--space-3) var(--space-5);}
+.btn-secondary:hover{background:var(--bg-elevated);}
+.btn-ghost{background:transparent;color:var(--fg-secondary);padding:var(--space-2) var(--space-3);}
+.btn-ghost:hover{background:var(--bg-muted);color:var(--fg);}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.input{padding:var(--space-2_5) var(--space-3);background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-md);width:100%;}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
+.input.error{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-subtle);}
+.input:disabled{opacity:0.5;background:var(--bg-muted);cursor:not-allowed;}
+.field{display:flex;flex-direction:column;gap:var(--space-2);width:100%;max-width:240px;}
+.field label{font-size:var(--text-sm);font-weight:500;color:var(--fg-secondary);}
+.input-msg{font-size:var(--text-xs);color:var(--danger);}
+.switch{width:44px;height:26px;background:var(--bg-muted);border-radius:var(--radius-full);position:relative;cursor:pointer;flex-shrink:0;transition:background var(--dur-200);}
+.switch.active{background:var(--accent);}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:var(--shadow-sm);transition:transform var(--dur-200);}
+.switch.active::after{transform:translateX(18px);}
+.checkbox{width:20px;height:20px;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;transition:all var(--dur-150);cursor:pointer;background:var(--bg-elevated);}
+.checkbox.active{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);}
+.badge{display:inline-flex;align-items:center;padding:2px var(--space-2_5);border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:600;}
+.badge-accent{background:var(--accent-subtle);color:var(--accent);}
+.badge-success{background:var(--success-subtle);color:var(--success);}
+.badge-danger{background:var(--danger-subtle);color:var(--danger);}
+.badge-neutral{background:var(--bg-muted);color:var(--fg-secondary);}
+.card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-5);box-shadow:var(--shadow-xs);}
+.card .card-title{font-weight:600;margin-bottom:var(--space-1);}
+.card .card-desc{font-size:var(--text-sm);color:var(--fg-secondary);}
+.alert{display:flex;gap:var(--space-3);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);font-size:var(--text-sm);align-items:flex-start;}
+.alert svg{margin-top:1px;flex-shrink:0;}
+.alert-danger{background:var(--danger-subtle);color:var(--danger);}
+.alert-success{background:var(--success-subtle);color:var(--success);}
+.sep{height:1px;background:var(--border);width:100%;}
+.slider{-webkit-appearance:none;appearance:none;width:200px;height:6px;border-radius:var(--radius-full);background:var(--bg-muted);outline:none;}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:var(--shadow-sm);cursor:pointer;}
+.slider::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:var(--accent);cursor:pointer;}
+.slider:disabled{opacity:0.5;cursor:not-allowed;}
+.tabs{display:flex;gap:var(--space-1);padding:var(--space-1);background:var(--bg-subtle);border-radius:var(--radius-lg);width:fit-content;}
+.tab{padding:var(--space-2) var(--space-4);border-radius:var(--radius-md);font-size:var(--text-sm);font-weight:500;color:var(--fg-secondary);transition:all var(--dur-150);cursor:pointer;}
+.tab.active{background:var(--bg-elevated);color:var(--fg);box-shadow:var(--shadow-xs);}
+.icon-btn{width:40px;height:40px;border-radius:var(--radius-md);background:var(--bg-muted);color:var(--fg-secondary);display:flex;align-items:center;justify-content:center;transition:all var(--dur-150);}
+.icon-btn:hover{background:var(--bg-elevated);color:var(--fg);}
+.tip{position:relative;}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--fg);color:var(--bg);padding:var(--space-1) var(--space-2);border-radius:var(--radius-sm);font-size:var(--text-xs);white-space:nowrap;opacity:0;pointer-events:none;transition:all var(--dur-150) var(--ease-out);}
+.tip:hover::after,.tip:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast-wrap{position:fixed;bottom:var(--space-6);left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:var(--space-2);align-items:center;}
+.toast{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-3) var(--space-4);background:var(--fg);color:var(--bg);border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:500;box-shadow:var(--shadow-lg);animation:toastIn var(--dur-300) var(--ease-out);}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* Select (real dropdown + outside close) */
+.select{position:relative;width:200px;}
+.select-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;padding:var(--space-2_5) var(--space-3);background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-md);cursor:pointer;font-size:var(--text-sm);}
+.select-trigger:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
+.select-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);padding:var(--space-1);z-index:20;display:none;}
+.select-menu.open{display:block;animation:toastIn var(--dur-150) var(--ease-out);}
+.select-item{padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);font-size:var(--text-sm);cursor:pointer;}
+.select-item:hover{background:var(--bg-muted);}
+.select-item.active{color:var(--accent);font-weight:600;}
+
+/* Sheet (real drawer) */
+.sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;display:none;animation:fadeIn var(--dur-200) var(--ease-out);}
+.sheet-overlay.open{display:block;}
+.sheet{position:fixed;top:0;right:0;height:100%;width:min(360px,90vw);background:var(--bg-elevated);border-left:1px solid var(--border);box-shadow:var(--shadow-xl);transform:translateX(100%);transition:transform var(--dur-300) var(--ease-out);z-index:201;padding:var(--space-6);overflow-y:auto;}
+.sheet.open{transform:translateX(0);}
+.sheet h3{font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* Dialog */
+.dialog-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:200;animation:fadeIn var(--dur-200) var(--ease-out);}
+.dialog{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);width:min(420px,90vw);box-shadow:var(--shadow-xl);}
+.dialog h3{font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-2);}
+.dialog p{font-size:var(--text-sm);color:var(--fg-secondary);margin-bottom:var(--space-5);}
+.dialog .actions{display:flex;gap:var(--space-2);justify-content:flex-end;}
+
+/* Business comps */
+.history-item{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-subtle);}
+.history-item .nums{font-family:var(--font-mono);font-weight:600;color:var(--accent);}
+.history-item .time{margin-left:auto;font-size:var(--text-xs);color:var(--fg-tertiary);}
+.result-num{font-family:var(--font-mono);font-weight:700;font-size:var(--text-5xl);letter-spacing:-0.04em;}
+.swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--space-2);}
+.swatch{aspect-ratio:1.6;border-radius:var(--radius-md);}
+.draw-circle{width:120px;height:120px;border-radius:50%;background:var(--accent);color:var(--accent-fg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:var(--text-lg);box-shadow:0 8px 24px var(--accent-subtle);}
+
+/* Do/Don't */
+.dodont{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);}
+@media(max-width:768px){.dodont{grid-template-columns:1fr;}}
+.do,.dont{border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-4);}
+.do{border-left:4px solid var(--success);}
+.dont{border-left:4px solid var(--danger);}
+.do h4,.dont h4{font-size:var(--text-sm);font-weight:700;margin-bottom:var(--space-2);}
+.do h4{color:var(--success);}.dont h4{color:var(--danger);}
+.do p,.dont p{font-size:var(--text-sm);color:var(--fg-secondary);}
+.divider{height:1px;background:var(--border);margin:var(--space-8) 0;}
+.badge-sec{display:inline-flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);font-weight:600;padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);background:var(--bg-muted);color:var(--fg-secondary);margin-bottom:var(--space-4);}
+.footer{border-top:1px solid var(--border);padding:var(--space-8) var(--space-6);text-align:center;color:var(--fg-tertiary);font-size:var(--text-sm);}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="brand"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>ZenDraw 组件库规范</div>
-  <nav class="nav">
-    <a href="#base">基础组件</a><a href="#composite">复合组件</a><a href="#business">业务组件</a><a href="#rules">使用规则</a>
-    <button class="theme-btn" onclick="toggleTheme()" aria-label="切换深浅色"><svg id="ti" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
-  </nav>
-</div>
+<nav class="proto-nav">
+  <div class="brand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>ZenDraw <span style="color:var(--fg-tertiary);font-weight:400;font-size:var(--text-sm)">v5.3.3 组件库</span></div>
+  <div class="nav-links">
+    <a href="./index.html">原型总览</a>
+    <a href="./prototypes.html">视觉稿</a>
+    <a href="#base">基础组件</a>
+    <a href="#composite">复合组件</a>
+    <a href="#business">业务组件</a>
+    <a href="#rules">使用规则</a>
+  </div>
+</nav>
 
-<div class="wrap">
+<section class="section" style="text-align:center;padding-top:var(--space-20)">
+  <span class="badge badge-accent" style="margin-bottom:var(--space-4)">Component Library Spec</span>
+  <h1 style="font-size:clamp(2.5rem,7vw,4rem);font-weight:800;letter-spacing:-0.03em">组件库规范</h1>
+  <p class="lead" style="margin:var(--space-4) auto var(--space-8)">基础 / 复合 / 业务 三级组件分级 · 统一令牌 · 真实可交互示例 · 8 条使用规则（Do / Don't）</p>
+</section>
 
-<!-- ===== 基础组件 ===== -->
+<div class="divider"></div>
+
+<!-- ============ BASE ============ -->
 <section class="section" id="base">
-  <div class="sec-head"><span class="kicker">Primitives</span><h2>基础组件</h2>
-  <p>所有上层组件的基石，遵循 base-nova 风格（shadcn/ui，built on @base-ui/react）。无业务语义，纯交互原子。</p></div>
+  <span class="badge-sec">Level 1 · 基础组件</span>
+  <h2>基础组件 Primitives</h2>
+  <p class="lead">原子级元素，无业务语义，可自由组合。所有尺寸遵循 4px 栅格。</p>
+  <div class="grid grid-2">
 
-  <div class="grid g3">
-    <div class="spec"><div class="stage"><button class="btn btn-primary">抽取</button><button class="btn btn-secondary">取消</button><button class="btn btn-ghost">更多</button></div><div class="meta"><div class="name">Button 按钮</div><div class="desc">4 变体：primary / secondary / ghost / icon</div><div class="use">&lt;Button variant="primary"&gt;抽取&lt;/Button&gt;</div></div></div>
-    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="field"><label>最小值 Min</label><input class="input" value="1"></div></div><div class="meta"><div class="name">Input 输入框</div><div class="desc">默认态 / 聚焦态（accent 环）</div><div class="use">&lt;Input placeholder="..." /&gt;</div></div></div>
-    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="field"><label>名单（每行一个）</label><textarea class="textarea" rows="3">张三&#10;李四&#10;王五</textarea></div></div><div class="meta"><div class="name">Textarea 多行输入</div><div class="desc">自定义名单场景</div><div class="use">&lt;Textarea rows={3} /&gt;</div></div></div>
-    <div class="spec"><div class="stage"><div class="switch on" onclick="this.classList.toggle('on')"></div><div class="switch" onclick="this.classList.toggle('on')"></div></div><div class="meta"><div class="name">Switch 开关</div><div class="desc">布尔设置（允许重复 / 自动隐藏）</div><div class="use">&lt;Switch checked={...} /&gt;</div></div></div>
-    <div class="spec"><div class="stage"><div class="checkbox on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><div class="checkbox"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div><div class="meta"><div class="name">Checkbox 复选框</div><div class="desc">多选语义（与 Switch 区分）</div><div class="use">&lt;Checkbox checked={...} /&gt;</div></div></div>
-    <div class="spec"><div class="stage"><span class="badge badge-accent">抽取中</span><span class="badge badge-success">已完成</span><span class="badge badge-danger">错误</span><span class="badge badge-neutral">历史</span></div><div class="meta"><div class="name">Badge 标记</div><div class="desc">4 语义色：accent/success/danger/neutral</div><div class="use">&lt;Badge variant="accent"&gt;</div></div></div>
-    <div class="spec"><div class="stage"><div class="card"><h4>快速抽取</h4><p>从 1–100 抽 5 个不重复数字</p></div></div><div class="meta"><div class="name">Card 卡片</div><div class="desc">信息容器，统一圆角与微阴影</div><div class="use">&lt;Card&gt;...&lt;/Card&gt;</div></div></div>
-    <div class="spec"><div class="stage"><div class="tabs"><div class="tab on">抽取</div><div class="tab" onclick="tab(this)">外观</div><div class="tab" onclick="tab(this)">历史</div></div></div><div class="meta"><div class="name">Tabs 选项卡</div><div class="desc">设置面板分段导航</div><div class="use">&lt;Tabs&gt;&lt;Tab&gt;抽取&lt;/Tab&gt;...&lt;/Tabs&gt;</div></div></div>
-    <div class="spec"><div class="stage"><input type="range" class="slider" min="1" max="30" value="5" oninput="this.previousElementSibling"> <span class="mono" style="color:var(--accent)">5s</span></div><div class="meta"><div class="name">Slider 滑块</div><div class="desc">动画时长 / 抽取个数</div><div class="use">&lt;Slider min={1} max={30} /&gt;</div></div></div>
-    <div class="spec"><div class="stage"><div class="select"><div class="sel" onclick="this.parentElement.classList.toggle('open')">JetBrains Mono <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div><div class="menu"><div class="opt">JetBrains Mono</div><div class="opt">Inter</div><div class="opt">Playfair</div></div></div></div><div class="meta"><div class="name">Select 选择器</div><div class="desc">字体 / 主题下拉</div><div class="use">&lt;Select&gt;&lt;SelectItem/&gt;&lt;/Select&gt;</div></div></div>
-    <div class="spec"><div class="stage"><button class="btn-icon tip" data-tip="复制结果"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="btn-icon tip" data-tip="清空历史"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div><div class="meta"><div class="name">Tooltip 提示</div><div class="desc">悬浮说明（图标按钮）</div><div class="use">&lt;Tooltip&gt;&lt;TooltipTrigger/&gt;&lt;TooltipContent/&gt;</div></div></div>
-    <div class="spec"><div class="stage"><div class="toast-demo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>已复制到剪贴板</div></div><div class="meta"><div class="name">Toast 轻提示</div><div class="desc">全局轻量反馈（2.5s 自动消失）</div><div class="use">const toast = useToast(); toast("...")</div></div></div>
-    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="alert alert-danger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>范围无效，请检查最小/最大值</span></div><div class="alert alert-success"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>抽取完成，结果已保存</span></div></div><div class="meta"><div class="name">Alert 警告</div><div class="desc">内联错误与成功提示</div><div class="use">&lt;Alert variant="danger"&gt;</div></div></div>
-    <div class="spec"><div class="stage"><button class="btn btn-ghost tip" data-tip="打开设置">⚙</button></div><div class="meta"><div class="name">Sheet 抽屉</div><div class="desc">移动端设置面板（侧滑覆盖）</div><div class="use">&lt;Sheet&gt;&lt;SheetTrigger/&gt;&lt;SheetContent/&gt;</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">Button</span>
+      <div class="wf-title">按钮</div>
+      <div class="wf-desc">主/次/幽灵三档；最小触控 44px；圆角 full。</div>
+      <div class="stage">
+        <button class="btn btn-primary">抽取</button>
+        <button class="btn btn-secondary">取消</button>
+        <button class="btn btn-ghost">更多</button>
+        <button class="btn btn-primary" disabled>禁用</button>
+      </div>
+      <div class="code-spec">height ≥ 44px · radius: --radius-full
+.btn-primary  { bg: --accent; color: --accent-fg }
+.btn-secondary{ bg: --bg-muted; color: --fg }
+.btn-ghost    { bg: transparent }</div>
+    </div>
+
+    <div class="wf">
+      <span class="wf-tag">Input</span>
+      <div class="wf-title">输入框</div>
+      <div class="wf-desc">含 Default / Error / Disabled 三态。</div>
+      <div class="stage" style="flex-direction:column;align-items:stretch">
+        <div class="field"><label>最小值 Min</label><input class="input" value="1" /></div>
+        <div class="field"><label>最大值 Max（错误态）</label><input class="input error" value="0" /><span class="input-msg">最大值需大于最小值</span></div>
+        <div class="field"><label>名单（禁用）</label><input class="input" value="只读" disabled /></div>
+      </div>
+      <div class="code-spec">border: 1px --border-subtle → focus: --accent + ring 3px --accent-subtle
+error: --danger border + ring 3px --danger-subtle</div>
+    </div>
+
+    <div class="wf">
+      <span class="wf-tag">Switch / Checkbox</span>
+      <div class="wf-title">开关与勾选</div>
+      <div class="wf-desc">44px 触控；aria-checked 同步。</div>
+      <div class="stage">
+        <div style="display:flex;align-items:center;gap:var(--space-2)"><div class="switch active" role="switch" aria-checked="true" tabindex="0" onclick="this.classList.toggle('active');this.setAttribute('aria-checked',this.classList.contains('active'))"></div><span style="font-size:var(--text-sm)">允许重复</span></div>
+        <div style="display:flex;align-items:center;gap:var(--space-2)"><div class="checkbox active" role="checkbox" aria-checked="true" tabindex="0" onclick="this.classList.toggle('active');this.setAttribute('aria-checked',this.classList.contains('active'))"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><span style="font-size:var(--text-sm)">自动隐藏</span></div>
+      </div>
+      <div class="code-spec">Switch: 44×26px, knob 20px, translateX 18px --accent
+Checkbox: 20px, --radius-sm, active bg --accent</div>
+    </div>
+
+    <div class="wf">
+      <span class="wf-tag">Badge</span>
+      <div class="wf-title">标记</div>
+      <div class="wf-desc">状态/分类标签。</div>
+      <div class="stage">
+        <span class="badge badge-accent">抽取中</span>
+        <span class="badge badge-success">已完成</span>
+        <span class="badge badge-danger">错误</span>
+        <span class="badge badge-neutral">历史</span>
+      </div>
+      <div class="code-spec">radius: --radius-full · font 12px/600
+accent/success/danger → 对应语义色 --*-subtle 底 + 实色字</div>
+    </div>
+
+    <div class="wf">
+      <span class="wf-tag">Tabs</span>
+      <div class="wf-title">选项卡</div>
+      <div class="wf-desc">分段控件样式。</div>
+      <div class="stage">
+        <div class="tabs"><div class="tab active">抽取</div><div class="tab" onclick="switchTab(this)">外观</div><div class="tab" onclick="switchTab(this)">历史</div></div>
+      </div>
+      <div class="code-spec">容器 bg --bg-subtle radius --radius-lg
+active tab: bg --bg-elevated + shadow-xs</div>
+    </div>
+
+    <div class="wf">
+      <span class="wf-tag">Slider</span>
+      <div class="wf-title">滑块（可拖动 + 实时数值）</div>
+      <div class="wf-desc">真实交互：拖动更新数值文本；含禁用态。</div>
+      <div class="stage" style="flex-direction:column;align-items:stretch">
+        <div class="field" style="max-width:none">
+          <label>动画时长 <span class="mono" id="wf-dur" style="color:var(--accent)">5s</span></label>
+          <input type="range" class="slider" min="1" max="30" value="5" oninput="document.getElementById('wf-dur').textContent=this.value+'s'" />
+        </div>
+        <div class="field" style="max-width:none;margin-top:var(--space-2)">
+          <label>禁用滑块</label>
+          <input type="range" class="slider" min="1" max="30" value="5" disabled />
+        </div>
+      </div>
+      <div class="code-spec">track 6px --bg-muted · thumb 18px --accent
+oninput → 实时更新绑定数值元素</div>
+    </div>
+
+    <div class="wf">
+      <span class="wf-tag">Tooltip / Separator</span>
+      <div class="wf-title">提示与分隔</div>
+      <div class="wf-desc">hover/focus 浮现；Separator 1px。</div>
+      <div class="stage">
+        <button class="icon-btn tip" data-tip="复制结果" onclick="toast('已复制')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+        <button class="icon-btn tip" data-tip="清空历史" onclick="toast('已清空')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+      </div>
+      <div class="sep" style="margin-top:var(--space-4)"></div>
+      <div class="code-spec">Tooltip: bottom +8px, bg --fg color --bg, opacity 0→1
+Separator: height 1px --border</div>
+    </div>
+
+    <div class="wf">
+      <span class="wf-tag">Alert</span>
+      <div class="wf-title">警告提示</div>
+      <div class="wf-desc">Error / Success / Info 三态。</div>
+      <div class="stage" style="flex-direction:column;align-items:stretch">
+        <div class="alert alert-danger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>范围无效，请检查参数</span></div>
+        <div class="alert alert-success"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>抽取完成，结果已保存</span></div>
+      </div>
+      <div class="code-spec">icon + text, radius --radius-md, bg --*-subtle</div>
+    </div>
+
+    <div class="wf">
+      <span class="wf-tag">Card</span>
+      <div class="wf-title">卡片</div>
+      <div class="wf-desc">内容容器。</div>
+      <div class="stage"><div class="card" style="flex:1"><div class="card-title">快速抽取</div><div class="card-desc">从 1–100 随机抽 5 个不重复数字</div></div></div>
+      <div class="code-spec">bg --bg-elevated, border 1px --border, radius --radius-lg, shadow-xs</div>
+    </div>
+
+    <div class="wf">
+      <span class="wf-tag">Dialog</span>
+      <div class="wf-title">对话框（真实模态）</div>
+      <div class="wf-desc">点击打开；点击遮罩或取消关闭。</div>
+      <div class="stage"><button class="btn btn-secondary" onclick="openDialog()">打开确认框</button></div>
+      <div class="code-spec">overlay rgba(0,0,0,.4) · dialog radius --radius-xl shadow-xl
+role="dialog" aria-modal="true"</div>
+    </div>
+
+    <div class="wf">
+      <span class="wf-tag">Label</span>
+      <div class="wf-title">标签 Label</div>
+      <div class="wf-desc">表单字段说明。</div>
+      <div class="stage"><label style="font-size:var(--text-sm);font-weight:500;color:var(--fg-secondary)">抽取数量 Quantity</label></div>
+      <div class="code-spec">font 14px/500 --fg-secondary, 与 input 间距 --space-2</div>
+    </div>
+
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ===== 复合组件 ===== -->
+<!-- ============ COMPOSITE ============ -->
 <section class="section" id="composite">
-  <div class="sec-head"><span class="kicker">Composite</span><h2>复合组件</h2>
-  <p>由基础组件组合而成，承载局部交互逻辑。可独立复用，不直接表达业务含义。</p></div>
+  <span class="badge-sec">Level 2 · 复合组件</span>
+  <h2>复合组件 Composite</h2>
+  <p class="lead">由基础组件组合，封装交互逻辑（下拉、抽屉、设置面板）。</p>
+  <div class="grid grid-2">
 
-  <div class="grid g2">
-    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="form">
-      <h3>抽取设置</h3>
-      <div class="row"><div class="field"><label>最小值</label><input class="input" value="1"></div><div class="field"><label>最大值</label><input class="input error" value="0"><span class="err-msg">需大于最小值</span></div></div>
-      <div class="field" style="margin-bottom:12px"><label>抽取个数</label><input type="range" class="slider" min="1" max="100" value="5"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span style="font-size:.85rem">允许重复</span><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
-      <div class="actions"><button class="btn btn-primary" style="flex:1">保存</button><button class="btn btn-ghost">重置</button></div>
-    </div></div><div class="meta"><div class="name">Form 表单</div><div class="desc">设置区组合：字段 + 校验 + 开关 + 操作</div><div class="use">组合 Input/Switch/Slider/Button + 内联校验</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">Form</span>
+      <div class="wf-title">表单</div>
+      <div class="wf-desc">Label + Input + 校验信息垂直堆叠。</div>
+      <div class="stage" style="flex-direction:column;align-items:stretch">
+        <div class="field" style="max-width:none"><label>最小值</label><input class="input" value="1" /></div>
+        <div class="field" style="max-width:none"><label>最大值</label><input class="input" value="100" /></div>
+        <button class="btn btn-primary" style="align-self:flex-start" onclick="toast('已应用')">应用</button>
+      </div>
+      <div class="code-spec">field gap --space-2 · label 14px/500 · input 100% 宽</div>
+    </div>
 
-    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="card" style="display:flex;align-items:center;gap:12px"><div class="checkbox on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><div style="flex:1"><div style="font-weight:600;font-size:.9rem">使用自定义名单</div><div style="font-size:.78rem;color:var(--fg-tertiary)">从文本导入参与者</div></div><span class="badge badge-accent">已启用</span></div><div class="card" style="margin-top:12px"><div style="font-weight:600;font-size:.9rem;margin-bottom:8px">外观设置</div><div class="tabs" style="width:100%"><div class="tab on" style="flex:1;text-align:center">字体</div><div class="tab" style="flex:1;text-align:center" onclick="tab(this)">主题</div></div></div></div><div class="meta"><div class="name">Card 组合</div><div class="desc">设置项卡片 + 内嵌 Tabs</div><div class="use">Card + Checkbox + Badge + Tabs</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">Select</span>
+      <div class="wf-title">下拉选择（点击外部关闭）</div>
+      <div class="wf-desc">真实下拉菜单，点击空白处自动收起。</div>
+      <div class="stage">
+        <div class="select" id="wf-select">
+          <div class="select-trigger" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false" onclick="toggleSelect(this)">5 个 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div>
+          <div class="select-menu"><div class="select-item" onclick="pickSelect(this,5)">5 个</div><div class="select-item" onclick="pickSelect(this,10)">10 个</div><div class="select-item" onclick="pickSelect(this,20)">20 个</div></div>
+        </div>
+      </div>
+      <div class="code-spec">menu display none→block; document click 关闭非目标
+aria-expanded 同步</div>
+    </div>
 
-    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="tabs" style="width:100%"><div class="tab on" style="flex:1;text-align:center">抽取</div><div class="tab" style="flex:1;text-align:center" onclick="tab(this)">外观</div><div class="tab" style="flex:1;text-align:center" onclick="tab(this)">历史</div></div><div style="font-size:.82rem;color:var(--fg-secondary);padding-top:8px">设置面板三区切换，承载全部配置</div></div><div class="meta"><div class="name">SettingsPanel 面板</div><div class="desc">Tab 切换的三段式容器</div><div class="use">Tabs + 各业务子面板</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">Sheet</span>
+      <div class="wf-title">抽屉（移动端侧滑覆盖）</div>
+      <div class="wf-desc">真实演示：点击齿轮从右侧滑出设置面板，遮罩点击关闭。</div>
+      <div class="stage">
+        <button class="icon-btn tip" data-tip="打开设置" onclick="openSheet()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      </div>
+      <div class="code-spec">position fixed right:0, width min(360px,90vw)
+transform translateX(100%)→0, dur --dur-300</div>
+    </div>
 
-    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="select" style="width:100%"><div class="sel" onclick="this.parentElement.classList.toggle('open')">JetBrains Mono <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div><div class="menu"><div class="opt">JetBrains Mono</div><div class="opt">Inter</div><div class="opt">Playfair Display</div></div></div><div style="font-size:.82rem;color:var(--fg-secondary);padding-top:8px">数字结果显示字体选择</div></div><div class="meta"><div class="name">Select 组合</div><div class="desc">字体 / 主题预设下拉</div><div class="use">Select + SelectItem + Portal</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">Settings Panel</span>
+      <div class="wf-title">设置面板</div>
+      <div class="wf-desc">Switch + Slider + Select 组合的复合面板（在 Sheet 内呈现）。</div>
+      <div class="stage" style="flex-direction:column;align-items:stretch;gap:var(--space-3)">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:var(--text-sm)">允许重复</span><div class="switch active" role="switch" aria-checked="true" tabindex="0" onclick="this.classList.toggle('active');this.setAttribute('aria-checked',this.classList.contains('active'))"></div></div>
+        <div class="field" style="max-width:none"><label>动画时长 <span class="mono" id="wf-dur2" style="color:var(--accent)">5s</span></label><input type="range" class="slider" min="1" max="30" value="5" oninput="document.getElementById('wf-dur2').textContent=this.value+'s'" /></div>
+      </div>
+      <div class="code-spec">面板内控件间距 --space-3 · 两端对齐行布局</div>
+    </div>
+
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ===== 业务组件 ===== -->
+<!-- ============ BUSINESS ============ -->
 <section class="section" id="business">
-  <div class="sec-head"><span class="kicker">Business</span><h2>业务组件</h2>
-  <p>表达 ZenDraw 核心领域概念，直接对应产品功能。不可脱离业务语境复用。</p></div>
+  <span class="badge-sec">Level 3 · 业务组件</span>
+  <h2>业务组件 Business</h2>
+  <p class="lead">承载 ZenDraw 核心抽签语义，组合基础与复合组件而成。</p>
+  <div class="grid grid-2">
 
-  <div class="grid g2">
-    <div class="spec"><div class="stage"><div class="display"><div class="num">73</div><div style="color:var(--fg-tertiary);font-size:.85rem">从 1 – 100 抽取 · 第 1 / 5 个</div><button class="btn-draw">抽取</button></div></div><div class="meta"><div class="name">DrawDisplay 抽签展示</div><div class="desc">主舞台：welcome / drawing / result / error 四态</div><div class="use">&lt;DrawDisplay state={state} /&gt;</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">DrawDisplay</span>
+      <div class="wf-title">抽签展示</div>
+      <div class="wf-desc">大号数字滚动显示区域。</div>
+      <div class="stage" style="justify-content:center">
+        <div class="result-num">42</div>
+      </div>
+      <div class="code-spec">font --font-mono 700, clamp(3rem,12vw,6rem)
+rolling 态 color --accent</div>
+    </div>
 
-    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="hist"><span class="nums">07 · 23 · 58 · 81 · 94</span><span class="t">14:32</span></div><div class="hist"><span class="nums">03 · 19 · 42 · 66 · 88</span><span class="t">14:28</span></div><div class="hist"><span class="nums">11 · 27 · 35 · 52 · 99</span><span class="t">14:21</span></div></div><div class="meta"><div class="name">HistoryList 历史列表</div><div class="desc">结果 + 时间戳 + 复制，含 EmptyState</div><div class="use">&lt;HistoryList entries={...} /&gt;</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">DrawCircle</span>
+      <div class="wf-title">抽取按钮</div>
+      <div class="wf-desc">核心 CTA，圆形脉冲。</div>
+      <div class="stage" style="justify-content:center">
+        <div class="draw-circle">抽取</div>
+      </div>
+      <div class="code-spec">120–200px 圆, bg --accent, ::before pulse 2s</div>
+    </div>
 
-    <div class="spec"><div class="stage"><div class="empty"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><div style="font-size:.85rem">暂无记录 · 开始抽取后结果将显示在这里</div></div></div><div class="meta"><div class="name">EmptyState 空状态</div><div class="desc">愉悦引导，浮动图标 + 俏皮文案</div><div class="use">历史为空 / 名单为空时展示</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">HistoryList</span>
+      <div class="wf-title">历史记录</div>
+      <div class="wf-desc">逐条展示抽取结果与时间。</div>
+      <div class="stage" style="flex-direction:column;align-items:stretch">
+        <div class="history-item"><span class="nums">07 · 23 · 58 · 73 · 94</span><span class="time">14:32</span></div>
+        <div class="history-item"><span class="nums">03 · 19 · 42 · 66 · 88</span><span class="time">14:28</span></div>
+      </div>
+      <div class="code-spec">item: border + radius --radius-md + bg --bg-subtle</div>
+    </div>
 
-    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><span class="badge badge-accent">Default</span><span class="badge badge-accent">Ocean</span><span class="badge badge-accent">Forest</span><span class="badge badge-accent">Sunset</span><span class="badge badge-accent">Purple</span><span class="badge badge-accent">Neon</span><span class="badge badge-accent">Sakura</span><span class="badge badge-accent">Midnight</span><span class="badge badge-accent">Retro</span><span class="badge badge-accent">Pixel</span><span class="badge badge-accent">Rose</span></div><div style="font-size:.82rem;color:var(--fg-secondary);text-align:center">11 套配色预设（含深/浅）</div></div><div class="meta"><div class="name">ThemeSwatches 主题切换</div><div class="desc">仅 accent 色相变化，对比度恒定</div><div class="use">&lt;ThemeSwatches /&gt; in AppearanceSettings</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">ThemeSwatches</span>
+      <div class="wf-title">主题选择器（11 套）</div>
+      <div class="wf-desc">11 色网格，点击切换 accent。</div>
+      <div class="stage">
+        <div class="swatches">
+          <div class="swatch" style="background:#4f6ef7"></div><div class="swatch" style="background:#00b4d8"></div><div class="swatch" style="background:#2d8a4e"></div><div class="swatch" style="background:#e07c3c"></div><div class="swatch" style="background:#7b2d8e"></div><div class="swatch" style="background:#ff2d55"></div><div class="swatch" style="background:#ff8fab"></div><div class="swatch" style="background:#6b6bd6"></div><div class="swatch" style="background:#a67c52"></div><div class="swatch" style="background:#33ff33"></div><div class="swatch" style="background:#c93d5f"></div>
+        </div>
+      </div>
+      <div class="code-spec">grid 6 列, aspect 1.6, active border --fg 2px</div>
+    </div>
 
-    <div class="spec"><div class="stage"><div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div style="font-size:2.5rem">🎉</div><div class="num" style="font-size:2rem;color:var(--accent)">+1</div><div style="font-size:.82rem;color:var(--fg-tertiary)">第 100 次抽签里程碑</div></div></div><div class="meta"><div class="name">CelebrationEffect 庆祝</div><div class="desc">粒子 / 光晕动效 + 里程碑徽章</div><div class="use">结果揭晓时触发（尊重 reduced-motion）</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">CelebrationEffect</span>
+      <div class="wf-title">庆祝动效</div>
+      <div class="wf-desc">结果揭晓时 Canvas 彩屑（见 prototypes.html ③）。</div>
+      <div class="stage" style="justify-content:center"><button class="btn btn-primary" onclick="toast('庆祝动效请见视觉稿')">查看演示</button></div>
+      <div class="code-spec">canvas 90 片 accent+多色, 3000ms 衰减</div>
+    </div>
 
-    <div class="spec"><div class="stage"><div class="brand" style="font-size:1.1rem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>ZenDraw <span style="color:var(--fg-tertiary);font-weight:400;font-size:.85rem">禅抽</span></div><div style="display:flex;gap:8px"><button class="btn btn-icon tip" data-tip="语言">🌐</button><button class="btn btn-icon tip" data-tip="主题">🌓</button><button class="btn btn-icon tip" data-tip="设置">⚙</button></div></div><div class="meta"><div class="name">AppHeader 顶栏</div><div class="desc">品牌 + 语言 + 主题 + 设置入口</div><div class="use">&lt;AppHeader /&gt;</div></div></div>
+    <div class="wf">
+      <span class="wf-tag">Toast</span>
+      <div class="wf-title">轻提示</div>
+      <div class="wf-desc">底部居中浮层，2s 自动消失。</div>
+      <div class="stage" style="justify-content:center"><button class="btn btn-secondary" onclick="toast('操作成功')">触发 Toast</button></div>
+      <div class="code-spec">bg --fg color --bg, radius --radius-full, shadow-lg</div>
+    </div>
+
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ===== 使用规则 ===== -->
+<!-- ============ RULES ============ -->
 <section class="section" id="rules">
-  <div class="sec-head"><span class="kicker">Guidelines</span><h2>组件使用规则</h2>
-  <p>统一的交互语言。遵循以下规则，保证跨页面、跨主题体验一致。</p></div>
+  <h2>组件使用规则</h2>
+  <p class="lead">8 条核心规范，覆盖圆角层级、栅格、触控、间距与状态。</p>
+  <div class="grid grid-2">
 
-  <div class="grid g2">
-    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div><div><h4 class="do">状态反馈统一</h4><p>所有可点击元素具备 hover/active/focus-visible 三态；提交类操作完成用 Toast，内联错误用 Alert。</p></div></div>
-    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div><div><h4 class="dont">禁止混用语义色</h4><p>danger 仅用于错误/删除，success 仅用于成功；不要把 accent 当 success 用，避免语义混乱。</p></div></div>
-    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div><h4 class="do">圆角层级分明</h4><p>控件 md(8px) · 卡片 lg(12px) · 展示区 2xl(24px) · 按钮/徽章 full。不要在同一界面混用多种小圆角。</p></div></div>
-    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/></svg></div><div><h4 class="dont">不要自造间距</h4><p>间距严格走 4px 栅格（8/12/16/24/32）。避免随意 margin，统一用 gap 与 section 节奏。</p></div></div>
-    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div><div><h4 class="do">动效克制</h4><p>缓动用 --ease (cubic-bezier(.16,1,.3,1))；时长 150–300ms；全局尊重 prefers-reduced-motion。</p></div></div>
-    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div><div><h4 class="do">数字用等宽字体</h4><p>所有抽签结果 / 时间戳用 JetBrains Mono（tabular-nums），避免滚动时宽度跳动。</p></div></div>
-    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><h4 class="do">触控目标 ≥ 44px</h4><p>移动端图标按钮最小 40–44px；核心抽签按钮 140–200px 自适应。</p></div></div>
-    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><h4 class="dont">不要硬编码颜色</h4><p>一律用设计令牌（--accent/--fg/--border）；新增配色只在 THEME_PRESETS + style.css 两处扩展。</p></div></div>
+    <div class="dodont">
+      <div class="do"><h4>✓ Do</h4><p>圆角分层：卡片/面板用 --radius-lg/xl，按钮/标签用 --radius-full，输入框用 --radius-md。</p></div>
+      <div class="dont"><h4>✗ Don't</h4><p>混用随机 px 圆角，如卡片用 10px、按钮用 4px，破坏统一感。</p></div>
+    </div>
+    <div class="dodont">
+      <div class="do"><h4>✓ Do</h4><p>间距严格走 4px 栅格（--space-2/3/4/6…），组件内边距 ≥ --space-4。</p></div>
+      <div class="dont"><h4>✗ Don't</h4><p>使用 5px / 7px 等非栅格间距，导致基线错位。</p></div>
+    </div>
+    <div class="dodont">
+      <div class="do"><h4>✓ Do</h4><p>所有可点击元素最小触控目标 ≥ 44×44px（图标按钮至少 40px 且留白）。</p></div>
+      <div class="dont"><h4>✗ Don't</h4><p>将图标按钮缩到 24px 且无内边距，移动端难以点击。</p></div>
+    </div>
+    <div class="dodont">
+      <div class="do"><h4>✓ Do</h4><p>状态反馈闭环：Hover 上浮、Focus 焦点环、Active scale .97、Disabled opacity .4。</p></div>
+      <div class="dont"><h4>✗ Don't</h4><p>仅做 hover 变色，忽略焦点可见性（键盘用户无法定位）。</p></div>
+    </div>
+    <div class="dodont">
+      <div class="do"><h4>✓ Do</h4><p>表单错误态：红框 + 图标 + 文案三件套，文案指出如何修正。</p></div>
+      <div class="dont"><h4>✗ Don't</h4><p>仅用红色文字提示，无边框/图标，弱视用户难以察觉。</p></div>
+    </div>
+    <div class="dodont">
+      <div class="do"><h4>✓ Do</h4><p>语义色来自令牌（--success/--danger/--warning），不硬编码 hex。</p></div>
+      <div class="dont"><h4>✗ Don't</h4><p>在组件内写死 #22c55e 等具体色值，破坏主题一致性。</p></div>
+    </div>
+    <div class="dodont">
+      <div class="do"><h4>✓ Do</h4><p>业务组件组合基础/复合组件，不重复造底层样式。</p></div>
+      <div class="dont"><h4>✗ Don't</h4><p>在 DrawDisplay 内重新定义按钮样式而非复用 .btn。</p></div>
+    </div>
+    <div class="dodont">
+      <div class="do"><h4>✓ Do</h4><p>动效时长取自 --dur-200/300，长动效 ≤ --dur-700，并尊重 prefers-reduced-motion。</p></div>
+      <div class="dont"><h4>✗ Don't</h4><p>使用 1200ms 以上无意义的位移动画，拖慢感知。</p></div>
+    </div>
+
   </div>
 </section>
 
-</div>
+<div class="footer">ZenDraw · 禅抽 — 组件库规范 v5.3.3 · 与 index.html / prototypes.html / DESIGN-SYSTEM.md 令牌一致</div>
 
-<div class="footer">ZenDraw · 禅抽 — 组件库规范 wireframes v5.3.2 · 与 design-system.md 同源令牌</div>
+<div class="toast-wrap" id="toast-wrap"></div>
+<div class="sheet-overlay" id="sheet-overlay" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="设置">
+    <h3>设置 Settings</h3>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4)"><span style="font-size:var(--text-sm)">允许重复</span><div class="switch active" role="switch" aria-checked="true" tabindex="0" onclick="this.classList.toggle('active');this.setAttribute('aria-checked',this.classList.contains('active'))"></div></div>
+    <div class="field" style="max-width:none;margin-bottom:var(--space-4)"><label>动画时长 <span class="mono" id="sheet-dur" style="color:var(--accent)">5s</span></label><input type="range" class="slider" min="1" max="30" value="5" oninput="document.getElementById('sheet-dur').textContent=this.value+'s'" /></div>
+    <div class="field" style="max-width:none;margin-bottom:var(--space-5)">
+      <label>抽取数量</label>
+      <div class="select" id="sheet-select"><div class="select-trigger" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false" onclick="toggleSelect(this)">5 个 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div><div class="select-menu"><div class="select-item" onclick="pickSelect(this,5)">5 个</div><div class="select-item" onclick="pickSelect(this,10)">10 个</div><div class="select-item" onclick="pickSelect(this,20)">20 个</div></div></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="closeSheet();toast('设置已保存')">完成</button>
+  </div>
+</div>
+<div id="dialog-root"></div>
 
 <script>
-function toggleTheme(){const h=document.documentElement;const c=h.getAttribute('data-theme');const n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);document.getElementById('ti').innerHTML=n==='dark'?"<path d='M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z'/>":"<circle cx='12' cy='12' r='5'/><path d='M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2'/>";}
-function tab(el){el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');}
+function switchTab(el){el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+function toast(msg){const w=document.getElementById('toast-wrap');const t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>'+msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(20px)';setTimeout(()=>t.remove(),300);},2000);}
+
+// Select: toggle + outside click close
+function toggleSelect(trigger){const sel=trigger.closest('.select');const menu=sel.querySelector('.select-menu');const open=menu.classList.contains('open');document.querySelectorAll('.select-menu.open').forEach(m=>{m.classList.remove('open');m.previousElementSibling.setAttribute('aria-expanded','false');});if(!open){menu.classList.add('open');trigger.setAttribute('aria-expanded','true');}}
+function pickSelect(item,val){const sel=item.closest('.select');sel.querySelector('.select-trigger').firstChild.textContent=val+' 个 ';sel.querySelector('.select-menu').classList.remove('open');sel.querySelector('.select-trigger').setAttribute('aria-expanded','false');toast('已选 '+val+' 个');}
+document.addEventListener('click',(e)=>{if(!e.target.closest('.select')){document.querySelectorAll('.select-menu.open').forEach(m=>{m.classList.remove('open');m.previousElementSibling.setAttribute('aria-expanded','false');});}});
+
+// Sheet
+function openSheet(){document.getElementById('sheet-overlay').classList.add('open');document.getElementById('sheet').classList.add('open');}
+function closeSheet(){document.getElementById('sheet-overlay').classList.remove('open');document.getElementById('sheet').classList.remove('open');}
+
+// Dialog
+function openDialog(){document.getElementById('dialog-root').innerHTML='<div class="dialog-overlay" onclick="if(event.target===this)closeDialog()"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-t"><h3 id="dlg-t">确认导入名单</h3><p>将从文本框导入 12 个名字，覆盖当前设置。是否继续？</p><div class="actions"><button class="btn btn-ghost" onclick="closeDialog()">取消</button><button class="btn btn-primary" onclick="closeDialog();toast(\'名单已导入\')">确认</button></div></div></div>';}
+function closeDialog(){document.getElementById('dialog-root').innerHTML='';}
+
+// 键盘：Esc 关闭 drawer/dialog
+document.addEventListener('keydown',(e)=>{if(e.code==='Escape'){closeSheet();closeDialog();}});
 </script>
 </body>
 </html>

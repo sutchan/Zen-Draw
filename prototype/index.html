@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ZenDraw · 高保真原型 v5.3.0</title>
+<title>ZenDraw · 高保真原型 v5.3.3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
-   DESIGN TOKENS — ZenDraw Design System v5.3.0
+   DESIGN TOKENS — ZenDraw Design System v5.3.3
    shadcn/ui (base-nova) + Apple Design Philosophy
+   令牌命名与 design-system.md 严格一致
    ============================================================ */
 :root {
   /* Neutral palette — cool-tinted */
@@ -99,7 +100,7 @@
   --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.7); --shadow-2xl: 0 40px 80px -20px rgba(0,0,0,0.8);
 }
 
-/* 10 Preset Themes — only accent hue shifts */
+/* 11 Preset Themes — only accent hue shifts */
 [data-theme-preset="ocean"]    { --accent: #00b4d8; --accent-subtle: rgba(0,180,216,0.12); --accent-hover:#0096c7; --accent-soft: rgba(0,180,216,0.06); }
 [data-theme-preset="forest"]   { --accent: #2d8a4e; --accent-subtle: rgba(45,138,78,0.12); --accent-hover:#23703f; --accent-soft: rgba(45,138,78,0.06); }
 [data-theme-preset="sunset"]   { --accent: #e07c3c; --accent-subtle: rgba(224,124,60,0.12); --accent-hover:#c9692f; --accent-soft: rgba(224,124,60,0.06); }
@@ -109,6 +110,7 @@
 [data-theme-preset="midnight"] { --accent: #6b6bd6; --accent-subtle: rgba(107,107,214,0.12); --accent-hover:#5555c0; --accent-soft: rgba(107,107,214,0.06); }
 [data-theme-preset="retro"]    { --accent: #a67c52; --accent-subtle: rgba(166,124,82,0.12); --accent-hover:#8c6644; --accent-soft: rgba(166,124,82,0.06); }
 [data-theme-preset="pixel"]    { --accent: #33ff33; --accent-subtle: rgba(51,255,51,0.12); --accent-hover:#1fe21f; --accent-soft: rgba(51,255,51,0.06); }
+[data-theme-preset="rose"]     { --accent: #c93d5f; --accent-subtle: rgba(201,61,95,0.12); --accent-hover:#b3304f; --accent-soft: rgba(201,61,95,0.06); }
 
 /* RESET & BASE */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -122,6 +124,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 ul, ol { list-style: none; }
 svg { display: block; flex-shrink: 0; }
 .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: var(--radius-sm); }
 
 /* ============================================================
    LAYOUT — Prototype shell
@@ -175,6 +178,7 @@ svg { display: block; flex-shrink: 0; }
 .btn-ghost:hover { background: var(--bg-muted); color: var(--fg); }
 .btn-icon { width: 40px; height: 40px; padding: 0; border-radius: var(--radius-md); background: var(--bg-subtle); color: var(--fg-secondary); }
 .btn-icon:hover { background: var(--bg-muted); color: var(--fg); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 .btn-draw {
   width: 200px; height: 200px; border-radius: 50%; background: var(--accent); color: var(--accent-fg);
   font-size: var(--text-2xl); font-weight: 700; box-shadow: 0 8px 32px var(--accent-subtle);
@@ -185,6 +189,8 @@ svg { display: block; flex-shrink: 0; }
   border: 2px solid var(--accent-subtle); animation: draw-pulse 2s ease-in-out infinite;
 }
 .btn-draw:hover { transform: scale(1.02); }
+.btn-draw:disabled { opacity: 0.5; cursor: not-allowed; animation: none; }
+.btn-draw:disabled::before { animation: none; opacity: 0; }
 @keyframes draw-pulse { 0%,100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.06); opacity: 0; } }
 
 /* INPUT */
@@ -198,6 +204,7 @@ svg { display: block; flex-shrink: 0; }
 .input:focus, .textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-subtle); }
 .input::placeholder, .textarea::placeholder { color: var(--fg-quaternary); }
 .input.error { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-subtle); }
+.input:disabled { opacity: 0.5; cursor: not-allowed; background: var(--bg-muted); }
 .input-msg { font-size: var(--text-xs); color: var(--danger); }
 
 /* SWITCH */
@@ -231,24 +238,28 @@ svg { display: block; flex-shrink: 0; }
 
 /* TABS */
 .tabs { display: flex; gap: var(--space-1); padding: var(--space-1); background: var(--bg-subtle); border-radius: var(--radius-lg); width: fit-content; }
-.tab { padding: var(--space-2) var(--space-4); border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: 500; color: var(--fg-secondary); transition: all var(--dur-150) var(--ease-out); }
+.tab { padding: var(--space-2) var(--space-4); border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: 500; color: var(--fg-secondary); transition: all var(--dur-150) var(--ease-out); cursor: pointer; }
 .tab.active { background: var(--bg-elevated); color: var(--fg); box-shadow: var(--shadow-xs); }
 
 /* SLIDER */
 .slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: var(--radius-full); background: var(--bg-muted); outline: none; }
 .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); box-shadow: var(--shadow-sm); cursor: pointer; }
 .slider::-moz-range-thumb { width: 18px; height: 18px; border: none; border-radius: 50%; background: var(--accent); cursor: pointer; }
+.slider:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* THEME SWATCHES */
-.swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-3); }
-.swatch { aspect-ratio: 1; border-radius: var(--radius-lg); border: 2px solid transparent; cursor: pointer; position: relative; transition: transform var(--dur-150) var(--ease-out); display: flex; align-items: flex-end; padding: var(--space-2); }
+.swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-3); }
+.swatch { aspect-ratio: 1.4; border-radius: var(--radius-lg); border: 2px solid transparent; cursor: pointer; position: relative; transition: transform var(--dur-150) var(--ease-out); display: flex; align-items: flex-end; padding: var(--space-2); }
 .swatch:hover { transform: translateY(-2px); }
 .swatch.active { border-color: var(--fg); }
 .swatch span { font-size: 10px; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
 
+/* SEPARATOR */
+.sep { height: 1px; background: var(--border); width: 100%; }
+
 /* DRAW DISPLAY (simulated) */
 .display-stage { min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-6); text-align: center; }
-.result-number { font-family: var(--font-mono); font-weight: 700; font-size: clamp(3rem, 12vw, 6rem); letter-spacing: -0.04em; color: var(--fg); line-height: 1; }
+.result-number { font-family: var(--font-mono); font-weight: 700; font-size: clamp(3rem, 12vw, 6rem); letter-spacing: -0.04em; color: var(--fg); line-height: 1; transition: color var(--dur-300) var(--ease-out); }
 .result-number.rolling { color: var(--accent); }
 .result-meta { font-size: var(--text-sm); color: var(--fg-tertiary); }
 
@@ -265,7 +276,15 @@ svg { display: block; flex-shrink: 0; }
 /* TOOLTIP */
 .tip { position: relative; }
 .tip::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); background: var(--fg); color: var(--bg); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); font-size: var(--text-xs); white-space: nowrap; opacity: 0; pointer-events: none; transition: all var(--dur-150) var(--ease-out); }
-.tip:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+.tip:hover::after, .tip:focus-visible::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* DIALOG */
+.dialog-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 200; animation: fade-in var(--dur-200) var(--ease-out); }
+.dialog { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--space-6); width: min(420px, 90vw); box-shadow: var(--shadow-xl); }
+.dialog h3 { font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-2); }
+.dialog p { font-size: var(--text-sm); color: var(--fg-secondary); margin-bottom: var(--space-5); }
+.dialog .dialog-actions { display: flex; gap: var(--space-2); justify-content: flex-end; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 /* TOKENS TABLE */
 .token-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--space-3); }
@@ -279,6 +298,7 @@ svg { display: block; flex-shrink: 0; }
 
 .footer { border-top: 1px solid var(--border); padding: var(--space-8) var(--space-6); text-align: center; color: var(--fg-tertiary); font-size: var(--text-sm); }
 .divider { height: 1px; background: var(--border); margin: var(--space-8) 0; }
+kbd { font-family: var(--font-mono); background: var(--bg-muted); padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--text-xs); }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
@@ -288,7 +308,7 @@ svg { display: block; flex-shrink: 0; }
 <nav class="proto-nav">
   <div class="brand">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>
-    ZenDraw <span style="color:var(--fg-tertiary);font-weight:400;font-size:var(--text-sm)">v5.3.0 原型</span>
+    ZenDraw <span style="color:var(--fg-tertiary);font-weight:400;font-size:var(--text-sm)">v5.3.3 原型</span>
   </div>
   <div class="nav-links">
     <a href="./prototypes.html">高保真视觉稿</a>
@@ -298,6 +318,7 @@ svg { display: block; flex-shrink: 0; }
     <a href="#flow">主流程</a>
     <a href="#themes">主题</a>
     <a href="#interaction">交互标准</a>
+    <a href="#responsive">响应式</a>
     <button class="btn btn-icon tip" data-tip="切换深浅色" onclick="toggleTheme()" aria-label="切换深浅色">
       <svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
     </button>
@@ -308,7 +329,7 @@ svg { display: block; flex-shrink: 0; }
 <section class="section" style="text-align:center;padding-top:var(--space-24)">
   <span class="badge badge-accent" style="margin-bottom:var(--space-4)">极简 · 精准 · 禅意</span>
   <h1 style="font-size:clamp(2.5rem,7vw,4.5rem);font-weight:800;letter-spacing:-0.03em;line-height:1.05">让抽签成为一场仪式</h1>
-  <p class="lead" style="margin:var(--space-4) auto var(--space-8)">高保真可交互原型 · 真实数据驱动 · 完整组件库规范 · 10 套配色主题 · 桌面与移动端完美呈现</p>
+  <p class="lead" style="margin:var(--space-4) auto var(--space-8)">高保真可交互原型 · 真实数据驱动 · 完整组件库规范 · 11 套配色主题 · 桌面与移动端完美呈现</p>
   <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap">
     <a href="#flow" class="btn btn-primary">查看主流程</a>
     <a href="#components" class="btn btn-secondary">浏览组件库</a>
@@ -353,15 +374,16 @@ svg { display: block; flex-shrink: 0; }
   <h3 style="margin:var(--space-8) 0 var(--space-4);font-size:var(--text-xl)">基础组件 / Primitives</h3>
   <div class="grid grid-3">
     <div class="preview">
-      <div class="preview-title">Button 按钮</div>
+      <div class="preview-title">Button 按钮（含 Disabled）</div>
       <div class="row">
         <button class="btn btn-primary">抽取</button>
         <button class="btn btn-secondary">取消</button>
         <button class="btn btn-ghost">更多</button>
+        <button class="btn btn-primary" disabled aria-disabled="true">禁用</button>
       </div>
     </div>
     <div class="preview">
-      <div class="preview-title">Input 输入</div>
+      <div class="preview-title">Input 输入（含 Disabled / Error）</div>
       <div class="field" style="width:100%">
         <label>最小值 Min</label>
         <input class="input" value="1" />
@@ -371,12 +393,16 @@ svg { display: block; flex-shrink: 0; }
         <input class="input error" value="0" />
         <span class="input-msg">最大值需大于最小值</span>
       </div>
+      <div class="field" style="width:100%;margin-top:var(--space-3)">
+        <label>名单（禁用态）</label>
+        <input class="input" value="只读" disabled />
+      </div>
     </div>
     <div class="preview">
       <div class="preview-title">Switch / Checkbox</div>
       <div class="row" style="gap:var(--space-5)">
-        <div style="display:flex;align-items:center;gap:var(--space-2)"><div class="switch active" onclick="this.classList.toggle('active')"></div><span style="font-size:var(--text-sm)">允许重复</span></div>
-        <div style="display:flex;align-items:center;gap:var(--space-2)"><div class="checkbox active" onclick="this.classList.toggle('active')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><span style="font-size:var(--text-sm)">自动隐藏</span></div>
+        <div style="display:flex;align-items:center;gap:var(--space-2)"><div class="switch active" role="switch" aria-checked="true" tabindex="0" onclick="this.classList.toggle('active');this.setAttribute('aria-checked',this.classList.contains('active'))"></div><span style="font-size:var(--text-sm)">允许重复</span></div>
+        <div style="display:flex;align-items:center;gap:var(--space-2)"><div class="checkbox active" role="checkbox" aria-checked="true" tabindex="0" onclick="this.classList.toggle('active');this.setAttribute('aria-checked',this.classList.contains('active'))"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><span style="font-size:var(--text-sm)">自动隐藏</span></div>
       </div>
     </div>
     <div class="preview">
@@ -397,24 +423,31 @@ svg { display: block; flex-shrink: 0; }
       </div>
     </div>
     <div class="preview">
-      <div class="preview-title">Slider 滑块</div>
+      <div class="preview-title">Slider 滑块（含 Disabled）</div>
       <div class="field" style="width:100%">
-        <label>动画时长 <span class="mono" style="color:var(--accent)">5s</span></label>
-        <input type="range" class="slider" min="1" max="30" value="5" />
+        <label>动画时长 <span class="mono" id="dur-val" style="color:var(--accent)">5s</span></label>
+        <input type="range" class="slider" min="1" max="30" value="5" oninput="document.getElementById('dur-val').textContent=this.value+'s'" />
+      </div>
+      <div class="field" style="width:100%;margin-top:var(--space-3)">
+        <label>禁用滑块</label>
+        <input type="range" class="slider" min="1" max="30" value="5" disabled />
       </div>
     </div>
     <div class="preview">
-      <div class="preview-title">Tooltip 提示</div>
+      <div class="preview-title">Tooltip / Separator</div>
       <div class="row">
         <button class="btn btn-icon tip" data-tip="复制结果" onclick="toast('已复制到剪贴板')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
         <button class="btn btn-icon tip" data-tip="清空历史" onclick="toast('历史已清空')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+        <button class="btn btn-icon tip" data-tip="打开设置" onclick="openDialog()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
       </div>
+      <div class="sep" style="margin-top:var(--space-4)"></div>
     </div>
     <div class="preview">
-      <div class="preview-title">Alert 警告</div>
+      <div class="preview-title">Alert 警告（三态）</div>
       <div style="display:flex;flex-direction:column;gap:var(--space-2);width:100%">
         <div class="alert alert-danger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>范围无效，请检查最小值与最大值</span></div>
         <div class="alert alert-success"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>抽取完成，结果已保存</span></div>
+        <div class="alert alert-info"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>自定义名单已导入 12 人</span></div>
       </div>
     </div>
     <div class="preview">
@@ -422,6 +455,12 @@ svg { display: block; flex-shrink: 0; }
       <div class="card">
         <div class="card-title">快速抽取</div>
         <div class="card-desc">从 1–100 中随机抽取 5 个不重复数字</div>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">Dialog 对话框</div>
+      <div class="row">
+        <button class="btn btn-secondary" onclick="openDialog()">打开确认框</button>
       </div>
     </div>
   </div>
@@ -434,7 +473,7 @@ svg { display: block; flex-shrink: 0; }
       <div class="display-stage">
         <div class="result-number" id="demo-number">42</div>
         <div class="result-meta">从 1 – 100 抽取 · 共 5 个</div>
-        <button class="btn btn-draw" onclick="rollDemo()">抽取</button>
+        <button class="btn btn-draw" id="demo-draw" onclick="rollDemo()">抽取</button>
       </div>
     </div>
     <div class="preview">
@@ -457,32 +496,32 @@ svg { display: block; flex-shrink: 0; }
 <!-- ============ MAIN FLOW ============ -->
 <section class="section" id="flow">
   <h2>主流程 Main Flow</h2>
-  <p class="lead">真实数据驱动的核心体验：欢迎 → 抽取（数字滚动）→ 结果（庆祝动效）→ 历史沉淀。</p>
+  <p class="lead">真实联动的核心体验：欢迎 → 抽取（数字滚动）→ 结果（庆祝动效）→ 历史沉淀。点击下方按钮或用键盘 Space/Enter 体验。</p>
   <div class="grid grid-3">
     <div class="preview">
       <div class="preview-title">① 欢迎 Welcome</div>
       <div class="display-stage">
         <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--fg-tertiary);opacity:.4"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg>
         <div><div style="font-size:var(--text-3xl);font-weight:700">准备就绪</div><div style="color:var(--fg-tertiary);font-size:var(--text-sm)">点击中心按钮或按空格开始</div></div>
-        <button class="btn btn-draw" onclick="goState('drawing')">抽取</button>
+        <button class="btn btn-draw" id="flow-start" onclick="goState('welcome')">抽取</button>
       </div>
     </div>
     <div class="preview">
       <div class="preview-title">② 抽取 Drawing</div>
       <div class="display-stage">
         <div class="result-number rolling" id="flow-number">—</div>
-        <div class="result-meta">滚动态 · 每 80ms 切换</div>
-        <button class="btn btn-secondary" onclick="goState('result')">停止</button>
+        <div class="result-meta" id="flow-meta">滚动态 · 每 80ms 切换</div>
+        <button class="btn btn-secondary" id="flow-stop" onclick="goState('drawing')" disabled>停止</button>
       </div>
     </div>
     <div class="preview">
       <div class="preview-title">③ 结果 Result</div>
       <div class="display-stage">
-        <div class="result-number">73</div>
-        <div class="result-meta">第 1 / 5 个 · 点击复制</div>
+        <div class="result-number" id="flow-result">—</div>
+        <div class="result-meta" id="flow-result-meta">等待抽取</div>
         <div class="row">
-          <button class="btn btn-primary" onclick="toast('已揭晓下一个')">继续</button>
-          <button class="btn btn-ghost" onclick="goState('welcome')">完成</button>
+          <button class="btn btn-primary" id="flow-next" onclick="goState('result')" disabled>继续</button>
+          <button class="btn btn-ghost" id="flow-done" onclick="goState('welcome')" disabled>完成</button>
         </div>
       </div>
     </div>
@@ -493,7 +532,7 @@ svg { display: block; flex-shrink: 0; }
 
 <!-- ============ THEMES ============ -->
 <section class="section" id="themes">
-  <h2>10 套配色主题</h2>
+  <h2>11 套配色主题</h2>
   <p class="lead">仅 accent 色相变化，中性色系与对比度恒定，保证跨主题可读性。</p>
   <div class="swatches" id="theme-swatches">
     <div class="swatch active" data-preset="default" style="background:#4f6ef7" onclick="setPreset(this)"><span>Default</span></div>
@@ -532,21 +571,48 @@ svg { display: block; flex-shrink: 0; }
     <div class="preview">
       <div class="preview-title">键盘导航</div>
       <div style="display:flex;flex-direction:column;gap:var(--space-2);font-size:var(--text-sm)">
-        <div class="row" style="justify-content:space-between"><kbd class="mono" style="background:var(--bg-muted);padding:2px 8px;border-radius:var(--radius-sm)">Space / Enter</kbd><span style="color:var(--fg-tertiary)">开始 / 停止</span></div>
-        <div class="row" style="justify-content:space-between"><kbd class="mono" style="background:var(--bg-muted);padding:2px 8px;border-radius:var(--radius-sm)">Esc</kbd><span style="color:var(--fg-tertiary)">返回欢迎</span></div>
-        <div class="row" style="justify-content:space-between"><kbd class="mono" style="background:var(--bg-muted);padding:2px 8px;border-radius:var(--radius-sm)">Tab</kbd><span style="color:var(--fg-tertiary)">控件导航</span></div>
-        <div class="row" style="justify-content:space-between"><kbd class="mono" style="background:var(--bg-muted);padding:2px 8px;border-radius:var(--radius-sm)">↑ / ↓</kbd><span style="color:var(--fg-tertiary)">数值增减</span></div>
+        <div class="row" style="justify-content:space-between"><kbd>Space / Enter</kbd><span style="color:var(--fg-tertiary)">开始 / 停止</span></div>
+        <div class="row" style="justify-content:space-between"><kbd>Esc</kbd><span style="color:var(--fg-tertiary)">返回欢迎</span></div>
+        <div class="row" style="justify-content:space-between"><kbd>Tab</kbd><span style="color:var(--fg-tertiary)">控件导航</span></div>
+        <div class="row" style="justify-content:space-between"><kbd>↑ / ↓</kbd><span style="color:var(--fg-tertiary)">数值增减</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ RESPONSIVE ============ -->
+<section class="section" id="responsive">
+  <h2>响应式 Responsive</h2>
+  <p class="lead">三档断点适配：&gt;1024px 侧栏+主区 · 640–1024px 侧栏滑出 · &lt;640px 全屏+抽屉。下方为移动端真机窄屏视图示例（建议缩小窗口或用开发者工具查看）。</p>
+  <div class="preview">
+    <div class="preview-title">移动端 &lt;640px 视图模拟（窄容器）</div>
+    <div style="max-width:380px;margin:0 auto;border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden">
+      <div style="display:flex;align-items:center;gap:var(--space-2);padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--border-subtle);background:var(--bg-subtle)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>
+        <strong style="font-size:var(--text-sm)">ZenDraw</strong>
+        <button class="btn btn-icon tip" data-tip="菜单" style="margin-left:auto;width:32px;height:32px" onclick="toast('移动端抽屉打开')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-5);padding:var(--space-12) var(--space-6)">
+        <div class="result-number" style="font-size:clamp(3rem,20vw,4rem)">42</div>
+        <div class="result-meta">从 1 – 100 抽取 · 共 5 个</div>
+        <button class="btn-draw" style="width:140px;height:140px;font-size:var(--text-lg)">抽取</button>
+        <span style="font-size:var(--text-xs);color:var(--fg-tertiary)">触控目标 ≥ 44px · 圆形按钮自适应</span>
       </div>
     </div>
   </div>
 </section>
 
 <div class="footer">
-  ZenDraw · 禅抽 — 高保真原型 v5.3.0 · 极简 · 精准 · 禅意<br/>
+  ZenDraw · 禅抽 — 高保真原型 v5.3.3 · 极简 · 精准 · 禅意<br/>
   设计令牌、组件库与交互标准详见 <a href="./DESIGN-SYSTEM.md" style="color:var(--accent)">DESIGN-SYSTEM.md</a>
 </div>
 
 <div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- Dialog -->
+<div id="dialog-root"></div>
 
 <script>
 function toggleTheme() {
@@ -573,31 +639,112 @@ function toast(msg) {
   const wrap = document.getElementById('toast-wrap');
   const t = document.createElement('div');
   t.className = 'toast';
+  t.setAttribute('role', 'status');
   t.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>' + msg;
   wrap.appendChild(t);
   setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(() => t.remove(), 300); }, 2000);
 }
-// Demo roller
+function openDialog() {
+  const root = document.getElementById('dialog-root');
+  root.innerHTML = '<div class="dialog-overlay" onclick="if(event.target===this)closeDialog()"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title"><h3 id="dlg-title">确认导入名单</h3><p>将从文本框导入 12 个名字，覆盖当前设置。是否继续？</p><div class="dialog-actions"><button class="btn btn-ghost" onclick="closeDialog()">取消</button><button class="btn btn-primary" onclick="closeDialog();toast(\'名单已导入\')">确认</button></div></div></div>';
+}
+function closeDialog() { document.getElementById('dialog-root').innerHTML = ''; }
+
+// 抽取范围 1-100（不含 0 与 100），返回整数
+function randDraw() { return Math.floor(Math.random() * 100) + 1; }
+
+// Demo roller（Draw Display 业务组件）
 let rolling = false;
 function rollDemo() {
   if (rolling) return;
   rolling = true;
   const el = document.getElementById('demo-number');
+  const btn = document.getElementById('demo-draw');
+  btn.disabled = true;
   el.classList.add('rolling');
-  const id = setInterval(() => { el.textContent = Math.floor(Math.random() * 100); }, 80);
+  const id = setInterval(() => { el.textContent = randDraw(); }, 80);
   setTimeout(() => {
-    clearInterval(id); el.classList.remove('rolling'); el.textContent = Math.floor(Math.random() * 100);
-    rolling = false; toast('抽取完成');
+    clearInterval(id); el.classList.remove('rolling'); el.textContent = randDraw();
+    rolling = false; btn.disabled = false; toast('抽取完成');
   }, 1600);
 }
+
+// 主流程状态机 Welcome -> Drawing -> Result -> (继续下一轮 / 完成回 Welcome)
+let flowTimer = null;
+let flowStep = 0; // 0 欢迎, 1 抽取中, 2 结果
+const flowData = [];
 function goState(state) {
-  toast('状态: ' + state);
-  if (state === 'drawing') {
-    const el = document.getElementById('flow-number');
-    let n = 0; const id = setInterval(() => { el.textContent = Math.floor(Math.random()*100); }, 80);
-    setTimeout(() => clearInterval(id), 2000);
+  const startBtn = document.getElementById('flow-start');
+  const stopBtn = document.getElementById('flow-stop');
+  const nextBtn = document.getElementById('flow-next');
+  const doneBtn = document.getElementById('flow-done');
+  const numEl = document.getElementById('flow-number');
+  const resultEl = document.getElementById('flow-result');
+  const metaEl = document.getElementById('flow-meta');
+  const resultMetaEl = document.getElementById('flow-result-meta');
+
+  if (state === 'welcome' || flowStep === 0) {
+    // 回到欢迎态
+    clearInterval(flowTimer);
+    flowStep = 0; flowData.length = 0;
+    startBtn.disabled = false; stopBtn.disabled = true; nextBtn.disabled = true; doneBtn.disabled = true;
+    numEl.textContent = '—'; numEl.classList.add('rolling');
+    resultEl.textContent = '—'; resultMetaEl.textContent = '等待抽取';
+    metaEl.textContent = '滚动态 · 每 80ms 切换';
+    startBtn.textContent = '抽取';
+    toast('已返回欢迎态');
+    return;
+  }
+  if (flowStep === 0 && state === 'welcome') { /* 已处理 */ }
+  // 从欢迎 -> 抽取
+  if (flowStep === 0) {
+    flowStep = 1;
+    startBtn.disabled = true; stopBtn.disabled = false;
+    numEl.classList.add('rolling');
+    flowTimer = setInterval(() => { numEl.textContent = randDraw(); }, 80);
+    metaEl.textContent = '滚动态 · 每 80ms 切换';
+    return;
+  }
+  // 抽取中 -> 停止揭晓结果
+  if (flowStep === 1 && state === 'drawing') {
+    clearInterval(flowTimer);
+    flowStep = 2;
+    const v = randDraw();
+    flowData.push(v);
+    numEl.classList.remove('rolling');
+    numEl.textContent = v;
+    resultEl.textContent = v;
+    resultMetaEl.textContent = '第 ' + flowData.length + ' / 5 个';
+    metaEl.textContent = '已停止';
+    stopBtn.disabled = true; nextBtn.disabled = false; doneBtn.disabled = false;
+    toast('结果揭晓：' + v);
+    return;
+  }
+  // 结果 -> 继续（下一轮抽取）
+  if (flowStep === 2 && state === 'result') {
+    if (flowData.length >= 5) { toast('本轮 5 个已完成，点击完成'); return; }
+    flowStep = 1;
+    nextBtn.disabled = true; doneBtn.disabled = true; stopBtn.disabled = false;
+    numEl.classList.add('rolling');
+    flowTimer = setInterval(() => { numEl.textContent = randDraw(); }, 80);
+    metaEl.textContent = '滚动态 · 每 80ms 切换';
+    toast('继续抽取');
+    return;
   }
 }
+
+// 键盘导航：Space/Enter 开始或停止，Esc 返回欢迎
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.code === 'Space' || e.code === 'Enter') {
+    e.preventDefault();
+    if (flowStep === 0) goState('welcome');
+    else if (flowStep === 1) goState('drawing');
+    else if (flowStep === 2) goState('result');
+  } else if (e.code === 'Escape') {
+    goState('welcome');
+  }
+});
 </script>
 </body>
 </html>

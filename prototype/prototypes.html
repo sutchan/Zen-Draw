@@ -3,332 +3,473 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ZenDraw · 高保真原型 prototypes v5.3.2</title>
+<title>ZenDraw · 高保真视觉稿 v5.3.3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-/* ============ TOKENS ============ */
-:root{
-  --bg:#fafbfc;--bg-subtle:#f4f5f7;--bg-elevated:#fff;--bg-muted:#eef0f4;
-  --fg:#1a1d23;--fg-secondary:#5a5f6b;--fg-tertiary:#8e939f;--fg-quaternary:#b4b8c2;
-  --border:#e2e5ea;--border-subtle:#eef0f4;--border-strong:#c4c8d0;--ring:#1a1d23;
-  --accent:#4f6ef7;--accent-fg:#fff;--accent-subtle:rgba(79,110,247,.10);--accent-hover:#3b5ae0;--accent-soft:rgba(79,110,247,.06);
-  --success:#22a06b;--success-subtle:rgba(34,160,107,.10);
-  --warning:#e8a313;--warning-subtle:rgba(232,163,19,.10);
-  --danger:#c9374b;--danger-subtle:rgba(201,55,75,.10);
-  --r-xs:4px;--r-sm:6px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:24px;--r-full:9999px;
-  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-8:32px;--s-10:40px;--s-12:48px;--s-16:64px;--s-20:80px;
-  --sh-sm:0 1px 3px rgba(0,0,0,.06);--sh-md:0 4px 8px -2px rgba(0,0,0,.08);--sh-lg:0 12px 24px -6px rgba(0,0,0,.10);--sh-xl:0 24px 48px -12px rgba(0,0,0,.14);--sh-2xl:0 40px 80px -20px rgba(0,0,0,.18);
-  --ease:cubic-bezier(.16,1,.3,1);--d-100:100ms;--d-150:150ms;--d-200:200ms;--d-300:300ms;--d-500:500ms;--d-700:700ms;
-  --fs:Inter,Noto Sans SC,system-ui,sans-serif;--mono:JetBrains Mono,monospace;--serif:Playfair Display,serif;
+/* ============================================================
+   DESIGN TOKENS — 与 index.html / design-system.md 严格一致
+   命名：--radius-* / --space-* / --shadow-* / --dur-*
+   ============================================================ */
+:root {
+  --bg: #fafbfc; --bg-subtle: #f4f5f7; --bg-elevated: #ffffff; --bg-muted: #eef0f4;
+  --fg: #1a1d23; --fg-secondary: #5a5f6b; --fg-tertiary: #8e939f; --fg-quaternary: #b4b8c2;
+  --border: #e2e5ea; --border-subtle: #eef0f4; --border-strong: #c4c8d0; --ring: #1a1d23;
+  --accent: #4f6ef7; --accent-fg: #ffffff; --accent-subtle: rgba(79,110,247,0.10);
+  --accent-hover: #3b5ae0; --accent-soft: rgba(79,110,247,0.06);
+  --success: #22a06b; --success-subtle: rgba(34,160,107,0.10);
+  --warning: #e8a313; --warning-subtle: rgba(232,163,19,0.10);
+  --danger: #c9374b; --danger-subtle: rgba(201,55,75,0.10);
+  --info: #4f6ef7; --info-subtle: rgba(79,110,247,0.10);
+
+  --radius-xs: 4px; --radius-sm: 6px; --radius-md: 8px; --radius-lg: 12px;
+  --radius-xl: 16px; --radius-2xl: 24px; --radius-full: 9999px;
+
+  --space-05: 2px; --space-1: 4px; --space-1_5: 6px; --space-2: 8px;
+  --space-2_5: 10px; --space-3: 12px; --space-3_5: 14px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --space-12: 48px; --space-16: 64px; --space-20: 80px; --space-24: 96px;
+
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 8px -2px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.10), 0 4px 8px -4px rgba(0,0,0,0.06);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.14), 0 8px 16px -8px rgba(0,0,0,0.08);
+  --shadow-2xl: 0 40px 80px -20px rgba(0,0,0,0.18);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-50: 50ms; --dur-100: 100ms; --dur-150: 150ms; --dur-200: 200ms;
+  --dur-300: 300ms; --dur-500: 500ms; --dur-700: 700ms; --dur-1000: 1000ms;
+
+  --font-sans: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
+  --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem; --text-4xl: 2.25rem;
+  --text-5xl: 3rem; --text-6xl: 3.75rem; --text-7xl: 4.5rem;
 }
-[data-theme="dark"]{
-  --bg:#0c0d0f;--bg-subtle:#141519;--bg-elevated:#1a1c22;--bg-muted:#23252b;
-  --fg:#e8eaed;--fg-secondary:#9ca0ab;--fg-tertiary:#6b7080;--fg-quaternary:#464b58;
-  --border:#2e3038;--border-subtle:#23252b;--border-strong:#3e414b;--ring:#e8eaed;
-  --accent:#6b87ff;--accent-hover:#85a0ff;--accent-subtle:rgba(107,135,255,.12);--accent-soft:rgba(107,135,255,.06);
-  --success:#2ec483;--warning:#f5b820;--danger:#e05a6d;
-  --sh-sm:0 1px 3px rgba(0,0,0,.4);--sh-md:0 4px 8px -2px rgba(0,0,0,.5);--sh-lg:0 12px 24px -6px rgba(0,0,0,.6);--sh-xl:0 24px 48px -12px rgba(0,0,0,.7);--sh-2xl:0 40px 80px -20px rgba(0,0,0,.8);
+[data-theme="dark"] {
+  --bg: #0c0d0f; --bg-subtle: #141519; --bg-elevated: #1a1c22; --bg-muted: #23252b;
+  --fg: #e8eaed; --fg-secondary: #9ca0ab; --fg-tertiary: #6b7080; --fg-quaternary: #464b58;
+  --border: #2e3038; --border-subtle: #23252b; --border-strong: #3e414b; --ring: #e8eaed;
+  --accent: #6b87ff; --accent-fg: #0c0d0f; --accent-subtle: rgba(107,135,255,0.12);
+  --accent-hover: #85a0ff; --accent-soft: rgba(107,135,255,0.06);
+  --success: #2ec483; --success-subtle: rgba(46,196,131,0.12);
+  --warning: #f5b820; --warning-subtle: rgba(245,184,32,0.12);
+  --danger: #e05a6d; --danger-subtle: rgba(224,90,109,0.12);
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.3); --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 8px -2px rgba(0,0,0,0.5); --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.6);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.7); --shadow-2xl: 0 40px 80px -20px rgba(0,0,0,0.8);
 }
-[data-theme-preset="ocean"]{--accent:#00b4d8;--accent-subtle:rgba(0,180,216,.12);--accent-hover:#0096c7;--accent-soft:rgba(0,180,216,.06)}
-[data-theme-preset="forest"]{--accent:#2d8a4e;--accent-subtle:rgba(45,138,78,.12);--accent-hover:#23703f;--accent-soft:rgba(45,138,78,.06)}
-[data-theme-preset="sunset"]{--accent:#e07c3c;--accent-subtle:rgba(224,124,60,.12);--accent-hover:#c9692f;--accent-soft:rgba(224,124,60,.06)}
-[data-theme-preset="purple"]{--accent:#7b2d8e;--accent-subtle:rgba(123,45,142,.12);--accent-hover:#642473;--accent-soft:rgba(123,45,142,.06)}
-[data-theme-preset="neon"]{--accent:#ff2d55;--accent-subtle:rgba(255,45,85,.12);--accent-hover:#e51e44;--accent-soft:rgba(255,45,85,.06)}
-[data-theme-preset="sakura"]{--accent:#ff8fab;--accent-subtle:rgba(255,143,171,.14);--accent-hover:#ff7497;--accent-soft:rgba(255,143,171,.08)}
-[data-theme-preset="midnight"]{--accent:#6b6bd6;--accent-subtle:rgba(107,107,214,.12);--accent-hover:#5555c0;--accent-soft:rgba(107,107,214,.06)}
-[data-theme-preset="retro"]{--accent:#a67c52;--accent-subtle:rgba(166,124,82,.12);--accent-hover:#8c6644;--accent-soft:rgba(166,124,82,.06)}
-[data-theme-preset="pixel"]{--accent:#33ff33;--accent-subtle:rgba(51,255,51,.12);--accent-hover:#1fe21f;--accent-soft:rgba(51,255,51,.06)}
-[data-theme-preset="rose"]{--accent:#c93d5f;--accent-subtle:rgba(201,61,95,.12);--accent-hover:#b3304f;--accent-soft:rgba(201,61,95,.06)}
+[data-theme-preset="ocean"]{--accent:#00b4d8;--accent-subtle:rgba(0,180,216,0.12);--accent-hover:#0096c7;--accent-soft:rgba(0,180,216,0.06);}
+[data-theme-preset="forest"]{--accent:#2d8a4e;--accent-subtle:rgba(45,138,78,0.12);--accent-hover:#23703f;--accent-soft:rgba(45,138,78,0.06);}
+[data-theme-preset="sunset"]{--accent:#e07c3c;--accent-subtle:rgba(224,124,60,0.12);--accent-hover:#c9692f;--accent-soft:rgba(224,124,60,0.06);}
+[data-theme-preset="purple"]{--accent:#7b2d8e;--accent-subtle:rgba(123,45,142,0.12);--accent-hover:#642473;--accent-soft:rgba(123,45,142,0.06);}
+[data-theme-preset="neon"]{--accent:#ff2d55;--accent-subtle:rgba(255,45,85,0.12);--accent-hover:#e51e44;--accent-soft:rgba(255,45,85,0.06);}
+[data-theme-preset="sakura"]{--accent:#ff8fab;--accent-subtle:rgba(255,143,171,0.14);--accent-hover:#ff7497;--accent-soft:rgba(255,143,171,0.08);}
+[data-theme-preset="midnight"]{--accent:#6b6bd6;--accent-subtle:rgba(107,107,214,0.12);--accent-hover:#5555c0;--accent-soft:rgba(107,107,214,0.06);}
+[data-theme-preset="retro"]{--accent:#a67c52;--accent-subtle:rgba(166,124,82,0.12);--accent-hover:#8c6644;--accent-soft:rgba(166,124,82,0.06);}
+[data-theme-preset="pixel"]{--accent:#33ff33;--accent-subtle:rgba(51,255,51,0.12);--accent-hover:#1fe21f;--accent-soft:rgba(51,255,51,0.06);}
+[data-theme-preset="rose"]{--accent:#c93d5f;--accent-subtle:rgba(201,61,95,0.12);--accent-hover:#b3304f;--accent-soft:rgba(201,61,95,0.06);}
 
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--fs);background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased;transition:background var(--d-300),color var(--d-300)}
-a{color:var(--accent);text-decoration:none}
-button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit}
-.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-sans); color: var(--fg); background: var(--bg); transition: background var(--dur-300), color var(--dur-300); }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: var(--radius-sm); }
 
-/* ===== Top nav ===== */
-.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:var(--s-4);padding:var(--s-3) var(--s-6);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.05rem}
-.brand svg{color:var(--accent)}
-.brand small{color:var(--fg-tertiary);font-weight:400;font-size:.78rem}
-.nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
-.nav a{padding:6px 12px;border-radius:var(--r-full);font-size:.85rem;color:var(--fg-secondary)}
-.nav a:hover{background:var(--bg-muted);color:var(--fg)}
-.icon-btn{width:38px;height:38px;border-radius:var(--r-md);background:var(--bg-subtle);color:var(--fg-secondary);display:grid;place-items:center;transition:all var(--d-150)}
-.icon-btn:hover{background:var(--bg-muted);color:var(--fg)}
+.proto-nav { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: var(--space-4); padding: var(--space-3) var(--space-6); background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.proto-nav .brand { display: flex; align-items: center; gap: var(--space-2); font-weight: 700; font-size: var(--text-lg); }
+.proto-nav .brand svg { color: var(--accent); }
+.proto-nav .nav-links { display: flex; gap: var(--space-1); margin-left: auto; flex-wrap: wrap; }
+.proto-nav .nav-links a { padding: var(--space-1_5) var(--space-3); border-radius: var(--radius-full); font-size: var(--text-sm); color: var(--fg-secondary); transition: all var(--dur-150); }
+.proto-nav .nav-links a:hover { background: var(--bg-muted); color: var(--fg); }
 
-.wrap{max-width:1140px;margin:0 auto;padding:var(--s-16) var(--s-6)}
-.section{margin-bottom:var(--s-20)}
-.kicker{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:var(--s-2)}
-.sec-head h2{font-size:2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
-.sec-head p{color:var(--fg-secondary);max-width:66ch;margin-bottom:var(--s-8)}
+.section { max-width: 1080px; margin: 0 auto; padding: var(--space-16) var(--space-6); }
+.section h2 { font-size: var(--text-3xl); font-weight: 700; letter-spacing: -0.02em; margin-bottom: var(--space-2); }
+.section .lead { color: var(--fg-secondary); max-width: 62ch; margin-bottom: var(--space-8); }
 
-/* ===== HERO ===== */
-.hero{text-align:center;padding:var(--s-20) 0}
-.hero .badge{margin-bottom:var(--s-4)}
-.badge{display:inline-flex;align-items:center;padding:3px 12px;border-radius:var(--r-full);font-size:.75rem;font-weight:600}
-.badge-accent{background:var(--accent-subtle);color:var(--accent)}
-.hero h1{font-size:clamp(2.5rem,7vw,4.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.05}
-.hero p{color:var(--fg-secondary);max-width:54ch;margin:var(--s-4) auto var(--s-8);font-size:1.05rem}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;border-radius:var(--r-full);transition:all var(--d-200) var(--ease);white-space:nowrap}
-.btn:active{transform:scale(.97)}
-.btn-primary{background:var(--accent);color:var(--accent-fg);padding:12px 26px;box-shadow:0 2px 8px var(--accent-subtle)}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-subtle)}
-.btn-ghost{background:transparent;color:var(--fg-secondary);padding:10px 16px;border-radius:var(--r-md)}
-.btn-ghost:hover{background:var(--bg-muted);color:var(--fg)}
+/* Device frame */
+.device { max-width: 420px; margin: 0 auto; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-2xl); padding: var(--space-3); box-shadow: var(--shadow-xl); }
+.screen { background: var(--bg); border-radius: var(--radius-xl); min-height: 620px; padding: var(--space-6); display: flex; flex-direction: column; position: relative; overflow: hidden; border: 1px solid var(--border-subtle); }
 
-/* ===== Screen frame (visual mock) ===== */
-.screen{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-2xl);box-shadow:var(--sh-xl);overflow:hidden;margin-bottom:var(--s-8)}
-.screen .bar{display:flex;align-items:center;gap:10px;padding:var(--s-3) var(--s-5);border-bottom:1px solid var(--border-subtle);background:var(--bg-subtle)}
-.screen .dot{width:10px;height:10px;border-radius:50%;background:var(--fg-quaternary)}
-.screen .title{font-size:.82rem;color:var(--fg-tertiary);margin-left:6px}
-.screen .body{padding:var(--s-10) var(--s-8);min-height:340px}
-.screen .tools{margin-left:auto;display:flex;gap:6px}
+/* Screen header */
+.screen-head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); }
+.screen-head .ico { width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--accent-subtle); color: var(--accent); display: flex; align-items: center; justify-content: center; }
+.screen-head .t { font-weight: 700; font-size: var(--text-lg); }
+.screen-head .sub { font-size: var(--text-xs); color: var(--fg-tertiary); }
+.screen-head .right { margin-left: auto; display: flex; gap: var(--space-2); }
+.icon-btn { width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--bg-muted); color: var(--fg-secondary); display: flex; align-items: center; justify-content: center; transition: all var(--dur-150); }
+.icon-btn:hover { background: var(--bg-elevated); color: var(--fg); }
 
-/* ===== Draw button ===== */
-.draw-btn{width:200px;height:200px;border-radius:50%;background:var(--accent);color:var(--accent-fg);font-size:1.35rem;font-weight:700;box-shadow:0 8px 32px var(--accent-subtle);position:relative;display:grid;place-items:center;transition:transform var(--d-200)}
-.draw-btn::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--accent-subtle);animation:pulse 2.4s ease-in-out infinite}
-.draw-btn:hover{transform:scale(1.03)}
-@keyframes pulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.07);opacity:0}}
-.draw-btn.sm{width:140px;height:140px;font-size:1rem}
+/* Draw button */
+.draw-btn { width: 168px; height: 168px; border-radius: 50%; background: var(--accent); color: var(--accent-fg); font-size: var(--text-xl); font-weight: 700; margin: var(--space-8) auto; position: relative; box-shadow: 0 8px 32px var(--accent-subtle); transition: transform var(--dur-200); }
+.draw-btn::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid var(--accent-subtle); animation: pulse 2s ease-in-out infinite; }
+.draw-btn:hover { transform: scale(1.03); }
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.07);opacity:0} }
 
-/* ===== Result number ===== */
-.result-num{font-family:var(--mono);font-weight:700;font-size:clamp(3.5rem,14vw,7rem);letter-spacing:-.04em;line-height:1;color:var(--fg)}
-.result-num.roll{color:var(--accent)}
-.meta{color:var(--fg-tertiary);font-size:.85rem;margin-top:8px}
-.center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:var(--s-6);min-height:340px}
+/* Result number */
+.result-num { font-family: var(--font-mono); font-weight: 700; font-size: clamp(4rem, 22vw, 6rem); letter-spacing: -0.04em; text-align: center; transition: color var(--dur-300); }
+.result-num.rolling { color: var(--accent); }
+.meta { text-align: center; color: var(--fg-tertiary); font-size: var(--text-sm); margin-top: var(--space-2); }
+.drawn-list { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; margin-top: var(--space-4); }
+.chip { font-family: var(--font-mono); font-weight: 600; background: var(--accent-subtle); color: var(--accent); padding: var(--space-1_5) var(--space-3); border-radius: var(--radius-full); font-size: var(--text-sm); animation: pop var(--dur-300) var(--ease-out) backwards; }
+@keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-/* ===== History ===== */
-.hist-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg-subtle);margin-bottom:8px}
-.hist-row .nums{font-family:var(--mono);font-weight:600;color:var(--accent);font-size:.95rem}
-.hist-row .t{margin-left:auto;font-size:.72rem;color:var(--fg-tertiary)}
-.empty{display:flex;flex-direction:column;align-items:center;gap:12px;padding:56px;border:1px dashed var(--border-strong);border-radius:var(--r-xl);color:var(--fg-tertiary);text-align:center}
-.empty svg{opacity:.5}
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); font-weight: 600; border-radius: var(--radius-full); transition: all var(--dur-200); }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--accent); color: var(--accent-fg); padding: var(--space-3) var(--space-6); }
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-secondary { background: var(--bg-muted); color: var(--fg); padding: var(--space-3) var(--space-5); }
+.btn-ghost { background: transparent; color: var(--fg-secondary); padding: var(--space-2) var(--space-3); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
 
-/* ===== Settings drawer mock ===== */
-.drawer{display:flex;gap:var(--s-6)}
-.drawer .side{width:300px;flex-shrink:0;background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--r-xl);padding:var(--s-5)}
-.drawer .main{flex:1;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-xl);padding:var(--s-5)}
-@media(max-width:780px){.drawer{flex-direction:column}.drawer .side{width:100%}}
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:var(--s-4)}
-.field label{font-size:.85rem;font-weight:500;color:var(--fg-secondary)}
-.input{padding:9px 12px;background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--r-md);width:100%}
-.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle)}
-.switch{width:44px;height:26px;background:var(--bg-muted);border-radius:var(--r-full);position:relative;cursor:pointer;transition:background var(--d-200)}
-.switch.on{background:var(--accent)}
-.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:var(--sh-sm);transition:transform var(--d-200)}
-.switch.on::after{transform:translateX(18px)}
-.tabs{display:inline-flex;gap:4px;padding:4px;background:var(--bg-subtle);border-radius:var(--r-lg);margin-bottom:var(--s-4)}
-.tab{padding:8px 16px;border-radius:var(--r-md);font-size:.85rem;font-weight:500;color:var(--fg-secondary);cursor:pointer}
-.tab.on{background:var(--bg-elevated);color:var(--fg);box-shadow:var(--sh-sm)}
-.swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.swatch{aspect-ratio:1.4;border-radius:var(--r-lg);border:2px solid transparent;cursor:pointer;display:flex;align-items:flex-end;padding:8px;font-size:.72rem;font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
-.swatch.on{border-color:var(--fg)}
+/* History card */
+.hist-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-4); background: var(--bg-elevated); box-shadow: var(--shadow-xs); }
+.hist-card .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2); }
+.hist-card .date { font-weight: 600; font-size: var(--text-sm); }
+.hist-card .badge { font-size: 10px; font-weight: 600; padding: 2px var(--space-2); border-radius: var(--radius-full); background: var(--success-subtle); color: var(--success); }
+.hist-card .nums { font-family: var(--font-mono); font-weight: 600; color: var(--accent); font-size: var(--text-lg); }
+.hist-card .time { font-size: var(--text-xs); color: var(--fg-tertiary); margin-top: var(--space-1); }
 
-/* ===== Theme switcher ===== */
-.presets{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-top:var(--s-4)}
-.preset{height:48px;border-radius:var(--r-lg);border:2px solid transparent;cursor:pointer;position:relative}
-.preset.on{border-color:var(--fg)}
-.preset span{position:absolute;bottom:4px;left:6px;font-size:.7rem;font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+/* Confetti canvas */
+#confetti { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
 
-/* ===== Toast & Tooltip ===== */
-.toast-demo{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:var(--fg);color:var(--bg);border-radius:var(--r-full);font-size:.82rem;font-weight:500;box-shadow:var(--sh-lg);z-index:100;animation:toastIn var(--d-300) var(--ease)}
-@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-.tip{position:relative}
-.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--fg);color:var(--bg);padding:4px 8px;border-radius:var(--r-sm);font-size:.7rem;white-space:nowrap;opacity:0;pointer-events:none;transition:all var(--d-150)}
-.tip:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
+/* State machine viz */
+.flow-viz { display: flex; align-items: center; justify-content: center; gap: var(--space-3); flex-wrap: wrap; margin: var(--space-8) 0; }
+.flow-node { padding: var(--space-3) var(--space-5); border-radius: var(--radius-full); background: var(--bg-muted); font-size: var(--text-sm); font-weight: 600; transition: all var(--dur-200); }
+.flow-node.active { background: var(--accent); color: var(--accent-fg); box-shadow: 0 4px 16px var(--accent-subtle); }
+.flow-arrow { color: var(--fg-tertiary); }
 
-/* ===== Confetti ===== */
-.confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.confetti i{position:absolute;top:-10px;width:8px;height:12px;border-radius:2px;animation:fall 2.5s linear forwards}
-@keyframes fall{to{transform:translateY(380px) rotate(540deg);opacity:0}}
+/* Theme switcher */
+.swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-3); max-width: 520px; margin: 0 auto; }
+.swatch { aspect-ratio: 1.6; border-radius: var(--radius-lg); border: 2px solid transparent; cursor: pointer; display: flex; align-items: flex-end; padding: var(--space-2); transition: transform var(--dur-150); }
+.swatch:hover { transform: translateY(-2px); }
+.swatch.active { border-color: var(--fg); }
+.swatch span { font-size: 10px; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
 
-.footer{border-top:1px solid var(--border);padding:var(--s-8);text-align:center;color:var(--fg-tertiary);font-size:.85rem}
-.divider{height:1px;background:var(--border);margin:var(--s-12) 0}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-6)}
-@media(max-width:780px){.grid2{grid-template-columns:1fr}}
-.card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-5);box-shadow:var(--sh-sm)}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.toast-wrap { position: fixed; bottom: var(--space-6); left: 50%; transform: translateX(-50%); z-index: 100; display: flex; flex-direction: column; gap: var(--space-2); align-items: center; }
+.toast { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); background: var(--fg); color: var(--bg); border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 500; box-shadow: var(--shadow-lg); animation: toast-in var(--dur-300) var(--ease-out); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.divider { height: 1px; background: var(--border); margin: var(--space-8) 0; }
+.footer { border-top: 1px solid var(--border); padding: var(--space-8) var(--space-6); text-align: center; color: var(--fg-tertiary); font-size: var(--text-sm); }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="brand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>ZenDraw <small>禅抽 v5.3.2</small></div>
-  <nav class="nav">
-    <a href="#screens">视觉稿</a><a href="#flow">主流程</a><a href="#themes">主题</a><a href="#states">状态</a>
-    <button class="icon-btn" onclick="toggleTheme()" aria-label="切换深浅色"><svg id="ti" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
-  </nav>
-</div>
-
-<div class="wrap">
-
-<!-- HERO -->
-<section class="hero">
-  <span class="badge badge-accent">高保真可交互原型 · 真实数据</span>
-  <h1>让抽签成为<br/>一场仪式</h1>
-  <p>极简 · 精准 · 禅意。国际顶尖设计师水准的随机抽签体验，桌面与移动端完美呈现。</p>
-  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-    <button class="btn btn-primary" onclick="scrollToFlow()">体验主流程</button>
-    <a href="#screens" class="btn btn-ghost">浏览视觉稿</a>
+<nav class="proto-nav">
+  <div class="brand">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>
+    ZenDraw <span style="color:var(--fg-tertiary);font-weight:400;font-size:var(--text-sm)">v5.3.3 视觉稿</span>
   </div>
+  <div class="nav-links">
+    <a href="./index.html">原型总览</a>
+    <a href="./wireframes.html">组件库规范</a>
+    <a href="#screens">四屏视觉稿</a>
+    <a href="#flow">状态机</a>
+    <a href="#themes">主题切换</a>
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="切换深浅色">
+      <svg id="ticon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<section class="section" style="text-align:center;padding-top:var(--space-20)">
+  <span style="display:inline-block;padding:2px var(--space-3);border-radius:var(--radius-full);background:var(--accent-subtle);color:var(--accent);font-size:var(--text-sm);font-weight:600;margin-bottom:var(--space-4)">Hi-Fi Visual Prototype</span>
+  <h1 style="font-size:clamp(2.5rem,7vw,4rem);font-weight:800;letter-spacing:-0.03em">高保真视觉稿</h1>
+  <p class="lead" style="margin:var(--space-4) auto var(--space-8)">四屏真实视觉 · 数字滚动动效 · Canvas 彩屑庆祝 · Toast 反馈 · 11 套主题实时切换</p>
 </section>
 
 <div class="divider"></div>
 
-<!-- ===== SCREENS (visual design) ===== -->
+<!-- ============ SCREENS ============ -->
 <section class="section" id="screens">
-  <div class="sec-head"><span class="kicker">Visual Design</span><h2>高保真视觉设计稿</h2>
-  <p>完整界面视觉呈现，含真实抽签数据与状态。所有间距、圆角、色彩源自 design-system.md 令牌。</p></div>
+  <h2>四大核心屏幕</h2>
+  <p class="lead">采用桌面/iOS 常见的「状态栏 + 标题 + 内容 + 操作」结构。下方为移动端 420px 真机视图模拟。</p>
 
-  <!-- Screen 1: Home / Idle -->
-  <div class="screen">
-    <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">ZenDraw — 首页（空闲态）</span>
-      <div class="tools"><button class="icon-btn tip" data-tip="语言">🌐</button><button class="icon-btn tip" data-tip="主题">🌓</button><button class="icon-btn tip" data-tip="设置">⚙</button></div>
-    </div>
-    <div class="body center">
-      <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" style="color:var(--fg-tertiary);opacity:.35"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg>
-      <div><div style="font-size:2rem;font-weight:700">准备就绪</div><div class="meta">点击中心按钮或按空格开始 · 范围 1 – 100</div></div>
-      <button class="draw-btn" onclick="startDraw1()">抽取</button>
-    </div>
-  </div>
-
-  <!-- Screen 2: Drawing -->
-  <div class="screen">
-    <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">ZenDraw — 抽取中（滚动态）</span></div>
-    <div class="body center">
-      <div class="result-num roll" id="r1">—</div>
-      <div class="meta">滚动态 · 每 80ms 切换一个数字 · 共 5 个</div>
-      <button class="btn btn-ghost" onclick="stopDraw1()">停止</button>
-    </div>
-  </div>
-
-  <!-- Screen 3: Result -->
-  <div class="screen" style="position:relative">
-    <div class="confetti" id="cf"></div>
-    <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">ZenDraw — 结果揭晓（庆祝动效）</span></div>
-    <div class="body center">
-      <div class="result-num" id="r2">73</div>
-      <div class="meta">第 1 / 5 个 · 07 · 23 · 58 · 73 · 94</div>
-      <div style="display:flex;gap:10px">
-        <button class="btn btn-primary" onclick="toast('已揭晓下一个')">继续</button>
-        <button class="btn btn-ghost" onclick="clearConfetti()">完成</button>
+  <!-- ① 空闲 -->
+  <h3 style="margin:var(--space-8) 0 var(--space-4)">① 空闲态 Idle</h3>
+  <div class="device">
+    <div class="screen">
+      <div class="screen-head">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg></div>
+        <div><div class="t">禅抽</div><div class="sub">极简 · 精准 · 禅意</div></div>
+        <div class="right">
+          <button class="icon-btn" data-tip="主题" onclick="toast('主题面板')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></button>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+        <div style="font-family:var(--font-serif);font-size:var(--text-3xl);font-weight:700;opacity:.9">让抽签成为仪式</div>
+        <div class="meta">从 1 – 100 抽取 5 个不重复数字</div>
+        <button class="draw-btn" onclick="flowStep(1)">抽取</button>
+        <div class="meta">点击按钮或按 Space 开始</div>
       </div>
     </div>
   </div>
 
-  <!-- Screen 4: History -->
-  <div class="screen">
-    <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">ZenDraw — 历史记录（真实数据）</span></div>
-    <div class="body">
-      <div style="font-weight:600;margin-bottom:12px">今日抽签 · 3 条</div>
-      <div class="hist-row"><span class="nums">07 · 23 · 58 · 73 · 94</span><span class="t">14:32 · 5 个</span></div>
-      <div class="hist-row"><span class="nums">03 · 19 · 42 · 66 · 88</span><span class="t">14:28 · 5 个</span></div>
-      <div class="hist-row"><span class="nums">11 · 27 · 35 · 52 · 99</span><span class="t">14:21 · 5 个</span></div>
-      <div class="empty" style="margin-top:16px"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><div style="font-size:.85rem">更早的记录已归档 · 点击「复制」可导出本轮结果</div></div>
+  <!-- ② 抽取中 -->
+  <h3 style="margin:var(--space-12) 0 var(--space-4)">② 抽取中 Drawing</h3>
+  <div class="device">
+    <div class="screen">
+      <div class="screen-head">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M12 7v5l3 3"/></svg></div>
+        <div><div class="t">抽取中</div><div class="sub">滚动态 · 每 80ms 切换</div></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div class="result-num rolling" id="p-num">—</div>
+        <div class="meta" id="p-meta">数字滚动中…</div>
+      </div>
+      <button class="btn btn-secondary" id="p-stop" style="margin:var(--space-4) auto 0" onclick="flowStep(2)">停止</button>
+    </div>
+  </div>
+
+  <!-- ③ 结果（彩屑联动） -->
+  <h3 style="margin:var(--space-12) 0 var(--space-4)">③ 结果 Result（庆祝动效联动）</h3>
+  <div class="device">
+    <div class="screen" id="result-screen">
+      <canvas id="confetti"></canvas>
+      <div class="screen-head">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div><div class="t">抽取完成</div><div class="sub">本轮第 1 / 5 个</div></div>
+        <div class="right">
+          <button class="icon-btn" onclick="copyResult()" aria-label="复制"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div class="result-num" id="p-result">73</div>
+        <div class="meta">真实数据示例 · 07 · 23 · 58 · 73 · 94</div>
+        <div class="drawn-list" id="p-chips"></div>
+      </div>
+      <div style="display:flex;gap:var(--space-3);justify-content:center;margin-top:var(--space-4)">
+        <button class="btn btn-primary" onclick="flowStep(1)">继续</button>
+        <button class="btn btn-ghost" onclick="flowStep(0)">完成</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 历史 -->
+  <h3 style="margin:var(--space-12) 0 var(--space-4)">④ 历史 History</h3>
+  <div class="device">
+    <div class="screen">
+      <div class="screen-head">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg></div>
+        <div><div class="t">历史记录</div><div class="sub">最近 3 次抽取</div></div>
+        <div class="right"><button class="icon-btn" onclick="toast('历史已清空')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div class="hist-card"><div class="top"><span class="date">今日 14:32</span><span class="badge">已保存</span></div><div class="nums">07 · 23 · 58 · 73 · 94</div><div class="time">5 个不重复数字 · 范围 1–100</div></div>
+        <div class="hist-card"><div class="top"><span class="date">今日 14:28</span><span class="badge">已保存</span></div><div class="nums">03 · 19 · 42 · 66 · 88</div><div class="time">5 个不重复数字 · 范围 1–100</div></div>
+        <div class="hist-card"><div class="top"><span class="date">今日 14:21</span><span class="badge">已保存</span></div><div class="nums">11 · 27 · 35 · 52 · 99</div><div class="time">5 个不重复数字 · 范围 1–100</div></div>
+      </div>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ===== FLOW ===== -->
+<!-- ============ STATE MACHINE ============ -->
 <section class="section" id="flow">
-  <div class="sec-head"><span class="kicker">Interaction</span><h2>主流程 · 可交互</h2>
-  <p>真实流程：欢迎 → 抽取（数字滚动）→ 结果（庆祝）→ 历史沉淀。点击下方按钮体验完整动效。</p></div>
-
-  <div class="grid2">
-    <div class="card" style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:40px">
-      <div class="center" style="min-height:200px">
-        <div class="result-num" id="flowNum">—</div>
-        <div class="meta" id="flowMeta">空闲 · 等待开始</div>
-      </div>
-      <button class="draw-btn sm" id="flowBtn" onclick="flowStep()">开始</button>
-    </div>
-    <div class="card">
-      <div style="font-weight:600;margin-bottom:12px">状态机</div>
-      <div style="font-family:var(--mono);font-size:.85rem;color:var(--fg-secondary);line-height:2">
-        Welcome <span style="color:var(--accent)">──Space/点击──▶</span> Drawing<br/>
-        &nbsp;&nbsp;▲&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br/>
-        &nbsp;&nbsp;└──────────<span style="color:var(--accent)">继续/完成</span>──────────┘<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;Drawing <span style="color:var(--accent)">──Space/点击──▶</span> Result<br/>
-        Any <span style="color:var(--accent)">──Esc──▶</span> Welcome
-      </div>
-      <div style="margin-top:16px;font-size:.8rem;color:var(--fg-tertiary)">键盘：Space/Enter 开始停止 · Esc 返回 · ↑/↓ 数值增减</div>
-    </div>
+  <h2>状态机 State Machine</h2>
+  <p class="lead">欢迎 → 抽取 → 结果 →（继续回到抽取 / 完成沉淀到历史并回到欢迎）。图示与下方按钮真实联动：点击「下一步」或屏幕按钮推进流程，结果屏揭晓时触发彩屑。</p>
+  <div class="flow-viz">
+    <div class="flow-node" data-step="0">① 欢迎</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node" data-step="1">② 抽取</div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-node" data-step="2">③ 结果</div>
+    <span class="flow-arrow">↺</span>
+    <div class="flow-node" data-step="3">④ 历史</div>
+  </div>
+  <div style="text-align:center;margin-top:var(--space-4)">
+    <button class="btn btn-primary" onclick="flowStep()">下一步 ▶</button>
+    <span style="margin-left:var(--space-3);color:var(--fg-tertiary);font-size:var(--text-sm)">当前：<span id="flow-label">① 欢迎</span></span>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ===== THEMES ===== -->
+<!-- ============ THEME SWITCHER ============ -->
 <section class="section" id="themes">
-  <div class="sec-head"><span class="kicker">Theming</span><h2>11 套配色主题</h2>
-  <p>仅 accent 色相变化，中性色系与对比度恒定。点击切换全局预览（含深/浅模式）。</p></div>
-  <div class="presets" id="presets">
-    <div class="preset on" data-p="default" style="background:#4f6ef7" onclick="setP(this)"><span>Default</span></div>
-    <div class="preset" data-p="ocean" style="background:#00b4d8" onclick="setP(this)"><span>Ocean</span></div>
-    <div class="preset" data-p="forest" style="background:#2d8a4e" onclick="setP(this)"><span>Forest</span></div>
-    <div class="preset" data-p="sunset" style="background:#e07c3c" onclick="setP(this)"><span>Sunset</span></div>
-    <div class="preset" data-p="purple" style="background:#7b2d8e" onclick="setP(this)"><span>Purple</span></div>
-    <div class="preset" data-p="neon" style="background:#ff2d55" onclick="setP(this)"><span>Neon</span></div>
-    <div class="preset" data-p="sakura" style="background:#ff8fab" onclick="setP(this)"><span>Sakura</span></div>
-    <div class="preset" data-p="midnight" style="background:#6b6bd6" onclick="setP(this)"><span>Midnight</span></div>
-    <div class="preset" data-p="retro" style="background:#a67c52" onclick="setP(this)"><span>Retro</span></div>
-    <div class="preset" data-p="pixel" style="background:#33ff33" onclick="setP(this)"><span>Pixel</span></div>
-    <div class="preset" data-p="rose" style="background:#c93d5f" onclick="setP(this)"><span>Rose</span></div>
+  <h2>11 套主题实时预览</h2>
+  <p class="lead">点击切换，所有屏幕与强调色即时响应（仅 accent 色相变化）。</p>
+  <div class="swatches" id="theme-swatches">
+    <div class="swatch active" data-preset="default" style="background:#4f6ef7" onclick="setPreset(this)"><span>Default</span></div>
+    <div class="swatch" data-preset="ocean" style="background:#00b4d8" onclick="setPreset(this)"><span>Ocean</span></div>
+    <div class="swatch" data-preset="forest" style="background:#2d8a4e" onclick="setPreset(this)"><span>Forest</span></div>
+    <div class="swatch" data-preset="sunset" style="background:#e07c3c" onclick="setPreset(this)"><span>Sunset</span></div>
+    <div class="swatch" data-preset="purple" style="background:#7b2d8e" onclick="setPreset(this)"><span>Purple</span></div>
+    <div class="swatch" data-preset="neon" style="background:#ff2d55" onclick="setPreset(this)"><span>Neon</span></div>
+    <div class="swatch" data-preset="sakura" style="background:#ff8fab" onclick="setPreset(this)"><span>Sakura</span></div>
+    <div class="swatch" data-preset="midnight" style="background:#6b6bd6" onclick="setPreset(this)"><span>Midnight</span></div>
+    <div class="swatch" data-preset="retro" style="background:#a67c52" onclick="setPreset(this)"><span>Retro</span></div>
+    <div class="swatch" data-preset="pixel" style="background:#33ff33" onclick="setPreset(this)"><span>Pixel</span></div>
+    <div class="swatch" data-preset="rose" style="background:#c93d5f" onclick="setPreset(this)"><span>Rose</span></div>
   </div>
 </section>
 
-<div class="divider"></div>
+<div class="footer">ZenDraw · 禅抽 — 高保真视觉稿 v5.3.3 · 与 index.html / wireframes.html / DESIGN-SYSTEM.md 保持令牌一致</div>
 
-<!-- ===== STATES ===== -->
-<section class="section" id="states">
-  <div class="sec-head"><span class="kicker">States</span><h2>状态与反馈</h2>
-  <p>错误、空、成功、加载四类状态的一致处理，保证可预测的用户体验。</p></div>
-  <div class="grid2">
-    <div class="card">
-      <div style="font-weight:600;margin-bottom:12px;color:var(--danger)">错误态 Error</div>
-      <div class="field"><label>最大值 Max</label><input class="input" value="0" style="border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-subtle)"><span style="font-size:.72rem;color:var(--danger)">最大值需大于最小值（1）</span></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--danger-subtle);color:var(--danger);border-radius:var(--r-md);font-size:.82rem;margin-top:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>范围无效，已阻止抽取。请修正后重试。</span></div>
-    </div>
-    <div class="card">
-      <div style="font-weight:600;margin-bottom:12px;color:var(--success)">成功态 Success</div>
-      <div class="empty" style="border-style:solid;border-color:var(--success-subtle);color:var(--success)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6 9 17l-5-5"/></svg><div style="font-size:.85rem">本轮结果已保存至历史 · 共 5 个数字</div></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--success-subtle);color:var(--success);border-radius:var(--r-md);font-size:.82rem;margin-top:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>抽取完成，结果已复制。</span></div>
-    </div>
-  </div>
-</section>
-
-</div>
-
-<div class="footer">ZenDraw · 禅抽 — 高保真原型 prototypes v5.3.2 · 与 design-system.md / wireframes.html 同源</div>
-
-<div id="toast-host"></div>
+<div class="toast-wrap" id="toast-wrap"></div>
 
 <script>
-function toggleTheme(){const h=document.documentElement;const c=h.getAttribute('data-theme');const n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);document.getElementById('ti').innerHTML=n==='dark'?"<path d='M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z'/>":"<circle cx='12' cy='12' r='5'/><path d='M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2'/>";}
-function setP(el){document.querySelectorAll('#presets .preset').forEach(p=>p.classList.remove('on'));el.classList.add('on');const p=el.getAttribute('data-p');if(p==='default')document.documentElement.removeAttribute('data-theme-preset');else document.documentElement.setAttribute('data-theme-preset',p);}
-function toast(msg){const h=document.getElementById('toast-host');const t=document.createElement('div');t.className='toast-demo';t.innerHTML="<svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M20 6 9 17l-5-5'/></svg>"+msg;h.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)';setTimeout(()=>t.remove(),300);},2200);}
+const STEP_LABELS = ['① 欢迎', '② 抽取', '③ 结果', '④ 历史'];
+let step = 0;          // 0 welcome, 1 drawing, 2 result, 3 history
+let drawnResults = []; // 本轮已抽取数字
+let drawTimer = null;
 
-/* Screen 1/2 roller */
-let iv1;
-function startDraw1(){const e=document.getElementById('r1');e.classList.add('roll');clearInterval(iv1);iv1=setInterval(()=>{e.textContent=Math.floor(Math.random()*100);},80);}
-function stopDraw1(){clearInterval(iv1);document.getElementById('r1').classList.remove('roll');document.getElementById('r1').textContent=Math.floor(Math.random()*100);toast('抽取完成');}
+// 抽取范围 1-100（不含 0 与 100）
+function randDraw() { return Math.floor(Math.random() * 100) + 1; }
 
-/* Confetti */
-function clearConfetti(){document.getElementById('cf').innerHTML='';}
-(function(){const cf=document.getElementById('cf');const colors=['#4f6ef7','#22a06b','#e8a313','#ff2d55','#7b2d8e'];for(let i=0;i<40;i++){const c=document.createElement('i');c.style.left=Math.random()*100+'%';c.style.background=colors[i%colors.length];c.style.animationDelay=Math.random()*0.6+'s';c.style.animationDuration=(1.8+Math.random()*1.2)+'s';cf.appendChild(c);} })();
-
-/* Flow stepper */
-let step=0,ivf;
-function flowStep(){const num=document.getElementById('flowNum');const meta=document.getElementById('flowMeta');const btn=document.getElementById('flowBtn');
-  if(step===0){btn.textContent='停止';meta.textContent='抽取中 · 滚动态';clearInterval(ivf);ivf=setInterval(()=>{num.classList.add('roll');num.textContent=Math.floor(Math.random()*100);},80);step=1;}
-  else if(step===1){clearInterval(ivf);num.classList.remove('roll');num.textContent=Math.floor(Math.random()*100);meta.textContent='结果揭晓 · 第 1/5 个';btn.textContent='继续';toast('已揭晓');step=2;}
-  else {meta.textContent='空闲 · 等待开始';btn.textContent='开始';step=0;}
+function setStepUI() {
+  document.querySelectorAll('.flow-node').forEach(n => {
+    const s = parseInt(n.getAttribute('data-step'));
+    n.classList.toggle('active', s === step);
+  });
+  document.getElementById('flow-label').textContent = STEP_LABELS[Math.min(step, 3)];
 }
-function scrollToFlow(){document.getElementById('flow').scrollIntoView({behavior:'smooth'});}
+
+function flowStep(force) {
+  // force 来自屏幕按钮（0/1/2）时直接跳转目标态
+  if (force !== undefined) {
+    if (force === 0) { resetFlow(); return; }
+    if (force === 1) { startDrawing(); return; }
+    if (force === 2) { stopDrawing(); return; }
+  }
+  // 顶部「下一步」按钮顺序推进
+  if (step === 0) { startDrawing(); }
+  else if (step === 1) { stopDrawing(); }
+  else if (step === 2) {
+    if (drawnResults.length >= 5) { toast('本轮 5 个已完成'); goHistory(); }
+    else { startDrawing(); }
+  }
+}
+
+function resetFlow() {
+  clearInterval(drawTimer);
+  step = 0; drawnResults = [];
+  setStepUI(); toast('已返回欢迎态');
+}
+
+function startDrawing() {
+  clearInterval(drawTimer);
+  step = 1; setStepUI();
+  const numEl = document.getElementById('p-num');
+  const metaEl = document.getElementById('p-meta');
+  const btn = document.getElementById('p-stop');
+  if (numEl) { numEl.classList.add('rolling'); drawTimer = setInterval(() => numEl.textContent = randDraw(), 80); }
+  if (metaEl) metaEl.textContent = '数字滚动中…';
+  if (btn) btn.disabled = false;
+  toast('开始抽取');
+}
+
+function stopDrawing() {
+  clearInterval(drawTimer);
+  step = 2; setStepUI();
+  const v = randDraw();
+  drawnResults.push(v);
+  const numEl = document.getElementById('p-num');
+  const resultEl = document.getElementById('p-result');
+  const metaEl = document.getElementById('p-meta');
+  const btn = document.getElementById('p-stop');
+  if (numEl) { numEl.classList.remove('rolling'); numEl.textContent = v; }
+  if (resultEl) resultEl.textContent = v;
+  if (metaEl) metaEl.textContent = '已停止 · 本轮第 ' + drawnResults.length + ' / 5 个';
+  if (btn) btn.disabled = true;
+  // 更新 chips
+  const chips = document.getElementById('p-chips');
+  if (chips) {
+    const c = document.createElement('span');
+    c.className = 'chip'; c.textContent = v; c.style.animationDelay = '0ms';
+    chips.appendChild(c);
+  }
+  toast('结果揭晓：' + v);
+  fireConfetti();
+}
+
+function goHistory() {
+  clearInterval(drawTimer);
+  step = 3; setStepUI(); toast('已沉淀到历史');
+}
+
+function copyResult() {
+  const v = document.getElementById('p-result')?.textContent || '';
+  navigator.clipboard?.writeText(v).catch(() => {});
+  toast('已复制：' + v);
+}
+
+// 彩屑：仅在结果揭晓时触发
+let confettiRAF = null;
+function fireConfetti() {
+  const canvas = document.getElementById('confetti');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width; canvas.height = rect.height;
+  const colors = [getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(), '#ffd166', '#06d6a0', '#ef476f', '#118ab2'];
+  const parts = Array.from({ length: 90 }, () => ({
+    x: rect.width / 2, y: rect.height * 0.35,
+    vx: (Math.random() - 0.5) * 9, vy: Math.random() * -9 - 3,
+    size: Math.random() * 6 + 4, color: colors[Math.floor(Math.random() * colors.length)],
+    rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.3, life: 1
+  }));
+  const start = performance.now();
+  function frame(now) {
+    const t = now - start;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    parts.forEach(p => {
+      p.vy += 0.25; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      if (t > 600) p.life -= 0.02;
+      if (p.life > 0 && p.y < canvas.height + 20) {
+        alive = true;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.globalAlpha = Math.max(p.life, 0);
+        ctx.fillStyle = p.color; ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6); ctx.restore();
+      }
+    });
+    if (alive && t < 3000) confettiRAF = requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  cancelAnimationFrame(confettiRAF);
+  confettiRAF = requestAnimationFrame(frame);
+}
+
+function setPreset(el) {
+  document.querySelectorAll('#theme-swatches .swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  const p = el.getAttribute('data-preset');
+  if (p === 'default') document.documentElement.removeAttribute('data-theme-preset');
+  else document.documentElement.setAttribute('data-theme-preset', p);
+}
+function toggleTheme() {
+  const html = document.documentElement;
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('ticon').innerHTML = next === 'dark'
+    ? '<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>'
+    : '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>';
+}
+function toast(msg) {
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = 'toast'; t.setAttribute('role', 'status');
+  t.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>' + msg;
+  wrap.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(() => t.remove(), 300); }, 2000);
+}
+
+// 键盘：Space/Enter 推进，Esc 重置
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); flowStep(); }
+  else if (e.code === 'Escape') { resetFlow(); }
+});
+setStepUI();
 </script>
 </body>
 </html>

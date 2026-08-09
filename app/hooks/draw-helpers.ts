@@ -1,4 +1,4 @@
-// hooks/draw-helpers.ts v5.3.2 — 抽取逻辑纯函数
+// hooks/draw-helpers.ts v5.3.3 — 抽取逻辑纯函数
 
 import { secureRandomInt } from "@/lib/utils";
 import type { DrawSettings } from "./draw-types";

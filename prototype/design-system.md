@@ -1,11 +1,13 @@
-# ZenDraw Design System v5.3.2
+# ZenDraw Design System v5.3.3
 
 > **极简 · 精准 · 禅意** — 国际顶尖设计师水准的随机抽签应用
 
 **设计灵感**: Apple Design · Linear · Vercel · Stripe
 **技术基座**: Next.js · Tailwind CSS · Motion · shadcn/ui (base-nova, built on `@base-ui/react`)
 
-**变更记录**: v5.3.2 — 原型体系拆分为三个互补 HTML + 本规范文档；组件库补全 toast / tooltip / checkbox；明确三级分类（基础 / 复合 / 业务）；统一交互标准与动效时序。
+**变更记录**: v5.3.3 — 修复四原型文件一致性问题：统一令牌命名为 `--radius-*`/`--space-*`/`--shadow-*`/`--dur-*`（与文档一致）；修正 index/prototypes 版本号与主题数（11 套含 Rose）；主流程与状态机真实联动；抽取范围统一为 1–100；补全 Dialog/Separator/Label 演示、Disabled/Error/Success 真实态、响应式与键盘/ARIA；业务组件分级对齐（ThemeSwatches/DrawDisplay 归业务，SettingsPanel/Form/Select/Sheet 归复合）。
+
+**变更记录**: v5.3.3 — 原型体系拆分为三个互补 HTML + 本规范文档；组件库补全 toast / tooltip / checkbox；明确三级分类（基础 / 复合 / 业务）；统一交互标准与动效时序。
 
 ### 原型文件体系（prototype/）
 | 文件 | 定位 | 内容 |
@@ -132,22 +134,29 @@
 
 ### 5.2 复合组件 / Composite
 
+> 由基础组件组合、封装交互逻辑（下拉 / 抽屉 / 设置面板 / 表单）。
+
 | 组件 | 状态 | 说明 |
 |------|------|------|
-| `DrawDisplay` | welcome / drawing / result / error | 抽签主舞台 |
-| `SettingsPanel` | tabs 切换 | 抽取 / 外观 / 历史 三区 |
-| `NumberRoller` | rolling / settled | 等宽数字老虎机滚动 |
-| `ThemeSwatches` | 10 色网格 | 主题选择 |
+| `Form` | default / error | Label + Input + 校验信息堆叠 |
+| `Select` | closed / open | 下拉选择（点击外部关闭，aria-expanded 同步） |
+| `Sheet` | closed / open | 移动端右侧滑出设置抽屉（遮罩点击关闭） |
+| `SettingsPanel` | tabs 切换 | 抽取 / 外观 / 历史 三区，内含 Switch/Slider/Select |
 
 ### 5.3 业务组件 / Business
 
-| 组件 | 说明 |
-|------|------|
-| `HistoryCard` | 结果 + 时间戳 + 复制 |
-| `HistoryList` + `EmptyState` | 历史列表与空状态 |
-| `CelebrationEffect` | 粒子/光晕庆祝动效 |
-| `DrawButton` | 核心圆形抽签按钮（脉冲动画） |
-| `AppHeader` | 品牌 + 语言 + 主题 + 菜单入口 |
+> 承载 ZenDraw 核心抽签语义，组合基础与复合组件。
+
+| 组件 | 状态 | 说明 |
+|------|------|------|
+| `DrawDisplay` | welcome / drawing / result / error | 抽签主舞台（大号数字滚动） |
+| `DrawButton` | idle / drawing | 核心圆形抽签按钮（脉冲动画） |
+| `NumberRoller` | rolling / settled | 等宽数字老虎机滚动 |
+| `HistoryCard` | — | 结果 + 时间戳 + 复制 |
+| `HistoryList` + `EmptyState` | populated / empty | 历史列表与空状态 |
+| `ThemeSwatches` | 11 色网格 | 主题选择（点击切换 accent） |
+| `CelebrationEffect` | idle / firing | 结果揭晓 Canvas 彩屑庆祝 |
+| `AppHeader` | — | 品牌 + 语言 + 主题 + 菜单入口 |
 
 ---
 
@@ -207,7 +216,7 @@ Any ──[Esc]──▶ Welcome
 
 ---
 
-## 11 套配色主题
+### 7.1 11 套配色主题
 
 > 注：当前版本含 11 套主题（含 Rose 玫瑰红），原型 `index.html` 与 `theme-provider.tsx` 的 `THEME_PRESETS` 已对齐。
 
@@ -250,4 +259,4 @@ Menu 18 / Moon·Sun 18 / Clock 36 / History 16 / Copy 14 / Trash2 16 / AlertCirc
 
 ---
 
-**版本**: v5.3.0  **理念**: 极简 · 精准 · 禅意
+**版本**: v5.3.3  **理念**: 极简 · 精准 · 禅意

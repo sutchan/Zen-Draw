@@ -1,4 +1,4 @@
-// locales/types.ts v5.3.2 — 国际化类型定义
+// locales/types.ts v5.3.3 — 国际化类型定义
 export type Language = "en" | "zh";
 
 export type TranslationKey =

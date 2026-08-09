@@ -1,6 +1,6 @@
 # Changelog
 
-## [5.3.2] - 2026-08-09
+## [5.3.3] - 2026-08-09
 
 ### Refactor
 - 原型精简：合并 v1/v2/interactive/minimal 为单一高保真可交互原型 `prototype/index.html`（真实数据 + 组件库规范 + 11 主题）
@@ -10,6 +10,15 @@
 - shadcn/ui 补齐缺口组件（base-nova）：`ui/checkbox.tsx`、`ui/tooltip.tsx`、`ui/toast.tsx`，根布局接入 `ToastProvider`/`TooltipProvider`
 - 复制结果反馈升级为 Toast 轻量提示；主题切换按钮加 Tooltip
 - 原型与代码主题数对齐为 11 套（含 Rose）
+
+### fix
+- 原型一致性修复：统一三套 HTML 令牌命名为 `--radius-*`/`--space-*`/`--shadow-*`/`--dur-*`（与 DESIGN-SYSTEM.md 一致）
+- 修正 `index.html` 版本号与主题数矛盾（v5.3.2→v5.3.3、10→11 套含 Rose CSS）；主流程三屏改为真实联动（`goState` 状态机 + Space/Enter/Esc 键盘）
+- 抽取范围统一为 1–100（修复 Math.random 误抽 0/100）
+- `prototypes.html` 状态机图示与实现一致，彩屑改为结果揭晓时联动触发
+- `wireframes.html` 修复 Slider 无效 JS（数值实时更新）、Select 点击外部关闭、Sheet 真实抽屉演示
+- 补全 Dialog / Separator / Label 演示、Disabled/Error/Success 真实态、响应式真机视图与键盘/ARIA
+- 组件三级分类对齐（`ThemeSwatches`/`DrawDisplay` 归业务，`SettingsPanel`/`Form`/`Select`/`Sheet` 归复合）
 
 ## [5.3.1] - 2026-08-09
 
