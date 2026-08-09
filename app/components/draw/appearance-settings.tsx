@@ -1,4 +1,4 @@
-// components/draw/appearance-settings.tsx v5.4.1 —— 外观设置子组件（使用中央翻译系统）
+// components/draw/appearance-settings.tsx v5.5.0 —— 外观设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -18,6 +18,7 @@ import {
 export function AppearanceSettings({
   language,
   digits, prefix, suffix,
+  useCustomList,
   onDigits, onPrefix, onSuffix,
   onLanguageChange,
 }: {
@@ -25,6 +26,7 @@ export function AppearanceSettings({
   digits: number;
   prefix: string;
   suffix: string;
+  useCustomList: boolean;
   onDigits: (value: number | string) => void;
   onPrefix: (value: string) => void;
   onSuffix: (value: string) => void;
@@ -36,12 +38,13 @@ export function AppearanceSettings({
   const { preset, setPreset, font, setFont } = usePresetTheme();
   const mounted = useThemeMounted();
 
-  // 数字格式实时预览
+  // 数字格式实时预览（自定义名单模式下数字格式不生效）
   const previewSample = React.useMemo(() => {
+    if (useCustomList) return null;
     const raw = "7";
     const padded = raw.padStart(Math.max(0, digits), "0");
     return `${prefix || ""}${padded}${suffix || ""}` || "—";
-  }, [digits, prefix, suffix]);
+  }, [digits, prefix, suffix, useCustomList]);
 
   return (
     <motion.div
@@ -138,9 +141,11 @@ export function AppearanceSettings({
 
       {/* 实时预览 */}
       <div className="rounded-2xl border border-border/20 bg-muted/20 p-4">
-        <p className="text-xs font-medium text-muted-foreground mb-2">{t("formatPreview")}</p>
+        <p className="text-xs font-medium text-muted-foreground mb-2">
+          {useCustomList ? t("listModeFormatNote") : t("formatPreview")}
+        </p>
         <p className="text-2xl font-bold tabular-nums tracking-tight">
-          {previewSample}
+          {previewSample ?? t("notApplicable")}
         </p>
       </div>
     </motion.div>

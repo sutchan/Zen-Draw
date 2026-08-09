@@ -1,4 +1,4 @@
-// components/draw/settings-panel/index.tsx v5.4.1 —— 设置面板（包装 Sheet + Tabs + 子设置区）
+// components/draw/settings-panel/index.tsx v5.5.0 —— 设置面板（Tabs + 子设置区，无嵌套 Sheet）
 "use client";
 
 import * as React from "react";
@@ -18,12 +18,12 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
   const {
     min, max, count,
     duration,
-    allowDuplicates, autoHide,
+    allowDuplicates, autoHide, useCustomList,
     customList,
     digits, prefix, suffix,
     setMin, setMax, setCount,
     setDuration,
-    setAllowDuplicates, setAutoHide,
+    setAllowDuplicates, setAutoHide, setUseCustomList,
     setDigits, setPrefix, setSuffix,
     setCustomList,
     language, onLanguageToggle,
@@ -85,17 +85,20 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
                   duration={duration}
                   allowDuplicates={allowDuplicates}
                   autoHide={autoHide}
+                  useCustomList={useCustomList}
                   onMin={setMin}
                   onMax={setMax}
                   onCount={setCount}
                   onDuration={setDuration}
                   onAllowDuplicates={setAllowDuplicates}
                   onAutoHide={setAutoHide}
+                  onUseCustomList={setUseCustomList}
                 />
                 <div className="mt-5">
                   <CustomListInline
                     t={t}
                     customList={customList}
+                    useCustomList={useCustomList}
                     onOpenDialog={() => setCustomListDialogOpen(true)}
                     onClearList={() => setCustomList([])}
                   />
@@ -108,6 +111,7 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
                   digits={digits}
                   prefix={prefix}
                   suffix={suffix}
+                  useCustomList={useCustomList}
                   onDigits={setDigits}
                   onPrefix={setPrefix}
                   onSuffix={setSuffix}
@@ -149,10 +153,11 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
 }
 
 function CustomListInline({
-  t, customList, onOpenDialog, onClearList,
+  t, customList, useCustomList, onOpenDialog, onClearList,
 }: {
   t: ReturnType<typeof createTranslator>;
   customList: string[];
+  useCustomList: boolean;
   onOpenDialog: () => void;
   onClearList: () => void;
 }) {
@@ -162,6 +167,11 @@ function CustomListInline({
       <p className="text-xs text-muted-foreground">
         {customList.length > 0 ? `${customList.length} ${t("itemsLoaded")}` : t("listHintEmpty")}
       </p>
+      {customList.length > 0 && !useCustomList && (
+        <p className="text-xs text-amber-600 dark:text-amber-400">
+          {t("listNotEnabledHint")}
+        </p>
+      )}
       <div className="grid grid-cols-2 gap-2.5">
         <button
           type="button"

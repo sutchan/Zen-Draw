@@ -1,4 +1,4 @@
-// locales/zh.ts v5.4.1 — 中文翻译
+// locales/zh.ts v5.5.0 — 中文翻译
 import type { TranslationDict } from "./types";
 
 export const zhTranslations: TranslationDict = {
@@ -16,6 +16,7 @@ export const zhTranslations: TranslationDict = {
   maxVal: "最大值",
   drawCount: "抽取数量",
   allowDup: "允许重复",
+  allowDupDesc: "开启后可在结果中出现相同的数字或名单项。",
   autoHide: "自动隐藏侧边栏",
   autoHideDesc: "空闲或抽取时自动隐藏控制面板。",
   custom: "自定义名单",
@@ -45,9 +46,12 @@ export const zhTranslations: TranslationDict = {
   fontMono: "等宽",
   fontSerif: "衬线",
   useCustomList: "使用自定义名单",
+  listNotEnabledHint: "名单已填写，但「使用自定义名单」未开启，当前仍为数字模式。",
   export: "导出结果",
   minDigits: "最小位数（补零）",
   minDigitsDesc: "设为 0 则不补零。",
+  listModeFormatNote: "自定义名单模式：数字格式不生效",
+  notApplicable: "不适用",
   prefix: "前缀",
   suffix: "后缀",
   historyDesc: "最近的抽签结果。",
@@ -117,6 +121,6 @@ export const zhTranslations: TranslationDict = {
   editList: "编辑列表",
   listHintEmpty: "导入列表后，即可在此抽取姓名或内容",
   colorPreview: "配色预览",
-  duplicateItemsWarning: "已自动去除重复项",
+  duplicateItemsWarning: "已自动去除 {0} 个重复项",
 };
 

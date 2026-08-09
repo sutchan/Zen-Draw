@@ -1,4 +1,4 @@
-// lib/i18n.ts v5.4.1 — 国际化翻译工具
+// lib/i18n.ts v5.5.0 — 国际化翻译工具
 import { translations, type Language, type TranslationKey } from "@/locales";
 
 /**

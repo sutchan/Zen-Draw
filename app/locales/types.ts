@@ -1,10 +1,10 @@
-// locales/types.ts v5.4.1 — 国际化类型定义（TranslationKey 联合类型，单一事实来源）
+// locales/types.ts v5.5.0 — 国际化类型定义（TranslationKey 联合类型，单一事实来源）
 export type Language = "en" | "zh";
 
 export type TranslationKey =
   | "title" | "settings" | "close" | "history"
   | "minVal" | "maxVal" | "drawCount"
-  | "allowDup" | "autoHide" | "autoHideDesc"
+  | "allowDup" | "allowDupDesc" | "autoHide" | "autoHideDesc"
   | "custom" | "drawSettings" | "appearance"
   | "drawDuration" | "drawDurationDesc"
   | "theme" | "themeMode" | "themeLight" | "themeDark" | "themeSystem"
@@ -47,6 +47,8 @@ export type TranslationKey =
   | "clearList" | "removeItem" | "editList" | "listHintEmpty" | "colorPreview"
   | "duplicateItemsWarning"
   // 抽取模式
-  | "drawMode" | "modeNumber" | "modeList";
+  | "drawMode" | "modeNumber" | "modeList"
+  // 列表模式与格式预览
+  | "listModeFormatNote" | "notApplicable" | "listNotEnabledHint";
 
 export type TranslationDict = Record<TranslationKey, string>;

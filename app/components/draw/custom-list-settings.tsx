@@ -1,4 +1,4 @@
-// components/draw/custom-list-settings.tsx v5.4.1 —— 自定义列表设置子组件（使用中央翻译系统 + base-ui Dialog）
+// components/draw/custom-list-settings.tsx v5.5.0 —— 自定义列表设置子组件（使用中央翻译系统 + base-ui Dialog）
 "use client";
 
 import * as React from "react";
@@ -39,21 +39,26 @@ export function CustomListSettings({
       .split("\n")
       .map((l) => l.trim())
       .filter((l) => l.length > 0);
-    const unique = Array.from(new Set(items));
-    if (unique.length === 0) {
+    if (items.length === 0) {
       setError(t("listHintEmpty"));
       return;
     }
-    if (unique.length !== items.length) {
-      setError(t("duplicateItemsWarning"));
-      return;
-    }
+    // 自动去重后保存，不再阻断（提示文案改为保存后轻提示）
+    const unique = Array.from(new Set(items));
     onCustomListChange(unique);
+    if (unique.length !== items.length) {
+      setError(t("duplicateItemsWarning", String(items.length - unique.length)));
+    } else if (error) {
+      setError(null);
+    }
     onOpenChange(false);
-  }, [text, onCustomListChange, onOpenChange, t]);
+  }, [text, onCustomListChange, onOpenChange, t, error]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(next) => {
+      if (!next) setError(null);
+      onOpenChange(next);
+    }}>
       <DialogContent key={open ? "open" : "closed"} className="sm:max-w-lg" aria-label={t("customList")}>
         <DialogHeader>
           <DialogTitle>{t("customList")}</DialogTitle>

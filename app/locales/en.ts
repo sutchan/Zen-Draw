@@ -1,4 +1,4 @@
-// locales/en.ts v5.4.1 — 英文翻译
+// locales/en.ts v5.5.0 — 英文翻译
 import type { TranslationDict } from "./types";
 
 export const enTranslations: TranslationDict = {
@@ -16,6 +16,7 @@ export const enTranslations: TranslationDict = {
   maxVal: "Max Value",
   drawCount: "Draw Count",
   allowDup: "Allow Duplicates",
+  allowDupDesc: "When on, the same number or list item may appear multiple times.",
   autoHide: "Auto-hide UI",
   autoHideDesc: "Hide control panel automatically when idle or drawing.",
   custom: "Custom List",
@@ -45,9 +46,12 @@ export const enTranslations: TranslationDict = {
   fontMono: "Monospace",
   fontSerif: "Serif",
   useCustomList: "Use Custom List",
+  listNotEnabledHint: "List is filled but \"Use Custom List\" is off — currently in number mode.",
   export: "Export Results",
   minDigits: "Min Digits (Padding)",
   minDigitsDesc: "Set to 0 for no padding.",
+  listModeFormatNote: "Custom list mode: number format is not applied",
+  notApplicable: "N/A",
   prefix: "Prefix",
   suffix: "Suffix",
   historyDesc: "Recent results.",
@@ -117,6 +121,6 @@ export const enTranslations: TranslationDict = {
   editList: "Edit List",
   listHintEmpty: "Import a list, then draw names or items from it",
   colorPreview: "Color Preview",
-  duplicateItemsWarning: "Duplicate entries were removed",
+  duplicateItemsWarning: "Removed {0} duplicate entries",
 };
 

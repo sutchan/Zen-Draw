@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.5.0] - 2026-08-09
+
+### Features & Fixes（设置模块修复与完善）
+- **设置面板结构修正**：移除 SettingsPanel 内多余的嵌套 Sheet（此前 `open={!autoHide}` 在默认 `autoHide=true` 时导致面板内容无法打开），改由外层 app-header 的 Sheet 统一控制显隐
+- **新增「使用自定义名单」开关**：此前用户无法主动启用/停用自定义列表，现于抽取设置区暴露 Switch，并在名单已填但未启用时给出提示
+- **自定义列表重复项改为自动去重保存**：此前存在重复项时直接拒绝保存（与「保存时自动去除」文案矛盾），现自动去重并提示去除数量
+- **修复「允许重复」描述错用**：该卡片下方误用 `customListHint` 文案，改为新增的 `allowDupDesc`
+- **数字格式预览在名单模式提示不生效**：外观设置预览在自定义名单模式下显示「格式不生效」
+- **滑块上限对齐体验**：抽取数量上限 20→100、时长上限 10→30，避免 UI 范围过窄
+- 新增翻译键 `allowDupDesc`/`listModeFormatNote`/`notApplicable`/`listNotEnabledHint`，并补全 `duplicateItemsWarning` 占位符
+
 ## [5.4.1] - 2026-08-09
 
 ### Bug Fixes & Code Quality
