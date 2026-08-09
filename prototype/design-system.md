@@ -1,13 +1,13 @@
-# ZenDraw Design System v5.3.3
+# ZenDraw Design System v5.3.4
 
 > **极简 · 精准 · 禅意** — 国际顶尖设计师水准的随机抽签应用
 
 **设计灵感**: Apple Design · Linear · Vercel · Stripe
 **技术基座**: Next.js · Tailwind CSS · Motion · shadcn/ui (base-nova, built on `@base-ui/react`)
 
-**变更记录**: v5.3.3 — 修复四原型文件一致性问题：统一令牌命名为 `--radius-*`/`--space-*`/`--shadow-*`/`--dur-*`（与文档一致）；修正 index/prototypes 版本号与主题数（11 套含 Rose）；主流程与状态机真实联动；抽取范围统一为 1–100；补全 Dialog/Separator/Label 演示、Disabled/Error/Success 真实态、响应式与键盘/ARIA；业务组件分级对齐（ThemeSwatches/DrawDisplay 归业务，SettingsPanel/Form/Select/Sheet 归复合）。
+**变更记录**: v5.3.4 — 修复四原型文件一致性问题：统一令牌命名为 `--radius-*`/`--space-*`/`--shadow-*`/`--dur-*`（与文档一致）；修正 index/prototypes 版本号与主题数（11 套含 Rose）；主流程与状态机真实联动；抽取范围统一为 1–100；补全 Dialog/Separator/Label 演示、Disabled/Error/Success 真实态、响应式与键盘/ARIA；业务组件分级对齐（ThemeSwatches/DrawDisplay 归业务，SettingsPanel/Form/Select/Sheet 归复合）。
 
-**变更记录**: v5.3.3 — 原型体系拆分为三个互补 HTML + 本规范文档；组件库补全 toast / tooltip / checkbox；明确三级分类（基础 / 复合 / 业务）；统一交互标准与动效时序。
+**变更记录**: v5.3.4 — 原型体系拆分为三个互补 HTML + 本规范文档；组件库补全 toast / tooltip / checkbox；明确三级分类（基础 / 复合 / 业务）；统一交互标准与动效时序。
 
 ### 原型文件体系（prototype/）
 | 文件 | 定位 | 内容 |
@@ -259,4 +259,4 @@ Menu 18 / Moon·Sun 18 / Clock 36 / History 16 / Copy 14 / Trash2 16 / AlertCirc
 
 ---
 
-**版本**: v5.3.3  **理念**: 极简 · 精准 · 禅意
+**版本**: v5.3.4  **理念**: 极简 · 精准 · 禅意

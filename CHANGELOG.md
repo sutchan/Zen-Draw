@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.4] - 2026-08-09
+
+### Code Quality & Spec Alignment
+- 清理 i18n 9 个死键（rangeCount/rangeDesc/listImport/listImportDesc/displayRules/displayDesc/toggleUI/drawHistory/resultsCount），zh/en 键集对齐至 71 个
+- SPEC.md 翻译键清单与目录注释同步为 71 键；§7.3 示例改用有效键 milestoneDraws
+- 全局规则补充：超过 200 行的源代码文件须拆分为合理模块（已写入 CodeBuddy/Trae 全局规则与项目记忆）
+
 ## [5.3.3] - 2026-08-09
 
 ### Refactor
@@ -13,7 +20,7 @@
 
 ### fix
 - 原型一致性修复：统一三套 HTML 令牌命名为 `--radius-*`/`--space-*`/`--shadow-*`/`--dur-*`（与 DESIGN-SYSTEM.md 一致）
-- 修正 `index.html` 版本号与主题数矛盾（v5.3.2→v5.3.3、10→11 套含 Rose CSS）；主流程三屏改为真实联动（`goState` 状态机 + Space/Enter/Esc 键盘）
+- 修正 `index.html` 版本号与主题数矛盾（v5.3.2→v5.3.4、10→11 套含 Rose CSS）；主流程三屏改为真实联动（`goState` 状态机 + Space/Enter/Esc 键盘）
 - 抽取范围统一为 1–100（修复 Math.random 误抽 0/100）
 - `prototypes.html` 状态机图示与实现一致，彩屑改为结果揭晓时联动触发
 - `wireframes.html` 修复 Slider 无效 JS（数值实时更新）、Select 点击外部关闭、Sheet 真实抽屉演示

@@ -1,4 +1,4 @@
-// components/draw/history-list/empty-state.tsx v5.3.3 —— 愉悦空状态（浮动骰子 + 俏皮文案）
+// components/draw/history-list/empty-state.tsx v5.3.4 —— 愉悦空状态（浮动骰子 + 俏皮文案）
 "use client";
 
 import * as React from "react";

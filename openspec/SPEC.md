@@ -1,10 +1,10 @@
-# ZenDraw | 禅抽 v5.3.3 — 项目规范文档
+# ZenDraw | 禅抽 v5.3.4 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.3.3
+- **当前版本**: v5.3.4
 - **上次更新**: 2026-08-09
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、11 种主题配色、Web Audio API 音效。
 - **许可证**: MIT License
@@ -119,7 +119,7 @@ zen-draw/
 │   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
 │   ├── locales/                  # 国际化数据
 │   │   ├── index.ts              # re-export
-│   │   ├── types.ts              # TranslationKey（88 键）
+│   │   ├── types.ts              # TranslationKey（71 键）
 │   │   ├── en.ts                 # 英文翻译
 │   │   └── zh.ts                 # 中文翻译
 │   └── test/
@@ -442,27 +442,26 @@ interface DrawState {
 - `en` — English
 - `zh` — 简体中文
 
-### 7.2 翻译键（88 个）
+### 7.2 翻译键（71 个）
 ```
-title, settings, history,
-rangeCount, rangeDesc, minVal, maxVal, drawCount,
+title, settings, history, close,
+minVal, maxVal, drawCount,
 allowDup, autoHide, autoHideDesc,
 custom, drawSettings, appearance,
 drawDuration, drawDurationDesc,
 theme, themeMode, themeLight, themeDark, themeSystem,
 themePreset, themeDefault, themeOcean, themeForest,
 themeSunset, themePurple, themeNeon,
-themeSakura, themeMidnight, themeRetro, themePixel,
+themeSakura, themeMidnight, themeRetro, themePixel, themeRose,
 fontFamily, fontSans, fontMono, fontSerif,
-listImport, listImportDesc, useCustomList,
-export, displayRules, displayDesc,
+useCustomList, export,
 minDigits, minDigitsDesc, prefix, suffix,
-drawHistory, historyDesc, noHistory,
+historyDesc, noHistory,
 ready, drawing, startDraw, stopDraw, startHint, stopHint,
-resultsCount, copiedToClipboard, copyResult, copied,
+copiedToClipboard, copyResult, copied,
 import_, importDesc, listPlaceholder, confirmImport,
 cancel, itemsLoaded, noItems, clearHistory,
-toggleUI, switchLang, minMaxError, rangeError,
+switchLang, minMaxError, rangeError,
 appTitle, appSubtitle, drawMainArea, drawDisplayArea,
 welcomeHint, errorTitle, errorMessage,
 resultLabel, resultRegion,
@@ -478,7 +477,7 @@ errCustomListEmpty, errCustomListTooMany, errCustomListRange, errRangeInvalid
 import { createTranslator } from "@/lib/i18n";
 const t = React.useMemo(() => createTranslator(language), [language]);
 // 普通: t("title")
-// 参数: t("resultsCount", "5")  → 支持 {0} 占位符
+// 参数: t("milestoneDraws", "10")  → 支持 {0} 占位符
 ```
 
 ---
@@ -620,13 +619,13 @@ export const viewport: Viewport = {
 
 ## 13. 版本历史
 
-### v5.3.3 (当前)
+### v5.3.4 (当前)
 - 原型精简：合并 v1/v2/interactive/minimal 为单一高保真可交互原型 `prototype/index.html`（真实数据 + 组件库规范 + 11 主题 + 完整交互）
-- 设计规范文档 `prototype/DESIGN-SYSTEM.md` 升级至 v5.3.3：三级组件库（基础/复合/业务）、交互标准、动效时序、响应式、无障碍
+- 设计规范文档 `prototype/DESIGN-SYSTEM.md` 升级至 v5.3.4：三级组件库（基础/复合/业务）、交互标准、动效时序、响应式、无障碍
 - shadcn/ui 补齐缺口组件（base-nova 风格）：`ui/checkbox.tsx`、`ui/tooltip.tsx`、`ui/toast.tsx`，并接入根布局 `ToastProvider`/`TooltipProvider`
 - 复制结果反馈升级为 Toast 轻量提示；主题切换按钮加 Tooltip
 - 主题数对齐：原型与规范统一为 11 套（含 Rose），消除原型与代码最小颗粒度不一致
-- 全项目源文件头注释、`package.json`、`metadata.json`、README×2、SPEC.md、CHANGELOG 统一至 v5.3.3
+- 全项目源文件头注释、`package.json`、`metadata.json`、README×2、SPEC.md、CHANGELOG 统一至 v5.3.4
 
 ### v5.3.1 (当前)
 - 模块化拆分：`ui/sheet.tsx`（252 行）→ `ui/sheet/`（context/parts/index）；`ui/select.tsx`（201 行）→ 抽出 `select-scroll-buttons.tsx`
@@ -634,7 +633,7 @@ export const viewport: Viewport = {
 - 清理死代码：删除未引用的 `use-persist-settings.ts`、死翻译键 `drawResults`、冗余无障碍属性
 - Bug 修复：页脚字体数（6→3）、`layout.tsx` 根语言（`en`→`zh-CN`）、`history-list` 重复类型声明
 - 版本号统一：全项目源文件头注释、`package.json`、文档统一至 v5.2.1
-- 翻译键更新：实际 97 个键（zh/en 完全对齐，编译期强约束）
+- 翻译键更新：实际 71 个键（zh/en 完全对齐，编译期强约束）
 - 所有源文件均 ≤ 200 行
 
 ### v5.0.0

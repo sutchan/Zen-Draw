@@ -1,4 +1,4 @@
-// locales/zh.ts v5.3.3 — 中文翻译
+// locales/zh.ts v5.3.4 — 中文翻译
 import type { TranslationDict } from "./types";
 
 export const zhTranslations: TranslationDict = {
@@ -6,8 +6,6 @@ export const zhTranslations: TranslationDict = {
   settings: "设置",
   close: "关闭",
   history: "历史记录",
-  rangeCount: "范围与数量",
-  rangeDesc: "定义抽取数字的范围。",
   minVal: "最小值",
   maxVal: "最大值",
   drawCount: "抽取数量",
@@ -40,17 +38,12 @@ export const zhTranslations: TranslationDict = {
   fontSans: "无衬线",
   fontMono: "等宽",
   fontSerif: "衬线",
-  listImport: "名单导入",
-  listImportDesc: "粘贴名单内容，每行一项。",
   useCustomList: "使用自定义名单",
   export: "导出结果",
-  displayRules: "显示规则",
-  displayDesc: "自定义数字显示格式。",
   minDigits: "最小位数（补零）",
   minDigitsDesc: "设为 0 则不补零。",
   prefix: "前缀",
   suffix: "后缀",
-  drawHistory: "抽签历史",
   historyDesc: "最近的抽签结果。",
   noHistory: "暂无历史记录。",
   ready: "准备就绪",
@@ -59,7 +52,6 @@ export const zhTranslations: TranslationDict = {
   minMaxError: "最小值不能大于最大值。",
   rangeError: "抽取的不重复数量不能超过可用范围。",
   clearHistory: "清空历史",
-  toggleUI: "切换控制面板",
   switchLang: "切换语言",
   cancel: "取消",
   import_: "导入",
@@ -101,7 +93,6 @@ export const zhTranslations: TranslationDict = {
 
   // 历史记录
   clickToCopy: "点击任意记录可复制结果",
-  resultsCount: "共 {0} 项",
   autoSaveDesc: "抽取结果会自动保存在这里",
 
   // 通用

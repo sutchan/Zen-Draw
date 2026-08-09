@@ -1,4 +1,4 @@
-// locales/en.ts v5.3.3 — 英文翻译
+// locales/en.ts v5.3.4 — 英文翻译
 import type { TranslationDict } from "./types";
 
 export const enTranslations: TranslationDict = {
@@ -6,8 +6,6 @@ export const enTranslations: TranslationDict = {
   settings: "Settings",
   close: "Close",
   history: "History",
-  rangeCount: "Range & Count",
-  rangeDesc: "Define the pool of numbers.",
   minVal: "Min Value",
   maxVal: "Max Value",
   drawCount: "Draw Count",
@@ -40,17 +38,12 @@ export const enTranslations: TranslationDict = {
   fontSans: "Sans Serif",
   fontMono: "Monospace",
   fontSerif: "Serif",
-  listImport: "List Import",
-  listImportDesc: "Paste items, one per line.",
   useCustomList: "Use Custom List",
   export: "Export Results",
-  displayRules: "Display Rules",
-  displayDesc: "Customize how numbers appear.",
   minDigits: "Min Digits (Padding)",
   minDigitsDesc: "Set to 0 for no padding.",
   prefix: "Prefix",
   suffix: "Suffix",
-  drawHistory: "Draw History",
   historyDesc: "Recent results.",
   noHistory: "No history yet.",
   ready: "Ready to Draw",
@@ -59,7 +52,6 @@ export const enTranslations: TranslationDict = {
   minMaxError: "Minimum value cannot be greater than maximum value.",
   rangeError: "Cannot draw more unique numbers than the available range.",
   clearHistory: "Clear History",
-  toggleUI: "Toggle Control Panel",
   switchLang: "Switch Language",
   cancel: "Cancel",
   import_: "Import",
@@ -101,7 +93,6 @@ export const enTranslations: TranslationDict = {
 
   // 历史记录
   clickToCopy: "Click any record to copy results",
-  resultsCount: "{0} items",
   autoSaveDesc: "Draw results are saved here automatically",
 
   // 通用
