@@ -1,4 +1,4 @@
-// components/draw/settings-panel/index.tsx v5.6.0 —— 设置面板（Tabs + 子设置区，无嵌套 Sheet）
+// components/draw/settings-panel/index.tsx v5.7.0 —— 设置面板（Tabs + 子设置区，无嵌套 Sheet）
 "use client";
 
 import * as React from "react";
@@ -26,6 +26,8 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
     digits, prefix, suffix,
     soundEnabled, setSoundEnabled,
     density, setDensity,
+    confettiEnabled, setConfettiEnabled,
+    reduceMotion, setReduceMotion,
     resetSettings,
     setMin, setMax, setCount,
     setDuration,
@@ -134,6 +136,10 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
                   language={language}
                   soundEnabled={soundEnabled}
                   onSoundEnabled={setSoundEnabled}
+                  confettiEnabled={confettiEnabled}
+                  onConfettiEnabled={setConfettiEnabled}
+                  reduceMotion={reduceMotion}
+                  onReduceMotion={setReduceMotion}
                   autoHide={autoHide}
                   onAutoHide={setAutoHide}
                   density={density}
@@ -220,6 +226,10 @@ function ExperienceSettings({
   language,
   soundEnabled,
   onSoundEnabled,
+  confettiEnabled,
+  onConfettiEnabled,
+  reduceMotion,
+  onReduceMotion,
   autoHide,
   onAutoHide,
   density,
@@ -229,6 +239,10 @@ function ExperienceSettings({
   language: "zh" | "en";
   soundEnabled: boolean;
   onSoundEnabled: (value: boolean) => void;
+  confettiEnabled: boolean;
+  onConfettiEnabled: (value: boolean) => void;
+  reduceMotion: boolean;
+  onReduceMotion: (value: boolean) => void;
   autoHide: boolean;
   onAutoHide: (value: boolean) => void;
   density: "comfortable" | "compact";
@@ -254,6 +268,36 @@ function ExperienceSettings({
             checked={soundEnabled}
             onCheckedChange={onSoundEnabled}
             aria-label={t("sound")}
+          />
+        </div>
+      </Card>
+
+      {/* 结果彩屑动效 */}
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Label>{t("confetti")}</Label>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("confettiDesc")}</p>
+          </div>
+          <Switch
+            checked={confettiEnabled}
+            onCheckedChange={onConfettiEnabled}
+            aria-label={t("confetti")}
+          />
+        </div>
+      </Card>
+
+      {/* 减弱动效 */}
+      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <Label>{t("reduceMotion")}</Label>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("reduceMotionDesc")}</p>
+          </div>
+          <Switch
+            checked={reduceMotion}
+            onCheckedChange={onReduceMotion}
+            aria-label={t("reduceMotion")}
           />
         </div>
       </Card>

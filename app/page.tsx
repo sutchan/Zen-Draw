@@ -1,9 +1,8 @@
-// page.tsx v5.3.7 —— 抽取主页面（状态编排 + 键盘快捷键）
+// page.tsx v5.7.0 —— 抽取主页面（状态编排 + 键盘快捷键）
 "use client";
 
 import * as React from "react";
 import { useMountedReducedMotion } from "@/hooks/use-mounted-reduced-motion";
-import { useTheme } from "next-themes";
 import { useDraw } from "@/hooks/use-draw";
 import { useSound } from "@/hooks/use-sound";
 import { DrawButton } from "@/components/draw/draw-button";
@@ -14,7 +13,6 @@ import { createTranslator } from "@/lib/i18n";
 
 export default function HomePage() {
   const shouldReduceMotion = useMountedReducedMotion();
-  const { theme, setTheme } = useTheme();
 
   // 1. 统一状态管理
   const { play } = useSound();
@@ -75,8 +73,6 @@ export default function HomePage() {
         draw={draw}
         panelOpen={effectivePanelOpen}
         onPanelOpenChange={setPanelOpen}
-        theme={theme}
-        onThemeToggle={() => setTheme(theme === "dark" ? "light" : "dark")}
         shouldReduceMotion={shouldReduceMotion}
       />
 

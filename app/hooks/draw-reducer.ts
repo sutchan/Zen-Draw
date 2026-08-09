@@ -1,4 +1,4 @@
-// hooks/draw-reducer.ts v5.3.7 — 抽签状态 Reducer
+// hooks/draw-reducer.ts v5.7.0 — 抽签状态 Reducer
 
 import type { DrawState, DrawAction, DrawSettings } from "./draw-types";
 import { DEFAULT_SETTINGS } from "./draw-helpers";
@@ -70,6 +70,10 @@ export function drawReducer(state: DrawState, action: DrawAction): DrawState {
       return { ...state, soundEnabled: action.value };
     case "SET_DENSITY":
       return { ...state, density: action.value };
+    case "SET_CONFETTI_ENABLED":
+      return { ...state, confettiEnabled: action.value };
+    case "SET_REDUCE_MOTION":
+      return { ...state, reduceMotion: action.value };
     case "RESET_SETTINGS":
       return {
         ...state,

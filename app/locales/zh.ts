@@ -1,4 +1,4 @@
-// locales/zh.ts v5.6.0 — 中文翻译
+// locales/zh.ts v5.7.0 — 中文翻译
 import type { TranslationDict } from "./types";
 
 export const zhTranslations: TranslationDict = {
@@ -131,6 +131,10 @@ export const zhTranslations: TranslationDict = {
   densityDesc: "紧凑模式在结果较多时更节省空间。",
   densityComfortable: "舒适",
   densityCompact: "紧凑",
+  confetti: "结果彩屑动效",
+  confettiDesc: "揭晓结果时播放庆祝彩屑动画。",
+  reduceMotion: "减弱动效",
+  reduceMotionDesc: "降低页面过渡与滚动动画强度。",
   resetSettings: "重置所有选项",
   resetSettingsDesc: "将所有设置恢复为默认值（不影响历史记录）。",
 };

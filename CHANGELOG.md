@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.7.0] - 2026-08-10
+
+### Features（设置入口整合 + 更多选项）
+- **深色/浅色切换移入设置**：移除顶栏独立主题切换按钮，主题模式（浅/深/系统）已在「外观」Tab 统一管理，顶栏仅保留设置入口
+- **新增「结果彩屑动效」开关**：控制揭晓结果时的庆祝彩屑/光晕动画（`confettiEnabled`）
+- **新增「减弱动效」偏好**：用户级降低页面过渡与滚动动画强度，与系统级 reduce-motion 合并生效（`reduceMotion`）
+- **全链路打通**：state/reducer/helpers/persistence/use-draw/actions 新增 `confettiEnabled`、`reduceMotion` 与对应 setter
+- 新增翻译键 `confetti`/`confettiDesc`/`reduceMotion`/`reduceMotionDesc`
+- 统一同步所有源文件头注释与文档版本号至 v5.7.0
+
 ## [5.6.0] - 2026-08-10
 
 ### Features（设置窗口重规划 + 新增常用项）

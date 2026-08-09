@@ -1,4 +1,4 @@
-// lib/utils.ts v5.3.7 — 工具函数模块
+// lib/utils.ts v5.7.0 — 工具函数模块
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 

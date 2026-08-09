@@ -1,4 +1,4 @@
-// components/draw/draw-display/index.tsx v5.3.7 —— 主显示区（统一 draw 对象 + 增强 ARIA）
+// components/draw/draw-display/index.tsx v5.7.0 —— 主显示区（统一 draw 对象 + 增强 ARIA）
 "use client";
 
 import * as React from "react";
@@ -20,6 +20,8 @@ type DrawLike = {
   status: "idle" | "drawing" | "result" | "error";
   language: "zh" | "en";
   density: "comfortable" | "compact";
+  confettiEnabled: boolean;
+  reduceMotion: boolean;
 };
 
 export interface DrawDisplayProps {
@@ -31,9 +33,11 @@ export interface DrawDisplayProps {
 // ---------------------------------------------------------------------------
 
 export function DrawDisplay({ draw }: DrawDisplayProps) {
-  const shouldReduceMotion = useMountedReducedMotion();
-  const { results, status, language, density } = draw;
+  const systemReduceMotion = useMountedReducedMotion();
+  const { results, status, language, density, confettiEnabled, reduceMotion } = draw;
   const isDrawing = status === "drawing";
+  // 用户级偏好 + 系统级偏好，任一开启即减弱动效
+  const shouldReduceMotion = systemReduceMotion || reduceMotion;
   const t = React.useMemo(() => createTranslator(language), [language]);
 
   return (
@@ -74,6 +78,8 @@ export function DrawDisplay({ draw }: DrawDisplayProps) {
                 isDrawing={isDrawing}
                 language={language}
                 density={density}
+                confettiEnabled={confettiEnabled}
+                reduceMotion={shouldReduceMotion}
               />
             </div>
           )}

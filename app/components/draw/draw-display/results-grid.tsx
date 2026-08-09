@@ -1,9 +1,8 @@
-// components/draw/draw-display/results-grid.tsx v5.3.7 —— 所有结果网格（惊艳升级：彩屑+揭晓标题+里程碑）
+// components/draw/draw-display/results-grid.tsx v5.7.0 —— 所有结果网格（惊艳升级：彩屑+揭晓标题+里程碑）
 "use client";
 
 import * as React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { useMountedReducedMotion } from "@/hooks/use-mounted-reduced-motion";
 import { createTranslator } from "@/lib/i18n";
 import { CelebrationEffect } from "./celebration-effect";
 import { ConfettiBurst } from "./confetti-burst";
@@ -14,11 +13,15 @@ export function ResultsGrid({
   isDrawing,
   language,
   density,
+  confettiEnabled,
+  reduceMotion,
 }: {
   results: string[];
   isDrawing: boolean;
   language: "zh" | "en";
   density: "comfortable" | "compact";
+  confettiEnabled: boolean;
+  reduceMotion: boolean;
 }) {
   // 检测是否刚从滚动状态变为结果状态（揭晓时刻）
   const [celebrating, setCelebrating] = React.useState(false);
@@ -27,7 +30,7 @@ export function ResultsGrid({
   const [milestone, setMilestone] = React.useState<number | null>(null);
 
   const prevDrawingRef = React.useRef(isDrawing);
-  const shouldReduceMotion = useMountedReducedMotion();
+  const shouldReduceMotion = reduceMotion;
   const t = React.useMemo(() => createTranslator(language), [language]);
 
   React.useEffect(() => {
@@ -64,10 +67,10 @@ export function ResultsGrid({
       aria-label={t("resultRegion")}
     >
       {/* 庆祝光晕（结果揭晓时短暂显示） */}
-      <CelebrationEffect active={celebrating} />
+      <CelebrationEffect active={confettiEnabled && celebrating} />
 
       {/* 🎉 彩屑爆发（惊艳核心） */}
-      <ConfettiBurst active={celebrating} />
+      <ConfettiBurst active={confettiEnabled && celebrating} />
 
       {/* ✨ 揭晓标题：随揭晓弹出，轻淡出 */}
       <AnimatePresence>

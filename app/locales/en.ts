@@ -1,4 +1,4 @@
-// locales/en.ts v5.6.0 — 英文翻译
+// locales/en.ts v5.7.0 — 英文翻译
 import type { TranslationDict } from "./types";
 
 export const enTranslations: TranslationDict = {
@@ -131,6 +131,10 @@ export const enTranslations: TranslationDict = {
   densityDesc: "Compact mode saves space when many results appear.",
   densityComfortable: "Comfortable",
   densityCompact: "Compact",
+  confetti: "Result Confetti",
+  confettiDesc: "Play a celebratory confetti animation when results are revealed.",
+  reduceMotion: "Reduce Motion",
+  reduceMotionDesc: "Lower transition and scrolling animation intensity.",
   resetSettings: "Reset All Options",
   resetSettingsDesc: "Restore all settings to defaults (history is kept).",
 };

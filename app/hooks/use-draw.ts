@@ -1,4 +1,4 @@
-// hooks/use-draw.ts v5.3.7 —— 统一管理抽奖流程状态与逻辑（重构拆分版）
+// hooks/use-draw.ts v5.7.0 —— 统一管理抽奖流程状态与逻辑（重构拆分版）
 "use client";
 
 import * as React from "react";
@@ -31,6 +31,8 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
     language: persisted.persistedLanguage,
     soundEnabled: persisted.persistedSoundEnabled,
     density: persisted.persistedDensity,
+    confettiEnabled: persisted.persistedConfetti,
+    reduceMotion: persisted.persistedReduceMotion,
   };
 
   const [state, dispatch] = React.useReducer(
@@ -67,6 +69,8 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
     if (state.language !== prev.language) persisted.setPersistedLanguage(state.language);
     if (state.soundEnabled !== prev.soundEnabled) persisted.setPersistedSoundEnabled(state.soundEnabled);
     if (state.density !== prev.density) persisted.setPersistedDensity(state.density);
+    if (state.confettiEnabled !== prev.confettiEnabled) persisted.setPersistedConfetti(state.confettiEnabled);
+    if (state.reduceMotion !== prev.reduceMotion) persisted.setPersistedReduceMotion(state.reduceMotion);
     if (state.history !== prev.history) persisted.setPersistedHistory(state.history);
   }, [state, persisted]);
 
@@ -97,12 +101,13 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
       useCustomList: state.useCustomList, digits: state.digits,
       prefix: state.prefix, suffix: state.suffix, language: state.language,
       soundEnabled: state.soundEnabled, density: state.density,
+      confettiEnabled: state.confettiEnabled, reduceMotion: state.reduceMotion,
     }),
     [
       state.min, state.max, state.count, state.duration,
       state.allowDuplicates, state.autoHide, state.customList,
       state.useCustomList, state.digits, state.prefix, state.suffix, state.language,
-      state.soundEnabled, state.density,
+      state.soundEnabled, state.density, state.confettiEnabled, state.reduceMotion,
     ]
   );
 

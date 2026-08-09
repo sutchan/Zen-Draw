@@ -1,4 +1,4 @@
-// hooks/use-draw-persistence.ts v5.3.7 — localStorage 持久化设置管理
+// hooks/use-draw-persistence.ts v5.7.0 — localStorage 持久化设置管理
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_SETTINGS } from "./draw-helpers";
 import type { HistoryEntry } from "./draw-types";
@@ -23,6 +23,8 @@ export function usePersistedSettings() {
   const [persistedLanguage, setPersistedLanguage] = useLocalStorage<"zh" | "en">("zendraw-language", DEFAULT_SETTINGS.language);
   const [persistedSoundEnabled, setPersistedSoundEnabled] = useLocalStorage<boolean>("zendraw-sound", DEFAULT_SETTINGS.soundEnabled);
   const [persistedDensity, setPersistedDensity] = useLocalStorage<"comfortable" | "compact">("zendraw-density", DEFAULT_SETTINGS.density);
+  const [persistedConfetti, setPersistedConfetti] = useLocalStorage<boolean>("zendraw-confetti", DEFAULT_SETTINGS.confettiEnabled);
+  const [persistedReduceMotion, setPersistedReduceMotion] = useLocalStorage<boolean>("zendraw-reduce-motion", DEFAULT_SETTINGS.reduceMotion);
   const [persistedHistory, setPersistedHistory] = useLocalStorage<HistoryEntry[]>(
     "zendraw-history",
     [],
@@ -44,6 +46,8 @@ export function usePersistedSettings() {
     persistedLanguage, setPersistedLanguage,
     persistedSoundEnabled, setPersistedSoundEnabled,
     persistedDensity, setPersistedDensity,
+    persistedConfetti, setPersistedConfetti,
+    persistedReduceMotion, setPersistedReduceMotion,
     persistedHistory, setPersistedHistory,
   };
 }

@@ -1,4 +1,4 @@
-// hooks/use-draw-actions.ts v5.3.7 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
+// hooks/use-draw-actions.ts v5.7.0 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
 "use client";
 
 import * as React from "react";
@@ -22,7 +22,7 @@ export function useDrawActions(
   animationRef: React.MutableRefObject<number | null>,
   onSoundRef: React.MutableRefObject<((type: SoundType) => void) | undefined>,
 ) {
-  const { status, min, max, count, allowDuplicates, autoHide, duration, customList, useCustomList, digits, prefix, suffix, language, soundEnabled, density } = state;
+  const { status, min, max, count, allowDuplicates, autoHide, duration, customList, useCustomList, digits, prefix, suffix, language, soundEnabled, density, confettiEnabled, reduceMotion } = state;
 
   // 音效门控：开关关闭时静默
   const sound = React.useCallback(
@@ -42,6 +42,7 @@ export function useDrawActions(
       useCustomList, digits,
       prefix, suffix, language,
       soundEnabled, density,
+      confettiEnabled, reduceMotion,
     };
 
     if (status === "drawing") {
@@ -92,7 +93,7 @@ export function useDrawActions(
       }
     }, tickMs);
     return { ok: true };
-  }, [status, min, max, count, allowDuplicates, autoHide, duration, customList, useCustomList, digits, prefix, suffix, language, soundEnabled, density, sound, dispatch, animationRef]);
+  }, [status, min, max, count, allowDuplicates, autoHide, duration, customList, useCustomList, digits, prefix, suffix, language, soundEnabled, density, confettiEnabled, reduceMotion, sound, dispatch, animationRef]);
 
   const stopDraw = React.useCallback(() => {
     if (animationRef.current !== null) {
@@ -171,6 +172,14 @@ export function useDrawActions(
     dispatch({ type: "SET_DENSITY", value });
   }, [dispatch]);
 
+  const setConfettiEnabled = React.useCallback((value: boolean) => {
+    dispatch({ type: "SET_CONFETTI_ENABLED", value });
+  }, [dispatch]);
+
+  const setReduceMotion = React.useCallback((value: boolean) => {
+    dispatch({ type: "SET_REDUCE_MOTION", value });
+  }, [dispatch]);
+
   const resetSettings = React.useCallback(() => {
     dispatch({ type: "RESET_SETTINGS" });
   }, [dispatch]);
@@ -189,7 +198,7 @@ export function useDrawActions(
     setPrefix, setSuffix,
     setAllowDuplicates, setAutoHide,
     setUseCustomList, setCustomList, setLanguage,
-    setSoundEnabled, setDensity, resetSettings,
+    setSoundEnabled, setDensity, setConfettiEnabled, setReduceMotion, resetSettings,
     dismissError, clearHistory,
   };
 }

@@ -1,9 +1,9 @@
-// components/layout/app-header.tsx v5.6.0 —— 顶部导航栏（Logo + 主题切换 + 设置面板）
+// components/layout/app-header.tsx v5.7.0 —— 顶部导航栏（Logo + 设置面板）
 "use client";
 
 import * as React from "react";
 import { motion } from "motion/react";
-import { Sun, Moon, Settings2, Sparkles, X } from "lucide-react";
+import { Settings2, Sparkles, X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -12,8 +12,6 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { SettingsPanel } from "@/components/draw/settings-panel";
 import { createTranslator } from "@/lib/i18n";
 import type { UseDrawReturn } from "@/hooks/draw-types";
@@ -22,8 +20,6 @@ export interface AppHeaderProps {
   draw: UseDrawReturn;
   panelOpen: boolean;
   onPanelOpenChange: (open: boolean) => void;
-  theme: string | undefined;
-  onThemeToggle: () => void;
   shouldReduceMotion: boolean | null;
 }
 
@@ -31,8 +27,6 @@ export function AppHeader({
   draw,
   panelOpen,
   onPanelOpenChange,
-  theme,
-  onThemeToggle,
   shouldReduceMotion,
 }: AppHeaderProps) {
   const lang = draw.language;
@@ -61,28 +55,6 @@ export function AppHeader({
         </motion.div>
 
         <div className="flex items-center gap-1.5">
-          <Tooltip>
-            <TooltipTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onThemeToggle}
-                  aria-label={theme === "dark" ? t("switchLight") : t("switchDark")}
-                  data-testid="theme-toggle"
-                  className="rounded-full"
-                />
-              }
-            >
-              {theme === "dark" ? (
-                <Sun className="size-4" aria-hidden="true" />
-              ) : (
-                <Moon className="size-4" aria-hidden="true" />
-              )}
-            </TooltipTrigger>
-            <TooltipContent>{theme === "dark" ? t("switchLight") : t("switchDark")}</TooltipContent>
-          </Tooltip>
-
           <Sheet open={panelOpen} onOpenChange={onPanelOpenChange}>
             <SheetTrigger
               className="inline-flex items-center justify-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

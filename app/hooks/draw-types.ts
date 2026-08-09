@@ -1,4 +1,4 @@
-// hooks/draw-types.ts v5.3.7 — 抽签模块类型定义
+// hooks/draw-types.ts v5.7.0 — 抽签模块类型定义
 
 export type DrawStatus = "idle" | "drawing" | "result" | "error";
 
@@ -37,6 +37,10 @@ export interface DrawSettings {
   soundEnabled: boolean;
   // 结果显示密度
   density: Density;
+  // 结果揭晓彩屑/庆祝动效
+  confettiEnabled: boolean;
+  // 用户级减弱动效偏好
+  reduceMotion: boolean;
 }
 
 export interface DrawState extends DrawSettings {
@@ -74,6 +78,8 @@ export type DrawAction =
   | { type: "SET_LANGUAGE"; value: "zh" | "en" }
   | { type: "SET_SOUND_ENABLED"; value: boolean }
   | { type: "SET_DENSITY"; value: Density }
+  | { type: "SET_CONFETTI_ENABLED"; value: boolean }
+  | { type: "SET_REDUCE_MOTION"; value: boolean }
   | { type: "RESET_SETTINGS" }
   | { type: "CLEAR_HISTORY" }
   | { type: "DISMISS_ERROR" };
@@ -99,6 +105,8 @@ export interface UseDrawReturn extends DrawState {
   setLanguage: (value: "zh" | "en") => void;
   setSoundEnabled: (value: boolean) => void;
   setDensity: (value: Density) => void;
+  setConfettiEnabled: (value: boolean) => void;
+  setReduceMotion: (value: boolean) => void;
   resetSettings: () => void;
   // --- 便捷属性（避免在消费端重复计算）---
   // 是否正在抽取（别名，对应 status === "drawing"）
@@ -123,6 +131,8 @@ export interface UseDrawReturn extends DrawState {
     language: "zh" | "en";
     soundEnabled: boolean;
     density: Density;
+    confettiEnabled: boolean;
+    reduceMotion: boolean;
   };
 }
 
