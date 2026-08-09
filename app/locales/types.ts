@@ -1,4 +1,4 @@
-// locales/types.ts v5.2.1 — 国际化类型定义
+// locales/types.ts v5.3.2 — 国际化类型定义
 export type Language = "en" | "zh";
 
 export type TranslationKey =
@@ -10,7 +10,7 @@ export type TranslationKey =
   | "theme" | "themeMode" | "themeLight" | "themeDark" | "themeSystem"
   | "themePreset" | "themeDefault" | "themeOcean" | "themeForest"
   | "themeSunset" | "themePurple" | "themeNeon"
-  | "themeSakura" | "themeMidnight" | "themeRetro" | "themePixel"
+  | "themeSakura" | "themeMidnight" | "themeRetro" | "themePixel" | "themeRose"
   | "fontFamily" | "fontSans" | "fontMono" | "fontSerif"
   | "listImport" | "listImportDesc" | "useCustomList"
   | "export" | "displayRules" | "displayDesc"

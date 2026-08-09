@@ -1,4 +1,4 @@
-// locales/zh.ts v5.2.1 — 中文翻译
+// locales/zh.ts v5.3.2 — 中文翻译
 import type { TranslationDict } from "./types";
 
 export const zhTranslations: TranslationDict = {
@@ -35,6 +35,7 @@ export const zhTranslations: TranslationDict = {
   themeMidnight: "午夜蓝",
   themeRetro: "复古棕",
   themePixel: "像素风",
+  themeRose: "玫瑰红",
   fontFamily: "字体样式",
   fontSans: "无衬线",
   fontMono: "等宽",

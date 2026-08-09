@@ -1,5 +1,26 @@
 # Changelog
 
+## [5.3.2] - 2026-08-09
+
+### Refactor
+- 原型精简：合并 v1/v2/interactive/minimal 为单一高保真可交互原型 `prototype/index.html`（真实数据 + 组件库规范 + 11 主题）
+- 设计规范文档 `prototype/DESIGN-SYSTEM.md` 升级：三级组件库、交互标准、动效时序、响应式与无障碍
+
+### feat
+- shadcn/ui 补齐缺口组件（base-nova）：`ui/checkbox.tsx`、`ui/tooltip.tsx`、`ui/toast.tsx`，根布局接入 `ToastProvider`/`TooltipProvider`
+- 复制结果反馈升级为 Toast 轻量提示；主题切换按钮加 Tooltip
+- 原型与代码主题数对齐为 11 套（含 Rose）
+
+## [5.3.1] - 2026-08-09
+
+### UI & Experience
+- 历史记录卡片结果数字加大：由 `text-sm` 加粗改为 `text-lg sm:text-xl font-bold`，时间标签保持小字
+
+## [5.3.0] - 2026-08-09
+
+### Features
+- 新增「玫瑰红」主题：配色方案增至 10 种彩色预设（含深/浅模式），每种预设均含 light/dark 两套变量
+
 ## [5.2.2] - 2026-08-09
 
 ### Bug Fixes

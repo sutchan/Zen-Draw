@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZenDraw · 高保真原型 v5.3.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   DESIGN TOKENS — ZenDraw Design System v5.3.0
+   shadcn/ui (base-nova) + Apple Design Philosophy
+   ============================================================ */
+:root {
+  /* Neutral palette — cool-tinted */
+  --bg: #fafbfc;
+  --bg-subtle: #f4f5f7;
+  --bg-elevated: #ffffff;
+  --bg-muted: #eef0f4;
+  --fg: #1a1d23;
+  --fg-secondary: #5a5f6b;
+  --fg-tertiary: #8e939f;
+  --fg-quaternary: #b4b8c2;
+  --border: #e2e5ea;
+  --border-subtle: #eef0f4;
+  --border-strong: #c4c8d0;
+  --ring: #1a1d23;
+
+  /* Brand — Zen-inspired indigo (Default theme) */
+  --accent: #4f6ef7;
+  --accent-fg: #ffffff;
+  --accent-subtle: rgba(79, 110, 247, 0.10);
+  --accent-hover: #3b5ae0;
+  --accent-soft: rgba(79, 110, 247, 0.06);
+
+  /* Semantic */
+  --success: #22a06b;
+  --success-subtle: rgba(34, 160, 107, 0.10);
+  --warning: #e8a313;
+  --warning-subtle: rgba(232, 163, 19, 0.10);
+  --danger: #c9374b;
+  --danger-subtle: rgba(201, 55, 75, 0.10);
+  --info: #4f6ef7;
+  --info-subtle: rgba(79, 110, 247, 0.10);
+
+  /* Geometry (radius scale) */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Spacing (4px grid) */
+  --space-05: 2px; --space-1: 4px; --space-1_5: 6px; --space-2: 8px;
+  --space-2_5: 10px; --space-3: 12px; --space-3_5: 14px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --space-12: 48px; --space-16: 64px; --space-20: 80px; --space-24: 96px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 8px -2px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.10), 0 4px 8px -4px rgba(0,0,0,0.06);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.14), 0 8px 16px -8px rgba(0,0,0,0.08);
+  --shadow-2xl: 0 40px 80px -20px rgba(0,0,0,0.18);
+
+  /* Animation */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-50: 50ms; --dur-100: 100ms; --dur-150: 150ms; --dur-200: 200ms;
+  --dur-300: 300ms; --dur-500: 500ms; --dur-700: 700ms; --dur-1000: 1000ms;
+
+  /* Typography */
+  --font-sans: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-serif: 'Playfair Display', Georgia, 'Noto Serif SC', serif;
+
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
+  --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem; --text-4xl: 2.25rem;
+  --text-5xl: 3rem; --text-6xl: 3.75rem; --text-7xl: 4.5rem;
+  --leading-none: 1; --leading-tight: 1.15; --leading-snug: 1.3; --leading-normal: 1.5;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --bg: #0c0d0f; --bg-subtle: #141519; --bg-elevated: #1a1c22; --bg-muted: #23252b;
+  --fg: #e8eaed; --fg-secondary: #9ca0ab; --fg-tertiary: #6b7080; --fg-quaternary: #464b58;
+  --border: #2e3038; --border-subtle: #23252b; --border-strong: #3e414b; --ring: #e8eaed;
+  --accent: #6b87ff; --accent-fg: #0c0d0f; --accent-subtle: rgba(107, 135, 255, 0.12);
+  --accent-hover: #85a0ff; --accent-soft: rgba(107, 135, 255, 0.06);
+  --success: #2ec483; --success-subtle: rgba(46, 196, 131, 0.12);
+  --warning: #f5b820; --warning-subtle: rgba(245, 184, 32, 0.12);
+  --danger: #e05a6d; --danger-subtle: rgba(224, 90, 109, 0.12);
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.3); --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 8px -2px rgba(0,0,0,0.5); --shadow-lg: 0 12px 24px -6px rgba(0,0,0,0.6);
+  --shadow-xl: 0 24px 48px -12px rgba(0,0,0,0.7); --shadow-2xl: 0 40px 80px -20px rgba(0,0,0,0.8);
+}
+
+/* 10 Preset Themes — only accent hue shifts */
+[data-theme-preset="ocean"]    { --accent: #00b4d8; --accent-subtle: rgba(0,180,216,0.12); --accent-hover:#0096c7; --accent-soft: rgba(0,180,216,0.06); }
+[data-theme-preset="forest"]   { --accent: #2d8a4e; --accent-subtle: rgba(45,138,78,0.12); --accent-hover:#23703f; --accent-soft: rgba(45,138,78,0.06); }
+[data-theme-preset="sunset"]   { --accent: #e07c3c; --accent-subtle: rgba(224,124,60,0.12); --accent-hover:#c9692f; --accent-soft: rgba(224,124,60,0.06); }
+[data-theme-preset="purple"]   { --accent: #7b2d8e; --accent-subtle: rgba(123,45,142,0.12); --accent-hover:#642473; --accent-soft: rgba(123,45,142,0.06); }
+[data-theme-preset="neon"]     { --accent: #ff2d55; --accent-subtle: rgba(255,45,85,0.12); --accent-hover:#e51e44; --accent-soft: rgba(255,45,85,0.06); }
+[data-theme-preset="sakura"]   { --accent: #ff8fab; --accent-subtle: rgba(255,143,171,0.14); --accent-hover:#ff7497; --accent-soft: rgba(255,143,171,0.08); }
+[data-theme-preset="midnight"] { --accent: #6b6bd6; --accent-subtle: rgba(107,107,214,0.12); --accent-hover:#5555c0; --accent-soft: rgba(107,107,214,0.06); }
+[data-theme-preset="retro"]    { --accent: #a67c52; --accent-subtle: rgba(166,124,82,0.12); --accent-hover:#8c6644; --accent-soft: rgba(166,124,82,0.06); }
+[data-theme-preset="pixel"]    { --accent: #33ff33; --accent-subtle: rgba(51,255,51,0.12); --accent-hover:#1fe21f; --accent-soft: rgba(51,255,51,0.06); }
+
+/* RESET & BASE */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body {
+  font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-normal);
+  color: var(--fg); background: var(--bg); transition: background var(--dur-300) var(--ease-out), color var(--dur-300) var(--ease-out);
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; font-size: inherit; }
+ul, ol { list-style: none; }
+svg { display: block; flex-shrink: 0; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   LAYOUT — Prototype shell
+   ============================================================ */
+.proto-nav {
+  position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: var(--space-4);
+  padding: var(--space-3) var(--space-6); background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+}
+.proto-nav .brand { display: flex; align-items: center; gap: var(--space-2); font-weight: 700; font-size: var(--text-lg); }
+.proto-nav .brand svg { color: var(--accent); }
+.proto-nav .nav-links { display: flex; gap: var(--space-1); margin-left: auto; flex-wrap: wrap; }
+.proto-nav .nav-links a {
+  padding: var(--space-1_5) var(--space-3); border-radius: var(--radius-full);
+  font-size: var(--text-sm); color: var(--fg-secondary); transition: all var(--dur-150) var(--ease-out);
+}
+.proto-nav .nav-links a:hover { background: var(--bg-muted); color: var(--fg); }
+
+.section { max-width: 1080px; margin: 0 auto; padding: var(--space-16) var(--space-6); }
+.section h2 { font-size: var(--text-3xl); font-weight: 700; letter-spacing: -0.02em; margin-bottom: var(--space-2); }
+.section .lead { color: var(--fg-secondary); max-width: 60ch; margin-bottom: var(--space-8); }
+
+/* ============================================================
+   COMPONENT PREVIEW CARDS
+   ============================================================ */
+.grid { display: grid; gap: var(--space-6); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+.preview {
+  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-xl);
+  padding: var(--space-6); box-shadow: var(--shadow-sm);
+}
+.preview .preview-title { font-size: var(--text-sm); font-weight: 600; color: var(--fg-tertiary); margin-bottom: var(--space-4); text-transform: uppercase; letter-spacing: 0.04em; }
+.preview .row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  font-weight: 600; border-radius: var(--radius-full); transition: all var(--dur-200) var(--ease-out);
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--accent); color: var(--accent-fg); padding: var(--space-3) var(--space-6); box-shadow: 0 2px 8px var(--accent-subtle); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-subtle); }
+.btn-secondary { background: var(--bg-subtle); color: var(--fg); border: 1px solid var(--border-subtle); padding: var(--space-3) var(--space-5); }
+.btn-secondary:hover { background: var(--bg-muted); }
+.btn-ghost { background: transparent; color: var(--fg-secondary); padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); }
+.btn-ghost:hover { background: var(--bg-muted); color: var(--fg); }
+.btn-icon { width: 40px; height: 40px; padding: 0; border-radius: var(--radius-md); background: var(--bg-subtle); color: var(--fg-secondary); }
+.btn-icon:hover { background: var(--bg-muted); color: var(--fg); }
+.btn-draw {
+  width: 200px; height: 200px; border-radius: 50%; background: var(--accent); color: var(--accent-fg);
+  font-size: var(--text-2xl); font-weight: 700; box-shadow: 0 8px 32px var(--accent-subtle);
+  position: relative; transition: transform var(--dur-200) var(--ease-out);
+}
+.btn-draw::before {
+  content: ''; position: absolute; inset: -6px; border-radius: 50%;
+  border: 2px solid var(--accent-subtle); animation: draw-pulse 2s ease-in-out infinite;
+}
+.btn-draw:hover { transform: scale(1.02); }
+@keyframes draw-pulse { 0%,100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.06); opacity: 0; } }
+
+/* INPUT */
+.field { display: flex; flex-direction: column; gap: var(--space-2); }
+.field label { font-size: var(--text-sm); font-weight: 500; color: var(--fg-secondary); }
+.input, .textarea {
+  padding: var(--space-2_5) var(--space-3); background: var(--bg-subtle); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); transition: border-color var(--dur-150) var(--ease-out), box-shadow var(--dur-150) var(--ease-out);
+  width: 100%;
+}
+.input:focus, .textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-subtle); }
+.input::placeholder, .textarea::placeholder { color: var(--fg-quaternary); }
+.input.error { border-color: var(--danger); box-shadow: 0 0 0 3px var(--danger-subtle); }
+.input-msg { font-size: var(--text-xs); color: var(--danger); }
+
+/* SWITCH */
+.switch { width: 44px; height: 26px; background: var(--bg-muted); border-radius: var(--radius-full); position: relative; transition: background var(--dur-200) var(--ease-out); cursor: pointer; flex-shrink: 0; }
+.switch.active { background: var(--accent); }
+.switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: var(--shadow-sm); transition: transform var(--dur-200) var(--ease-out); }
+.switch.active::after { transform: translateX(18px); }
+
+/* CHECKBOX */
+.checkbox { width: 20px; height: 20px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-strong); display: inline-flex; align-items: center; justify-content: center; transition: all var(--dur-150) var(--ease-out); cursor: pointer; flex-shrink: 0; background: var(--bg-elevated); }
+.checkbox.active { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+
+/* BADGE */
+.badge { display: inline-flex; align-items: center; padding: 2px var(--space-2_5); border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 600; }
+.badge-accent { background: var(--accent-subtle); color: var(--accent); }
+.badge-success { background: var(--success-subtle); color: var(--success); }
+.badge-danger { background: var(--danger-subtle); color: var(--danger); }
+.badge-neutral { background: var(--bg-muted); color: var(--fg-secondary); }
+
+/* CARD */
+.card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-5); box-shadow: var(--shadow-xs); }
+.card .card-title { font-weight: 600; margin-bottom: var(--space-1); }
+.card .card-desc { font-size: var(--text-sm); color: var(--fg-secondary); }
+
+/* ALERT */
+.alert { display: flex; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); font-size: var(--text-sm); align-items: flex-start; }
+.alert svg { margin-top: 1px; }
+.alert-danger { background: var(--danger-subtle); color: var(--danger); }
+.alert-success { background: var(--success-subtle); color: var(--success); }
+.alert-info { background: var(--info-subtle); color: var(--info); }
+
+/* TABS */
+.tabs { display: flex; gap: var(--space-1); padding: var(--space-1); background: var(--bg-subtle); border-radius: var(--radius-lg); width: fit-content; }
+.tab { padding: var(--space-2) var(--space-4); border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: 500; color: var(--fg-secondary); transition: all var(--dur-150) var(--ease-out); }
+.tab.active { background: var(--bg-elevated); color: var(--fg); box-shadow: var(--shadow-xs); }
+
+/* SLIDER */
+.slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: var(--radius-full); background: var(--bg-muted); outline: none; }
+.slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); box-shadow: var(--shadow-sm); cursor: pointer; }
+.slider::-moz-range-thumb { width: 18px; height: 18px; border: none; border-radius: 50%; background: var(--accent); cursor: pointer; }
+
+/* THEME SWATCHES */
+.swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-3); }
+.swatch { aspect-ratio: 1; border-radius: var(--radius-lg); border: 2px solid transparent; cursor: pointer; position: relative; transition: transform var(--dur-150) var(--ease-out); display: flex; align-items: flex-end; padding: var(--space-2); }
+.swatch:hover { transform: translateY(-2px); }
+.swatch.active { border-color: var(--fg); }
+.swatch span { font-size: 10px; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+
+/* DRAW DISPLAY (simulated) */
+.display-stage { min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-6); text-align: center; }
+.result-number { font-family: var(--font-mono); font-weight: 700; font-size: clamp(3rem, 12vw, 6rem); letter-spacing: -0.04em; color: var(--fg); line-height: 1; }
+.result-number.rolling { color: var(--accent); }
+.result-meta { font-size: var(--text-sm); color: var(--fg-tertiary); }
+
+/* HISTORY */
+.history-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-subtle); }
+.history-item .hist-nums { font-family: var(--font-mono); font-weight: 600; color: var(--accent); }
+.history-item .hist-time { margin-left: auto; font-size: var(--text-xs); color: var(--fg-tertiary); }
+
+/* TOAST */
+.toast-wrap { position: fixed; bottom: var(--space-6); left: 50%; transform: translateX(-50%); z-index: 100; display: flex; flex-direction: column; gap: var(--space-2); align-items: center; }
+.toast { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); background: var(--fg); color: var(--bg); border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 500; box-shadow: var(--shadow-lg); animation: toast-in var(--dur-300) var(--ease-out); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* TOOLTIP */
+.tip { position: relative; }
+.tip::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); background: var(--fg); color: var(--bg); padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); font-size: var(--text-xs); white-space: nowrap; opacity: 0; pointer-events: none; transition: all var(--dur-150) var(--ease-out); }
+.tip:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* TOKENS TABLE */
+.token-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--space-3); }
+.token { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+.token .swatch-box { height: 56px; }
+.token .token-label { padding: var(--space-2); font-size: var(--text-xs); font-family: var(--font-mono); color: var(--fg-secondary); }
+
+/* EMPTY / ERROR STATE */
+.state-box { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); padding: var(--space-12); border: 1px dashed var(--border-strong); border-radius: var(--radius-xl); color: var(--fg-tertiary); text-align: center; }
+.state-box svg { opacity: 0.5; }
+
+.footer { border-top: 1px solid var(--border); padding: var(--space-8) var(--space-6); text-align: center; color: var(--fg-tertiary); font-size: var(--text-sm); }
+.divider { height: 1px; background: var(--border); margin: var(--space-8) 0; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="proto-nav">
+  <div class="brand">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>
+    ZenDraw <span style="color:var(--fg-tertiary);font-weight:400;font-size:var(--text-sm)">v5.3.0 原型</span>
+  </div>
+  <div class="nav-links">
+    <a href="#tokens">设计令牌</a>
+    <a href="#components">组件库</a>
+    <a href="#flow">主流程</a>
+    <a href="#themes">主题</a>
+    <a href="#interaction">交互标准</a>
+    <button class="btn btn-icon tip" data-tip="切换深浅色" onclick="toggleTheme()" aria-label="切换深浅色">
+      <svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="section" style="text-align:center;padding-top:var(--space-24)">
+  <span class="badge badge-accent" style="margin-bottom:var(--space-4)">极简 · 精准 · 禅意</span>
+  <h1 style="font-size:clamp(2.5rem,7vw,4.5rem);font-weight:800;letter-spacing:-0.03em;line-height:1.05">让抽签成为一场仪式</h1>
+  <p class="lead" style="margin:var(--space-4) auto var(--space-8)">高保真可交互原型 · 真实数据驱动 · 完整组件库规范 · 10 套配色主题 · 桌面与移动端完美呈现</p>
+  <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap">
+    <a href="#flow" class="btn btn-primary">查看主流程</a>
+    <a href="#components" class="btn btn-secondary">浏览组件库</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ DESIGN TOKENS ============ -->
+<section class="section" id="tokens">
+  <h2>设计令牌 Design Tokens</h2>
+  <p class="lead">所有视觉决策源自令牌。中性色系冷调处理，强调色仅随主题切换色相，保持跨主题一致性。</p>
+
+  <h3 style="margin:var(--space-6) 0 var(--space-3);font-size:var(--text-lg)">中性 / Neutral</h3>
+  <div class="token-grid">
+    <div class="token"><div class="swatch-box" style="background:var(--bg)"></div><div class="token-label">--bg</div></div>
+    <div class="token"><div class="swatch-box" style="background:var(--bg-subtle)"></div><div class="token-label">--bg-subtle</div></div>
+    <div class="token"><div class="swatch-box" style="background:var(--bg-elevated);border:1px solid var(--border)"></div><div class="token-label">--bg-elevated</div></div>
+    <div class="token"><div class="swatch-box" style="background:var(--fg)"></div><div class="token-label">--fg</div></div>
+    <div class="token"><div class="swatch-box" style="background:var(--fg-secondary)"></div><div class="token-label">--fg-secondary</div></div>
+    <div class="token"><div class="swatch-box" style="background:var(--border)"></div><div class="token-label">--border</div></div>
+  </div>
+
+  <h3 style="margin:var(--space-8) 0 var(--space-3);font-size:var(--text-lg)">品牌 / Brand & 语义</h3>
+  <div class="token-grid">
+    <div class="token"><div class="swatch-box" style="background:var(--accent)"></div><div class="token-label">--accent</div></div>
+    <div class="token"><div class="swatch-box" style="background:var(--success)"></div><div class="token-label">--success</div></div>
+    <div class="token"><div class="swatch-box" style="background:var(--warning)"></div><div class="token-label">--warning</div></div>
+    <div class="token"><div class="swatch-box" style="background:var(--danger)"></div><div class="token-label">--danger</div></div>
+    <div class="token"><div class="swatch-box" style="background:var(--info)"></div><div class="token-label">--info</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ COMPONENT LIBRARY ============ -->
+<section class="section" id="components">
+  <h2>组件库 Component Library</h2>
+  <p class="lead">基础组件 · 复合组件 · 业务组件，全部遵循 base-nova 风格，built on @base-ui/react (shadcn/ui)。</p>
+
+  <!-- 基础组件 -->
+  <h3 style="margin:var(--space-8) 0 var(--space-4);font-size:var(--text-xl)">基础组件 / Primitives</h3>
+  <div class="grid grid-3">
+    <div class="preview">
+      <div class="preview-title">Button 按钮</div>
+      <div class="row">
+        <button class="btn btn-primary">抽取</button>
+        <button class="btn btn-secondary">取消</button>
+        <button class="btn btn-ghost">更多</button>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">Input 输入</div>
+      <div class="field" style="width:100%">
+        <label>最小值 Min</label>
+        <input class="input" value="1" />
+      </div>
+      <div class="field" style="width:100%;margin-top:var(--space-3)">
+        <label>最大值 Max（错误态）</label>
+        <input class="input error" value="0" />
+        <span class="input-msg">最大值需大于最小值</span>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">Switch / Checkbox</div>
+      <div class="row" style="gap:var(--space-5)">
+        <div style="display:flex;align-items:center;gap:var(--space-2)"><div class="switch active" onclick="this.classList.toggle('active')"></div><span style="font-size:var(--text-sm)">允许重复</span></div>
+        <div style="display:flex;align-items:center;gap:var(--space-2)"><div class="checkbox active" onclick="this.classList.toggle('active')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><span style="font-size:var(--text-sm)">自动隐藏</span></div>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">Badge 标记</div>
+      <div class="row">
+        <span class="badge badge-accent">抽取中</span>
+        <span class="badge badge-success">已完成</span>
+        <span class="badge badge-danger">错误</span>
+        <span class="badge badge-neutral">历史</span>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">Tabs 选项卡</div>
+      <div class="tabs">
+        <div class="tab active">抽取</div>
+        <div class="tab" onclick="switchTab(this)">外观</div>
+        <div class="tab" onclick="switchTab(this)">历史</div>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">Slider 滑块</div>
+      <div class="field" style="width:100%">
+        <label>动画时长 <span class="mono" style="color:var(--accent)">5s</span></label>
+        <input type="range" class="slider" min="1" max="30" value="5" />
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">Tooltip 提示</div>
+      <div class="row">
+        <button class="btn btn-icon tip" data-tip="复制结果" onclick="toast('已复制到剪贴板')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+        <button class="btn btn-icon tip" data-tip="清空历史" onclick="toast('历史已清空')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">Alert 警告</div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);width:100%">
+        <div class="alert alert-danger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>范围无效，请检查最小值与最大值</span></div>
+        <div class="alert alert-success"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>抽取完成，结果已保存</span></div>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">Card 卡片</div>
+      <div class="card">
+        <div class="card-title">快速抽取</div>
+        <div class="card-desc">从 1–100 中随机抽取 5 个不重复数字</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 业务组件 -->
+  <h3 style="margin:var(--space-12) 0 var(--space-4);font-size:var(--text-xl)">业务组件 / Business</h3>
+  <div class="grid grid-2">
+    <div class="preview">
+      <div class="preview-title">Draw Display 抽签展示</div>
+      <div class="display-stage">
+        <div class="result-number" id="demo-number">42</div>
+        <div class="result-meta">从 1 – 100 抽取 · 共 5 个</div>
+        <button class="btn btn-draw" onclick="rollDemo()">抽取</button>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">History List 历史记录</div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="history-item"><span class="hist-nums">07 · 23 · 58 · 81 · 94</span><span class="hist-time">14:32</span></div>
+        <div class="history-item"><span class="hist-nums">03 · 19 · 42 · 66 · 88</span><span class="hist-time">14:28</span></div>
+        <div class="history-item"><span class="hist-nums">11 · 27 · 35 · 52 · 99</span><span class="hist-time">14:21</span></div>
+      </div>
+      <div class="state-box" style="margin-top:var(--space-4);padding:var(--space-8)">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span style="font-size:var(--text-sm)">暂无记录 · 开始抽取后结果将显示在这里</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ MAIN FLOW ============ -->
+<section class="section" id="flow">
+  <h2>主流程 Main Flow</h2>
+  <p class="lead">真实数据驱动的核心体验：欢迎 → 抽取（数字滚动）→ 结果（庆祝动效）→ 历史沉淀。</p>
+  <div class="grid grid-3">
+    <div class="preview">
+      <div class="preview-title">① 欢迎 Welcome</div>
+      <div class="display-stage">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--fg-tertiary);opacity:.4"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg>
+        <div><div style="font-size:var(--text-3xl);font-weight:700">准备就绪</div><div style="color:var(--fg-tertiary);font-size:var(--text-sm)">点击中心按钮或按空格开始</div></div>
+        <button class="btn btn-draw" onclick="goState('drawing')">抽取</button>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">② 抽取 Drawing</div>
+      <div class="display-stage">
+        <div class="result-number rolling" id="flow-number">—</div>
+        <div class="result-meta">滚动态 · 每 80ms 切换</div>
+        <button class="btn btn-secondary" onclick="goState('result')">停止</button>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">③ 结果 Result</div>
+      <div class="display-stage">
+        <div class="result-number">73</div>
+        <div class="result-meta">第 1 / 5 个 · 点击复制</div>
+        <div class="row">
+          <button class="btn btn-primary" onclick="toast('已揭晓下一个')">继续</button>
+          <button class="btn btn-ghost" onclick="goState('welcome')">完成</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ THEMES ============ -->
+<section class="section" id="themes">
+  <h2>10 套配色主题</h2>
+  <p class="lead">仅 accent 色相变化，中性色系与对比度恒定，保证跨主题可读性。</p>
+  <div class="swatches" id="theme-swatches">
+    <div class="swatch active" data-preset="default" style="background:#4f6ef7" onclick="setPreset(this)"><span>Default</span></div>
+    <div class="swatch" data-preset="ocean" style="background:#00b4d8" onclick="setPreset(this)"><span>Ocean</span></div>
+    <div class="swatch" data-preset="forest" style="background:#2d8a4e" onclick="setPreset(this)"><span>Forest</span></div>
+    <div class="swatch" data-preset="sunset" style="background:#e07c3c" onclick="setPreset(this)"><span>Sunset</span></div>
+    <div class="swatch" data-preset="purple" style="background:#7b2d8e" onclick="setPreset(this)"><span>Purple</span></div>
+    <div class="swatch" data-preset="neon" style="background:#ff2d55" onclick="setPreset(this)"><span>Neon</span></div>
+    <div class="swatch" data-preset="sakura" style="background:#ff8fab" onclick="setPreset(this)"><span>Sakura</span></div>
+    <div class="swatch" data-preset="midnight" style="background:#6b6bd6" onclick="setPreset(this)"><span>Midnight</span></div>
+    <div class="swatch" data-preset="retro" style="background:#a67c52" onclick="setPreset(this)"><span>Retro</span></div>
+    <div class="swatch" data-preset="pixel" style="background:#33ff33" onclick="setPreset(this)"><span>Pixel</span></div>
+    <div class="swatch" data-preset="rose" style="background:#c93d5f" onclick="setPreset(this)"><span>Rose</span></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ INTERACTION STANDARDS ============ -->
+<section class="section" id="interaction">
+  <h2>交互标准 Interaction Standards</h2>
+  <p class="lead">统一的状态反馈、键盘导航、动效时序与错误/空状态处理。</p>
+  <div class="grid grid-2">
+    <div class="preview">
+      <div class="preview-title">状态反馈矩阵</div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);font-size:var(--text-sm)">
+        <div class="row" style="justify-content:space-between"><span>Default</span><span style="color:var(--fg-tertiary)">静态显示</span></div>
+        <div class="row" style="justify-content:space-between"><span>Hover</span><span style="color:var(--fg-tertiary)">上浮 + 颜色变化</span></div>
+        <div class="row" style="justify-content:space-between"><span>Focus</span><span style="color:var(--fg-tertiary)">2px 焦点环 + offset 2px</span></div>
+        <div class="row" style="justify-content:space-between"><span>Active</span><span style="color:var(--fg-tertiary)">scale 0.97</span></div>
+        <div class="row" style="justify-content:space-between"><span>Disabled</span><span style="color:var(--fg-tertiary)">opacity .4 + not-allowed</span></div>
+        <div class="row" style="justify-content:space-between"><span>Error</span><span style="color:var(--danger)">红框 + 图标 + 文案</span></div>
+        <div class="row" style="justify-content:space-between"><span>Success</span><span style="color:var(--success)">绿提示 + 庆祝动效</span></div>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="preview-title">键盘导航</div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);font-size:var(--text-sm)">
+        <div class="row" style="justify-content:space-between"><kbd class="mono" style="background:var(--bg-muted);padding:2px 8px;border-radius:var(--radius-sm)">Space / Enter</kbd><span style="color:var(--fg-tertiary)">开始 / 停止</span></div>
+        <div class="row" style="justify-content:space-between"><kbd class="mono" style="background:var(--bg-muted);padding:2px 8px;border-radius:var(--radius-sm)">Esc</kbd><span style="color:var(--fg-tertiary)">返回欢迎</span></div>
+        <div class="row" style="justify-content:space-between"><kbd class="mono" style="background:var(--bg-muted);padding:2px 8px;border-radius:var(--radius-sm)">Tab</kbd><span style="color:var(--fg-tertiary)">控件导航</span></div>
+        <div class="row" style="justify-content:space-between"><kbd class="mono" style="background:var(--bg-muted);padding:2px 8px;border-radius:var(--radius-sm)">↑ / ↓</kbd><span style="color:var(--fg-tertiary)">数值增减</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  ZenDraw · 禅抽 — 高保真原型 v5.3.0 · 极简 · 精准 · 禅意<br/>
+  设计令牌、组件库与交互标准详见 <a href="./DESIGN-SYSTEM.md" style="color:var(--accent)">DESIGN-SYSTEM.md</a>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+function toggleTheme() {
+  const html = document.documentElement;
+  const cur = html.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('theme-icon').innerHTML = next === 'dark'
+    ? '<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>'
+    : '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>';
+}
+function setPreset(el) {
+  document.querySelectorAll('#theme-swatches .swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  const p = el.getAttribute('data-preset');
+  if (p === 'default') document.documentElement.removeAttribute('data-theme-preset');
+  else document.documentElement.setAttribute('data-theme-preset', p);
+}
+function switchTab(el) {
+  el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+function toast(msg) {
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>' + msg;
+  wrap.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(20px)'; setTimeout(() => t.remove(), 300); }, 2000);
+}
+// Demo roller
+let rolling = false;
+function rollDemo() {
+  if (rolling) return;
+  rolling = true;
+  const el = document.getElementById('demo-number');
+  el.classList.add('rolling');
+  const id = setInterval(() => { el.textContent = Math.floor(Math.random() * 100); }, 80);
+  setTimeout(() => {
+    clearInterval(id); el.classList.remove('rolling'); el.textContent = Math.floor(Math.random() * 100);
+    rolling = false; toast('抽取完成');
+  }, 1600);
+}
+function goState(state) {
+  toast('状态: ' + state);
+  if (state === 'drawing') {
+    const el = document.getElementById('flow-number');
+    let n = 0; const id = setInterval(() => { el.textContent = Math.floor(Math.random()*100); }, 80);
+    setTimeout(() => clearInterval(id), 2000);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-// components/draw/appearance-settings.tsx v5.2.1 —— 外观设置子组件（使用中央翻译系统）
+// components/draw/appearance-settings.tsx v5.3.2 —— 外观设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -30,6 +30,7 @@ const THEME_PRESET_KEYS: Record<string, TranslationKey> = {
   midnight: "themeMidnight",
   retro: "themeRetro",
   pixel: "themePixel",
+  rose: "themeRose",
 };
 
 export function AppearanceSettings({

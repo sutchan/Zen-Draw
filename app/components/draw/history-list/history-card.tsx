@@ -1,4 +1,4 @@
-// components/draw/history-list/history-card.tsx v5.2.1 —— 历史记录卡片
+// components/draw/history-list/history-card.tsx v5.3.2 —— 历史记录卡片
 "use client";
 
 import * as React from "react";
@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createTranslator } from "@/lib/i18n";
+import { useToast } from "@/components/ui/toast";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -49,6 +50,7 @@ export function HistoryCard({
 }) {
   const [copied, setCopied] = React.useState(false);
   const t = React.useMemo(() => createTranslator(language), [language]);
+  const toast = useToast();
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -57,6 +59,7 @@ export function HistoryCard({
       navigator.clipboard.writeText(text).then(
         () => {
           setCopied(true);
+          toast(t("copiedToClipboard"), { type: "success" });
           setTimeout(() => setCopied(false), 1500);
         },
         () => {
@@ -82,7 +85,7 @@ export function HistoryCard({
           <span className="shrink-0 text-xs text-muted-foreground font-medium tracking-wide">
             {formatTime(entry.timestamp, language)}
           </span>
-          <span className="truncate text-sm font-semibold tabular-nums">
+          <span className="truncate text-lg sm:text-xl font-bold tabular-nums tracking-tight">
             {entry.results.join(", ")}
           </span>
         </div>

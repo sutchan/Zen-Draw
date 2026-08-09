@@ -1,4 +1,4 @@
-// components/layout/app-header.tsx v5.2.1 —— 顶部导航栏（Logo + 主题切换 + 设置面板）
+// components/layout/app-header.tsx v5.3.2 —— 顶部导航栏（Logo + 主题切换 + 设置面板）
 "use client";
 
 import * as React from "react";
@@ -13,6 +13,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { SettingsPanel } from "@/components/draw/settings-panel";
 import { createTranslator } from "@/lib/i18n";
 import type { UseDrawReturn } from "@/hooks/draw-types";
@@ -60,20 +61,27 @@ export function AppHeader({
         </motion.div>
 
         <div className="flex items-center gap-1.5">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onThemeToggle}
-            aria-label={theme === "dark" ? t("switchLight") : t("switchDark")}
-            data-testid="theme-toggle"
-            className="rounded-full"
-          >
-            {theme === "dark" ? (
-              <Sun className="size-4" aria-hidden="true" />
-            ) : (
-              <Moon className="size-4" aria-hidden="true" />
-            )}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onThemeToggle}
+                  aria-label={theme === "dark" ? t("switchLight") : t("switchDark")}
+                  data-testid="theme-toggle"
+                  className="rounded-full"
+                />
+              }
+            >
+              {theme === "dark" ? (
+                <Sun className="size-4" aria-hidden="true" />
+              ) : (
+                <Moon className="size-4" aria-hidden="true" />
+              )}
+            </TooltipTrigger>
+            <TooltipContent>{theme === "dark" ? t("switchLight") : t("switchDark")}</TooltipContent>
+          </Tooltip>
 
           <Sheet open={panelOpen} onOpenChange={onPanelOpenChange}>
             <SheetTrigger

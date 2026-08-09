@@ -1,9 +1,11 @@
-// app/layout.tsx v5.2.1
+// app/layout.tsx v5.3.2
 import type { Metadata, Viewport } from "next";
 import "./style.css";
 import { Geist, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ToastProvider, ToastViewport } from "@/components/ui/toast";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { APP_VERSION } from "@/lib/version";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -55,7 +57,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <TooltipProvider>
+            <ToastProvider>
+              {children}
+              <ToastViewport />
+            </ToastProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,4 +1,4 @@
-// components/ui/sheet/index.tsx v5.2.1 —— 侧边抽屉组件（Trigger + Content + 部件聚合导出）
+// components/ui/sheet/index.tsx v5.3.2 —— 侧边抽屉组件（Trigger + Content + 部件聚合导出）
 "use client";
 
 import * as React from "react";

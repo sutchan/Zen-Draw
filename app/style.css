@@ -1,3 +1,4 @@
+/* app/style.css v5.3.0 —— 全局样式与主题预设（浅/深 CSS 变量） */
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -666,4 +667,62 @@
     --sidebar-accent-foreground: oklch(0.98 0.01 200);
     --sidebar-border: oklch(0.35 0.05 200 / 0.6);
     --sidebar-ring: oklch(0.65 0.25 260);
+}
+
+/* Rose —— 玫瑰红（浪漫活力，高饱和粉红） */
+.theme-rose {
+    --background: oklch(0.99 0.008 10);
+    --foreground: oklch(0.22 0.04 15);
+    --card: oklch(1 0.006 10);
+    --card-foreground: oklch(0.22 0.04 15);
+    --popover: oklch(1 0.006 10);
+    --popover-foreground: oklch(0.22 0.04 15);
+    --primary: oklch(0.58 0.22 15);
+    --primary-foreground: oklch(0.99 0.008 10);
+    --secondary: oklch(0.92 0.04 20);
+    --secondary-foreground: oklch(0.3 0.06 15);
+    --muted: oklch(0.95 0.02 15);
+    --muted-foreground: oklch(0.52 0.06 15);
+    --accent: oklch(0.93 0.05 20);
+    --accent-foreground: oklch(0.3 0.06 15);
+    --destructive: oklch(0.57 0.22 22);
+    --border: oklch(0.88 0.03 15);
+    --input: oklch(0.9 0.03 15);
+    --ring: oklch(0.58 0.22 15);
+    --sidebar: oklch(0.985 0.006 10);
+    --sidebar-foreground: oklch(0.22 0.04 15);
+    --sidebar-primary: oklch(0.58 0.22 15);
+    --sidebar-primary-foreground: oklch(0.99 0.008 10);
+    --sidebar-accent: oklch(0.92 0.04 20);
+    --sidebar-accent-foreground: oklch(0.3 0.06 15);
+    --sidebar-border: oklch(0.88 0.03 15);
+    --sidebar-ring: oklch(0.58 0.22 15);
+}
+.dark .theme-rose, .theme-rose.dark {
+    --background: oklch(0.18 0.03 15);
+    --foreground: oklch(0.98 0.01 10);
+    --card: oklch(0.22 0.03 15);
+    --card-foreground: oklch(0.98 0.01 10);
+    --popover: oklch(0.22 0.03 15);
+    --popover-foreground: oklch(0.98 0.01 10);
+    --primary: oklch(0.68 0.22 15);
+    --primary-foreground: oklch(0.18 0.03 15);
+    --secondary: oklch(0.3 0.05 15);
+    --secondary-foreground: oklch(0.98 0.01 10);
+    --muted: oklch(0.3 0.04 15);
+    --muted-foreground: oklch(0.7 0.03 15);
+    --accent: oklch(0.3 0.06 20);
+    --accent-foreground: oklch(0.98 0.01 10);
+    --destructive: oklch(0.62 0.2 22);
+    --border: oklch(0.38 0.05 15 / 0.6);
+    --input: oklch(0.38 0.05 15 / 0.6);
+    --ring: oklch(0.68 0.22 15);
+    --sidebar: oklch(0.2 0.03 15);
+    --sidebar-foreground: oklch(0.98 0.01 10);
+    --sidebar-primary: oklch(0.68 0.22 15);
+    --sidebar-primary-foreground: oklch(0.18 0.03 15);
+    --sidebar-accent: oklch(0.3 0.06 20);
+    --sidebar-accent-foreground: oklch(0.98 0.01 10);
+    --sidebar-border: oklch(0.38 0.05 15 / 0.6);
+    --sidebar-ring: oklch(0.68 0.22 15);
 }

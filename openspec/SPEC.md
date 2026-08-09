@@ -1,12 +1,12 @@
-# ZenDraw | 禅抽 v5.2.2 — 项目规范文档
+# ZenDraw | 禅抽 v5.3.2 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.2.2
+- **当前版本**: v5.3.2
 - **上次更新**: 2026-08-09
-- **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、10 种主题配色、Web Audio API 音效。
+- **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、11 种主题配色、Web Audio API 音效。
 - **许可证**: MIT License
 - **代码质量**: 严格 TypeScript (strict mode) + ESLint + CI/CD + 代码审查标准 + 安全头
 
@@ -620,7 +620,15 @@ export const viewport: Viewport = {
 
 ## 13. 版本历史
 
-### v5.2.2 (当前)
+### v5.3.2 (当前)
+- 原型精简：合并 v1/v2/interactive/minimal 为单一高保真可交互原型 `prototype/index.html`（真实数据 + 组件库规范 + 11 主题 + 完整交互）
+- 设计规范文档 `prototype/DESIGN-SYSTEM.md` 升级至 v5.3.2：三级组件库（基础/复合/业务）、交互标准、动效时序、响应式、无障碍
+- shadcn/ui 补齐缺口组件（base-nova 风格）：`ui/checkbox.tsx`、`ui/tooltip.tsx`、`ui/toast.tsx`，并接入根布局 `ToastProvider`/`TooltipProvider`
+- 复制结果反馈升级为 Toast 轻量提示；主题切换按钮加 Tooltip
+- 主题数对齐：原型与规范统一为 11 套（含 Rose），消除原型与代码最小颗粒度不一致
+- 全项目源文件头注释、`package.json`、`metadata.json`、README×2、SPEC.md、CHANGELOG 统一至 v5.3.2
+
+### v5.3.1 (当前)
 - 模块化拆分：`ui/sheet.tsx`（252 行）→ `ui/sheet/`（context/parts/index）；`ui/select.tsx`（201 行）→ 抽出 `select-scroll-buttons.tsx`
 - 页面结构重构：`page.tsx` 抽出 `layout/app-header.tsx`（顶部导航栏），主页面精简至 ~104 行
 - 清理死代码：删除未引用的 `use-persist-settings.ts`、死翻译键 `drawResults`、冗余无障碍属性
