@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.3.5] - 2026-08-09
+
+### Bug Fixes
+- **设置容器滑入动画失效**：`SheetContent` 的 `@keyframes slideIn` 由 scoped `<style jsx>` 改为 `<style jsx global>`，重命名为 `sheet-slideIn` 并同步 `animation` 引用，抽屉恢复右侧滑入过渡
+- **宽度冲突**：`SheetContent` 移除左右侧强加的 `max-w-sm`，宽度完全由调用方 `className`（如 `w-full sm:w-[420px]`）决定，桌面端抽屉恢复 420px
+- **滚动高度错乱**：`SettingsPanel` 根 div 与内部 `Tabs` 由 `h-full` 改为 `flex-1 min-h-0`，使内容区 `flex-1 overflow-y-auto` 在 flex 父级内正确分配高度，修复双重滚动/内容塌陷
+- **SheetClose 定位**：默认 `absolute` 改为 `static`，避免在其他使用场景与标题重叠（AppHeader 已显式 `static ml-auto` 无冲突）
+
 ## [5.3.4] - 2026-08-09
 
 ### Code Quality & Spec Alignment
@@ -20,7 +28,7 @@
 
 ### fix
 - 原型一致性修复：统一三套 HTML 令牌命名为 `--radius-*`/`--space-*`/`--shadow-*`/`--dur-*`（与 DESIGN-SYSTEM.md 一致）
-- 修正 `index.html` 版本号与主题数矛盾（v5.3.2→v5.3.4、10→11 套含 Rose CSS）；主流程三屏改为真实联动（`goState` 状态机 + Space/Enter/Esc 键盘）
+- 修正 `index.html` 版本号与主题数矛盾（v5.3.2→v5.3.5、10→11 套含 Rose CSS）；主流程三屏改为真实联动（`goState` 状态机 + Space/Enter/Esc 键盘）
 - 抽取范围统一为 1–100（修复 Math.random 误抽 0/100）
 - `prototypes.html` 状态机图示与实现一致，彩屑改为结果揭晓时联动触发
 - `wireframes.html` 修复 Slider 无效 JS（数值实时更新）、Select 点击外部关闭、Sheet 真实抽屉演示

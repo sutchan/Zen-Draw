@@ -1,4 +1,4 @@
-// components/draw/custom-list-settings.tsx v5.3.4 —— 自定义列表子组件（使用中央翻译系统）
+// components/draw/custom-list-settings.tsx v5.3.5 —— 自定义列表子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";

@@ -1,4 +1,4 @@
-// components/ui/sheet/index.tsx v5.3.4 —— 侧边抽屉组件（Trigger + Content + 部件聚合导出）
+// components/ui/sheet/index.tsx v5.3.5 —— 侧边抽屉组件（Trigger + Content + 部件聚合导出）
 "use client";
 
 import * as React from "react";
@@ -57,16 +57,19 @@ export function SheetContent({
 }: SheetContentProps) {
   const { open, onOpenChange } = useSheetContext();
 
-  // 根据 size 定义宽度
+  // size 仅用于上下滑入时的高度约束；左右滑入的宽度完全由调用方 className 决定，
+  // 避免默认 max-w-* 压制调用方传入的 w-[420px] 等精确宽度。
   const sizeClass = React.useMemo(() => {
-    const widths: Record<string, string> = {
-      sm: "max-w-xs",
-      md: "max-w-sm",
-      lg: "max-w-md",
-      xl: "max-w-lg",
-    };
-    if (side === "top" || side === "bottom") return "max-h-[70vh]";
-    return widths[size] || "max-w-sm";
+    if (side === "top" || side === "bottom") {
+      const heights: Record<string, string> = {
+        sm: "max-h-[40vh]",
+        md: "max-h-[70vh]",
+        lg: "max-h-[85vh]",
+        xl: "max-h-[95vh]",
+      };
+      return heights[size] || "max-h-[70vh]";
+    }
+    return "";
   }, [side, size]);
 
   // ESC 键关闭
@@ -102,21 +105,21 @@ export function SheetContent({
           sizeClass,
           className
         )}
-        style={{ animation: "slideIn 0.3s ease-out forwards" }}
+        style={{ animation: "sheet-slideIn 0.3s ease-out forwards" }}
         {...rest}
       >
         {children}
       </div>
-      <style jsx>{`
-        @keyframes slideIn {
+      <style jsx global>{`
+        @keyframes sheet-slideIn {
           from {
             transform: ${side === "right"
               ? "translateX(100%)"
               : side === "left"
-              ? "translateX(-100%)"
-              : side === "top"
-              ? "translateY(-100%)"
-              : "translateY(100%)"};
+                ? "translateX(-100%)"
+                : side === "top"
+                  ? "translateY(-100%)"
+                  : "translateY(100%)"};
             opacity: 0;
           }
           to {

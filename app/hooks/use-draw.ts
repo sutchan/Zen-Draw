@@ -1,4 +1,4 @@
-// hooks/use-draw.ts v5.3.4 —— 统一管理抽奖流程状态与逻辑（重构拆分版）
+// hooks/use-draw.ts v5.3.5 —— 统一管理抽奖流程状态与逻辑（重构拆分版）
 "use client";
 
 import * as React from "react";

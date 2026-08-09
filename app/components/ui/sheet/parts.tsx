@@ -1,4 +1,4 @@
-// components/ui/sheet/parts.tsx v5.3.4 —— Sheet 布局部件（Header/Title/Close）
+// components/ui/sheet/parts.tsx v5.3.5 —— Sheet 布局部件（Header/Title/Close）
 "use client";
 
 import * as React from "react";
@@ -44,7 +44,7 @@ export const SheetClose = React.forwardRef<
         onOpenChange(false);
       }}
       className={cn(
-        "absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+        "static rounded-sm opacity-70 hover:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
         className
       )}
       {...rest}

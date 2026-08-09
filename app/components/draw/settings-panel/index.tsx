@@ -1,4 +1,4 @@
-// components/draw/settings-panel/index.tsx v5.3.4 —— 设置面板内容（重构：仅渲染内容，面板外壳由 AppHeader 的 Sheet 提供）
+// components/draw/settings-panel/index.tsx v5.3.5 —— 设置面板内容（重构：仅渲染内容，面板外壳由 AppHeader 的 Sheet 提供）
 "use client";
 
 import * as React from "react";
@@ -71,12 +71,12 @@ export function SettingsPanel(props: SettingsPanelProps) {
   const t = React.useMemo(() => createTranslator(language), [language]);
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex flex-1 min-h-0 flex-col">
       {/* 顶部品牌栏（静态，含语言切换） */}
       <HeaderBar language={language} onLanguageToggle={onLanguageToggle} />
 
       {/* 选项卡内容 */}
-      <Tabs defaultValue="settings" className="flex h-full flex-col">
+      <Tabs defaultValue="settings" className="flex flex-1 min-h-0 flex-col">
         <TabsList className="w-full flex gap-1 p-2 bg-muted/30 rounded-none border-b border-border/20 m-0">
           <TabsTrigger
             value="settings"
