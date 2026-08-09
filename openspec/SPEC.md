@@ -1,10 +1,10 @@
-# ZenDraw | 禅抽 v5.2.0 — 项目规范文档
+# ZenDraw | 禅抽 v5.2.1 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.2.0
+- **当前版本**: v5.2.1
 - **上次更新**: 2026-08-09
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、10 种主题配色、Web Audio API 音效。
 - **许可证**: MIT License
@@ -620,12 +620,12 @@ export const viewport: Viewport = {
 
 ## 13. 版本历史
 
-### v5.2.0 (当前)
+### v5.2.1 (当前)
 - 模块化拆分：`ui/sheet.tsx`（252 行）→ `ui/sheet/`（context/parts/index）；`ui/select.tsx`（201 行）→ 抽出 `select-scroll-buttons.tsx`
 - 页面结构重构：`page.tsx` 抽出 `layout/app-header.tsx`（顶部导航栏），主页面精简至 ~104 行
 - 清理死代码：删除未引用的 `use-persist-settings.ts`、死翻译键 `drawResults`、冗余无障碍属性
 - Bug 修复：页脚字体数（6→3）、`layout.tsx` 根语言（`en`→`zh-CN`）、`history-list` 重复类型声明
-- 版本号统一：全项目源文件头注释、`package.json`、文档统一至 v5.2.0
+- 版本号统一：全项目源文件头注释、`package.json`、文档统一至 v5.2.1
 - 翻译键更新：实际 97 个键（zh/en 完全对齐，编译期强约束）
 - 所有源文件均 ≤ 200 行
 

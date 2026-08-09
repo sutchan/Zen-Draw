@@ -1,4 +1,4 @@
-// components/draw/draw-display/welcome-screen.tsx v5.2.0 —— 空闲状态显示
+// components/draw/draw-display/welcome-screen.tsx v5.2.1 —— 空闲状态显示
 "use client";
 
 import * as React from "react";

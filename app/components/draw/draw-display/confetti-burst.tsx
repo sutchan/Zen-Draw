@@ -1,4 +1,4 @@
-// components/draw/draw-display/confetti-burst.tsx v5.2.0 —— 揭晓彩屑爆发（canvas 粒子）
+// components/draw/draw-display/confetti-burst.tsx v5.2.1 —— 揭晓彩屑爆发（canvas 粒子）
 "use client";
 
 import * as React from "react";

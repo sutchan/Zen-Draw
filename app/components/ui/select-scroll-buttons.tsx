@@ -1,4 +1,4 @@
-// components/ui/select-scroll-buttons.tsx v5.2.0 —— Select 滚动指示按钮
+// components/ui/select-scroll-buttons.tsx v5.2.1 —— Select 滚动指示按钮
 "use client"
 
 import * as React from "react"

@@ -1,4 +1,4 @@
-// components/draw/draw-display/error-screen.tsx v5.2.0 —— 错误状态显示
+// components/draw/draw-display/error-screen.tsx v5.2.1 —— 错误状态显示
 "use client";
 
 import * as React from "react";

@@ -1,4 +1,4 @@
-// components/draw/settings-panel/index.tsx v5.2.0 —— 设置面板内容（重构：仅渲染内容，面板外壳由 AppHeader 的 Sheet 提供）
+// components/draw/settings-panel/index.tsx v5.2.1 —— 设置面板内容（重构：仅渲染内容，面板外壳由 AppHeader 的 Sheet 提供）
 "use client";
 
 import * as React from "react";

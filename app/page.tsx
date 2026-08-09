@@ -1,4 +1,4 @@
-// page.tsx v5.2.0 —— 抽取主页面（状态编排 + 键盘快捷键）
+// page.tsx v5.2.1 —— 抽取主页面（状态编排 + 键盘快捷键）
 "use client";
 
 import * as React from "react";

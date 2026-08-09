@@ -1,4 +1,4 @@
-// components/ui/sheet/index.tsx v5.2.0 —— 侧边抽屉组件（Trigger + Content + 部件聚合导出）
+// components/ui/sheet/index.tsx v5.2.1 —— 侧边抽屉组件（Trigger + Content + 部件聚合导出）
 "use client";
 
 import * as React from "react";
@@ -94,9 +94,9 @@ export function SheetContent({
         role="dialog"
         aria-modal="true"
         className={cn(
-          "fixed z-50 flex flex-col bg-background shadow-lg border-border overflow-y-auto",
-          side === "right" && "right-0 top-0 h-full border-l",
-          side === "left" && "left-0 top-0 h-full border-r",
+          "fixed z-50 flex h-full flex-col bg-background shadow-lg border-border",
+          side === "right" && "right-0 top-0 border-l",
+          side === "left" && "left-0 top-0 border-r",
           side === "top" && "top-0 left-0 w-full border-b",
           side === "bottom" && "bottom-0 left-0 w-full border-t",
           sizeClass,

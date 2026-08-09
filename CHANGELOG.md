@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.2.1] - 2026-08-09
+
+### Bug Fixes
+- **修复设置窗口错乱**：`SheetContent` 根容器由 `flex flex-col ... overflow-y-auto` 改为 `flex h-full flex-col`，并对侧边抽屉统一挂载 `h-full`，使 `SettingsPanel` 的 `flex h-full` 能正确撑满高度
+- `AppHeader` 中 `SheetContent` 透传 className 移除冗余 `overflow-y-auto`，删除破坏 `h-full` 弹性链的 `<div className="py-4">` 包裹层，`SheetHeader` 加 `shrink-0` 防止被内容挤压，消除双重滚动容器与内容塌陷
+
+### UI & Experience
+- 历史记录卡片压缩为单行显示：时间与结果逗号连成一行，结果过长省略号截断，复制按钮保留在行尾
+
 ## [5.2.0] - 2026-08-09
 
 ### Code Quality & Robustness
@@ -12,7 +21,7 @@
 ### Docs & Versioning
 - 新增 `app/lib/version.ts` 作为应用版本单一事实来源（已用于页脚）
 - SPEC.md 状态管理（§6）、国际化翻译键清单（§7.2）、目录结构同步至实际代码
-- 统一所有源文件头注释、`package.json`、`metadata.json`、README×2、SPEC.md、CHANGELOG 至 **v5.2.0**
+- 统一所有源文件头注释、`package.json`、`metadata.json`、README×2、SPEC.md、CHANGELOG 至 **v5.2.1**
 
 ## [5.1.1] - 2026-07-28
 
@@ -29,7 +38,7 @@
 - Add `secureRandomFloat` to `lib/utils.ts`; all decorative randomness uses crypto (no `Math.random` warnings, consistent with project security rule)
 
 ### Versioning
-- Unify version headers across all 39 source files, `package.json`, SPEC.md, README×2 to **v5.2.0**
+- Unify version headers across all 39 source files, `package.json`, SPEC.md, README×2 to **v5.2.1**
 
 ## [5.1.0] - 2026-07-18
 

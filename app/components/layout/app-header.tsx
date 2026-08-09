@@ -1,4 +1,4 @@
-// components/layout/app-header.tsx v5.2.0 —— 顶部导航栏（Logo + 主题切换 + 设置面板）
+// components/layout/app-header.tsx v5.2.1 —— 顶部导航栏（Logo + 主题切换 + 设置面板）
 "use client";
 
 import * as React from "react";
@@ -84,8 +84,8 @@ export function AppHeader({
               <Settings2 className="size-4" aria-hidden="true" />
               <span className="hidden sm:inline">{t("settings")}</span>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full sm:w-[420px] overflow-y-auto">
-              <SheetHeader className="flex-row items-center justify-between space-y-0">
+            <SheetContent side="right" className="w-full sm:w-[420px]">
+              <SheetHeader className="flex-row items-center justify-between space-y-0 shrink-0">
                 <SheetTitle className="text-lg">{t("settings")}</SheetTitle>
                 <SheetClose
                   aria-label={t("close")}
@@ -94,38 +94,36 @@ export function AppHeader({
                   <X className="size-4" aria-hidden="true" />
                 </SheetClose>
               </SheetHeader>
-              <div className="py-4">
-                <SettingsPanel
-                  min={draw.min}
-                  max={draw.max}
-                  count={draw.count}
-                  duration={draw.duration}
-                  allowDuplicates={draw.allowDuplicates}
-                  autoHide={draw.autoHide}
-                  customList={draw.customList}
-                  useCustomList={draw.useCustomList}
-                  digits={draw.digits}
-                  prefix={draw.prefix}
-                  suffix={draw.suffix}
-                  onMinChange={draw.setMin}
-                  onMaxChange={draw.setMax}
-                  onCountChange={draw.setCount}
-                  onDurationChange={draw.setDuration}
-                  onAllowDuplicatesChange={draw.setAllowDuplicates}
-                  onAutoHideChange={draw.setAutoHide}
-                  onCustomListChange={draw.setCustomList}
-                  onUseCustomListChange={draw.setUseCustomList}
-                  onDigitsChange={draw.setDigits}
-                  onPrefixChange={draw.setPrefix}
-                  onSuffixChange={draw.setSuffix}
-                  language={lang}
-                  onLanguageToggle={() =>
-                    draw.setLanguage(lang === "zh" ? "en" : "zh")
-                  }
-                  history={draw.history}
-                  onClearHistory={draw.clearHistory}
-                />
-              </div>
+              <SettingsPanel
+                min={draw.min}
+                max={draw.max}
+                count={draw.count}
+                duration={draw.duration}
+                allowDuplicates={draw.allowDuplicates}
+                autoHide={draw.autoHide}
+                customList={draw.customList}
+                useCustomList={draw.useCustomList}
+                digits={draw.digits}
+                prefix={draw.prefix}
+                suffix={draw.suffix}
+                onMinChange={draw.setMin}
+                onMaxChange={draw.setMax}
+                onCountChange={draw.setCount}
+                onDurationChange={draw.setDuration}
+                onAllowDuplicatesChange={draw.setAllowDuplicates}
+                onAutoHideChange={draw.setAutoHide}
+                onCustomListChange={draw.setCustomList}
+                onUseCustomListChange={draw.setUseCustomList}
+                onDigitsChange={draw.setDigits}
+                onPrefixChange={draw.setPrefix}
+                onSuffixChange={draw.setSuffix}
+                language={lang}
+                onLanguageToggle={() =>
+                  draw.setLanguage(lang === "zh" ? "en" : "zh")
+                }
+                history={draw.history}
+                onClearHistory={draw.clearHistory}
+              />
             </SheetContent>
           </Sheet>
         </div>

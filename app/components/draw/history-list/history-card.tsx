@@ -1,4 +1,4 @@
-// components/draw/history-list/history-card.tsx v5.2.0 —— 历史记录卡片
+// components/draw/history-list/history-card.tsx v5.2.1 —— 历史记录卡片
 "use client";
 
 import * as React from "react";
@@ -77,14 +77,19 @@ export function HistoryCard({
         "shadow-sm hover:shadow-md"
       )}
     >
-      <div className="flex items-center justify-between mb-4">
-        <div className="text-xs text-muted-foreground font-medium tracking-wide">
-          {formatTime(entry.timestamp, language)} · {t("resultsCount", String(entry.results.length))}
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0 flex-1 flex items-center gap-2 truncate">
+          <span className="shrink-0 text-xs text-muted-foreground font-medium tracking-wide">
+            {formatTime(entry.timestamp, language)}
+          </span>
+          <span className="truncate text-sm font-semibold tabular-nums">
+            {entry.results.join(", ")}
+          </span>
         </div>
         <button
           onClick={handleCopy}
           className={cn(
-            "flex items-center gap-1.5 px-2.5 py-1 rounded-lg",
+            "shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-lg",
             "text-xs text-muted-foreground hover:text-foreground hover:bg-background/80",
             "transition-all duration-200 opacity-70 group-hover:opacity-100",
             copied && "text-green-600"
@@ -98,16 +103,6 @@ export function HistoryCard({
           )}
           <span>{copied ? t("copied") : t("copyResult")}</span>
         </button>
-      </div>
-      <div className="flex flex-wrap gap-2.5">
-        {entry.results.map((res, idx) => (
-          <span
-            key={`${entry.id}-${idx}-${res}`}
-            className="inline-flex items-center justify-center px-3.5 py-2 rounded-xl bg-background/80 shadow-sm text-base font-semibold border border-border/20 backdrop-blur-sm tabular-nums"
-          >
-            {res}
-          </span>
-        ))}
       </div>
     </motion.div>
   );
