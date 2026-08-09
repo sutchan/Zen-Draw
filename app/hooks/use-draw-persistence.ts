@@ -1,4 +1,4 @@
-// hooks/use-draw-persistence.ts v5.3.5 — localStorage 持久化设置管理
+// hooks/use-draw-persistence.ts v5.3.6 — localStorage 持久化设置管理
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { DEFAULT_SETTINGS } from "./draw-helpers";
 import type { HistoryEntry } from "./draw-types";

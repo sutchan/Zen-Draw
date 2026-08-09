@@ -1,4 +1,4 @@
-// components/number-roller.tsx v5.3.5 —— 数字滚动动画组件（字符级滚动 + 逐字定格）
+// components/number-roller.tsx v5.3.6 —— 数字滚动动画组件（字符级滚动 + 逐字定格）
 "use client";
 
 import * as React from "react";

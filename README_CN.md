@@ -1,4 +1,4 @@
-# ZenDraw | 禅抽 v5.3.5
+# ZenDraw | 禅抽 v5.3.6
 
 [English Version](./README.md)
 

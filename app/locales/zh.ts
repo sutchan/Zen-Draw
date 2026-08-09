@@ -1,4 +1,4 @@
-// locales/zh.ts v5.3.5 — 中文翻译
+// locales/zh.ts v5.3.6 — 中文翻译
 import type { TranslationDict } from "./types";
 
 export const zhTranslations: TranslationDict = {

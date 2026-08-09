@@ -1,10 +1,10 @@
-# ZenDraw | 禅抽 v5.3.5 — 项目规范文档
+# ZenDraw | 禅抽 v5.3.6 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.3.5
+- **当前版本**: v5.3.6
 - **上次更新**: 2026-08-09
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、11 种主题配色、Web Audio API 音效。
 - **许可证**: MIT License
@@ -103,7 +103,7 @@ zen-draw/
 │   │   │   └── __tests__/
 │   │   │       └── draw-button.test.tsx  # 按钮单元测试
 │   │   ├── number-roller.tsx      # 数字滚动动画组件
-│   │   └── theme-provider.tsx     # 主题提供者（10 预设 + 3 字体 + 深浅色）
+│   │   └── theme-provider.tsx     # 主题提供者（11 预设 + 3 字体 + 深浅色）
 │   ├── hooks/                     # 自定义 Hooks
 │   │   ├── draw-types.ts          # 类型定义
 │   │   ├── draw-helpers.ts        # 纯函数（抽签逻辑/验证/格式化）
@@ -119,23 +119,16 @@ zen-draw/
 │   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
 │   ├── locales/                  # 国际化数据
 │   │   ├── index.ts              # re-export
-│   │   ├── types.ts              # TranslationKey（71 键）
+│   │   ├── types.ts              # TranslationKey（90 键）
 │   │   ├── en.ts                 # 英文翻译
 │   │   └── zh.ts                 # 中文翻译
 │   └── test/
 │       └── setup.ts              # 测试环境配置
-├── prototype/                    # 设计原型（v5.0 重构）
-│   ├── v1/                       # 线框图 + 初始原型
-│   │   ├── wireframes.html
-│   │   └── prototype.html
-│   ├── v2/                       # 交互原型
-│   │   └── prototypes.html
-│   ├── interactive/              # v5.0 高保真可交互原型
-│   │   └── index.html
-│   ├── minimal-design-system.md   # 极简设计系统规范
-│   ├── minimal-prototype.html     # 极简原型演示
-│   ├── design-system.md          # 完整设计系统规范
-│   └── assets/
+├── prototype/                    # 设计原型
+│   ├── index.html               # 高保真可交互原型（主流程 + 状态机）
+│   ├── prototypes.html          # 高保真视觉稿（多主题真实样式）
+│   ├── wireframes.html          # 组件库规范线框图
+│   └── design-system.md         # 完整设计系统规范（令牌/组件库/交互/动效）
 ├── docs/design/                  # 设计参考文档
 │   ├── color-system.html
 │   ├── motion.html
@@ -324,7 +317,7 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 | `Escape` | 返回欢迎状态 / 关闭弹窗 |
 | `Tab` | 控件间导航 |
 
-### 4.5 配色方案（10 种主题）
+### 4.5 配色方案（11 种主题）
 
 | # | 类名 | 名称 | 风格 | 强调色（OKLCH） |
 |---|------|------|------|-----------------|
@@ -338,6 +331,7 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 | 8 | `.theme-midnight` | Midnight | 深邃暗蓝 | oklch(0.5 0.1 260) |
 | 9 | `.theme-retro` | Retro | 复古暖棕 | oklch(0.6 0.1 70) |
 | 10 | `.theme-pixel` | Pixel | 像素游戏绿 | oklch(0.7 0.25 140) |
+| 11 | `.theme-rose` | Rose | 玫瑰粉调 | oklch(0.6 0.18 350) |
 
 ### 4.6 动效规范
 
@@ -442,7 +436,7 @@ interface DrawState {
 - `en` — English
 - `zh` — 简体中文
 
-### 7.2 翻译键（71 个）
+### 7.2 翻译键（90 个）
 ```
 title, settings, history, close,
 minVal, maxVal, drawCount,

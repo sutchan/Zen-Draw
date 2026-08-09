@@ -1,4 +1,4 @@
-// components/draw/draw-display/results-grid.tsx v5.3.5 —— 所有结果网格（惊艳升级：彩屑+揭晓标题+里程碑）
+// components/draw/draw-display/results-grid.tsx v5.3.6 —— 所有结果网格（惊艳升级：彩屑+揭晓标题+里程碑）
 "use client";
 
 import * as React from "react";

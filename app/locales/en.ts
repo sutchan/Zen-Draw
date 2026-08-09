@@ -1,4 +1,4 @@
-// locales/en.ts v5.3.5 — 英文翻译
+// locales/en.ts v5.3.6 — 英文翻译
 import type { TranslationDict } from "./types";
 
 export const enTranslations: TranslationDict = {

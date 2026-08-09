@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.6] - 2026-08-09
+
+### 文档同步与完善
+- 修复 `app/lib/version.ts` 的 `APP_VERSION` 展示值（由 `5.3.3` 修正为实际版本，页脚版本号与全局一致）
+- 统一全项目版本号至 `v5.3.6`：源文件头注释、`package.json`、`metadata.json`、README×2、SPEC.md、CHANGELOG、design-system.md、prototype 三套 HTML
+- 修正 SPEC.md 与代码/原型不一致项：主题预设数 10→11（含 Rose）、翻译键计数 71→90、原型目录结构对齐实际 `prototype/`（`index.html`/`prototypes.html`/`wireframes.html`/`design-system.md`）
+
 ## [5.3.5] - 2026-08-09
 
 ### Bug Fixes
