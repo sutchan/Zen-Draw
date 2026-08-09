@@ -5,7 +5,17 @@
 **设计灵感**: Apple Design · Linear · Vercel · Stripe
 **技术基座**: Next.js · Tailwind CSS · Motion · shadcn/ui (base-nova, built on `@base-ui/react`)
 
-**变更记录**: v5.3.2 — 合并单一高保真原型 `prototype/index.html`；组件库补全 toast / tooltip / checkbox；明确三级分类（基础 / 复合 / 业务）；统一交互标准与动效时序。
+**变更记录**: v5.3.2 — 原型体系拆分为三个互补 HTML + 本规范文档；组件库补全 toast / tooltip / checkbox；明确三级分类（基础 / 复合 / 业务）；统一交互标准与动效时序。
+
+### 原型文件体系（prototype/）
+| 文件 | 定位 | 内容 |
+|------|------|------|
+| `index.html` | 总入口 | 设计令牌 + 组件预览 + 主流程 + 11 主题 + 交互标准速览，导航至其余两文件 |
+| `prototypes.html` | 高保真视觉设计稿 | 完整界面视觉稿（空闲/抽取/结果/历史 4 屏）+ 可交互动效（数字滚动/庆祝彩屑）+ 真实数据 + 状态机 + 11 主题实时切换 |
+| `wireframes.html` | 组件库规范 | 基础组件 / 复合组件 / 业务组件 可视化规范 + 组件使用规则（Do/Don't） |
+| `DESIGN-SYSTEM.md` | 设计规范文档 | 底层令牌、三级组件库、交互标准、动效时序、响应式、无障碍（本文件） |
+
+四者共享同一套设计令牌，保证原型与代码最小颗粒度对齐。
 
 ---
 

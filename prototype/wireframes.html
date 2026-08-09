@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ZenDraw · 组件库规范 wireframes v5.3.2</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ============ TOKENS (与 design-system.md 一致) ============ */
+:root{
+  --bg:#fafbfc;--bg-subtle:#f4f5f7;--bg-elevated:#fff;--bg-muted:#eef0f4;
+  --fg:#1a1d23;--fg-secondary:#5a5f6b;--fg-tertiary:#8e939f;--fg-quaternary:#b4b8c2;
+  --border:#e2e5ea;--border-subtle:#eef0f4;--border-strong:#c4c8d0;--ring:#1a1d23;
+  --accent:#4f6ef7;--accent-fg:#fff;--accent-subtle:rgba(79,110,247,.10);--accent-hover:#3b5ae0;--accent-soft:rgba(79,110,247,.06);
+  --success:#22a06b;--success-subtle:rgba(34,160,107,.10);
+  --warning:#e8a313;--warning-subtle:rgba(232,163,19,.10);
+  --danger:#c9374b;--danger-subtle:rgba(201,55,75,.10);
+  --info:#4f6ef7;--info-subtle:rgba(79,110,247,.10);
+  --r-xs:4px;--r-sm:6px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:24px;--r-full:9999px;
+  --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-8:32px;--s-10:40px;--s-12:48px;--s-16:64px;
+  --sh-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 8px -2px rgba(0,0,0,.08);
+  --sh-lg:0 12px 24px -6px rgba(0,0,0,.10);
+  --ease:cubic-bezier(.16,1,.3,1);--d-150:150ms;--d-200:200ms;--d-300:300ms;
+  --fs:Inter,Noto Sans SC,system-ui,sans-serif;--mono:JetBrains Mono,monospace;
+}
+[data-theme="dark"]{
+  --bg:#0c0d0f;--bg-subtle:#141519;--bg-elevated:#1a1c22;--bg-muted:#23252b;
+  --fg:#e8eaed;--fg-secondary:#9ca0ab;--fg-tertiary:#6b7080;--fg-quaternary:#464b58;
+  --border:#2e3038;--border-subtle:#23252b;--border-strong:#3e414b;--ring:#e8eaed;
+  --accent:#6b87ff;--accent-hover:#85a0ff;--accent-subtle:rgba(107,135,255,.12);--accent-soft:rgba(107,135,255,.06);
+  --success:#2ec483;--warning:#f5b820;--danger:#e05a6d;
+  --sh-sm:0 1px 3px rgba(0,0,0,.4);--sh-md:0 4px 8px -2px rgba(0,0,0,.5);--sh-lg:0 12px 24px -6px rgba(0,0,0,.6);
+}
+/* ============ BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fs);background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit}
+code,.mono{font-family:var(--mono)}
+/* ============ LAYOUT ============ */
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:var(--s-4);padding:var(--s-3) var(--s-6);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:var(--s-2);font-weight:700}
+.brand svg{color:var(--accent)}
+.nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+.nav a{padding:6px 12px;border-radius:var(--r-full);font-size:var(--fs);color:var(--fg-secondary);font-size:.85rem}
+.nav a:hover{background:var(--bg-muted);color:var(--fg)}
+.theme-btn{width:36px;height:36px;border-radius:var(--r-md);background:var(--bg-subtle);color:var(--fg-secondary);display:grid;place-items:center}
+.theme-btn:hover{background:var(--bg-muted);color:var(--fg)}
+.wrap{max-width:1120px;margin:0 auto;padding:var(--s-16) var(--s-6)}
+.section{margin-bottom:var(--s-16)}
+.sec-head h2{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
+.sec-head p{color:var(--fg-secondary);max-width:64ch;margin-bottom:var(--s-8)}
+.kicker{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:var(--s-2)}
+/* ============ GRID ============ */
+.grid{display:grid;gap:var(--s-6)}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr}}
+/* ============ SPEC CARD ============ */
+.spec{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-sm)}
+.spec .stage{display:flex;flex-wrap:wrap;gap:var(--s-3);align-items:center;padding:var(--s-6);min-height:120px;background:linear-gradient(0deg,var(--bg-subtle),var(--bg-subtle))}
+.spec .meta{padding:var(--s-4) var(--s-5);border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:4px}
+.spec .meta .name{font-weight:600;font-size:.9rem}
+.spec .meta .desc{font-size:.8rem;color:var(--fg-tertiary)}
+.spec .meta .use{font-size:.78rem;color:var(--fg-secondary);background:var(--bg-subtle);border-radius:var(--r-sm);padding:6px 8px;font-family:var(--mono);white-space:pre-wrap}
+/* ============ COMPONENTS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:600;border-radius:var(--r-full);transition:all var(--d-200) var(--ease);white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:var(--accent-fg);padding:10px 22px;box-shadow:0 2px 8px var(--accent-subtle)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-subtle)}
+.btn-secondary{background:var(--bg-subtle);color:var(--fg);border:1px solid var(--border-subtle);padding:10px 18px}
+.btn-secondary:hover{background:var(--bg-muted)}
+.btn-ghost{background:transparent;color:var(--fg-secondary);padding:8px 12px;border-radius:var(--r-md)}
+.btn-ghost:hover{background:var(--bg-muted);color:var(--fg)}
+.btn-icon{width:40px;height:40px;border-radius:var(--r-md);background:var(--bg-subtle);color:var(--fg-secondary);display:grid;place-items:center}
+.btn-icon:hover{background:var(--bg-muted);color:var(--fg)}
+.btn-draw{width:180px;height:180px;border-radius:50%;background:var(--accent);color:var(--accent-fg);font-size:1.3rem;font-weight:700;box-shadow:0 8px 32px var(--accent-subtle);position:relative}
+.btn-draw::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--accent-subtle);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.06);opacity:0}}
+.field{display:flex;flex-direction:column;gap:6px;width:100%}
+.field label{font-size:.85rem;font-weight:500;color:var(--fg-secondary)}
+.input,.textarea{padding:9px 12px;background:var(--bg-subtle);border:1px solid var(--border-subtle);border-radius:var(--r-md);transition:border-color var(--d-150),box-shadow var(--d-150);width:100%}
+.input:focus,.textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle)}
+.input::placeholder,.textarea::placeholder{color:var(--fg-quaternary)}
+.input.error{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-subtle)}
+.err-msg{font-size:.72rem;color:var(--danger)}
+.switch{width:44px;height:26px;background:var(--bg-muted);border-radius:var(--r-full);position:relative;cursor:pointer;transition:background var(--d-200)}
+.switch.on{background:var(--accent)}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:var(--sh-sm);transition:transform var(--d-200)}
+.switch.on::after{transform:translateX(18px)}
+.checkbox{width:20px;height:20px;border-radius:var(--r-sm);border:1.5px solid var(--border-strong);background:var(--bg-elevated);display:inline-grid;place-items:center;cursor:pointer;color:var(--accent-fg);transition:all var(--d-150)}
+.checkbox.on{background:var(--accent);border-color:var(--accent)}
+.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:var(--r-full);font-size:.72rem;font-weight:600}
+.badge-accent{background:var(--accent-subtle);color:var(--accent)}
+.badge-success{background:var(--success-subtle);color:var(--success)}
+.badge-danger{background:var(--danger-subtle);color:var(--danger)}
+.badge-neutral{background:var(--bg-muted);color:var(--fg-secondary)}
+.card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-5);box-shadow:var(--sh-sm)}
+.card h4{font-weight:600;margin-bottom:4px}.card p{font-size:.85rem;color:var(--fg-secondary)}
+.tabs{display:inline-flex;gap:4px;padding:4px;background:var(--bg-subtle);border-radius:var(--r-lg)}
+.tab{padding:8px 16px;border-radius:var(--r-md);font-size:.85rem;font-weight:500;color:var(--fg-secondary);cursor:pointer}
+.tab.on{background:var(--bg-elevated);color:var(--fg);box-shadow:var(--sh-sm)}
+.slider{-webkit-appearance:none;appearance:none;width:160px;height:6px;border-radius:var(--r-full);background:var(--bg-muted);outline:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:var(--sh-sm);cursor:pointer}
+.alert{display:flex;gap:10px;padding:10px 14px;border-radius:var(--r-md);font-size:.82rem;align-items:flex-start}
+.alert svg{margin-top:1px;flex-shrink:0}
+.alert-danger{background:var(--danger-subtle);color:var(--danger)}
+.alert-success{background:var(--success-subtle);color:var(--success)}
+.alert-info{background:var(--info-subtle);color:var(--info)}
+.tip{position:relative}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--fg);color:var(--bg);padding:4px 8px;border-radius:var(--r-sm);font-size:.72rem;white-space:nowrap;opacity:0;pointer-events:none;transition:all var(--d-150)}
+.tip:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast-demo{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:var(--fg);color:var(--bg);border-radius:var(--r-full);font-size:.82rem;font-weight:500;box-shadow:var(--sh-lg)}
+.select{position:relative;width:200px}
+.select .sel{padding:9px 12px;background:var(--bg-subtle);border:1px solid var(--border-subtle);border-radius:var(--r-md);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.select .menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-md);box-shadow:var(--sh-lg);padding:4px;display:none;z-index:5}
+.select.open .menu{display:block}
+.select .opt{padding:8px 10px;border-radius:var(--r-sm);font-size:.85rem;cursor:pointer}
+.select .opt:hover{background:var(--bg-muted)}
+/* ============ FORM (composite) ============ */
+.form{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-xl);padding:var(--s-6);box-shadow:var(--sh-sm);max-width:380px}
+.form h3{font-size:1.05rem;font-weight:700;margin-bottom:var(--s-4)}
+.form .row{display:flex;gap:var(--s-3);margin-bottom:var(--s-4)}
+.form .actions{display:flex;gap:var(--s-2);margin-top:var(--s-2)}
+/* ============ BUSINESS ============ */
+.hist{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg-subtle)}
+.hist .nums{font-family:var(--mono);font-weight:600;color:var(--accent)}
+.hist .t{margin-left:auto;font-size:.72rem;color:var(--fg-tertiary)}
+.empty{display:flex;flex-direction:column;align-items:center;gap:12px;padding:48px;border:1px dashed var(--border-strong);border-radius:var(--r-xl);color:var(--fg-tertiary);text-align:center}
+.empty svg{opacity:.5}
+.display{display:flex;flex-direction:column;align-items:center;gap:24px;padding:48px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-2xl);box-shadow:var(--sh-md)}
+.num{font-family:var(--mono);font-weight:700;font-size:clamp(3rem,10vw,5rem);line-height:1;letter-spacing:-.04em}
+/* ============ RULES ============ */
+.rule{display:flex;gap:14px;padding:16px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm)}
+.rule .ic{flex-shrink:0;width:32px;height:32px;border-radius:var(--r-md);background:var(--accent-subtle);color:var(--accent);display:grid;place-items:center}
+.rule h4{font-size:.92rem;font-weight:600;margin-bottom:3px}
+.rule p{font-size:.82rem;color:var(--fg-secondary)}
+.do{color:var(--success)}.dont{color:var(--danger)}
+.footer{border-top:1px solid var(--border);padding:var(--s-8);text-align:center;color:var(--fg-tertiary);font-size:.85rem}
+.divider{height:1px;background:var(--border);margin:var(--s-12) 0}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>ZenDraw 组件库规范</div>
+  <nav class="nav">
+    <a href="#base">基础组件</a><a href="#composite">复合组件</a><a href="#business">业务组件</a><a href="#rules">使用规则</a>
+    <button class="theme-btn" onclick="toggleTheme()" aria-label="切换深浅色"><svg id="ti" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
+  </nav>
+</div>
+
+<div class="wrap">
+
+<!-- ===== 基础组件 ===== -->
+<section class="section" id="base">
+  <div class="sec-head"><span class="kicker">Primitives</span><h2>基础组件</h2>
+  <p>所有上层组件的基石，遵循 base-nova 风格（shadcn/ui，built on @base-ui/react）。无业务语义，纯交互原子。</p></div>
+
+  <div class="grid g3">
+    <div class="spec"><div class="stage"><button class="btn btn-primary">抽取</button><button class="btn btn-secondary">取消</button><button class="btn btn-ghost">更多</button></div><div class="meta"><div class="name">Button 按钮</div><div class="desc">4 变体：primary / secondary / ghost / icon</div><div class="use">&lt;Button variant="primary"&gt;抽取&lt;/Button&gt;</div></div></div>
+    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="field"><label>最小值 Min</label><input class="input" value="1"></div></div><div class="meta"><div class="name">Input 输入框</div><div class="desc">默认态 / 聚焦态（accent 环）</div><div class="use">&lt;Input placeholder="..." /&gt;</div></div></div>
+    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="field"><label>名单（每行一个）</label><textarea class="textarea" rows="3">张三&#10;李四&#10;王五</textarea></div></div><div class="meta"><div class="name">Textarea 多行输入</div><div class="desc">自定义名单场景</div><div class="use">&lt;Textarea rows={3} /&gt;</div></div></div>
+    <div class="spec"><div class="stage"><div class="switch on" onclick="this.classList.toggle('on')"></div><div class="switch" onclick="this.classList.toggle('on')"></div></div><div class="meta"><div class="name">Switch 开关</div><div class="desc">布尔设置（允许重复 / 自动隐藏）</div><div class="use">&lt;Switch checked={...} /&gt;</div></div></div>
+    <div class="spec"><div class="stage"><div class="checkbox on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><div class="checkbox"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div><div class="meta"><div class="name">Checkbox 复选框</div><div class="desc">多选语义（与 Switch 区分）</div><div class="use">&lt;Checkbox checked={...} /&gt;</div></div></div>
+    <div class="spec"><div class="stage"><span class="badge badge-accent">抽取中</span><span class="badge badge-success">已完成</span><span class="badge badge-danger">错误</span><span class="badge badge-neutral">历史</span></div><div class="meta"><div class="name">Badge 标记</div><div class="desc">4 语义色：accent/success/danger/neutral</div><div class="use">&lt;Badge variant="accent"&gt;</div></div></div>
+    <div class="spec"><div class="stage"><div class="card"><h4>快速抽取</h4><p>从 1–100 抽 5 个不重复数字</p></div></div><div class="meta"><div class="name">Card 卡片</div><div class="desc">信息容器，统一圆角与微阴影</div><div class="use">&lt;Card&gt;...&lt;/Card&gt;</div></div></div>
+    <div class="spec"><div class="stage"><div class="tabs"><div class="tab on">抽取</div><div class="tab" onclick="tab(this)">外观</div><div class="tab" onclick="tab(this)">历史</div></div></div><div class="meta"><div class="name">Tabs 选项卡</div><div class="desc">设置面板分段导航</div><div class="use">&lt;Tabs&gt;&lt;Tab&gt;抽取&lt;/Tab&gt;...&lt;/Tabs&gt;</div></div></div>
+    <div class="spec"><div class="stage"><input type="range" class="slider" min="1" max="30" value="5" oninput="this.previousElementSibling"> <span class="mono" style="color:var(--accent)">5s</span></div><div class="meta"><div class="name">Slider 滑块</div><div class="desc">动画时长 / 抽取个数</div><div class="use">&lt;Slider min={1} max={30} /&gt;</div></div></div>
+    <div class="spec"><div class="stage"><div class="select"><div class="sel" onclick="this.parentElement.classList.toggle('open')">JetBrains Mono <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div><div class="menu"><div class="opt">JetBrains Mono</div><div class="opt">Inter</div><div class="opt">Playfair</div></div></div></div><div class="meta"><div class="name">Select 选择器</div><div class="desc">字体 / 主题下拉</div><div class="use">&lt;Select&gt;&lt;SelectItem/&gt;&lt;/Select&gt;</div></div></div>
+    <div class="spec"><div class="stage"><button class="btn-icon tip" data-tip="复制结果"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button><button class="btn-icon tip" data-tip="清空历史"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div><div class="meta"><div class="name">Tooltip 提示</div><div class="desc">悬浮说明（图标按钮）</div><div class="use">&lt;Tooltip&gt;&lt;TooltipTrigger/&gt;&lt;TooltipContent/&gt;</div></div></div>
+    <div class="spec"><div class="stage"><div class="toast-demo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>已复制到剪贴板</div></div><div class="meta"><div class="name">Toast 轻提示</div><div class="desc">全局轻量反馈（2.5s 自动消失）</div><div class="use">const toast = useToast(); toast("...")</div></div></div>
+    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="alert alert-danger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>范围无效，请检查最小/最大值</span></div><div class="alert alert-success"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span>抽取完成，结果已保存</span></div></div><div class="meta"><div class="name">Alert 警告</div><div class="desc">内联错误与成功提示</div><div class="use">&lt;Alert variant="danger"&gt;</div></div></div>
+    <div class="spec"><div class="stage"><button class="btn btn-ghost tip" data-tip="打开设置">⚙</button></div><div class="meta"><div class="name">Sheet 抽屉</div><div class="desc">移动端设置面板（侧滑覆盖）</div><div class="use">&lt;Sheet&gt;&lt;SheetTrigger/&gt;&lt;SheetContent/&gt;</div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== 复合组件 ===== -->
+<section class="section" id="composite">
+  <div class="sec-head"><span class="kicker">Composite</span><h2>复合组件</h2>
+  <p>由基础组件组合而成，承载局部交互逻辑。可独立复用，不直接表达业务含义。</p></div>
+
+  <div class="grid g2">
+    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="form">
+      <h3>抽取设置</h3>
+      <div class="row"><div class="field"><label>最小值</label><input class="input" value="1"></div><div class="field"><label>最大值</label><input class="input error" value="0"><span class="err-msg">需大于最小值</span></div></div>
+      <div class="field" style="margin-bottom:12px"><label>抽取个数</label><input type="range" class="slider" min="1" max="100" value="5"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span style="font-size:.85rem">允许重复</span><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="actions"><button class="btn btn-primary" style="flex:1">保存</button><button class="btn btn-ghost">重置</button></div>
+    </div></div><div class="meta"><div class="name">Form 表单</div><div class="desc">设置区组合：字段 + 校验 + 开关 + 操作</div><div class="use">组合 Input/Switch/Slider/Button + 内联校验</div></div></div>
+
+    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="card" style="display:flex;align-items:center;gap:12px"><div class="checkbox on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div><div style="flex:1"><div style="font-weight:600;font-size:.9rem">使用自定义名单</div><div style="font-size:.78rem;color:var(--fg-tertiary)">从文本导入参与者</div></div><span class="badge badge-accent">已启用</span></div><div class="card" style="margin-top:12px"><div style="font-weight:600;font-size:.9rem;margin-bottom:8px">外观设置</div><div class="tabs" style="width:100%"><div class="tab on" style="flex:1;text-align:center">字体</div><div class="tab" style="flex:1;text-align:center" onclick="tab(this)">主题</div></div></div></div><div class="meta"><div class="name">Card 组合</div><div class="desc">设置项卡片 + 内嵌 Tabs</div><div class="use">Card + Checkbox + Badge + Tabs</div></div></div>
+
+    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="tabs" style="width:100%"><div class="tab on" style="flex:1;text-align:center">抽取</div><div class="tab" style="flex:1;text-align:center" onclick="tab(this)">外观</div><div class="tab" style="flex:1;text-align:center" onclick="tab(this)">历史</div></div><div style="font-size:.82rem;color:var(--fg-secondary);padding-top:8px">设置面板三区切换，承载全部配置</div></div><div class="meta"><div class="name">SettingsPanel 面板</div><div class="desc">Tab 切换的三段式容器</div><div class="use">Tabs + 各业务子面板</div></div></div>
+
+    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="select" style="width:100%"><div class="sel" onclick="this.parentElement.classList.toggle('open')">JetBrains Mono <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></div><div class="menu"><div class="opt">JetBrains Mono</div><div class="opt">Inter</div><div class="opt">Playfair Display</div></div></div><div style="font-size:.82rem;color:var(--fg-secondary);padding-top:8px">数字结果显示字体选择</div></div><div class="meta"><div class="name">Select 组合</div><div class="desc">字体 / 主题预设下拉</div><div class="use">Select + SelectItem + Portal</div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== 业务组件 ===== -->
+<section class="section" id="business">
+  <div class="sec-head"><span class="kicker">Business</span><h2>业务组件</h2>
+  <p>表达 ZenDraw 核心领域概念，直接对应产品功能。不可脱离业务语境复用。</p></div>
+
+  <div class="grid g2">
+    <div class="spec"><div class="stage"><div class="display"><div class="num">73</div><div style="color:var(--fg-tertiary);font-size:.85rem">从 1 – 100 抽取 · 第 1 / 5 个</div><button class="btn-draw">抽取</button></div></div><div class="meta"><div class="name">DrawDisplay 抽签展示</div><div class="desc">主舞台：welcome / drawing / result / error 四态</div><div class="use">&lt;DrawDisplay state={state} /&gt;</div></div></div>
+
+    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div class="hist"><span class="nums">07 · 23 · 58 · 81 · 94</span><span class="t">14:32</span></div><div class="hist"><span class="nums">03 · 19 · 42 · 66 · 88</span><span class="t">14:28</span></div><div class="hist"><span class="nums">11 · 27 · 35 · 52 · 99</span><span class="t">14:21</span></div></div><div class="meta"><div class="name">HistoryList 历史列表</div><div class="desc">结果 + 时间戳 + 复制，含 EmptyState</div><div class="use">&lt;HistoryList entries={...} /&gt;</div></div></div>
+
+    <div class="spec"><div class="stage"><div class="empty"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><div style="font-size:.85rem">暂无记录 · 开始抽取后结果将显示在这里</div></div></div><div class="meta"><div class="name">EmptyState 空状态</div><div class="desc">愉悦引导，浮动图标 + 俏皮文案</div><div class="use">历史为空 / 名单为空时展示</div></div></div>
+
+    <div class="spec"><div class="stage" style="flex-direction:column;align-items:stretch"><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><span class="badge badge-accent">Default</span><span class="badge badge-accent">Ocean</span><span class="badge badge-accent">Forest</span><span class="badge badge-accent">Sunset</span><span class="badge badge-accent">Purple</span><span class="badge badge-accent">Neon</span><span class="badge badge-accent">Sakura</span><span class="badge badge-accent">Midnight</span><span class="badge badge-accent">Retro</span><span class="badge badge-accent">Pixel</span><span class="badge badge-accent">Rose</span></div><div style="font-size:.82rem;color:var(--fg-secondary);text-align:center">11 套配色预设（含深/浅）</div></div><div class="meta"><div class="name">ThemeSwatches 主题切换</div><div class="desc">仅 accent 色相变化，对比度恒定</div><div class="use">&lt;ThemeSwatches /&gt; in AppearanceSettings</div></div></div>
+
+    <div class="spec"><div class="stage"><div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div style="font-size:2.5rem">🎉</div><div class="num" style="font-size:2rem;color:var(--accent)">+1</div><div style="font-size:.82rem;color:var(--fg-tertiary)">第 100 次抽签里程碑</div></div></div><div class="meta"><div class="name">CelebrationEffect 庆祝</div><div class="desc">粒子 / 光晕动效 + 里程碑徽章</div><div class="use">结果揭晓时触发（尊重 reduced-motion）</div></div></div>
+
+    <div class="spec"><div class="stage"><div class="brand" style="font-size:1.1rem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>ZenDraw <span style="color:var(--fg-tertiary);font-weight:400;font-size:.85rem">禅抽</span></div><div style="display:flex;gap:8px"><button class="btn btn-icon tip" data-tip="语言">🌐</button><button class="btn btn-icon tip" data-tip="主题">🌓</button><button class="btn btn-icon tip" data-tip="设置">⚙</button></div></div><div class="meta"><div class="name">AppHeader 顶栏</div><div class="desc">品牌 + 语言 + 主题 + 设置入口</div><div class="use">&lt;AppHeader /&gt;</div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== 使用规则 ===== -->
+<section class="section" id="rules">
+  <div class="sec-head"><span class="kicker">Guidelines</span><h2>组件使用规则</h2>
+  <p>统一的交互语言。遵循以下规则，保证跨页面、跨主题体验一致。</p></div>
+
+  <div class="grid g2">
+    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div><div><h4 class="do">状态反馈统一</h4><p>所有可点击元素具备 hover/active/focus-visible 三态；提交类操作完成用 Toast，内联错误用 Alert。</p></div></div>
+    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div><div><h4 class="dont">禁止混用语义色</h4><p>danger 仅用于错误/删除，success 仅用于成功；不要把 accent 当 success 用，避免语义混乱。</p></div></div>
+    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div><h4 class="do">圆角层级分明</h4><p>控件 md(8px) · 卡片 lg(12px) · 展示区 2xl(24px) · 按钮/徽章 full。不要在同一界面混用多种小圆角。</p></div></div>
+    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/></svg></div><div><h4 class="dont">不要自造间距</h4><p>间距严格走 4px 栅格（8/12/16/24/32）。避免随意 margin，统一用 gap 与 section 节奏。</p></div></div>
+    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div><div><h4 class="do">动效克制</h4><p>缓动用 --ease (cubic-bezier(.16,1,.3,1))；时长 150–300ms；全局尊重 prefers-reduced-motion。</p></div></div>
+    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div><div><h4 class="do">数字用等宽字体</h4><p>所有抽签结果 / 时间戳用 JetBrains Mono（tabular-nums），避免滚动时宽度跳动。</p></div></div>
+    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><h4 class="do">触控目标 ≥ 44px</h4><p>移动端图标按钮最小 40–44px；核心抽签按钮 140–200px 自适应。</p></div></div>
+    <div class="rule"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><h4 class="dont">不要硬编码颜色</h4><p>一律用设计令牌（--accent/--fg/--border）；新增配色只在 THEME_PRESETS + style.css 两处扩展。</p></div></div>
+  </div>
+</section>
+
+</div>
+
+<div class="footer">ZenDraw · 禅抽 — 组件库规范 wireframes v5.3.2 · 与 design-system.md 同源令牌</div>
+
+<script>
+function toggleTheme(){const h=document.documentElement;const c=h.getAttribute('data-theme');const n=c==='dark'?'light':'dark';h.setAttribute('data-theme',n);document.getElementById('ti').innerHTML=n==='dark'?"<path d='M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z'/>":"<circle cx='12' cy='12' r='5'/><path d='M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2'/>";}
+function tab(el){el.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');}
+</script>
+</body>
+</html>
