@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.4.1] - 2026-08-09
+
+### Bug Fixes & Code Quality
+- **数字动效缓进缓出**：`number-roller.tsx` 定格动画由弹簧（带 overshoot 弹跳）改为 `easeInOut` 平滑 tween，消除弹跳、符合缓进缓出；滚动切换用短线性 tween 保持流畅；`prefers-reduced-motion` 静态兜底不变
+
 ## [5.4.0] - 2026-08-09
 
 ### Features

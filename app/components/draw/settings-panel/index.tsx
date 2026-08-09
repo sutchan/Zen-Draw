@@ -1,4 +1,4 @@
-// components/draw/settings-panel/index.tsx v5.4.0 —— 设置面板（包装 Sheet + Tabs + 子设置区）
+// components/draw/settings-panel/index.tsx v5.4.1 —— 设置面板（包装 Sheet + Tabs + 子设置区）
 "use client";
 
 import * as React from "react";

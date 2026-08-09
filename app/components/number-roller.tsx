@@ -1,4 +1,4 @@
-// components/number-roller.tsx v5.3.7 —— 数字滚动动画组件（字符级滚动 + 逐字定格）
+// components/number-roller.tsx v5.4.1 —— 数字滚动动画组件（字符级滚动 + 逐字定格）
 "use client";
 
 import * as React from "react";
@@ -173,12 +173,10 @@ function RollingChar({ target, isDrawing, stopDelay }: RollingCharProps) {
               : { scale: 0.6, opacity: 0, y: 16, filter: "blur(8px)" }
           }
           transition={{
-            type: phase === "settling" ? "spring" : "tween",
-            // 定格时用更强劲的弹簧：稍有 overshoot 造成「弹跳感」
-            stiffness: phase === "settling" ? 400 : 300,
-            damping: phase === "settling" ? 16 : 20,
-            mass: phase === "settling" ? 0.55 : 0.7,
-            ...(phase === "settling" ? {} : { duration: 0.06 }),
+            // 缓进缓出：定格用稍长的 easeInOut 平滑收尾，滚动切换用短 tween 保持流畅
+            type: "tween",
+            duration: phase === "settling" ? 0.45 : 0.06,
+            ease: phase === "settling" ? [0.42, 0, 0.58, 1] : "linear",
           }}
           className="inline-block"
           style={{ fontVariantNumeric: "tabular-nums" }}
