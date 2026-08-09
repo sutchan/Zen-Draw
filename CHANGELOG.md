@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.2.2] - 2026-08-09
+
+### Bug Fixes
+- 修复里程碑徽章「第 X 次抽签」左右跳动：移除 scale 缩放动画（跳动主因），锚定 `origin-top-right` 并以 `whitespace-nowrap` 防换行，改为纯垂直淡入
+
 ## [5.2.1] - 2026-08-09
 
 ### Bug Fixes

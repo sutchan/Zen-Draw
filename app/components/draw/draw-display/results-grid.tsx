@@ -97,15 +97,15 @@ export function ResultsGrid({
           <motion.div
             key="milestone"
             initial={
-              shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -20, scale: 0.6 }
+              shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -20 }
             }
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{
               duration: shouldReduceMotion ? 0 : 0.5,
               ease: [0.34, 1.56, 0.64, 1],
             }}
-            className="pointer-events-none absolute right-[6%] top-[8%] z-30 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary backdrop-blur-sm"
+            className="pointer-events-none absolute right-[6%] top-[8%] z-30 origin-top-right whitespace-nowrap rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary backdrop-blur-sm"
             aria-hidden="true"
           >
             {t("milestoneDraws", String(milestone))}
