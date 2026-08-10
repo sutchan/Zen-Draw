@@ -1,6 +1,6 @@
 # ZenDraw 设计系统规范（DESIGN-SYSTEM）
 
-> 适用产品：ZenDraw｜禅抽 v5.7.3
+> 适用产品：ZenDraw｜禅抽 v5.7.4
 > 定位：高保真可交互原型的设计令牌、组件库、交互与无障碍基准。
 > 配套原型：`index.html`（主流程 + 主题演示）、`prototypes.html`（状态机图示）、`wireframes.html`（组件库规范）。
 > 代码对应：`app/lib/version.ts` 的 `THEME_PRESETS`（由 `theme-provider.tsx` 消费）。
@@ -266,8 +266,8 @@ Sheet (side="right", aria-modal="true", role="dialog")
 
 ## 变更记录
 
-### v5.7.3 - 2026-08-10
-- **原型对齐代码真值**：版本号统一至 v5.7.3（代码 `APP_VERSION` 为事实来源）。
+### v5.7.4 - 2026-08-10
+- **原型对齐代码真值**：版本号统一至 v5.7.4（代码 `APP_VERSION` 为事实来源）。
 - **设置容器改 4 Tab**：新增「体验 (experience)」Tab（音效/彩屑/减弱动效/自动收起/密度/重置），`自动隐藏` 由抽取 Tab 并入体验。
 - **主题机制修正**：由 `data-theme` + `data-mode` 改为 `theme-<preset>` 类 + `.dark` 类（对齐 `next-themes` / `theme-provider.tsx`）。
 - **主题清单修正**：11 套真实预设为 default/ocean/forest/sunset/purple/neon/sakura/midnight/retro/pixel/rose（移除不存在的 Graphite/Mono）。

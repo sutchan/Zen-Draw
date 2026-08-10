@@ -1,4 +1,4 @@
-// components/draw/draw-button.tsx v5.7.3 —— 抽取主按钮（极简设计优化）
+// components/draw/draw-button.tsx v5.7.4 —— 抽取主按钮（极简设计优化）
 "use client";
 
 import * as React from "react";

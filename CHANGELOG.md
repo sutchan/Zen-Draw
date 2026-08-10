@@ -1,13 +1,15 @@
 # Changelog
 
-## [5.7.3] - 2026-08-10
+## [5.7.4] - 2026-08-10
 
-### chore（语义化 id 补全 + 版本同步）
+### chore（冗余清理 + 语义化 id 补全 + 版本同步）
+- **删除冗余文档** `CODE_REVIEW.md`：该 v3.0 审查报告与当前 v5.7.x 代码严重脱节（主题机制、设置架构、组件清单均过时），属无效历史残留，予以清理
+- 清理工作记忆首日条目的乱码无效内容
 - 为页面级与区块级容器补齐语义化 `id`：draw-area / action-area / history-area / header-content / header-brand / header-actions / 各设置 Card（draw-range/count/duration/allow-dup/custom-list、experience-* 6 项）/ appearance-* 区块 / result-cards / history-tab-header
-- 统一同步所有源文件头注释与文档版本号至 v5.7.3
+- 统一同步所有源文件头注释与文档版本号至 v5.7.4
 
 ### docs（原型与规范对齐代码真值）
-- 原型四文件（index/prototypes/wireframes/tokens.css）与 `design-system.md` 版本号统一升到 v5.7.3（对齐 `app/lib/version.ts`）
+- 原型四文件（index/prototypes/wireframes/tokens.css）与 `design-system.md` 版本号统一升到 v5.7.4（对齐 `app/lib/version.ts`）
 - 设置容器规范由 3 Tab 改为 **4 Tab**：新增「体验 (experience)」Tab（音效/彩屑/减弱动效/自动收起/密度/重置），「自动隐藏」由抽取并入体验；`wireframes.html` 预览与 `design-system.md §12` 同步
 - 主题机制修正：由 `data-theme` + `data-mode` 改为 `theme-<preset>` 类 + `.dark` 类（对齐 `next-themes` / `theme-provider.tsx`）
 - 主题清单修正：11 套真实预设为 default/ocean/forest/sunset/purple/neon/sakura/midnight/retro/pixel/rose（移除不存在的 Graphite/Mono）

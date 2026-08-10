@@ -1,4 +1,4 @@
-// hooks/draw-reducer.ts v5.7.3 — 抽签状态 Reducer
+// hooks/draw-reducer.ts v5.7.4 — 抽签状态 Reducer
 
 import type { DrawState, DrawAction, DrawSettings } from "./draw-types";
 import { DEFAULT_SETTINGS } from "./draw-helpers";
