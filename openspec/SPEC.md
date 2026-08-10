@@ -116,15 +116,15 @@ zen-draw/
 │   │   ├── use-draw-actions.ts    # 动作回调（start/stop/setters）
 │   │   ├── use-draw-persistence.ts# 持久化设置（13 组 localStorage）
 │   │   ├── use-local-storage.ts   # localStorage Hook（含跨标签同步）
-│   │   └── use-sound.ts          # Web Audio API 音效合成
-│   │   └── use-mounted-reduced-motion.ts # 减少动效偏好 Hook
+│   │   ├── use-sound.ts                   # Web Audio API 音效合成
+│   │   └── use-mounted-reduced-motion.ts  # 减少动效偏好 Hook
 │   ├── lib/
 │   │   ├── utils.ts              # 工具函数（cn / secureRandomInt / sanitizeListInput）
 │   │   ├── version.ts            # 应用版本常量（单一来源）
 │   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
 │   ├── locales/                  # 国际化数据
 │   │   ├── index.ts              # re-export
-│   │   ├── types.ts              # TranslationKey（110 键）
+│   │   ├── types.ts              # TranslationKey（117 键）
 │   │   ├── en.ts                 # 英文翻译
 │   │   └── zh.ts                 # 中文翻译
 │   └── test/
@@ -157,7 +157,6 @@ zen-draw/
 ├── postcss.config.mjs
 ├── vitest.config.ts
 ├── CHANGELOG.md
-├── CODE_REVIEW.md
 ├── README.md / README_CN.md
 └── metadata.json
 ```
@@ -506,9 +505,9 @@ interface DrawState {
 - `en` — English
 - `zh` — 简体中文
 
-### 7.2 翻译键（110 个）
+### 7.2 翻译键（117 个）
 
-翻译键由 `app/locales/types.ts` 中的 `TranslationKey` 联合类型强约束，`zh.ts` 与 `en.ts` 必须完全对齐（缺失或多余都会在编译期报错）。当前共 **110 个**键，涵盖：界面导航（title/settings/history/close）、范围与计数（minVal/maxVal/drawCount/allowDup/autoHide/custom/useCustomList）、外观（theme*/font*）、抽签流程（ready/drawing/startDraw/stopDraw/copy*）、名单导入与编辑（import*/confirmImport/itemsLoaded/clearList/editList/removeItem/duplicateItemsWarning）、错误提示（err*/minMaxError/rangeError）、体验设置（sound/density/confetti/reduceMotion/resetSettings）、抽取模式（drawMode/modeNumber/modeList）、密度与语言（density*/languageLabel/langZh/langEn）、无障碍（appTitle/resultRegion/welcomeHint）等。新增键须同步加入 `TranslationKey`、`zh.ts`、`en.ts` 三处。
+翻译键由 `app/locales/types.ts` 中的 `TranslationKey` 联合类型强约束，`zh.ts` 与 `en.ts` 必须完全对齐（缺失或多余都会在编译期报错）。当前共 **117 个**键，涵盖：界面导航（title/settings/history/close）、范围与计数（minVal/maxVal/drawCount/allowDup/autoHide/custom/useCustomList）、外观（theme*/font*）、抽签流程（ready/drawing/startDraw/stopDraw/copy*）、名单导入与编辑（import*/confirmImport/itemsLoaded/clearList/editList/removeItem/duplicateItemsWarning）、错误提示（err*/minMaxError/rangeError）、体验设置（sound/density/confetti/reduceMotion/resetSettings）、抽取模式（drawMode/modeNumber/modeList）、密度与语言（density*/languageLabel/langZh/langEn）、无障碍（appTitle/resultRegion/welcomeHint）等。新增键须同步加入 `TranslationKey`、`zh.ts`、`en.ts` 三处。
 
 ### 7.3 使用方式
 ```typescript
@@ -658,6 +657,16 @@ export const viewport: Viewport = {
 ## 13. 版本历史
 
 > 详见 `CHANGELOG.md`。5.3.6 之后的完整迭代记录如下（与 CHANGELOG 同步）：
+
+### v5.7.4
+- 删除与代码严重脱节的 `CODE_REVIEW.md` 冗余文档；全仓库版本号统一至 v5.7.4
+- SPEC.md 目录树修正（hooks 缩进、移除 CODE_REVIEW.md）；翻译键数订正为 117；design-system.md 翻译键数订正为 117
+
+### v5.7.2
+- 为所有结构性/语义化容器补充 kebab-case 语义化 `id`（页面级、布局、设置面板、抽取展示、历史列表、特效）；SPEC.md 新增 §5.1.1 容器语义化 id 规范表
+
+### v5.7.1
+- 修正 SPEC.md §4/§10.1/§11/§13 多处失准（版本标注、原型路径、SEO 标题、版本历史）；拆分 settings-panel 与 use-draw-actions（≤200 行规约）
 
 ### v5.7.0
 - 深色/浅色切换移入设置「外观」Tab；新增「结果彩屑动效」「减弱动效」偏好

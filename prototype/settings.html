@@ -1,0 +1,793 @@
+<!-- prototype/settings.html v5.7.4 —— 设置选项高保真原型（对齐 settings-panel 4 Tab + 自定义名单 Dialog） -->
+<html lang="zh-CN" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZenDraw｜禅抽 · 设置选项高保真原型 v5.7.4</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    /* 布局：左侧模拟应用主界面，右侧固定展示设置抽屉（便于审查设置容器本身） */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-fg);
+      min-height: 100vh;
+    }
+    .stage {
+      display: flex;
+      min-height: 100vh;
+    }
+    /* 左侧环境（主界面占位） */
+    .stage-main {
+      flex: 1;
+      padding: 32px;
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .stage-hint {
+      font-size: 12px;
+      color: var(--color-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .mock-result {
+      font-size: 64px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      color: var(--color-primary);
+    }
+    .mock-toolbar { display: flex; gap: 12px; align-items: center; }
+    .icon-btn {
+      width: 40px; height: 40px; border-radius: 12px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+      color: var(--color-muted);
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .2s;
+    }
+    .icon-btn:hover { color: var(--color-fg); background: rgba(0,0,0,.04); }
+
+    /* 右侧设置抽屉（Side=RIGHT Sheet，w-[380px]） */
+    .panel {
+      width: 380px;
+      flex-shrink: 0;
+      background: var(--color-bg);
+      border-left: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    /* HeaderBar */
+    .header-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .brand-mark {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--color-fg); color: var(--color-bg);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px;
+    }
+    .brand-title { font-size: 16px; font-weight: 600; line-height: 1; }
+    .brand-ver { font-size: 10px; color: var(--color-muted); font-family: var(--font-mono); }
+    .lang-btn {
+      margin-left: auto; width: 36px; height: 36px; border-radius: 12px;
+      border: 1px solid var(--color-border);
+      background: transparent; color: var(--color-fg);
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .lang-btn:hover { background: rgba(0,0,0,.04); }
+
+    /* Tabs */
+    .tabs-list {
+      display: flex; gap: 4px; padding: 8px;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .tab-trigger {
+      flex: 1; height: 40px; border-radius: 8px; border: none;
+      background: transparent; color: var(--color-muted);
+      font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s;
+      font-family: var(--font-sans);
+    }
+    .tab-trigger[aria-selected="true"] {
+      background: var(--color-bg);
+      color: var(--color-fg);
+      box-shadow: 0 1px 2px rgba(0,0,0,.08);
+    }
+    .tab-panel { display: none; padding: 24px; overflow-y: auto; flex: 1; }
+    .tab-panel[aria-hidden="false"] { display: block; }
+    .section-label {
+      font-size: 12px; font-weight: 600; color: var(--color-muted);
+      text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 12px;
+    }
+    .card {
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      border-radius: 16px; padding: 16px; margin-bottom: 12px;
+    }
+    .card-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .field-label { font-size: 14px; font-weight: 500; }
+    .field-desc { font-size: 12px; color: var(--color-muted); margin-top: 2px; line-height: 1.4; }
+    input[type="number"], input[type="text"], textarea {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: var(--color-bg);
+      color: var(--color-fg);
+      width: 100%;
+    }
+    .range-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .pill {
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;
+      border-radius: 10px; padding: 6px 10px; min-width: 40px;
+      background: var(--color-bg); border: 1px solid var(--color-border);
+    }
+    .pill span { color: var(--color-muted); font-weight: 400; }
+    input[type="range"] { width: 100%; accent-color: var(--color-primary); }
+
+    /* Switch */
+    .switch {
+      width: 44px; height: 24px; border-radius: 999px;
+      background: var(--color-border); border: none; position: relative;
+      cursor: pointer; transition: background .2s; flex-shrink: 0;
+    }
+    .switch[aria-checked="true"] { background: var(--color-primary); }
+    .switch::after {
+      content: ""; position: absolute; top: 2px; left: 2px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #fff; transition: transform .2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    }
+    .switch[aria-checked="true"]::after { transform: translateX(20px); }
+
+    /* 主题预设网格 */
+    .preset-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .preset {
+      position: relative; display: flex; flex-direction: column; gap: 6px;
+      border: 1px solid var(--color-border); border-radius: 12px; padding: 6px;
+      background: transparent; cursor: pointer; transition: all .2s;
+    }
+    .preset:hover { border-color: var(--color-primary); background: var(--color-surface); }
+    .preset[aria-pressed="true"] {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 20%, transparent);
+      background: var(--color-surface);
+    }
+    .swatch { height: 28px; border-radius: 6px; width: 100%; }
+    .preset-name { font-size: 10px; color: var(--color-muted); text-align: center; line-height: 1.2; }
+    .preset-check {
+      position: absolute; top: -6px; right: -6px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--color-primary); color: var(--color-primary-fg);
+      display: none; align-items: center; justify-content: center; font-size: 10px;
+    }
+    .preset[aria-pressed="true"] .preset-check { display: flex; }
+
+    .seg-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .seg-btn {
+      height: 40px; border-radius: 12px; border: 1px solid var(--color-border);
+      background: transparent; color: var(--color-muted);
+      font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s;
+      font-family: var(--font-sans);
+    }
+    .seg-btn[aria-pressed="true"] {
+      background: var(--color-primary); color: var(--color-primary-fg); border-color: var(--color-primary);
+    }
+    .btn {
+      height: 40px; border-radius: 12px; padding: 0 16px;
+      border: 1px solid var(--color-border); background: transparent;
+      color: var(--color-fg); font-size: 14px; font-weight: 500; cursor: pointer;
+      font-family: var(--font-sans); transition: all .2s;
+    }
+    .btn:hover { background: var(--color-surface); }
+    .btn-primary { background: var(--color-primary); color: var(--color-primary-fg); border-color: var(--color-primary); }
+    .btn-primary:hover { opacity: .9; background: var(--color-primary); }
+    .btn-danger { color: #ef4444; border-color: var(--color-border); }
+    .btn-danger:hover { background: rgba(239,68,68,.1); }
+
+    .preview-box {
+      border: 1px solid var(--color-border); background: var(--color-surface);
+      border-radius: 16px; padding: 16px;
+    }
+    .preview-box .pv-val { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    /* 历史卡片 */
+    .hist-card {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 20px; border-radius: 16px; background: var(--color-surface);
+      border: 1px solid transparent; transition: all .2s; margin-bottom: 12px;
+    }
+    .hist-card:hover { border-color: var(--color-border); }
+    .hist-time { font-size: 12px; color: var(--color-muted); font-weight: 500; }
+    .hist-val { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .copy-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--color-muted); background: transparent; border: none;
+      cursor: pointer; padding: 6px 8px; border-radius: 8px; transition: all .2s;
+    }
+    .copy-btn:hover { color: var(--color-fg); background: var(--color-bg); }
+    .empty {
+      text-align: center; color: var(--color-muted); font-size: 14px;
+      padding: 48px 0;
+    }
+
+    /* Dialog（自定义名单） */
+    .dialog-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50;
+    }
+    .dialog-backdrop[hidden] { display: none; }
+    .dialog {
+      width: 100%; max-width: 32rem; background: var(--color-bg);
+      border: 1px solid var(--color-border); border-radius: 20px; padding: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    }
+    .dialog h2 { margin: 0 0 4px; font-size: 18px; }
+    .dialog p.desc { margin: 0 0 12px; font-size: 13px; color: var(--color-muted); }
+    .dialog-foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+
+    footer { padding: 16px 24px; font-size: 12px; color: var(--color-muted); border-top: 1px solid var(--color-border); }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <!-- 左侧：应用主界面占位（演示设置影响） -->
+    <main class="stage-main">
+      <div class="stage-hint">应用主界面（演示环境）</div>
+      <div class="mock-result" id="mockResult">007</div>
+      <div class="mock-toolbar">
+        <button class="icon-btn" id="themeToggle" title="切换深浅色" aria-label="切换深浅色">◐</button>
+        <button class="icon-btn" title="打开设置">⚙</button>
+      </div>
+      <p class="stage-hint" style="margin-top:auto">右侧为「设置」抽屉高保真原型（v5.7.4）</p>
+    </main>
+
+    <!-- 右侧：设置抽屉 -->
+    <aside class="panel" role="dialog" aria-modal="true" aria-label="设置">
+      <div class="header-bar">
+        <div class="brand-mark">抽</div>
+        <div>
+          <div class="brand-title" id="appTitle">真随机</div>
+          <div class="brand-ver" id="appVer">v5.7.4</div>
+        </div>
+        <button class="lang-btn" id="langToggle" title="切换语言" aria-label="切换语言">文</button>
+      </div>
+
+      <div class="tabs-list" role="tablist">
+        <button class="tab-trigger" role="tab" id="tab-draw" aria-controls="panel-draw" aria-selected="true" data-lang="draw">抽取设置</button>
+        <button class="tab-trigger" role="tab" id="tab-appearance" aria-controls="panel-appearance" aria-selected="false" data-lang="appearance">外观</button>
+        <button class="tab-trigger" role="tab" id="tab-experience" aria-controls="panel-experience" aria-selected="false" data-lang="experience">体验</button>
+        <button class="tab-trigger" role="tab" id="tab-history" aria-controls="panel-history" aria-selected="false" data-lang="history">历史记录</button>
+      </div>
+
+      <!-- 抽取 -->
+      <section class="tab-panel" id="panel-draw" role="tabpanel" aria-labelledby="tab-draw" aria-hidden="false">
+        <p class="section-label" data-lang="drawSettings">抽取设置</p>
+
+        <div class="card range-grid">
+          <div>
+            <label class="field-label" for="minVal" data-lang="minVal">最小值</label>
+            <input type="number" id="minVal" value="1" />
+          </div>
+          <div>
+            <label class="field-label" for="maxVal" data-lang="maxVal">最大值</label>
+            <input type="number" id="maxVal" value="100" />
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-row" style="margin-bottom:12px">
+            <span class="field-label" data-lang="drawCount">抽取数量</span>
+            <span class="pill" id="countPill">1</span>
+          </div>
+          <input type="range" id="countRange" min="1" max="100" step="1" value="1" aria-label="抽取数量" />
+        </div>
+
+        <div class="card">
+          <div class="card-row" style="margin-bottom:12px">
+            <span class="field-label" data-lang="drawDuration">抽取时长</span>
+            <span class="pill" id="durPill">3<span> s</span></span>
+          </div>
+          <input type="range" id="durRange" min="0" max="30" step="1" value="3" aria-label="抽取时长" />
+          <p class="field-desc" data-lang="drawDurationDesc">设置数字滚动动画的持续时间。</p>
+        </div>
+
+        <div class="card card-row">
+          <div>
+            <div class="field-label" data-lang="allowDup">允许重复</div>
+            <div class="field-desc" data-lang="allowDupDesc">开启后可在结果中出现相同的数字或名单项。</div>
+          </div>
+          <button class="switch" id="allowDup" role="switch" aria-checked="false" aria-label="允许重复"></button>
+        </div>
+
+        <!-- 自定义名单内联卡片 -->
+        <div class="card" id="customListInline" style="margin-top:8px">
+          <p class="field-label" data-lang="customList">自定义列表</p>
+          <p class="field-desc" id="customListCount">3 项已加载</p>
+          <p class="field-desc" id="customListWarn" style="color:#d97706;display:none">名单已填写，但「使用自定义名单」未开启，当前仍为数字模式。</p>
+          <div class="seg-2" style="margin-top:12px">
+            <button class="btn btn-primary" id="openListDialog" data-lang="editList">编辑列表</button>
+            <button class="btn" id="clearList" data-lang="clearList">清空列表</button>
+          </div>
+        </div>
+
+        <div class="card card-row">
+          <div>
+            <div class="field-label" data-lang="useCustomList">使用自定义名单</div>
+            <div class="field-desc" data-lang="customListHint">每行一个项目，作为抽取池使用</div>
+          </div>
+          <button class="switch" id="useCustomList" role="switch" aria-checked="false" aria-label="使用自定义名单"></button>
+        </div>
+      </section>
+
+      <!-- 外观 -->
+      <section class="tab-panel" id="panel-appearance" role="tabpanel" aria-labelledby="tab-appearance" aria-hidden="true">
+        <p class="section-label" data-lang="appearance">外观</p>
+
+        <div style="margin-bottom:20px">
+          <label class="field-label" for="themeMode" data-lang="themeMode">外观模式</label>
+          <div class="seg-2" style="margin-top:8px">
+            <button class="seg-btn" data-mode="light" id="modeLight" aria-pressed="false" data-lang="themeLight">浅色</button>
+            <button class="seg-btn" data-mode="dark" id="modeDark" aria-pressed="true" data-lang="themeDark">深色</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <label class="field-label" data-lang="themePreset" style="display:block;margin-bottom:8px">配色方案</label>
+          <div class="preset-grid" id="presetGrid"></div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <label class="field-label" for="fontFamily" data-lang="fontFamily" style="display:block;margin-bottom:8px">字体风格</label>
+          <div class="seg-2">
+            <button class="seg-btn" data-font="sans" aria-pressed="true" data-lang="fontSans">无衬线</button>
+            <button class="seg-btn" data-font="serif" aria-pressed="false" data-lang="fontSerif">衬线</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <label class="field-label" data-lang="languageLabel" style="display:block;margin-bottom:8px">界面语言</label>
+          <div class="seg-2">
+            <button class="seg-btn" data-lang2="zh" id="langZh" aria-pressed="true" data-lang="langZh">中文</button>
+            <button class="seg-btn" data-lang2="en" id="langEn" aria-pressed="false" data-lang="langEn">English</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <label class="field-label" for="digits" data-lang="minDigits">最小位数（补零）</label>
+          <input type="number" id="digits" min="0" max="20" value="0" style="margin-top:8px" />
+          <p class="field-desc" data-lang="minDigitsDesc" style="margin-top:6px">设为 0 则不补零。</p>
+        </div>
+
+        <div class="range-grid" style="margin-bottom:20px">
+          <div>
+            <label class="field-label" for="prefix" data-lang="prefix">前缀</label>
+            <input type="text" id="prefix" value="" style="margin-top:8px" placeholder="#" />
+          </div>
+          <div>
+            <label class="field-label" for="suffix" data-lang="suffix">后缀</label>
+            <input type="text" id="suffix" value="" style="margin-top:8px" placeholder="号" />
+          </div>
+        </div>
+
+        <div class="preview-box">
+          <p class="field-desc" data-lang="formatPreview" style="margin:0 0 8px">格式预览</p>
+          <p class="pv-val" id="formatPreview">—</p>
+        </div>
+      </section>
+
+      <!-- 体验 -->
+      <section class="tab-panel" id="panel-experience" role="tabpanel" aria-labelledby="tab-experience" aria-hidden="true">
+        <p class="section-label" data-lang="experience">体验</p>
+
+        <div class="card card-row">
+          <div>
+            <div class="field-label" data-lang="sound">音效</div>
+            <div class="field-desc" data-lang="soundDesc">抽取时播放提示音（开始、滴答、结果、错误）。</div>
+          </div>
+          <button class="switch" id="sound" role="switch" aria-checked="true" aria-label="音效"></button>
+        </div>
+
+        <div class="card card-row">
+          <div>
+            <div class="field-label" data-lang="confetti">结果彩屑动效</div>
+            <div class="field-desc" data-lang="confettiDesc">揭晓结果时播放庆祝彩屑动画。</div>
+          </div>
+          <button class="switch" id="confetti" role="switch" aria-checked="true" aria-label="结果彩屑动效"></button>
+        </div>
+
+        <div class="card card-row">
+          <div>
+            <div class="field-label" data-lang="reduceMotion">减弱动效</div>
+            <div class="field-desc" data-lang="reduceMotionDesc">降低页面过渡与滚动动画强度。</div>
+          </div>
+          <button class="switch" id="reduceMotion" role="switch" aria-checked="false" aria-label="减弱动效"></button>
+        </div>
+
+        <div class="card card-row">
+          <div>
+            <div class="field-label" data-lang="autoHide">自动隐藏侧边栏</div>
+            <div class="field-desc" data-lang="autoHideDesc">空闲或抽取时自动隐藏控制面板。</div>
+          </div>
+          <button class="switch" id="autoHide" role="switch" aria-checked="false" aria-label="自动隐藏侧边栏"></button>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="field-label" data-lang="density">结果显示密度</div>
+            <div class="field-desc" data-lang="densityDesc">紧凑模式在结果较多时更节省空间。</div>
+          </div>
+          <div class="seg-2" style="margin-top:12px">
+            <button class="seg-btn" data-density="comfortable" id="densComfort" aria-pressed="true" data-lang="densityComfortable">舒适</button>
+            <button class="seg-btn" data-density="compact" id="densCompact" aria-pressed="false" data-lang="densityCompact">紧凑</button>
+          </div>
+        </div>
+
+        <div class="card card-row">
+          <div>
+            <div class="field-label" data-lang="resetSettings">重置所有选项</div>
+            <div class="field-desc" data-lang="resetSettingsDesc">将所有设置恢复为默认值（不影响历史记录）。</div>
+          </div>
+          <button class="btn btn-danger" id="resetBtn" data-lang="resetSettings">重置所有选项</button>
+        </div>
+      </section>
+
+      <!-- 历史 -->
+      <section class="tab-panel" id="panel-history" role="tabpanel" aria-labelledby="tab-history" aria-hidden="true">
+        <div class="card-row" style="margin-bottom:16px">
+          <p class="section-label" data-lang="history" style="margin:0">历史记录</p>
+          <button class="copy-btn" id="clearHistory" style="color:#ef4444" data-lang="clearHistory">🗑 清空历史</button>
+        </div>
+        <div id="historyList">
+          <div class="hist-card">
+            <div style="min-width:0">
+              <div class="hist-time">刚刚</div>
+              <div class="hist-val">007</div>
+            </div>
+            <button class="copy-btn" data-copy="007">⧉ 复制</button>
+          </div>
+          <div class="hist-card">
+            <div style="min-width:0">
+              <div class="hist-time">5 分钟前</div>
+              <div class="hist-val">042</div>
+            </div>
+            <button class="copy-btn" data-copy="042">⧉ 复制</button>
+          </div>
+          <div class="hist-card">
+            <div style="min-width:0">
+              <div class="hist-time">1 小时前</div>
+              <div class="hist-val">088, 013</div>
+            </div>
+            <button class="copy-btn" data-copy="088, 013">⧉ 复制</button>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- 自定义名单 Dialog -->
+  <div class="dialog-backdrop" id="listDialog" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-label="自定义列表">
+      <h2 data-lang="customList">自定义列表</h2>
+      <p class="desc" data-lang="customListHint">每行一个项目，作为抽取池使用</p>
+      <textarea id="listText" class="min-h-[220px]">苹果
+香蕉
+橙子</textarea>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-muted);margin-top:8px">
+        <span id="listCount">3 项已加载</span>
+        <span id="listError" style="color:#ef4444"></span>
+      </div>
+      <div class="dialog-foot">
+        <button class="btn" id="listCancel" data-lang="cancel">取消</button>
+        <button class="btn btn-primary" id="listSave" data-lang="save">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>ZenDraw｜禅抽 v5.7.4 · 设置选项高保真原型 · 设计令牌见 tokens.css</footer>
+
+  <script>
+    // === 翻译表（zh / en，对齐 app/locales）===
+    var I18N = {
+      zh: {
+        appTitle: "真随机", settings: "设置", drawSettings: "抽取设置", appearance: "外观",
+        experience: "体验", history: "历史记录", minVal: "最小值", maxVal: "最大值",
+        drawCount: "抽取数量", drawDuration: "抽取时长", drawDurationDesc: "设置数字滚动动画的持续时间。",
+        allowDup: "允许重复", allowDupDesc: "开启后可在结果中出现相同的数字或名单项。",
+        customList: "自定义列表", customListHint: "每行一个项目，作为抽取池使用",
+        useCustomList: "使用自定义名单", editList: "编辑列表", clearList: "清空列表",
+        themeMode: "外观模式", themeLight: "浅色", themeDark: "深色", themeSystem: "跟随系统",
+        themePreset: "配色方案", fontFamily: "字体风格", fontSans: "无衬线", fontMono: "等宽", fontSerif: "衬线",
+        languageLabel: "界面语言", langZh: "中文", langEn: "English",
+        minDigits: "最小位数（补零）", minDigitsDesc: "设为 0 则不补零。", prefix: "前缀", suffix: "后缀",
+        formatPreview: "格式预览", listModeFormatNote: "自定义名单模式：数字格式不生效",
+        sound: "音效", soundDesc: "抽取时播放提示音（开始、滴答、结果、错误）。",
+        confetti: "结果彩屑动效", confettiDesc: "揭晓结果时播放庆祝彩屑动画。",
+        reduceMotion: "减弱动效", reduceMotionDesc: "降低页面过渡与滚动动画强度。",
+        autoHide: "自动隐藏侧边栏", autoHideDesc: "空闲或抽取时自动隐藏控制面板。",
+        density: "结果显示密度", densityDesc: "紧凑模式在结果较多时更节省空间。",
+        densityComfortable: "舒适", densityCompact: "紧凑", resetSettings: "重置所有选项",
+        resetSettingsDesc: "将所有设置恢复为默认值（不影响历史记录）。",
+        clearHistory: "清空历史", cancel: "取消", save: "保存",
+        itemsLoaded: "项已加载", listHintEmpty: "暂无列表", listNotEnabledHint: "名单已填写，但「使用自定义名单」未开启，当前仍为数字模式。",
+        copied: "已复制", copyResult: "复制", notApplicable: "不适用"
+      },
+      en: {
+        appTitle: "True Random", settings: "Settings", drawSettings: "Draw", appearance: "Appearance",
+        experience: "Experience", history: "History", minVal: "Min", maxVal: "Max",
+        drawCount: "Count", drawDuration: "Duration", drawDurationDesc: "Set the rolling animation duration.",
+        allowDup: "Allow duplicates", allowDupDesc: "Allow same number or item to appear repeatedly.",
+        customList: "Custom List", customListHint: "One item per line, used as the draw pool",
+        useCustomList: "Use custom list", editList: "Edit List", clearList: "Clear List",
+        themeMode: "Theme Mode", themeLight: "Light", themeDark: "Dark", themeSystem: "System",
+        themePreset: "Palette", fontFamily: "Font", fontSans: "Sans", fontMono: "Mono", fontSerif: "Serif",
+        languageLabel: "Language", langZh: "中文", langEn: "English",
+        minDigits: "Min digits (pad)", minDigitsDesc: "Set 0 to disable zero-padding.", prefix: "Prefix", suffix: "Suffix",
+        formatPreview: "Format preview", listModeFormatNote: "Custom list mode: number format disabled",
+        sound: "Sound", soundDesc: "Play cues on draw (start, tick, result, error).",
+        confetti: "Result confetti", confettiDesc: "Play celebration confetti on reveal.",
+        reduceMotion: "Reduce motion", reduceMotionDesc: "Lower transition and scroll animation intensity.",
+        autoHide: "Auto-hide panel", autoHideDesc: "Hide the control panel when idle or drawing.",
+        density: "Result density", densityDesc: "Compact mode saves space for many results.",
+        densityComfortable: "Comfortable", densityCompact: "Compact", resetSettings: "Reset all",
+        resetSettingsDesc: "Restore all settings to defaults (history kept).",
+        clearHistory: "Clear history", cancel: "Cancel", save: "Save",
+        itemsLoaded: "items loaded", listHintEmpty: "No list", listNotEnabledHint: "List filled but 'Use custom list' off; number mode active.",
+        copied: "Copied", copyResult: "Copy", notApplicable: "N/A"
+      }
+    };
+    var PRESETS = [
+      { id: "default", name: { zh: "默认", en: "Default" }, color: "oklch(0.5 0 0)" },
+      { id: "ocean", name: { zh: "海洋蓝", en: "Ocean" }, color: "oklch(0.62 0.17 230)" },
+      { id: "forest", name: { zh: "森林绿", en: "Forest" }, color: "oklch(0.5 0.14 150)" },
+      { id: "sunset", name: { zh: "落日橙", en: "Sunset" }, color: "oklch(0.62 0.2 35)" },
+      { id: "purple", name: { zh: "紫罗兰", en: "Purple" }, color: "oklch(0.55 0.2 290)" },
+      { id: "neon", name: { zh: "霓虹", en: "Neon" }, color: "oklch(0.7 0.22 320)" },
+      { id: "sakura", name: { zh: "樱花粉", en: "Sakura" }, color: "oklch(0.7 0.18 350)" },
+      { id: "midnight", name: { zh: "午夜蓝", en: "Midnight" }, color: "oklch(0.6 0.18 250)" },
+      { id: "retro", name: { zh: "复古棕", en: "Retro" }, color: "oklch(0.55 0.13 60)" },
+      { id: "pixel", name: { zh: "像素风", en: "Pixel" }, color: "oklch(0.6 0.2 200)" },
+      { id: "rose", name: { zh: "玫瑰红", en: "Rose" }, color: "oklch(0.58 0.22 15)" }
+    ];
+
+    var state = {
+      lang: "zh",
+      dark: true,
+      preset: "default",
+      font: "sans",
+      count: 1, duration: 3, allowDup: false, useCustomList: false,
+      sound: true, confetti: true, reduceMotion: false, autoHide: false, density: "comfortable",
+      digits: 0, prefix: "", suffix: "",
+      customList: ["苹果", "香蕉", "橙子"]
+    };
+
+    function t(key) { return (I18N[state.lang] || I18N.zh)[key]; }
+
+    // === 主题应用 ===
+    function applyTheme() {
+      var root = document.documentElement;
+      // 深浅：.dark 类
+      if (state.dark) root.classList.add("dark"); else root.classList.remove("dark");
+      // 预设：theme-* 类（default 不挂类）
+      PRESETS.forEach(function (p) {
+        if (p.id !== "default") root.classList.remove("theme-" + p.id);
+      });
+      if (state.preset !== "default") root.classList.add("theme-" + state.preset);
+      // 字体
+      root.style.fontFamily = state.font === "serif"
+        ? "Georgia, 'Times New Roman', serif"
+        : (state.font === "mono" ? "ui-monospace, monospace" : "var(--font-sans)");
+    }
+
+    // === 翻译刷新 ===
+    function refreshI18n() {
+      document.getElementById("appTitle").textContent = t("appTitle");
+      document.querySelectorAll("[data-lang]").forEach(function (el) {
+        var k = el.getAttribute("data-lang");
+        if (I18N[state.lang][k] !== undefined) el.textContent = I18N[state.lang][k];
+      });
+      document.getElementById("customListCount").textContent = state.customList.length + " " + t("itemsLoaded");
+      document.getElementById("listCount").textContent = state.customList.length + " " + t("itemsLoaded");
+      document.getElementById("listText").value = state.customList.join("\n");
+      updateFormatPreview();
+      updateCustomListWarn();
+    }
+
+    // === 预设网格渲染 ===
+    function renderPresets() {
+      var grid = document.getElementById("presetGrid");
+      grid.innerHTML = "";
+      PRESETS.forEach(function (p) {
+        var btn = document.createElement("button");
+        btn.className = "preset";
+        btn.type = "button";
+        btn.setAttribute("aria-pressed", String(state.preset === p.id));
+        btn.setAttribute("aria-label", p.name[state.lang]);
+        btn.title = p.name[state.lang];
+        btn.innerHTML =
+          '<span class="swatch" style="background:' + p.color + '"></span>' +
+          '<span class="preset-name">' + p.name[state.lang] + '</span>' +
+          '<span class="preset-check">✓</span>';
+        btn.addEventListener("click", function () {
+          state.preset = p.id;
+          applyTheme();
+          renderPresets();
+        });
+        grid.appendChild(btn);
+      });
+    }
+
+    // === 数字格式实时预览 ===
+    function updateFormatPreview() {
+      var el = document.getElementById("formatPreview");
+      if (state.useCustomList) { el.textContent = t("listModeFormatNote"); return; }
+      var raw = "7";
+      var padded = raw.padStart(Math.max(0, state.digits), "0");
+      el.textContent = (state.prefix || "") + padded + (state.suffix || "") || "—";
+    }
+
+    function updateCustomListWarn() {
+      var warn = document.getElementById("customListWarn");
+      warn.style.display = (state.customList.length > 0 && !state.useCustomList) ? "block" : "none";
+      if (state.customList.length > 0 && !state.useCustomList) warn.textContent = t("listNotEnabledHint");
+    }
+
+    // === Switch 通用绑定 ===
+    function bindSwitch(id, key) {
+      var el = document.getElementById(id);
+      el.setAttribute("aria-checked", String(!!state[key]));
+      el.addEventListener("click", function () {
+        state[key] = !state[key];
+        el.setAttribute("aria-checked", String(state[key]));
+        if (key === "useCustomList") { updateFormatPreview(); updateCustomListWarn(); }
+      });
+    }
+
+    // === Tab 切换 ===
+    var tabs = document.querySelectorAll(".tab-trigger");
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        tabs.forEach(function (x) {
+          x.setAttribute("aria-selected", "false");
+          document.getElementById(x.getAttribute("aria-controls")).setAttribute("aria-hidden", "true");
+        });
+        tab.setAttribute("aria-selected", "true");
+        document.getElementById(tab.getAttribute("aria-controls")).setAttribute("aria-hidden", "false");
+      });
+    });
+
+    // === 事件绑定 ===
+    document.getElementById("countRange").addEventListener("input", function (e) {
+      state.count = +e.target.value;
+      document.getElementById("countPill").textContent = state.count;
+    });
+    document.getElementById("durRange").addEventListener("input", function (e) {
+      state.duration = +e.target.value;
+      document.getElementById("durPill").innerHTML = state.duration + "<span> s</span>";
+    });
+    document.getElementById("digits").addEventListener("input", function (e) {
+      state.digits = +e.target.value || 0; updateFormatPreview();
+    });
+    document.getElementById("prefix").addEventListener("input", function (e) { state.prefix = e.target.value; updateFormatPreview(); });
+    document.getElementById("suffix").addEventListener("input", function (e) { state.suffix = e.target.value; updateFormatPreview(); });
+
+    // 深浅模式
+    document.getElementById("modeLight").addEventListener("click", function () {
+      state.dark = false; applyTheme(); syncModeBtns();
+    });
+    document.getElementById("modeDark").addEventListener("click", function () {
+      state.dark = true; applyTheme(); syncModeBtns();
+    });
+    function syncModeBtns() {
+      document.getElementById("modeLight").setAttribute("aria-pressed", String(!state.dark));
+      document.getElementById("modeDark").setAttribute("aria-pressed", String(state.dark));
+    }
+
+    // 字体
+    document.querySelectorAll("[data-font]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        state.font = b.getAttribute("data-font");
+        applyTheme();
+        document.querySelectorAll("[data-font]").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      });
+    });
+
+    // 语言（Tab 内 + HeaderBar 双语切换）
+    function setLang(lang) {
+      state.lang = lang;
+      refreshI18n();
+      document.getElementById("langZh").setAttribute("aria-pressed", String(lang === "zh"));
+      document.getElementById("langEn").setAttribute("aria-pressed", String(lang === "en"));
+      document.getElementById("langToggle").textContent = lang === "zh" ? "文" : "A";
+    }
+    document.getElementById("langZh").addEventListener("click", function () { setLang("zh"); });
+    document.getElementById("langEn").addEventListener("click", function () { setLang("en"); });
+    document.getElementById("langToggle").addEventListener("click", function () { setLang(state.lang === "zh" ? "en" : "zh"); });
+
+    // 密度
+    document.getElementById("densComfort").addEventListener("click", function () {
+      state.density = "comfortable"; syncDensity();
+    });
+    document.getElementById("densCompact").addEventListener("click", function () {
+      state.density = "compact"; syncDensity();
+    });
+    function syncDensity() {
+      document.getElementById("densComfort").setAttribute("aria-pressed", String(state.density === "comfortable"));
+      document.getElementById("densCompact").setAttribute("aria-pressed", String(state.density === "compact"));
+    }
+
+    // 重置
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      state.dark = true; state.preset = "default"; state.font = "sans";
+      state.count = 1; state.duration = 3; state.allowDup = false; state.useCustomList = false;
+      state.sound = true; state.confetti = true; state.reduceMotion = false; state.autoHide = false;
+      state.density = "comfortable"; state.digits = 0; state.prefix = ""; state.suffix = "";
+      // 同步 UI
+      document.getElementById("countRange").value = 1; document.getElementById("countPill").textContent = "1";
+      document.getElementById("durRange").value = 3; document.getElementById("durPill").innerHTML = "3<span> s</span>";
+      document.getElementById("digits").value = 0;
+      document.getElementById("prefix").value = ""; document.getElementById("suffix").value = "";
+      bindSwitchStates(); applyTheme(); renderPresets(); syncModeBtns(); syncDensity(); refreshI18n();
+    });
+
+    function bindSwitchStates() {
+      [["allowDup","allowDup"],["useCustomList","useCustomList"],["sound","sound"],
+       ["confetti","confetti"],["reduceMotion","reduceMotion"],["autoHide","autoHide"]].forEach(function (p) {
+        document.getElementById(p[0]).setAttribute("aria-checked", String(!!state[p[1]]));
+      });
+    }
+
+    // 自定义名单 Dialog
+    var dialog = document.getElementById("listDialog");
+    document.getElementById("openListDialog").addEventListener("click", function () { dialog.removeAttribute("hidden"); });
+    document.getElementById("listCancel").addEventListener("click", function () { dialog.setAttribute("hidden", ""); document.getElementById("listError").textContent = ""; });
+    dialog.addEventListener("click", function (e) { if (e.target === dialog) { dialog.setAttribute("hidden", ""); } });
+    document.addEventListener("keydown", function (e) { if (e.code === "Escape" && !dialog.hasAttribute("hidden")) dialog.setAttribute("hidden", ""); });
+    document.getElementById("listSave").addEventListener("click", function () {
+      var items = document.getElementById("listText").value.split("\n").map(function (l) { return l.trim(); }).filter(function (l) { return l.length > 0; });
+      if (items.length === 0) { document.getElementById("listError").textContent = t("listHintEmpty"); return; }
+      var uniq = Array.from(new Set(items));
+      state.customList = uniq;
+      document.getElementById("listError").textContent = "";
+      dialog.setAttribute("hidden", "");
+      refreshI18n();
+    });
+    document.getElementById("clearList").addEventListener("click", function () {
+      state.customList = []; refreshI18n();
+    });
+
+    // 历史复制
+    document.querySelectorAll("[data-copy]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var txt = b.getAttribute("data-copy");
+        if (navigator.clipboard) navigator.clipboard.writeText(txt).then(function () {
+          b.textContent = "✓ " + t("copied");
+          setTimeout(function () { b.textContent = "⧉ " + t("copyResult"); }, 1500);
+        });
+      });
+    });
+    document.getElementById("clearHistory").addEventListener("click", function () {
+      document.getElementById("historyList").innerHTML = '<div class="empty">' + t("listHintEmpty") + "</div>";
+    });
+
+    // 顶部主题切换（深浅）
+    document.getElementById("themeToggle").addEventListener("click", function () {
+      state.dark = !state.dark; applyTheme(); syncModeBtns();
+    });
+
+    // 初始化
+    applyTheme(); renderPresets(); syncModeBtns(); syncDensity(); refreshI18n(); bindSwitchStates();
+  </script>
+</body>
+</html>

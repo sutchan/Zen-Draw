@@ -33,6 +33,7 @@ export function NumberRoller({ value, isDrawing, className, ariaLabel }: NumberR
   if (shouldReduceMotion) {
     return (
       <span
+        id="number-roller-static"
         className={cn("tabular-nums", className)}
         aria-live="polite"
         aria-label={ariaLabel ?? `结果: ${value}`}
@@ -47,6 +48,7 @@ export function NumberRoller({ value, isDrawing, className, ariaLabel }: NumberR
 
   return (
     <div
+      id="number-roller"
       className={cn(
         "flex items-center justify-center tabular-nums flex-wrap",
         className

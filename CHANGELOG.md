@@ -6,6 +6,9 @@
 - **删除冗余文档** `CODE_REVIEW.md`：该 v3.0 审查报告与当前 v5.7.x 代码严重脱节（主题机制、设置架构、组件清单均过时），属无效历史残留，予以清理
 - 清理工作记忆首日条目的乱码无效内容
 - 为页面级与区块级容器补齐语义化 `id`：draw-area / action-area / history-area / header-content / header-brand / header-actions / 各设置 Card（draw-range/count/duration/allow-dup/custom-list、experience-* 6 项）/ appearance-* 区块 / result-cards / history-tab-header
+- `number-roller.tsx` 主滚动容器与静态分支补 `id="number-roller"` / `id="number-roller-static"`
+- `openspec/SPEC.md`：目录树修正（hooks 缩进错位、移除已删的 CODE_REVIEW.md）、翻译键数订正 110→117、§13 补 v5.7.1~v5.7.4 历史
+- `prototype/design-system.md`：翻译键数订正 135→117（与代码 zh/en 各 117 键对称一致）
 - 统一同步所有源文件头注释与文档版本号至 v5.7.4
 
 ### docs（原型与规范对齐代码真值）
@@ -13,6 +16,7 @@
 - 设置容器规范由 3 Tab 改为 **4 Tab**：新增「体验 (experience)」Tab（音效/彩屑/减弱动效/自动收起/密度/重置），「自动隐藏」由抽取并入体验；`wireframes.html` 预览与 `design-system.md §12` 同步
 - 主题机制修正：由 `data-theme` + `data-mode` 改为 `theme-<preset>` 类 + `.dark` 类（对齐 `next-themes` / `theme-provider.tsx`）
 - 主题清单修正：11 套真实预设为 default/ocean/forest/sunset/purple/neon/sakura/midnight/retro/pixel/rose（移除不存在的 Graphite/Mono）
+- **新增设置选项高保真原型** `prototype/settings.html`：独立页面还原设置抽屉（4 Tab + 自定义名单 Dialog），可交互演示主题预设/深浅/音效/彩屑/减弱动效/自动收起/密度/语言/数字格式预览/历史复制
 
 ### fix（设置选项问题修复）
 - **重置选项不再强制改语言**：`RESET_SETTINGS` 此前会连同 `language` 一起恢复为默认中文，导致用户切到英文后点「重置所有选项」被强制切回中文；现保留用户已选语言偏好

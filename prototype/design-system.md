@@ -201,7 +201,7 @@
 
 ## 12. 设置容器 Settings Container
 
-应用全局设置入口为**右侧滑入抽屉**，由顶部导航齿轮按钮触发。结构固定，原型（`wireframes.html` 设置容器区块）与代码（`settings-panel/index.tsx`）必须一致。
+应用全局设置入口为**右侧滑入抽屉**，由顶部导航齿轮按钮触发。结构固定，原型（`wireframes.html` 设置容器区块，及独立高保真原型 `settings.html`）与代码（`settings-panel/index.tsx`）必须一致。`settings.html` 为设置选项专用高保真原型，含 4 Tab 全部控件与自定义名单 Dialog 的可交互演示。
 
 ### 12.1 结构
 
@@ -212,7 +212,7 @@ Sheet (side="right", aria-modal="true", role="dialog")
 │   ├── 版本号（mono 小字，读 APP_VERSION）
 │   └── 语言切换按钮（右上，lucide Languages）
 └── Tabs
-    ├── 抽取 (draw)      ：范围 / 数量 / 时长 / 允许重复 / 自定义名单 / 自动隐藏
+    ├── 抽取 (draw)      ：范围 / 数量 / 时长 / 允许重复 / 自定义名单
     ├── 外观 (appearance)：主题预设 / 字体 / 语言 / 数字格式 / 实时预览
     ├── 体验 (experience)：音效 / 彩屑 / 减弱动效 / 自动收起面板 / 结果显示密度 / 重置所有选项
     └── 历史 (history)   ：本会话记录列表 + 清空入口
@@ -257,7 +257,7 @@ Sheet (side="right", aria-modal="true", role="dialog")
 |----------|------------|------|
 | 11 套主题（default/ocean/forest/sunset/purple/neon/sakura/midnight/retro/pixel/rose） | `THEME_PRESETS` 在 `theme-provider.tsx` 确有 11 套 | ✅ 一致 |
 | 主题机制 `.theme-<preset>` 类 + `.dark` 类 | `theme-provider.tsx` 写 `theme-*` 类、`next-themes` 写 `.dark` | ✅ 一致 |
-| 翻译键 90 | `app/locales` zh/en 各 90 键 | ✅ 一致 |
+| 翻译键 117 | `app/locales` zh/en 各 117 键（对称） | ✅ 一致 |
 | 主流程 4 态 | `use-draw.ts` 状态机含 history | ✅ 一致 |
 | 设置 4 Tab（含 experience） | `settings-panel/index.tsx` Tabs 含 experience | ✅ 一致 |
 | 彩屑揭晓触发 | `ConfettiBurst` 在结果落定时渲染 | ✅ 一致 |
@@ -271,6 +271,7 @@ Sheet (side="right", aria-modal="true", role="dialog")
 - **设置容器改 4 Tab**：新增「体验 (experience)」Tab（音效/彩屑/减弱动效/自动收起/密度/重置），`自动隐藏` 由抽取 Tab 并入体验。
 - **主题机制修正**：由 `data-theme` + `data-mode` 改为 `theme-<preset>` 类 + `.dark` 类（对齐 `next-themes` / `theme-provider.tsx`）。
 - **主题清单修正**：11 套真实预设为 default/ocean/forest/sunset/purple/neon/sakura/midnight/retro/pixel/rose（移除不存在的 Graphite/Mono）。
+- **新增设置选项高保真原型** `settings.html`：独立页面还原设置抽屉（4 Tab + 自定义名单 Dialog），可交互演示主题预设/深浅/音效/彩屑/减弱动效/自动收起/密度/语言/数字格式预览/历史复制。
 
 ### v5.3.7 - 2026-08-09
 - **文档对齐实现**：删除 design-system.md 中未落地的承诺（整页入场 fadeUp、结果揭示 scale 动画、深色 line-height +0.05、6xl/7xl 字号阶梯、↑/↓ 全量键盘）。
