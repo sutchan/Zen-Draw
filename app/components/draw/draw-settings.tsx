@@ -1,4 +1,4 @@
-// components/draw/draw-settings.tsx v5.7.4 —— 抽取设置子组件（使用中央翻译系统）
+// components/draw/draw-settings.tsx v5.7.5 —— 抽取设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -103,7 +103,7 @@ export function DrawSettings({
         </div>
         <Slider
           value={[duration]}
-          min={0}
+          min={1}
           max={30}
           step={1}
           onValueChange={(v) => onDuration(String(v[0]))}

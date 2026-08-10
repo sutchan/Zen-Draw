@@ -1,4 +1,4 @@
-// components/draw/appearance-settings.parts.tsx v5.7.4 —— 外观设置：常量与子组件
+// components/draw/appearance-settings.parts.tsx v5.7.5 —— 外观设置：常量与子组件
 import * as React from "react";
 import { Check } from "lucide-react";
 import {

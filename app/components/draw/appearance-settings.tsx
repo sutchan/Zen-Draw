@@ -1,4 +1,4 @@
-// components/draw/appearance-settings.tsx v5.7.4 —— 外观设置子组件（使用中央翻译系统）
+// components/draw/appearance-settings.tsx v5.7.5 —— 外观设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -61,7 +61,7 @@ export function AppearanceSettings({
       {/* 主题模式 */}
       <div id="appearance-theme-mode" className="space-y-3">
         <Label htmlFor="theme-mode">{t("themeMode")}</Label>
-        {mounted && (
+        {mounted ? (
           <Select value={theme ?? "system"} onValueChange={(v) => setTheme(v as string)}>
             <SelectTrigger id="theme-mode" className="h-11 rounded-2xl bg-muted/30 border border-border/20">
               <SelectValue />
@@ -72,6 +72,15 @@ export function AppearanceSettings({
               <SelectItem value="system">{t("themeSystem")}</SelectItem>
             </SelectContent>
           </Select>
+        ) : (
+          <SelectTrigger
+            id="theme-mode"
+            disabled
+            aria-hidden="true"
+            className="h-11 rounded-2xl bg-muted/30 border border-border/20 opacity-60"
+          >
+            <SelectValue placeholder={t("themeSystem")} />
+          </SelectTrigger>
         )}
       </div>
 

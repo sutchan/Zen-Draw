@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.7.5] - 2026-08-10
+
+### fix（设置容器 UI 问题）
+- **抽取时长 Slider 下限对齐**：`draw-settings.tsx` 时长滑块 `min` 由 0 改为 1，与 `setDuration` 的 clamp 下限一致，消除拖到 0 松手后弹回 1 的跳动与 UI/状态不一致
+- **主题模式区块首屏占位**：`appearance-settings.tsx` 在 `mounted` 为 false 时渲染 disabled 占位 `SelectTrigger`，避免主题模式控件缺失导致的空白容器与布局跳动
+- 统一同步所有源文件头注释与文档版本号至 v5.7.5
+
 ## [5.7.4] - 2026-08-10
 
 ### chore（冗余清理 + 语义化 id 补全 + 版本同步）

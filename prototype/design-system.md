@@ -1,6 +1,6 @@
 # ZenDraw 设计系统规范（DESIGN-SYSTEM）
 
-> 适用产品：ZenDraw｜禅抽 v5.7.4
+> 适用产品：ZenDraw｜禅抽 v5.7.5
 > 定位：高保真可交互原型的设计令牌、组件库、交互与无障碍基准。
 > 配套原型：`index.html`（主流程 + 主题演示）、`prototypes.html`（状态机图示）、`wireframes.html`（组件库规范）。
 > 代码对应：`app/lib/version.ts` 的 `THEME_PRESETS`（由 `theme-provider.tsx` 消费）。

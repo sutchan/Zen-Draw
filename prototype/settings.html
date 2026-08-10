@@ -1,9 +1,9 @@
-<!-- prototype/settings.html v5.7.4 —— 设置选项高保真原型（对齐 settings-panel 4 Tab + 自定义名单 Dialog） -->
+<!-- prototype/settings.html v5.7.5 —— 设置选项高保真原型（对齐 settings-panel 4 Tab + 自定义名单 Dialog） -->
 <html lang="zh-CN" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZenDraw｜禅抽 · 设置选项高保真原型 v5.7.4</title>
+  <title>ZenDraw｜禅抽 · 设置选项高保真原型 v5.7.5</title>
   <link rel="stylesheet" href="tokens.css" />
   <style>
     /* 布局：左侧模拟应用主界面，右侧固定展示设置抽屉（便于审查设置容器本身） */
@@ -250,7 +250,7 @@
         <button class="icon-btn" id="themeToggle" title="切换深浅色" aria-label="切换深浅色">◐</button>
         <button class="icon-btn" title="打开设置">⚙</button>
       </div>
-      <p class="stage-hint" style="margin-top:auto">右侧为「设置」抽屉高保真原型（v5.7.4）</p>
+      <p class="stage-hint" style="margin-top:auto">右侧为「设置」抽屉高保真原型（v5.7.5）</p>
     </main>
 
     <!-- 右侧：设置抽屉 -->
@@ -259,7 +259,7 @@
         <div class="brand-mark">抽</div>
         <div>
           <div class="brand-title" id="appTitle">真随机</div>
-          <div class="brand-ver" id="appVer">v5.7.4</div>
+          <div class="brand-ver" id="appVer">v5.7.5</div>
         </div>
         <button class="lang-btn" id="langToggle" title="切换语言" aria-label="切换语言">文</button>
       </div>
@@ -352,6 +352,7 @@
           <label class="field-label" for="fontFamily" data-lang="fontFamily" style="display:block;margin-bottom:8px">字体风格</label>
           <div class="seg-2">
             <button class="seg-btn" data-font="sans" aria-pressed="true" data-lang="fontSans">无衬线</button>
+            <button class="seg-btn" data-font="mono" aria-pressed="false" data-lang="fontMono">等宽</button>
             <button class="seg-btn" data-font="serif" aria-pressed="false" data-lang="fontSerif">衬线</button>
           </div>
         </div>
@@ -420,7 +421,7 @@
             <div class="field-label" data-lang="autoHide">自动隐藏侧边栏</div>
             <div class="field-desc" data-lang="autoHideDesc">空闲或抽取时自动隐藏控制面板。</div>
           </div>
-          <button class="switch" id="autoHide" role="switch" aria-checked="false" aria-label="自动隐藏侧边栏"></button>
+          <button class="switch" id="autoHide" role="switch" aria-checked="true" aria-label="自动隐藏侧边栏"></button>
         </div>
 
         <div class="card">
@@ -495,7 +496,7 @@
     </div>
   </div>
 
-  <footer>ZenDraw｜禅抽 v5.7.4 · 设置选项高保真原型 · 设计令牌见 tokens.css</footer>
+  <footer>ZenDraw｜禅抽 v5.7.5 · 设置选项高保真原型 · 设计令牌见 tokens.css</footer>
 
   <script>
     // === 翻译表（zh / en，对齐 app/locales）===
@@ -567,7 +568,7 @@
       preset: "default",
       font: "sans",
       count: 1, duration: 3, allowDup: false, useCustomList: false,
-      sound: true, confetti: true, reduceMotion: false, autoHide: false, density: "comfortable",
+      sound: true, confetti: true, reduceMotion: false, autoHide: true, density: "comfortable",
       digits: 0, prefix: "", suffix: "",
       customList: ["苹果", "香蕉", "橙子"]
     };
