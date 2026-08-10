@@ -1,4 +1,4 @@
-// hooks/use-draw-actions.ts v5.7.0 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
+// hooks/use-draw-actions.ts v5.7.1 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
 "use client";
 
 import * as React from "react";
@@ -11,6 +11,7 @@ import {
 } from "./draw-helpers";
 import { parseFiniteNumber } from "@/lib/utils";
 import { createTranslator } from "@/lib/i18n";
+import { clamp, sanitizeTextField } from "./use-draw-utils";
 
 /**
  * 抽取动作回调 Hook
@@ -106,42 +107,30 @@ export function useDrawActions(
 
   // --- 设置更新方法 ---
 
-  const setMin = React.useCallback((value: number | string) => {
-    const n = typeof value === "number" ? (Number.isFinite(value) ? value : 0) : parseFiniteNumber(value, 0);
-    dispatch({ type: "SET_MIN", value: n });
-  }, [dispatch]);
+  // 数值 setter 工厂：统一处理有限性校验与区间钳制
+  const makeNumberSetter = React.useCallback(
+    (type: DrawAction["type"], fallback: number, lo: number, hi: number) =>
+      (value: number | string) => {
+        const n = typeof value === "number"
+          ? (Number.isFinite(value) ? value : fallback)
+          : parseFiniteNumber(value, fallback);
+        dispatch({ type, value: clamp(n, lo, hi) } as DrawAction);
+      },
+    [dispatch],
+  );
 
-  const setMax = React.useCallback((value: number | string) => {
-    const n = typeof value === "number" ? (Number.isFinite(value) ? value : 0) : parseFiniteNumber(value, 0);
-    dispatch({ type: "SET_MAX", value: n });
-  }, [dispatch]);
-
-  const setCount = React.useCallback((value: number | string) => {
-    const n = typeof value === "number" ? (Number.isFinite(value) ? value : 1) : parseFiniteNumber(value, 1);
-    const clamped = Math.max(1, Math.min(1000, n));
-    dispatch({ type: "SET_COUNT", value: clamped });
-  }, [dispatch]);
-
-  const setDuration = React.useCallback((value: number | string) => {
-    const n = typeof value === "number" ? (Number.isFinite(value) ? value : 5) : parseFiniteNumber(value, 5);
-    const clamped = Math.max(1, Math.min(120, n));
-    dispatch({ type: "SET_DURATION", value: clamped });
-  }, [dispatch]);
-
-  const setDigits = React.useCallback((value: number | string) => {
-    const n = typeof value === "number" ? (Number.isFinite(value) ? value : 0) : parseFiniteNumber(value, 0);
-    const clamped = Math.max(0, Math.min(20, n));
-    dispatch({ type: "SET_DIGITS", value: clamped });
-  }, [dispatch]);
+  const setMin = React.useCallback(makeNumberSetter("SET_MIN", 0, -Infinity, Infinity), [makeNumberSetter]);
+  const setMax = React.useCallback(makeNumberSetter("SET_MAX", 0, -Infinity, Infinity), [makeNumberSetter]);
+  const setCount = React.useCallback(makeNumberSetter("SET_COUNT", 1, 1, 1000), [makeNumberSetter]);
+  const setDuration = React.useCallback(makeNumberSetter("SET_DURATION", 5, 1, 120), [makeNumberSetter]);
+  const setDigits = React.useCallback(makeNumberSetter("SET_DIGITS", 0, 0, 20), [makeNumberSetter]);
 
   const setPrefix = React.useCallback((value: string) => {
-    const cleaned = value.replace(/[\x00-\x1f]/g, "").slice(0, 50);
-    dispatch({ type: "SET_PREFIX", value: cleaned });
+    dispatch({ type: "SET_PREFIX", value: sanitizeTextField(value) });
   }, [dispatch]);
 
   const setSuffix = React.useCallback((value: string) => {
-    const cleaned = value.replace(/[\x00-\x1f]/g, "").slice(0, 50);
-    dispatch({ type: "SET_SUFFIX", value: cleaned });
+    dispatch({ type: "SET_SUFFIX", value: sanitizeTextField(value) });
   }, [dispatch]);
 
   const setAllowDuplicates = React.useCallback((value: boolean) => {

@@ -1,12 +1,12 @@
-# ZenDraw | 禅抽 v5.7.0 — 项目规范文档
+# ZenDraw | 禅抽 v5.7.1 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.7.0
-- **上次更新**: 2026-08-09
-- **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、11 种主题配色、Web Audio API 音效。
+- **当前版本**: v5.7.1
+- **上次更新**: 2026-08-10
+- **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、11 种主题配色、Web Audio API 音效、4 Tab 设置（抽取/外观/体验/历史）、彩屑庆祝、减弱动效与界面密度调节。
 - **许可证**: MIT License
 - **代码质量**: 严格 TypeScript (strict mode) + ESLint + CI/CD + 代码审查标准 + 安全头
 
@@ -85,12 +85,14 @@ zen-draw/
 │   │   │   ├── draw-button.tsx           # 核心抽取按钮（脉冲动画 + aria）
 │   │   │   ├── draw-settings.tsx         # 抽取参数设置
 │   │   │   ├── appearance-settings.tsx   # 外观设置（主题/字体/数字格式）
+│   │   │   ├── appearance-settings.parts.tsx # 外观设置子组件拆分
 │   │   │   ├── custom-list-settings.tsx  # 自定义名单导入/导出
 │   │   │   ├── draw-display/             # 结果展示组件集
 │   │   │   │   ├── index.tsx             # 主显示区（状态路由）
 │   │   │   │   ├── welcome-screen.tsx    # 空闲/欢迎状态
 │   │   │   │   ├── error-screen.tsx      # 错误状态
 │   │   │   │   ├── celebration-effect.tsx# 结果揭晓庆祝光晕
+│   │   │   │   ├── confetti-burst.tsx    # 彩屑粒子爆发
 │   │   │   │   ├── result-card.tsx       # 单个结果卡片
 │   │   │   │   └── results-grid.tsx      # 结果网格展示
 │   │   │   ├── history-list/             # 历史记录组件集
@@ -98,7 +100,7 @@ zen-draw/
 │   │   │   │   ├── history-card.tsx      # 历史记录卡片
 │   │   │   │   └── empty-state.tsx       # 空状态
 │   │   │   ├── settings-panel/           # 设置面板组件集
-│   │   │   │   ├── index.tsx             # 主面板（Tabs 切换）
+│   │   │   │   ├── index.tsx             # 4 Tab 设置面板（抽取/外观/体验/历史）
 │   │   │   │   └── header-bar.tsx        # 面板标题栏
 │   │   │   └── __tests__/
 │   │   │       └── draw-button.test.tsx  # 按钮单元测试
@@ -120,7 +122,7 @@ zen-draw/
 │   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
 │   ├── locales/                  # 国际化数据
 │   │   ├── index.ts              # re-export
-│   │   ├── types.ts              # TranslationKey（112 键）
+│   │   ├── types.ts              # TranslationKey（110 键）
 │   │   ├── en.ts                 # 英文翻译
 │   │   └── zh.ts                 # 中文翻译
 │   └── test/
@@ -179,7 +181,8 @@ zen-draw/
 - **滚动动画**: Slot-machine 风格，每个字符独立滚动
 - **逐字定格**: 停止时从左到右依次延迟 80ms 定格，弹性弹簧动画
 - **动画时长**: 可配置（1–30 秒）
-- **优化**: 尊重 `prefers-reduced-motion`，跳过所有非必要动画
+- **彩屑庆祝**: 结果揭晓时触发 confetti 粒子爆发（`draw-display/confetti-burst.tsx`）
+- **减弱动效**: 双重控制——系统 `prefers-reduced-motion` 与设置内「减弱动效」开关（`reduceMotion`）任一开启即跳过所有非必要动画
 
 #### 3.1.4 音效系统（Web Audio API）
 - **开始抽取**: 上升音（440Hz→880Hz，0.15s 正弦波）
@@ -198,10 +201,10 @@ zen-draw/
 
 #### 3.2.2 设置面板（Sheet 侧边栏）
 - **布局**: 右滑入，`w-full`（移动端） / `sm:w-[380px]`（桌面）
-- **Tabs 切换**: 抽取 / 外观 / 历史
-- **抽取设置**: 范围（min/max）、个数、重复、自动隐藏、动画时长
-- **外观设置**: 深浅模式（light/dark/system）、10 种配色方案、3 种字体、数字格式
-- **自定义名单**: 开关 + 导入对话框 + 导出 txt
+- **4 个 Tabs 切换**: 抽取 / 外观 / 体验 / 历史
+- **抽取设置**: 抽取模式（数字 / 列表）、范围（min/max）、个数、重复、自动隐藏、动画时长、自定义名单（开关 + 导入对话框 + 导出 txt）
+- **外观设置**: 深浅模式（light/dark/system）、11 种配色方案、3 种字体、数字格式（位数补零 / 前缀 / 后缀）
+- **体验设置**: 音效开关、界面密度（舒适 / 紧凑）、彩屑开关、减弱动效开关、重置设置
 - **历史记录**: 卡片列表 + 复制 + 清空
 
 #### 3.2.3 主显示区域
@@ -212,7 +215,7 @@ zen-draw/
 
 ---
 
-## 4. 设计系统规范 (v4.0)
+## 4. 设计系统规范 (v5.7.0)
 
 ### 4.1 设计 Tokens — 色彩
 
@@ -386,7 +389,7 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 | DrawButton | `draw/draw-button.tsx` | `px-12 py-5 rounded-[1.75rem]` | 胶囊形脉冲大按钮，`aria-pressed` |
 | NumberRoller | `number-roller.tsx` | `tabular-nums` + 渐变色 | 字符级滚动动画，尊重 reduce-motion |
 | DrawDisplay | `draw/draw-display/` | 居中布局 | 按状态展示不同视图 |
-| SettingsPanel | `draw/settings-panel/` | Tabs 切换 | prop-drilling 模式（20+ props） |
+| SettingsPanel | `draw/settings-panel/` | 4 Tab（抽取/外观/体验/历史） | Sheet 容器 + 状态编排 |
 | HistoryCard | `draw/history-list/history-card.tsx` | `p-5 rounded-2xl bg-muted/15` | 结果卡片 + 复制 |
 | CustomListModal | `draw/custom-list-settings.tsx` | `role="dialog" aria-modal="true"` | 导入弹窗 + 自动聚焦 |
 
@@ -440,9 +443,9 @@ interface DrawState {
 - `en` — English
 - `zh` — 简体中文
 
-### 7.2 翻译键（112 个）
+### 7.2 翻译键（110 个）
 
-翻译键由 `app/locales/types.ts` 中的 `TranslationKey` 联合类型强约束，`zh.ts` 与 `en.ts` 必须完全对齐（缺失或多余都会在编译期报错）。当前共 **112 个**键，涵盖：界面导航（title/settings/history/close）、范围与计数（minVal/maxVal/drawCount/allowDup/autoHide/custom/useCustomList）、外观（theme*/font*）、抽签流程（ready/drawing/startDraw/stopDraw/copy*）、名单导入（import*/confirmImport/itemsLoaded）、错误提示（err*/minMaxError/rangeError）、无障碍（appTitle/resultRegion/welcomeHint）等。新增键须同步加入 `TranslationKey`、`zh.ts`、`en.ts` 三处。
+翻译键由 `app/locales/types.ts` 中的 `TranslationKey` 联合类型强约束，`zh.ts` 与 `en.ts` 必须完全对齐（缺失或多余都会在编译期报错）。当前共 **110 个**键，涵盖：界面导航（title/settings/history/close）、范围与计数（minVal/maxVal/drawCount/allowDup/autoHide/custom/useCustomList）、外观（theme*/font*）、抽签流程（ready/drawing/startDraw/stopDraw/copy*）、名单导入与编辑（import*/confirmImport/itemsLoaded/clearList/editList/removeItem/duplicateItemsWarning）、错误提示（err*/minMaxError/rangeError）、体验设置（sound/density/confetti/reduceMotion/resetSettings）、抽取模式（drawMode/modeNumber/modeList）、密度与语言（density*/languageLabel/langZh/langEn）、无障碍（appTitle/resultRegion/welcomeHint）等。新增键须同步加入 `TranslationKey`、`zh.ts`、`en.ts` 三处。
 
 ### 7.3 使用方式
 ```typescript
@@ -530,11 +533,11 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 ### 10.1 原型文件
 | 文件 | 位置 | 说明 |
 |------|------|------|
-| 线框图 | `prototype/v1/wireframes.html` | 低保真布局探索 |
-| 初始原型 | `prototype/v1/prototype.html` | v3.0 设计系统展示 |
-| 交互原型 | `prototype/v2/prototypes.html` | v3.0 交互流程 |
-| 高保真原型 | `prototype/interactive/index.html` | **v5.0 可交互原型（主参考）** |
-| 设计系统 | `prototype/design-system.md` | 完整设计系统文档 |
+| 高保真原型 | `prototype/index.html` | 高保真可交互原型（主参考，真实数据 + 组件库规范 + 11 主题 + 完整交互） |
+| 视觉稿 | `prototype/prototypes.html` | 多主题真实样式视觉稿 |
+| 线框图 | `prototype/wireframes.html` | 组件库规范线框图 |
+| 设计系统 | `prototype/design-system.md` | 完整设计系统文档（令牌/组件库/交互/动效） |
+| 设计参考 | `docs/design/`（color-system.html / motion.html / typography.html） | 色彩/动效/字体系统参考 |
 
 ### 10.2 代码与原型对齐清单
 | 特性 | 原型状态 | 代码状态 | 说明 |
@@ -543,7 +546,7 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 | 圆形抽取按钮 | ✅ | ✅ | `rounded-[1.75rem]` 胶囊 |
 | 数字滚动动画 | ✅ | ✅ | 逐字定格老虎机效果 |
 | 结果揭示动效 | ✅ | ✅ | 庆祝光晕 + 粒子 |
-| 10 种主题切换 | ✅ | ✅ | CSS 变量驱动 |
+| 11 种主题切换 | ✅ | ✅ | CSS 变量驱动 |
 | 深浅色切换 | ✅ | ✅ | next-themes |
 | 侧边栏设置面板 | ✅ | ✅ | Sheet 组件 + Tabs |
 | 自定义名单导入 | ✅ | ✅ | 含 a11y 对话框 |
@@ -560,7 +563,7 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 ```typescript
 // layout.tsx
 export const metadata: Metadata = {
-  title: "ZenDraw | 禅抽 v5.0",
+  title: `ZenDraw | 禅抽 v${APP_VERSION}`,   // APP_VERSION 取自 app/lib/version.ts（单一来源）
   description: "A professional, full-screen random draw application with Apple-inspired design...",
   keywords: ["ZenDraw", "禅抽", "random draw", "lucky draw", ...],
 };
@@ -591,7 +594,28 @@ export const viewport: Viewport = {
 
 ## 13. 版本历史
 
-### v5.3.5 (当前)
+> 详见 `CHANGELOG.md`。5.3.6 之后的完整迭代记录如下（与 CHANGELOG 同步）：
+
+### v5.7.0
+- 深色/浅色切换移入设置「外观」Tab；新增「结果彩屑动效」「减弱动效」偏好
+- 全链路打通 `confettiEnabled` / `reduceMotion` 与对应 setter，新增 translation key
+- 统一版本号至 v5.7.0
+
+### v5.6.0
+- 设置窗口重规划为 4 Tab（抽取/外观/体验/历史）；新增音效、界面密度、自动隐藏生效、重置选项
+- 全链路打通 `soundEnabled` / `density` / `RESET_SETTINGS`
+
+### v5.5.0
+- 修复设置面板嵌套 Sheet 无法打开；新增「使用自定义名单」开关、名单自动去重
+- 修正「允许重复」错用文案、补 `speechRate`、`exportList` 等键
+
+### v5.3.7
+- SPEC.md 组件表补 Checkbox/Tooltip/Toast；目录树补 `use-mounted-reduced-motion.ts`，ui 组件列举完整（共 18 个）；style.css 注释主题数 10→11
+
+### v5.3.6
+- 修复页脚版本展示 bug（`APP_VERSION` 5.3.3→5.3.6）；SPEC.md 主题数 10→11（补 Rose）、翻译键 71→110、原型目录结构对齐；新增 CHANGELOG 5.3.6
+
+### v5.3.5
 - 原型精简：合并 v1/v2/interactive/minimal 为单一高保真可交互原型 `prototype/index.html`（真实数据 + 组件库规范 + 11 主题 + 完整交互）
 - 设计规范文档 `prototype/DESIGN-SYSTEM.md` 升级至 v5.3.5：三级组件库（基础/复合/业务）、交互标准、动效时序、响应式、无障碍
 - shadcn/ui 补齐缺口组件（base-nova 风格）：`ui/checkbox.tsx`、`ui/tooltip.tsx`、`ui/toast.tsx`，并接入根布局 `ToastProvider`/`TooltipProvider`
@@ -599,7 +623,7 @@ export const viewport: Viewport = {
 - 主题数对齐：原型与规范统一为 11 套（含 Rose），消除原型与代码最小颗粒度不一致
 - 全项目源文件头注释、`package.json`、`metadata.json`、README×2、SPEC.md、CHANGELOG 统一至 v5.3.5
 
-### v5.3.1 (当前)
+### v5.3.1
 - 模块化拆分：`ui/sheet.tsx`（252 行）→ `ui/sheet/`（context/parts/index）；`ui/select.tsx`（201 行）→ 抽出 `select-scroll-buttons.tsx`
 - 页面结构重构：`page.tsx` 抽出 `layout/app-header.tsx`（顶部导航栏），主页面精简至 ~104 行
 - 清理死代码：删除未引用的 `use-persist-settings.ts`、死翻译键 `drawResults`、冗余无障碍属性

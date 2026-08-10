@@ -1,4 +1,4 @@
-// components/draw/appearance-settings.tsx v5.7.0 —— 外观设置子组件（使用中央翻译系统）
+// components/draw/appearance-settings.tsx v5.7.1 —— 外观设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";

@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.7.1] - 2026-08-10
+
+### Docs（规范文档修正）
+- 修正 `SPEC.md` §4 设计系统版本标注（v4.0 → v5.7.0，与代码对齐）
+- 修正 `SPEC.md` §10.1 原型文件路径为真实文件（`prototype/index.html` 等，删除不存在的 `prototype/v1`、`prototype/interactive` 路径）
+- 修正 `SPEC.md` §11 SEO 标题为 `v${APP_VERSION}`（与 `layout.tsx` 代码一致，原硬编码 v5.0）
+- 修正 `SPEC.md` §13 版本历史：去除两处错误的 `(当前)` 标注，补录 v5.3.6 ~ v5.7.0 缺失记录（与 CHANGELOG 对齐）
+- 全项目源文件头注释、`package.json`、`metadata.json`、README×2、SPEC.md 统一至 v5.7.1
+
+### Refactor（模块拆分，符合 ≤200 行规约）
+- `settings-panel/index.tsx`（365 行）拆分出 `settings-panel/custom-list-inline.tsx`（CustomListInline）与 `settings-panel/experience-settings.tsx`（ExperienceSettings），主文件降至 185 行
+- `hooks/use-draw-actions.ts`（206 行）抽取纯函数 `clamp`/`sanitizeTextField` 至 `hooks/use-draw-utils.ts`，数值 setter 改用工厂 `makeNumberSetter` 合并，主文件降至 195 行；公开 API（`useDrawActions` 返回值）不变
+- 全仓库复核：无超过 200 行的源文件
+
 ## [5.7.0] - 2026-08-10
 
 ### Features（设置入口整合 + 更多选项）
