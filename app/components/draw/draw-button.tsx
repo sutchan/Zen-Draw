@@ -1,4 +1,4 @@
-// components/draw/draw-button.tsx v5.7.1 —— 抽取主按钮（极简设计优化）
+// components/draw/draw-button.tsx v5.7.3 —— 抽取主按钮（极简设计优化）
 "use client";
 
 import * as React from "react";
@@ -37,6 +37,7 @@ export function DrawButton({
 
   return (
     <motion.div
+      id="draw-button-root"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: shouldReduceMotion ? 0 : 0.5 }}

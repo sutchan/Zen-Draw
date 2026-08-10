@@ -1,4 +1,4 @@
-// components/draw/appearance-settings.parts.tsx v5.7.1 —— 外观设置：常量与子组件
+// components/draw/appearance-settings.parts.tsx v5.7.3 —— 外观设置：常量与子组件
 import * as React from "react";
 import { Check } from "lucide-react";
 import {
@@ -65,7 +65,7 @@ export function ThemePresetGrid({
 }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
   return (
-    <div className="space-y-3">
+    <div id="theme-preset-grid" className="space-y-3">
       <Label>{t("themePreset")}</Label>
       <div className="grid grid-cols-4 gap-2.5">
         {THEME_PRESETS.map((p) => {
@@ -121,7 +121,7 @@ export function FontFamilySelect({
 }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
   return (
-    <div className="space-y-3">
+    <div id="font-family-select" className="space-y-3">
       <Label htmlFor="font-family">{t("fontFamily")}</Label>
       <Select
         value={value}

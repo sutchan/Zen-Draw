@@ -1,4 +1,4 @@
-// components/draw/custom-list-settings.tsx v5.7.1 —— 自定义列表设置子组件（使用中央翻译系统 + base-ui Dialog）
+// components/draw/custom-list-settings.tsx v5.7.3 —— 自定义列表设置子组件（使用中央翻译系统 + base-ui Dialog）
 "use client";
 
 import * as React from "react";
@@ -59,7 +59,7 @@ export function CustomListSettings({
       if (!next) setError(null);
       onOpenChange(next);
     }}>
-      <DialogContent key={open ? "open" : "closed"} className="sm:max-w-lg" aria-label={t("customList")}>
+      <DialogContent id="custom-list-dialog" key={open ? "open" : "closed"} className="sm:max-w-lg" aria-label={t("customList")}>
         <DialogHeader>
           <DialogTitle>{t("customList")}</DialogTitle>
           <DialogDescription>{t("customListHint")}</DialogDescription>

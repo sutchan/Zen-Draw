@@ -15,7 +15,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">
+    <div id="error-page" className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">
       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-destructive/10">
         <svg
           viewBox="0 0 24 24"

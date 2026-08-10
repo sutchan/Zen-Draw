@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">
+    <div id="not-found-page" className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">
       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
         <svg
           viewBox="0 0 24 24"

@@ -1,4 +1,4 @@
-// components/draw/draw-display/confetti-burst.tsx v5.7.1 —— 揭晓彩屑爆发（canvas 粒子）
+// components/draw/draw-display/confetti-burst.tsx v5.7.3 —— 揭晓彩屑爆发（canvas 粒子）
 "use client";
 
 import * as React from "react";
@@ -162,6 +162,7 @@ export function ConfettiBurst({ active }: { active: boolean }) {
 
   return (
     <canvas
+      id="confetti-burst"
       ref={canvasRef}
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 z-20"

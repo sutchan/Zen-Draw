@@ -1,4 +1,4 @@
-// app/layout.tsx v5.7.1
+// app/layout.tsx v5.7.3
 import type { Metadata, Viewport } from "next";
 import "./style.css";
 import { Geist, JetBrains_Mono, Playfair_Display } from "next/font/google";
@@ -50,7 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body>
+      <body id="app-body">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

@@ -1,4 +1,4 @@
-// hooks/use-local-storage.ts v5.7.1 — 本地存储 Hook
+// hooks/use-local-storage.ts v5.7.3 — 本地存储 Hook
 "use client";
 
 import * as React from "react";

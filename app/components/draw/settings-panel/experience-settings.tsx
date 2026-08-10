@@ -1,4 +1,4 @@
-// components/draw/settings-panel/experience-settings.tsx v5.7.1 —— 体验设置（音效/彩屑/减弱动效/密度/重置）
+// components/draw/settings-panel/experience-settings.tsx v5.7.3 —— 体验设置（音效/彩屑/减弱动效/密度/重置）
 "use client";
 
 import * as React from "react";
@@ -37,13 +37,13 @@ export function ExperienceSettings({
   const t = React.useMemo(() => createTranslator(language), [language]);
 
   return (
-    <div className="space-y-5 pt-2">
+    <div id="experience-settings" className="space-y-5 pt-2">
       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
         {t("experience")}
       </p>
 
       {/* 音效 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+      <Card id="experience-sound-card" className="p-4 rounded-2xl border-border/30 bg-muted/20">
         <div className="flex items-center justify-between gap-4">
           <div>
             <Label>{t("sound")}</Label>
@@ -58,7 +58,7 @@ export function ExperienceSettings({
       </Card>
 
       {/* 结果彩屑动效 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+      <Card id="experience-confetti-card" className="p-4 rounded-2xl border-border/30 bg-muted/20">
         <div className="flex items-center justify-between gap-4">
           <div>
             <Label>{t("confetti")}</Label>
@@ -73,7 +73,7 @@ export function ExperienceSettings({
       </Card>
 
       {/* 减弱动效 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+      <Card id="experience-reduce-motion-card" className="p-4 rounded-2xl border-border/30 bg-muted/20">
         <div className="flex items-center justify-between gap-4">
           <div>
             <Label>{t("reduceMotion")}</Label>
@@ -88,7 +88,7 @@ export function ExperienceSettings({
       </Card>
 
       {/* 自动收起面板 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+      <Card id="experience-autohide-card" className="p-4 rounded-2xl border-border/30 bg-muted/20">
         <div className="flex items-center justify-between gap-4">
           <div>
             <Label>{t("autoHide")}</Label>
@@ -103,7 +103,7 @@ export function ExperienceSettings({
       </Card>
 
       {/* 结果显示密度 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20 space-y-3">
+      <Card id="experience-density-card" className="p-4 rounded-2xl border-border/30 bg-muted/20 space-y-3">
         <div>
           <Label>{t("density")}</Label>
           <p className="text-xs text-muted-foreground mt-0.5">{t("densityDesc")}</p>
@@ -129,7 +129,7 @@ export function ExperienceSettings({
       </Card>
 
       {/* 重置所有选项 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+      <Card id="experience-reset-card" className="p-4 rounded-2xl border-border/30 bg-muted/20">
         <div className="flex items-center justify-between gap-4">
           <div>
             <Label>{t("resetSettings")}</Label>

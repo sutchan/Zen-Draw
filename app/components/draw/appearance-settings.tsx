@@ -1,4 +1,4 @@
-// components/draw/appearance-settings.tsx v5.7.1 —— 外观设置子组件（使用中央翻译系统）
+// components/draw/appearance-settings.tsx v5.7.3 —— 外观设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -48,6 +48,7 @@ export function AppearanceSettings({
 
   return (
     <motion.div
+      id="appearance-settings"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15, duration: 0.4 }}
@@ -58,7 +59,7 @@ export function AppearanceSettings({
       </p>
 
       {/* 主题模式 */}
-      <div className="space-y-3">
+      <div id="appearance-theme-mode" className="space-y-3">
         <Label htmlFor="theme-mode">{t("themeMode")}</Label>
         {mounted && (
           <Select value={theme ?? "system"} onValueChange={(v) => setTheme(v as string)}>
@@ -75,13 +76,17 @@ export function AppearanceSettings({
       </div>
 
       {/* 主题预设 —— 色块网格 */}
-      <ThemePresetGrid language={language} preset={preset} onSelect={(p: ThemePreset) => setPreset(p)} />
+      <div id="appearance-theme-preset">
+        <ThemePresetGrid language={language} preset={preset} onSelect={(p: ThemePreset) => setPreset(p)} />
+      </div>
 
       {/* 字体风格 */}
-      <FontFamilySelect language={language} value={font} onChange={setFont} />
+      <div id="appearance-font">
+        <FontFamilySelect language={language} value={font} onChange={setFont} />
+      </div>
 
       {/* 界面语言 */}
-      <div className="space-y-3">
+      <div id="appearance-language" className="space-y-3">
         <Label>{t("languageLabel")}</Label>
         <div className="grid grid-cols-2 gap-2.5">
           <Button
@@ -104,7 +109,7 @@ export function AppearanceSettings({
       </div>
 
       {/* 数字显示格式 */}
-      <div className="space-y-3 pt-2">
+      <div id="appearance-number-format" className="space-y-3 pt-2">
         <Label htmlFor="digits">{t("minDigits")}</Label>
         <Input
           id="digits"
@@ -140,7 +145,7 @@ export function AppearanceSettings({
       </div>
 
       {/* 实时预览 */}
-      <div className="rounded-2xl border border-border/20 bg-muted/20 p-4">
+      <div id="appearance-preview" className="rounded-2xl border border-border/20 bg-muted/20 p-4">
         <p className="text-xs font-medium text-muted-foreground mb-2">
           {useCustomList ? t("listModeFormatNote") : t("formatPreview")}
         </p>

@@ -1,4 +1,4 @@
-// components/draw/draw-display/index.tsx v5.7.1 —— 主显示区（统一 draw 对象 + 增强 ARIA）
+// components/draw/draw-display/index.tsx v5.7.3 —— 主显示区（统一 draw 对象 + 增强 ARIA）
 "use client";
 
 import * as React from "react";
@@ -42,6 +42,7 @@ export function DrawDisplay({ draw }: DrawDisplayProps) {
 
   return (
     <motion.div
+      id="draw-display-region"
       role="region"
       aria-label={t("drawDisplayArea")}
       className="flex-1 flex flex-col items-center justify-center relative"

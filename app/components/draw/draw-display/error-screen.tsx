@@ -1,4 +1,4 @@
-// components/draw/draw-display/error-screen.tsx v5.7.1 —— 错误状态显示
+// components/draw/draw-display/error-screen.tsx v5.7.3 —— 错误状态显示
 "use client";
 
 import * as React from "react";
@@ -10,6 +10,7 @@ export function ErrorScreen({ language }: { language: "zh" | "en" }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
   return (
     <motion.div
+      id="error-screen"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}

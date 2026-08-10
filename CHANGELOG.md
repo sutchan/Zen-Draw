@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.7.3] - 2026-08-10
+
+### chore（语义化 id 补全 + 版本同步）
+- 为页面级与区块级容器补齐语义化 `id`：draw-area / action-area / history-area / header-content / header-brand / header-actions / 各设置 Card（draw-range/count/duration/allow-dup/custom-list、experience-* 6 项）/ appearance-* 区块 / result-cards / history-tab-header
+- 统一同步所有源文件头注释与文档版本号至 v5.7.3
+
+## [5.7.2] - 2026-08-10
+
+### feat（调试可观测性）
+- 为所有结构性/语义化容器补充 kebab-case 语义化 `id` 便于调试与 E2E 定位
+- 覆盖范围：页面级（`app-body`/`app-shell`/`app-main`/`app-footer`/`error-page`/`not-found-page`）、布局与设置面板（`app-header`/`settings-panel`/`tab-panel-*`/`draw-settings`/`appearance-settings`/`experience-settings` 等）、抽取展示（`draw-display-region`/`results-region`/`result-card-${index}`/`draw-button-root` 等）、历史列表（`history-list`/`history-card-${index}`/`history-empty-state` 等）、特效（`celebration-effect`/`confetti-burst`）
+- 多实例容器用 `${index}` 后缀保证 id 唯一；UI 基础原子组件不加 id
+- `SPEC.md` 新增 §5.1.1 容器语义化 id 规范表
+
 ## [5.7.1] - 2026-08-10
 
 ### Docs（规范文档修正）

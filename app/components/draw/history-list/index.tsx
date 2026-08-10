@@ -1,4 +1,4 @@
-// components/draw/history-list/index.tsx v5.7.1 —— 历史记录列表（极简设计优化）
+// components/draw/history-list/index.tsx v5.7.3 —— 历史记录列表（极简设计优化）
 "use client";
 
 import * as React from "react";
@@ -31,7 +31,7 @@ export function HistoryList({ history, onClear, language = "zh" }: HistoryListPr
   const t = React.useMemo(() => createTranslator(language), [language]);
 
   return (
-    <div className="space-y-4" role="region" aria-label={t("history")}>
+    <div id="history-list" className="space-y-4" role="region" aria-label={t("history")}>
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
           <h3 className="text-lg font-semibold tracking-tight">
@@ -62,6 +62,7 @@ export function HistoryList({ history, onClear, language = "zh" }: HistoryListPr
       <div className="space-y-3" aria-live="polite">
         {hasHistory ? (
           <motion.div
+            id="history-cards"
             initial="hidden"
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.04 } } }}

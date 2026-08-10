@@ -1,4 +1,4 @@
-// hooks/use-draw-actions.ts v5.7.1 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
+// hooks/use-draw-actions.ts v5.7.3 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
 "use client";
 
 import * as React from "react";
@@ -107,23 +107,29 @@ export function useDrawActions(
 
   // --- 设置更新方法 ---
 
-  // 数值 setter 工厂：统一处理有限性校验与区间钳制
-  const makeNumberSetter = React.useCallback(
-    (type: DrawAction["type"], fallback: number, lo: number, hi: number) =>
-      (value: number | string) => {
-        const n = typeof value === "number"
-          ? (Number.isFinite(value) ? value : fallback)
-          : parseFiniteNumber(value, fallback);
-        dispatch({ type, value: clamp(n, lo, hi) } as DrawAction);
-      },
-    [dispatch],
-  );
+  // 数值钳制：统一处理有限性校验与区间约束
+  const coerceNumber = (value: number | string, fallback: number, lo: number, hi: number): number => {
+    const n = typeof value === "number"
+      ? (Number.isFinite(value) ? value : fallback)
+      : parseFiniteNumber(value, fallback);
+    return clamp(n, lo, hi);
+  };
 
-  const setMin = React.useCallback(makeNumberSetter("SET_MIN", 0, -Infinity, Infinity), [makeNumberSetter]);
-  const setMax = React.useCallback(makeNumberSetter("SET_MAX", 0, -Infinity, Infinity), [makeNumberSetter]);
-  const setCount = React.useCallback(makeNumberSetter("SET_COUNT", 1, 1, 1000), [makeNumberSetter]);
-  const setDuration = React.useCallback(makeNumberSetter("SET_DURATION", 5, 1, 120), [makeNumberSetter]);
-  const setDigits = React.useCallback(makeNumberSetter("SET_DIGITS", 0, 0, 20), [makeNumberSetter]);
+  const setMin = React.useCallback((value: number | string) => {
+    dispatch({ type: "SET_MIN", value: coerceNumber(value, 0, -Infinity, Infinity) });
+  }, [dispatch]);
+  const setMax = React.useCallback((value: number | string) => {
+    dispatch({ type: "SET_MAX", value: coerceNumber(value, 0, -Infinity, Infinity) });
+  }, [dispatch]);
+  const setCount = React.useCallback((value: number | string) => {
+    dispatch({ type: "SET_COUNT", value: coerceNumber(value, 1, 1, 1000) });
+  }, [dispatch]);
+  const setDuration = React.useCallback((value: number | string) => {
+    dispatch({ type: "SET_DURATION", value: coerceNumber(value, 5, 1, 120) });
+  }, [dispatch]);
+  const setDigits = React.useCallback((value: number | string) => {
+    dispatch({ type: "SET_DIGITS", value: coerceNumber(value, 0, 0, 20) });
+  }, [dispatch]);
 
   const setPrefix = React.useCallback((value: string) => {
     dispatch({ type: "SET_PREFIX", value: sanitizeTextField(value) });

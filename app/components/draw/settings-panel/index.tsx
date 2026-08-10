@@ -1,4 +1,4 @@
-// components/draw/settings-panel/index.tsx v5.7.1 —— 设置面板（Tabs + 子设置区，无嵌套 Sheet）
+// components/draw/settings-panel/index.tsx v5.7.3 —— 设置面板（Tabs + 子设置区，无嵌套 Sheet）
 "use client";
 
 import * as React from "react";
@@ -6,9 +6,6 @@ import { Settings, Trash2 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { Card } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { createTranslator } from "@/lib/i18n";
 import type { UseDrawReturn } from "@/hooks/draw-types";
 import { DrawSettings } from "@/components/draw/draw-settings";
@@ -60,7 +57,7 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
           <TooltipContent>{t("settings")}</TooltipContent>
         </Tooltip>
 
-        <SheetContent side="right" className="w-full sm:w-[26rem] p-0 bg-background/95 backdrop-blur-xl border-border/20 flex flex-col">
+        <SheetContent id="settings-panel" side="right" className="w-full sm:w-[26rem] p-0 bg-background/95 backdrop-blur-xl border-border/20 flex flex-col">
           <HeaderBar language={language} onLanguageToggle={onLanguageToggle} />
 
           <Tabs defaultValue="draw" className="flex flex-1 min-h-0 flex-col">
@@ -92,7 +89,7 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
             </TabsList>
 
             <div className="flex-1 overflow-y-auto">
-              <TabsContent value="draw" className="px-6 py-6 pb-12 focus-visible:outline-none">
+              <TabsContent id="tab-panel-draw" value="draw" className="px-6 py-6 pb-12 focus-visible:outline-none">
                 <DrawSettings
                   language={language}
                   min={min}
@@ -119,7 +116,7 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
                 </div>
               </TabsContent>
 
-              <TabsContent value="appearance" className="px-6 py-6 pb-12 focus-visible:outline-none">
+              <TabsContent id="tab-panel-appearance" value="appearance" className="px-6 py-6 pb-12 focus-visible:outline-none">
                 <AppearanceSettings
                   language={language}
                   digits={digits}
@@ -133,7 +130,7 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
                 />
               </TabsContent>
 
-              <TabsContent value="experience" className="px-6 py-6 pb-12 focus-visible:outline-none">
+              <TabsContent id="tab-panel-experience" value="experience" className="px-6 py-6 pb-12 focus-visible:outline-none">
                 <ExperienceSettings
                   language={language}
                   soundEnabled={soundEnabled}
@@ -150,8 +147,8 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
                 />
               </TabsContent>
 
-              <TabsContent value="history" className="px-6 py-6 pb-12 focus-visible:outline-none">
-                <div className="flex items-center justify-between mb-4">
+              <TabsContent id="tab-panel-history" value="history" className="px-6 py-6 pb-12 focus-visible:outline-none">
+                <div id="history-tab-header" className="flex items-center justify-between mb-4">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
                     {t("history")}
                   </p>

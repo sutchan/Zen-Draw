@@ -1,4 +1,4 @@
-// components/draw/draw-display/welcome-screen.tsx v5.7.1 —— 空闲状态显示
+// components/draw/draw-display/welcome-screen.tsx v5.7.3 —— 空闲状态显示
 "use client";
 
 import * as React from "react";
@@ -10,6 +10,7 @@ export function WelcomeScreen({ language }: { language: "zh" | "en" }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
   return (
     <motion.div
+      id="welcome-screen"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}

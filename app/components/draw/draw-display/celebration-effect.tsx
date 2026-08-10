@@ -10,6 +10,7 @@ export function CelebrationEffect({ active }: { active: boolean }) {
     <AnimatePresence>
       {active && (
         <motion.div
+          id="celebration-effect"
           initial={{ opacity: 0, scale: 0.6 }}
           animate={{ opacity: [0, 0.5, 0], scale: [0.6, 1.15, 1] }}
           exit={{ opacity: 0 }}

@@ -1,4 +1,4 @@
-// components/layout/app-header.tsx v5.7.1 —— 顶部导航栏（Logo + 设置面板）
+// components/layout/app-header.tsx v5.7.3 —— 顶部导航栏（Logo + 设置面板）
 "use client";
 
 import * as React from "react";
@@ -33,9 +33,10 @@ export function AppHeader({
   const t = React.useMemo(() => createTranslator(lang), [lang]);
 
   return (
-    <header className="sticky top-0 z-30 backdrop-blur-md bg-background/80 border-b border-border/50">
-      <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+    <header id="app-header" className="sticky top-0 z-30 backdrop-blur-md bg-background/80 border-b border-border/50">
+      <div id="header-content" className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
         <motion.div
+          id="header-brand"
           initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -54,7 +55,7 @@ export function AppHeader({
           </div>
         </motion.div>
 
-        <div className="flex items-center gap-1.5">
+        <div id="header-actions" className="flex items-center gap-1.5">
           <Sheet open={panelOpen} onOpenChange={onPanelOpenChange}>
             <SheetTrigger
               className="inline-flex items-center justify-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

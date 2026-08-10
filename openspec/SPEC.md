@@ -1,10 +1,10 @@
-# ZenDraw | 禅抽 v5.7.1 — 项目规范文档
+# ZenDraw | 禅抽 v5.7.3 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.7.1
+- **当前版本**: v5.7.3
 - **上次更新**: 2026-08-10
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、11 种主题配色、Web Audio API 音效、4 Tab 设置（抽取/外观/体验/历史）、彩屑庆祝、减弱动效与界面密度调节。
 - **许可证**: MIT License
@@ -381,6 +381,44 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 | Checkbox | `ui/checkbox.tsx` | 是（Checkbox） |
 | Tooltip | `ui/tooltip.tsx` | 是（Tooltip） |
 | Toast | `ui/toast.tsx` | 是（Toast 系列） |
+
+#### 5.1.1 容器语义化 id 规范
+
+为便于调试与端到端测试，所有**结构性/语义化容器**须带 kebab-case 语义化 `id`（DOM 调试锚点）；UI 基础原子组件（Button/Input/Label/Switch/Slider/Checkbox/Textarea/Tooltip/Toast 等可复用控件）**不加**（由其父容器承载）。
+
+| 容器 | id |
+|------|----|
+| 应用根（`layout.tsx` body） | `app-body` |
+| 页面外壳（`page.tsx` root） | `app-shell` |
+| 主内容区（`page.tsx` main） | `app-main` |
+| 页脚（`page.tsx` footer） | `app-footer` |
+| 错误边界页 | `error-page` |
+| 404 页 | `not-found-page` |
+| 顶栏（`app-header`） | `app-header` |
+| 设置面板（`SheetContent`） | `settings-panel` |
+| 设置面板头部 | `settings-header-bar` |
+| 4 个设置 Tab 面板 | `tab-panel-draw` / `tab-panel-appearance` / `tab-panel-experience` / `tab-panel-history` |
+| 抽取设置 | `draw-settings` |
+| 外观设置 | `appearance-settings` |
+| 体验设置 | `experience-settings` |
+| 自定义名单内联块 | `custom-list-inline` |
+| 自定义名单对话框 | `custom-list-dialog` |
+| 主题预设网格 | `theme-preset-grid` |
+| 字体选择容器 | `font-family-select` |
+| 抽取展示区（`draw-display` region） | `draw-display-region` |
+| 欢迎屏 | `welcome-screen` |
+| 结果区（results grid region） | `results-region` |
+| 单条结果卡（多实例） | `result-card-${index}` |
+| 错误屏 | `error-screen` |
+| 抽取按钮根容器 | `draw-button-root` |
+| 历史列表容器 | `history-list` |
+| 历史卡片列表 | `history-cards` |
+| 单条历史卡（多实例） | `history-card-${index}` |
+| 历史空状态 | `history-empty-state` |
+| 庆祝光晕 | `celebration-effect` |
+| 彩屑画布 | `confetti-burst` |
+
+> 多实例容器（结果卡、历史卡）使用 `${index}` 后缀保证 id 唯一；纯展示型单实例（彩屑/光晕）加 `aria-hidden` 仍附 id 便于定位。
 
 ### 5.2 业务组件规范
 

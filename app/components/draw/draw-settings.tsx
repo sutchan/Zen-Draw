@@ -1,4 +1,4 @@
-// components/draw/draw-settings.tsx v5.7.1 —— 抽取设置子组件（使用中央翻译系统）
+// components/draw/draw-settings.tsx v5.7.3 —— 抽取设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -40,6 +40,7 @@ export function DrawSettings({
 
   return (
     <motion.div
+      id="draw-settings"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.4 }}
@@ -50,7 +51,7 @@ export function DrawSettings({
       </p>
 
       {/* 抽取范围 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20 grid grid-cols-2 gap-3">
+      <Card id="draw-range-card" className="p-4 rounded-2xl border-border/30 bg-muted/20 grid grid-cols-2 gap-3">
         <div className="space-y-2">
           <Label htmlFor="min-val">{t("minVal")}</Label>
           <Input
@@ -74,7 +75,7 @@ export function DrawSettings({
       </Card>
 
       {/* 抽取数量 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20 space-y-3">
+      <Card id="draw-count-card" className="p-4 rounded-2xl border-border/30 bg-muted/20 space-y-3">
         <div className="flex items-center justify-between">
           <Label>{t("drawCount")}</Label>
           <span className="text-sm font-semibold tabular-nums rounded-lg bg-background px-2.5 py-1 border border-border/20">
@@ -92,7 +93,7 @@ export function DrawSettings({
       </Card>
 
       {/* 抽取时长 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20 space-y-3">
+      <Card id="draw-duration-card" className="p-4 rounded-2xl border-border/30 bg-muted/20 space-y-3">
         <div className="flex items-center justify-between">
           <Label>{t("drawDuration")}</Label>
           <span className="text-sm font-semibold tabular-nums rounded-lg bg-background px-2.5 py-1 border border-border/20">
@@ -112,7 +113,7 @@ export function DrawSettings({
       </Card>
 
       {/* 允许重复 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+      <Card id="draw-allow-dup-card" className="p-4 rounded-2xl border-border/30 bg-muted/20">
         <div className="flex items-center justify-between gap-4">
           <div>
             <Label>{t("allowDup")}</Label>
@@ -127,7 +128,7 @@ export function DrawSettings({
       </Card>
 
       {/* 使用自定义名单 */}
-      <Card className="p-4 rounded-2xl border-border/30 bg-muted/20">
+      <Card id="draw-custom-list-card" className="p-4 rounded-2xl border-border/30 bg-muted/20">
         <div className="flex items-center justify-between gap-4">
           <div>
             <Label>{t("useCustomList")}</Label>

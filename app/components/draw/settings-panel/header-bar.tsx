@@ -1,4 +1,4 @@
-// components/draw/settings-panel/header-bar.tsx v5.7.1 —— 顶部标题栏（使用中央翻译系统）
+// components/draw/settings-panel/header-bar.tsx v5.7.3 —— 顶部标题栏（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -15,6 +15,7 @@ export function HeaderBar({ language, onLanguageToggle }: {
   const t = React.useMemo(() => createTranslator(language), [language]);
   return (
     <motion.div
+      id="settings-header-bar"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}

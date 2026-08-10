@@ -1,4 +1,4 @@
-// components/draw/history-list/history-card.tsx v5.7.1 —— 历史记录卡片
+// components/draw/history-list/history-card.tsx v5.7.3 —— 历史记录卡片
 "use client";
 
 import * as React from "react";
@@ -71,6 +71,7 @@ export function HistoryCard({
 
   return (
     <motion.div
+      id={`history-card-${index}`}
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 260, damping: 24, delay: index * 0.03 }}

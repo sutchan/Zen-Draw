@@ -11,6 +11,7 @@
 
 ## 代码规范约定（Zen-Draw 项目）
 - **拆分所有超过 200 行的源代码文件为合理模块**：单文件超过 200 行时必须按职责拆分为更小模块（组件拆分、逻辑抽离 hooks/util 等），保持可读性与可维护性。
+- **容器语义化 id 约定**：所有结构性/语义化容器（页面根、main/header/footer、组件最外层根、主要区块如 Tab 面板、卡片列表容器等）须加 kebab-case 语义化 `id` 便于调试。UI 基础原子组件（button/input/label/switch/slider/checkbox/textarea/tooltip/toast 包装）不加（属可复用控件）。命名参考：`app-shell` / `app-main` / `app-footer` / `settings-panel` / `app-header` / `draw-display-region` / `tab-panel-draw` 等。
 - 每次对任意文件的修改（新增/删除/改代码文档配置）都须升级最小版本号（patch 起步），并同步更新：源文件头版本注释、package.json version、metadata.json name、README/README_CN 徽章与页脚、SPEC.md、CHANGELOG 对应版本小节。
 - 提交信息遵循 `type: 描述`（feat/fix/docs/refactor/style/test/chore/perf/ci/revert），描述首字母小写、动词开头、≤50 字符、无句号。
 - 安全红线：凭据仅存 `wp.secret.ps1`（git 忽略），不得硬编码；代码/日志不含密钥 Token。

@@ -1,4 +1,4 @@
-// page.tsx v5.7.1 —— 抽取主页面（状态编排 + 键盘快捷键）
+// page.tsx v5.7.3 —— 抽取主页面（状态编排 + 键盘快捷键）
 "use client";
 
 import * as React from "react";
@@ -65,6 +65,7 @@ export default function HomePage() {
 
   return (
     <div
+      id="app-shell"
       className="min-h-screen w-full bg-background text-foreground antialiased"
       role="application"
       aria-label={t("appTitle")}
@@ -77,11 +78,11 @@ export default function HomePage() {
       />
 
       {/* Main Content — 极简布局 */}
-      <main className="mx-auto max-w-6xl px-4 pt-8 sm:pt-12 pb-16">
-        <section aria-label={t("drawMainArea")} className="flex flex-col items-center">
+      <main id="app-main" className="mx-auto max-w-6xl px-4 pt-8 sm:pt-12 pb-16">
+        <section id="draw-area" aria-label={t("drawMainArea")} className="flex flex-col items-center">
           <DrawDisplay draw={draw} />
 
-          <div className="mt-8 sm:mt-12">
+          <div id="action-area" className="mt-8 sm:mt-12">
             <DrawButton
               isDrawing={draw.status === "drawing"}
               onStart={draw.startDraw}
@@ -92,13 +93,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="mt-12 sm:mt-16 max-w-2xl mx-auto">
+        <section id="history-area" className="mt-12 sm:mt-16 max-w-2xl mx-auto">
           <HistoryList history={draw.history} language={lang} onClear={draw.clearHistory} />
         </section>
       </main>
 
       {/* Footer — 极简 */}
-      <footer className="py-6 text-center text-xs text-muted-foreground/70 border-t border-border/30">
+      <footer id="app-footer" className="py-6 text-center text-xs text-muted-foreground/70 border-t border-border/30">
         <p>{t("footerInfo", String(10), String(3))}</p>
       </footer>
     </div>

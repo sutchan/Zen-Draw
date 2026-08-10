@@ -1,4 +1,4 @@
-// components/draw/settings-panel/custom-list-inline.tsx v5.7.1 —— 自定义列表内联卡片
+// components/draw/settings-panel/custom-list-inline.tsx v5.7.3 —— 自定义列表内联卡片
 "use client";
 
 import * as React from "react";
@@ -14,7 +14,7 @@ export function CustomListInline({
   onClearList: () => void;
 }) {
   return (
-    <div className="rounded-2xl border border-border/30 bg-muted/20 p-4 space-y-3">
+    <div id="custom-list-inline" className="rounded-2xl border border-border/30 bg-muted/20 p-4 space-y-3">
       <p className="text-sm font-medium">{t("customList")}</p>
       <p className="text-xs text-muted-foreground">
         {customList.length > 0 ? `${customList.length} ${t("itemsLoaded")}` : t("listHintEmpty")}

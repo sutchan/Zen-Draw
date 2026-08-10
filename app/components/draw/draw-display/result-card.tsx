@@ -1,4 +1,4 @@
-// components/draw/draw-display/result-card.tsx v5.7.1 —— 单个结果卡片
+// components/draw/draw-display/result-card.tsx v5.7.3 —— 单个结果卡片
 "use client";
 
 import * as React from "react";
@@ -27,6 +27,7 @@ export function ResultCard({
 
   return (
     <motion.div
+      id={`result-card-${index}`}
       initial={{ opacity: 0, y: 30, scale: 0.85 }}
       animate={{
         opacity: 1,

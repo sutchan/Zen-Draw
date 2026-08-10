@@ -1,4 +1,4 @@
-// components/draw/draw-display/results-grid.tsx v5.7.1 —— 所有结果网格（惊艳升级：彩屑+揭晓标题+里程碑）
+// components/draw/draw-display/results-grid.tsx v5.7.3 —— 所有结果网格（惊艳升级：彩屑+揭晓标题+里程碑）
 "use client";
 
 import * as React from "react";
@@ -61,6 +61,7 @@ export function ResultsGrid({
 
   return (
     <div
+      id="results-region"
       className="w-full relative"
       role="region"
       aria-live="assertive"
@@ -119,11 +120,13 @@ export function ResultsGrid({
       </AnimatePresence>
 
       <motion.div
+        id="result-cards"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
       >
           <div
+            id="result-cards-grid"
             className={[
               "flex flex-wrap justify-center items-center",
               results.length === 1

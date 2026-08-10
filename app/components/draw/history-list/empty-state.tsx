@@ -1,4 +1,4 @@
-// components/draw/history-list/empty-state.tsx v5.7.1 —— 愉悦空状态（浮动骰子 + 俏皮文案）
+// components/draw/history-list/empty-state.tsx v5.7.3 —— 愉悦空状态（浮动骰子 + 俏皮文案）
 "use client";
 
 import * as React from "react";
@@ -13,6 +13,7 @@ export function EmptyState({ language }: { language: "zh" | "en" }) {
 
   return (
     <motion.div
+      id="history-empty-state"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
