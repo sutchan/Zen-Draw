@@ -1,6 +1,6 @@
 # ZenDraw 设计系统规范（DESIGN-SYSTEM）
 
-> 适用产品：ZenDraw｜禅抽 v5.5.0
+> 适用产品：ZenDraw｜禅抽 v5.7.3
 > 定位：高保真可交互原型的设计令牌、组件库、交互与无障碍基准。
 > 配套原型：`index.html`（主流程 + 主题演示）、`prototypes.html`（状态机图示）、`wireframes.html`（组件库规范）。
 > 代码对应：`app/lib/version.ts` 的 `THEME_PRESETS`（由 `theme-provider.tsx` 消费）。
@@ -51,15 +51,17 @@
 --color-primary-fg:#ffffff;
 ```
 
-### 2.3 11 套主题预设（含 Rose）
+### 2.3 11 套主题预设（THEME_PRESETS）
 
 `THEME_PRESETS` 共 11 套（代码侧 `theme-provider.tsx` 为唯一事实来源）：
 
-- 中性 3：`Default`（默认靛蓝）、`Graphite`（石墨灰）、`Mono`（纯灰阶）
-- 彩色 6：`Ocean`（海蓝）、`Forest`（森林绿）、`Sunset`（日落橙）、`Purple`（紫罗兰）、`Neon`（霓虹绿）、`Rose`（玫瑰红）
-- 单色 1：`Pixel`（终端绿 #33ff33，仅展示用，对比度未做 WCAG 实测）
+- 中性 1：`default`（默认靛蓝）
+- 彩色 7：`ocean`（海蓝）、`forest`（森林绿）、`sunset`（日落橙）、`purple`（紫罗兰）、`neon`（霓虹绿）、`sakura`（樱粉）、`rose`（玫瑰红）
+- 暗调 1：`midnight`（午夜蓝）
+- 复古 1：`retro`（怀旧暖色）
+- 单色 1：`pixel`（终端绿 #33ff33，仅展示用，对比度未做 WCAG 实测）
 
-> 主题切换通过 `data-theme="<name>"`（浅/深两态再叠加 `data-mode="light|dark"`）实现，与原型导航栏「切换深浅色」按钮一致。
+> 主题切换通过 `next-themes` 实现：预设以 `theme-<preset>` 类挂在 `<html>` 上（`default` 不挂类，仅其余 10 套挂类），深/浅模式以 `.dark` 类挂在 `<html>` 上。原型 `tokens.css` 据此提供 `.theme-*` / `.dark` 两条覆盖链路，与原型导航栏「切换深浅色」按钮（切 `.dark`）及外观 Tab 预设色块（切 `theme-*`）一致。
 
 ---
 
@@ -210,12 +212,14 @@ Sheet (side="right", aria-modal="true", role="dialog")
 │   ├── 版本号（mono 小字，读 APP_VERSION）
 │   └── 语言切换按钮（右上，lucide Languages）
 └── Tabs
-    ├── 抽取 (draw)   ：范围 / 数量 / 时长 / 允许重复 / 自定义名单 / 自动隐藏
-    ├── 外观 (appearance)：主题模式 / 预设色块 / 字体 / 语言 / 数字格式 / 实时预览
-    └── 历史 (history) ：本会话记录列表 + 清空入口
+    ├── 抽取 (draw)      ：范围 / 数量 / 时长 / 允许重复 / 自定义名单 / 自动隐藏
+    ├── 外观 (appearance)：主题预设 / 字体 / 语言 / 数字格式 / 实时预览
+    ├── 体验 (experience)：音效 / 彩屑 / 减弱动效 / 自动收起面板 / 结果显示密度 / 重置所有选项
+    └── 历史 (history)   ：本会话记录列表 + 清空入口
 ```
 
 > 自定义名单编辑为独立 Dialog（非嵌套 Sheet），避免与原 Sheet 的 open 状态冲突。
+> 「自动隐藏」原在抽取 Tab，逻辑上归属体验（面板收起行为），代码侧已并入 `experience` 的 `autoHide`；抽取 Tab 仅保留范围/数量/时长/允许重复/自定义名单。
 
 ### 12.2 尺寸与动效
 
@@ -238,11 +242,12 @@ Sheet (side="right", aria-modal="true", role="dialog")
 
 | 规范项 | 代码侧事实 | 结论 |
 |--------|------------|------|
-| 右侧 Sheet + Tabs(draw/appearance/history) | `settings-panel/index.tsx` 一致 | ✅ |
+| 右侧 Sheet + 4 Tabs(draw/appearance/experience/history) | `settings-panel/index.tsx` 一致 | ✅ |
 | HeaderBar（标识+版本+语言） | `header-bar.tsx` 读 `APP_VERSION`、右上语言键 | ✅ |
 | Esc / 遮罩关闭 | `sheet/index.tsx` Esc 绑定 + 遮罩 onClick | ✅ |
 | 宽度 26rem | `className="w-full sm:w-[26rem]"` | ✅ |
 | 自定义名单独立 Dialog | `custom-list-settings.tsx` base-ui Dialog | ✅ |
+| experience 体验开关 | `experience-settings.tsx`：soundEnabled/confettiEnabled/reduceMotion/autoHide/density/重置 | ✅ |
 
 ---
 
@@ -250,14 +255,22 @@ Sheet (side="right", aria-modal="true", role="dialog")
 
 | 文档声明 | 代码侧事实 | 结论 |
 |----------|------------|------|
-| 11 套主题含 Rose | `THEME_PRESETS` 在 `theme-provider.tsx` 确有 11 套 | ✅ 一致 |
+| 11 套主题（default/ocean/forest/sunset/purple/neon/sakura/midnight/retro/pixel/rose） | `THEME_PRESETS` 在 `theme-provider.tsx` 确有 11 套 | ✅ 一致 |
+| 主题机制 `.theme-<preset>` 类 + `.dark` 类 | `theme-provider.tsx` 写 `theme-*` 类、`next-themes` 写 `.dark` | ✅ 一致 |
 | 翻译键 90 | `app/locales` zh/en 各 90 键 | ✅ 一致 |
 | 主流程 4 态 | `use-draw.ts` 状态机含 history | ✅ 一致 |
+| 设置 4 Tab（含 experience） | `settings-panel/index.tsx` Tabs 含 experience | ✅ 一致 |
 | 彩屑揭晓触发 | `ConfettiBurst` 在结果落定时渲染 | ✅ 一致 |
 
 ---
 
 ## 变更记录
+
+### v5.7.3 - 2026-08-10
+- **原型对齐代码真值**：版本号统一至 v5.7.3（代码 `APP_VERSION` 为事实来源）。
+- **设置容器改 4 Tab**：新增「体验 (experience)」Tab（音效/彩屑/减弱动效/自动收起/密度/重置），`自动隐藏` 由抽取 Tab 并入体验。
+- **主题机制修正**：由 `data-theme` + `data-mode` 改为 `theme-<preset>` 类 + `.dark` 类（对齐 `next-themes` / `theme-provider.tsx`）。
+- **主题清单修正**：11 套真实预设为 default/ocean/forest/sunset/purple/neon/sakura/midnight/retro/pixel/rose（移除不存在的 Graphite/Mono）。
 
 ### v5.3.7 - 2026-08-09
 - **文档对齐实现**：删除 design-system.md 中未落地的承诺（整页入场 fadeUp、结果揭示 scale 动画、深色 line-height +0.05、6xl/7xl 字号阶梯、↑/↓ 全量键盘）。

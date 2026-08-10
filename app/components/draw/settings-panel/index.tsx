@@ -57,7 +57,7 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
           <TooltipContent>{t("settings")}</TooltipContent>
         </Tooltip>
 
-        <SheetContent id="settings-panel" side="right" className="w-full sm:w-[26rem] p-0 bg-background/95 backdrop-blur-xl border-border/20 flex flex-col">
+        <SheetContent id="settings-panel" side="right" className="w-full sm:w-[380px] p-0 bg-background/95 backdrop-blur-xl border-border/20 flex flex-col">
           <HeaderBar language={language} onLanguageToggle={onLanguageToggle} />
 
           <Tabs defaultValue="draw" className="flex flex-1 min-h-0 flex-col">

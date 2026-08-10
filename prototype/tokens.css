@@ -1,4 +1,4 @@
-/* prototype/tokens.css v5.5.0 —— 设计令牌单一来源，供 index/prototypes/wireframes 三套原型共享 */
+/* prototype/tokens.css v5.7.3 —— 设计令牌单一来源，供 index/prototypes/wireframes 三套原型共享 */
 /* 与 design-system.md §1–§4 对齐；修改令牌只需改此处。 */
 
 :root {
@@ -54,7 +54,9 @@
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-[data-mode="light"] {
+/* 浅色模式：.dark 类缺省即深色，挂 .dark 仍深色，去掉 .dark 或未设置即浅色；
+   代码侧 next-themes 以 .dark 类控制，原型据此覆盖。 */
+:root:not(.dark) {
   --color-bg: #ffffff;
   --color-surface: #f5f5f7;
   --color-fg: #18181b;
@@ -64,16 +66,18 @@
   --color-primary-fg: #ffffff;
 }
 
-/* 主题预设（仅装饰，覆盖 primary） */
-[data-theme="ocean"] { --color-primary: #0ea5e9; --color-primary-fg: #fff; }
-[data-theme="forest"] { --color-primary: #22c55e; --color-primary-fg: #04210f; }
-[data-theme="sunset"] { --color-primary: #f97316; --color-primary-fg: #2a1402; }
-[data-theme="purple"] { --color-primary: #a855f7; --color-primary-fg: #fff; }
-[data-theme="neon"] { --color-primary: #39ff14; --color-primary-fg: #04210f; }
-[data-theme="rose"] { --color-primary: #f43f5e; --color-primary-fg: #fff; }
-[data-theme="graphite"] { --color-primary: #71717a; --color-primary-fg: #fff; }
-[data-theme="mono"] { --color-primary: #18181b; --color-primary-fg: #fff; }
-[data-theme="pixel"] { --color-primary: #33ff33; --color-primary-fg: #04210f; }
+/* 主题预设（仅装饰，覆盖 primary；default 不挂类，沿用 :root）。
+   11 套真实清单：ocean/forest/sunset/purple/neon/sakura/midnight/retro/pixel/rose */
+.theme-ocean { --color-primary: #0ea5e9; --color-primary-fg: #fff; }
+.theme-forest { --color-primary: #22c55e; --color-primary-fg: #04210f; }
+.theme-sunset { --color-primary: #f97316; --color-primary-fg: #2a1402; }
+.theme-purple { --color-primary: #a855f7; --color-primary-fg: #fff; }
+.theme-neon { --color-primary: #39ff14; --color-primary-fg: #04210f; }
+.theme-sakura { --color-primary: #f9a8d4; --color-primary-fg: #3b0a24; }
+.theme-midnight { --color-primary: #38bdf8; --color-primary-fg: #04141f; }
+.theme-retro { --color-primary: #d97706; --color-primary-fg: #2a1402; }
+.theme-pixel { --color-primary: #33ff33; --color-primary-fg: #04210f; }
+.theme-rose { --color-primary: #f43f5e; --color-primary-fg: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }

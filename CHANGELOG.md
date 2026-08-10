@@ -6,6 +6,23 @@
 - 为页面级与区块级容器补齐语义化 `id`：draw-area / action-area / history-area / header-content / header-brand / header-actions / 各设置 Card（draw-range/count/duration/allow-dup/custom-list、experience-* 6 项）/ appearance-* 区块 / result-cards / history-tab-header
 - 统一同步所有源文件头注释与文档版本号至 v5.7.3
 
+### docs（原型与规范对齐代码真值）
+- 原型四文件（index/prototypes/wireframes/tokens.css）与 `design-system.md` 版本号统一升到 v5.7.3（对齐 `app/lib/version.ts`）
+- 设置容器规范由 3 Tab 改为 **4 Tab**：新增「体验 (experience)」Tab（音效/彩屑/减弱动效/自动收起/密度/重置），「自动隐藏」由抽取并入体验；`wireframes.html` 预览与 `design-system.md §12` 同步
+- 主题机制修正：由 `data-theme` + `data-mode` 改为 `theme-<preset>` 类 + `.dark` 类（对齐 `next-themes` / `theme-provider.tsx`）
+- 主题清单修正：11 套真实预设为 default/ocean/forest/sunset/purple/neon/sakura/midnight/retro/pixel/rose（移除不存在的 Graphite/Mono）
+
+### fix（设置选项问题修复）
+- **重置选项不再强制改语言**：`RESET_SETTINGS` 此前会连同 `language` 一起恢复为默认中文，导致用户切到英文后点「重置所有选项」被强制切回中文；现保留用户已选语言偏好
+- **抽取时长上限口径统一**：`setDuration` 钳制上限原为 120，与「抽取设置」Slider 的 `max={30}` 不一致；统一收敛为 30，消除状态与 UI 范围错位
+- **自定义名单模式下禁用数字格式输入**：外观设置中的位数 / 前缀 / 后缀输入框此前在自定义名单模式下仍可编辑（实际不生效）；现与「允许重复」一致，名单模式下自动禁用并降低透明度
+- **页脚增加版本号**：`app/page.tsx` 页脚在主题/字体信息下方新增 `v{APP_VERSION}` 展示行（读 `app/lib/version.ts` 单一来源），并加语义化 `id="app-footer-version"`
+
+### refactor（代码对齐规范 SPEC.md）
+- **设置面板宽度对齐规范**：`settings-panel/index.tsx` 桌面端 `SheetContent` 宽度由 `sm:w-[26rem]`（416px）改为 SPEC §3.2.2 规定的 `sm:w-[380px]`
+- **SPEC §2 目录树补录**：补列 `settings-panel/experience-settings.tsx` 与 `settings-panel/custom-list-inline.tsx`（此前仅 §3 提及、§2 漏列）
+- **SPEC §6 状态描述追平代码**：§6.1 由旧式平铺结构改为嵌套 `DrawSettings` + `status` 状态机（`isRolling`/`currentResults`/`errorMessage`）；§6.2 Action 列表更新为实际 25 个 `SET_*`/流程 action；§6.3 持久化 key 由 13 组更正为实际 15 组（新增 `sound`/`density`/`confetti`/`reduce-motion`）
+
 ## [5.7.2] - 2026-08-10
 
 ### feat（调试可观测性）

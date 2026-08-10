@@ -75,9 +75,11 @@ export function drawReducer(state: DrawState, action: DrawAction): DrawState {
     case "SET_REDUCE_MOTION":
       return { ...state, reduceMotion: action.value };
     case "RESET_SETTINGS":
+      // 恢复默认设置，但保留用户已选择的语言偏好（语言不属于"选项"，重置不应强制改回默认语言）
       return {
         ...state,
         ...DEFAULT_SETTINGS,
+        language: state.language,
       };
     case "CLEAR_HISTORY":
       return { ...state, history: [] };

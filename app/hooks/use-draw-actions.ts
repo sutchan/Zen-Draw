@@ -125,7 +125,7 @@ export function useDrawActions(
     dispatch({ type: "SET_COUNT", value: coerceNumber(value, 1, 1, 1000) });
   }, [dispatch]);
   const setDuration = React.useCallback((value: number | string) => {
-    dispatch({ type: "SET_DURATION", value: coerceNumber(value, 5, 1, 120) });
+    dispatch({ type: "SET_DURATION", value: coerceNumber(value, 5, 1, 30) });
   }, [dispatch]);
   const setDigits = React.useCallback((value: number | string) => {
     dispatch({ type: "SET_DIGITS", value: coerceNumber(value, 0, 0, 20) });

@@ -10,6 +10,7 @@ import { HistoryList } from "@/components/draw/history-list";
 import { DrawDisplay } from "@/components/draw/draw-display";
 import { AppHeader } from "@/components/layout/app-header";
 import { createTranslator } from "@/lib/i18n";
+import { APP_VERSION } from "@/lib/version";
 
 export default function HomePage() {
   const shouldReduceMotion = useMountedReducedMotion();
@@ -101,6 +102,9 @@ export default function HomePage() {
       {/* Footer — 极简 */}
       <footer id="app-footer" className="py-6 text-center text-xs text-muted-foreground/70 border-t border-border/30">
         <p>{t("footerInfo", String(10), String(3))}</p>
+        <p id="app-footer-version" className="mt-1 font-mono">
+          v{APP_VERSION}
+        </p>
       </footer>
     </div>
   );

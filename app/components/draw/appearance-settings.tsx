@@ -117,8 +117,9 @@ export function AppearanceSettings({
           min={0}
           max={20}
           value={digits}
+          disabled={useCustomList}
           onChange={(e) => onDigits(e.target.value)}
-          className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+          className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all disabled:opacity-50"
         />
         <p className="text-xs text-muted-foreground leading-relaxed">{t("minDigitsDesc")}</p>
       </div>
@@ -129,8 +130,9 @@ export function AppearanceSettings({
           <Input
             id="prefix"
             value={prefix}
+            disabled={useCustomList}
             onChange={(e) => onPrefix(e.target.value)}
-            className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+            className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all disabled:opacity-50"
           />
         </div>
         <div className="space-y-2">
@@ -138,8 +140,9 @@ export function AppearanceSettings({
           <Input
             id="suffix"
             value={suffix}
+            disabled={useCustomList}
             onChange={(e) => onSuffix(e.target.value)}
-            className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+            className="h-11 rounded-2xl bg-muted/30 border border-border/20 focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all disabled:opacity-50"
           />
         </div>
       </div>

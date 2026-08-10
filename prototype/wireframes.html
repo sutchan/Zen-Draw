@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- prototype/wireframes.html v5.5.0 —— 组件库规范（与 index/prototypes 共享 tokens.css） -->
-<html lang="zh-CN" data-theme="default" data-mode="dark">
+<!-- prototype/wireframes.html v5.7.3 —— 组件库规范（与 index/prototypes 共享 tokens.css） -->
+<html lang="zh-CN" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZenDraw｜禅抽 · 组件库规范 v5.5.0</title>
+  <title>ZenDraw｜禅抽 · 组件库规范 v5.7.3</title>
   <link rel="stylesheet" href="tokens.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -134,6 +134,14 @@
             <ul class="menu" role="listbox" aria-label="主题" id="selMenu" hidden>
               <li role="option" aria-selected="true" data-val="default">默认</li>
               <li role="option" aria-selected="false" data-val="ocean">海蓝</li>
+              <li role="option" aria-selected="false" data-val="forest">森林绿</li>
+              <li role="option" aria-selected="false" data-val="sunset">日落橙</li>
+              <li role="option" aria-selected="false" data-val="purple">紫罗兰</li>
+              <li role="option" aria-selected="false" data-val="neon">霓虹绿</li>
+              <li role="option" aria-selected="false" data-val="sakura">樱粉</li>
+              <li role="option" aria-selected="false" data-val="midnight">午夜蓝</li>
+              <li role="option" aria-selected="false" data-val="retro">复古暖</li>
+              <li role="option" aria-selected="false" data-val="pixel">终端绿</li>
               <li role="option" aria-selected="false" data-val="rose">玫瑰红</li>
             </ul>
           </div>
@@ -176,7 +184,7 @@
       <h2>设置容器 Settings Container（右侧抽屉 + Tabs）</h2>
       <p class="intro" style="margin-bottom:var(--space-4)">
         应用全局设置入口为<strong>右侧滑入抽屉</strong>，由顶部导航的齿轮按钮触发。结构固定为：
-        <strong>HeaderBar（应用标识 + 版本号 + 语言切换）</strong> → <strong>Tabs（抽取 / 外观 / 历史）</strong>。
+        <strong>HeaderBar（应用标识 + 版本号 + 语言切换）</strong> → <strong>Tabs（抽取 / 外观 / 体验 / 历史）</strong>。
         下方按钮可预览真实抽屉（含 Tab 切换、Esc 关闭、遮罩点击关闭）。
       </p>
       <div class="grid">
@@ -195,8 +203,9 @@
           <div class="label">Tabs 分区</div>
           <div class="select" style="width:100%">
             <ul class="menu" style="position:static;box-shadow:none;display:block" aria-label="设置分区">
-              <li aria-selected="true">抽取 · min/max/count/duration/允许重复/自定义名单/自动隐藏</li>
-              <li aria-selected="false">外观 · 主题模式/预设色块/字体/语言/数字格式/预览</li>
+              <li aria-selected="true">抽取 · min/max/count/duration/允许重复/自定义名单</li>
+              <li aria-selected="false">外观 · 主题预设/字体/语言/数字格式/预览</li>
+              <li aria-selected="false">体验 · 音效/彩屑/减弱动效/自动收起/密度/重置</li>
               <li aria-selected="false">历史 · 列表 + 清空</li>
             </ul>
           </div>
@@ -209,7 +218,7 @@
             <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:var(--color-fg);color:var(--color-bg);display:flex;align-items:center;justify-content:center;font-weight:700">抽</div>
             <div style="flex:1">
               <div style="font-weight:600">ZenDraw｜禅抽</div>
-              <div style="font-size:10px;color:var(--color-muted)">v5.5.0</div>
+              <div style="font-size:10px;color:var(--color-muted)">v5.7.3</div>
             </div>
             <button class="switch" role="switch" aria-checked="false" tabindex="0" data-switch aria-label="界面语言">
               <span class="track" aria-hidden="true"></span><span>EN</span>
@@ -218,10 +227,11 @@
           <div class="stepper" id="settingsTabs" style="margin:var(--space-3) var(--space-4);gap:var(--space-2)">
             <div class="step-dot active" data-tab="draw" style="min-width:0;flex:1">抽取</div>
             <div class="step-dot" data-tab="appearance" style="min-width:0;flex:1">外观</div>
+            <div class="step-dot" data-tab="experience" style="min-width:0;flex:1">体验</div>
             <div class="step-dot" data-tab="history" style="min-width:0;flex:1">历史</div>
           </div>
           <div id="settingsBody" style="padding:var(--space-4);overflow-y:auto;flex:1">
-            <p style="color:var(--color-muted);font-size:var(--text-sm)">抽取设置：范围 / 数量 / 时长 / 允许重复 / 自定义名单 / 自动隐藏。</p>
+            <p style="color:var(--color-muted);font-size:var(--text-sm)">抽取设置：范围 / 数量 / 时长 / 允许重复 / 自定义名单。</p>
           </div>
         </aside>
       </div>
@@ -240,24 +250,26 @@
     </section>
   </main>
 
-  <footer>ZenDraw｜禅抽 v5.5.0 · 组件库规范 · 设计令牌见 tokens.css</footer>
+  <footer>ZenDraw｜禅抽 v5.7.3 · 组件库规范 · 设计令牌见 tokens.css</footer>
 
   <script>
     (function () {
       var themeToggle = document.getElementById('themeToggle');
+      var PRESETS = ['default','ocean','forest','sunset','purple','neon','sakura','midnight','retro','pixel','rose'];
       try {
         var saved = JSON.parse(localStorage.getItem('zd-theme') || '{}');
-        if (saved.theme) document.documentElement.setAttribute('data-theme', saved.theme);
-        if (saved.mode) document.documentElement.setAttribute('data-mode', saved.mode);
+        if (saved.theme && saved.theme !== 'default') document.documentElement.classList.add('theme-' + saved.theme);
       } catch (e) {}
 
       themeToggle.addEventListener('click', function () {
-        var cur = document.documentElement.getAttribute('data-mode');
-        var next = cur === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-mode', next);
+        // 深浅色：以 .dark 类控制（对齐 next-themes）
+        var isDark = document.documentElement.classList.contains('dark');
+        var next = isDark ? 'light' : 'dark';
+        if (next === 'dark') document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
         try {
           var sv = JSON.parse(localStorage.getItem('zd-theme') || '{}');
-          sv.mode = next; localStorage.setItem('zd-theme', JSON.stringify(sv));
+          sv.dark = next === 'dark'; localStorage.setItem('zd-theme', JSON.stringify(sv));
         } catch (e) {}
       });
 
@@ -334,8 +346,9 @@
       var settingsTabs = document.getElementById('settingsTabs');
       var settingsBody = document.getElementById('settingsBody');
       var TAB_BODY = {
-        draw: '抽取设置：范围 / 数量 / 时长 / 允许重复 / 自定义名单 / 自动隐藏。',
-        appearance: '外观设置：主题模式 / 预设色块 / 字体 / 语言 / 数字格式 / 预览。',
+        draw: '抽取设置：范围 / 数量 / 时长 / 允许重复 / 自定义名单。',
+        appearance: '外观设置：主题预设 / 字体 / 语言 / 数字格式 / 预览。',
+        experience: '体验设置：音效 / 彩屑 / 减弱动效 / 自动收起面板 / 结果显示密度 / 重置所有选项。',
         history: '历史设置：本会话抽签记录列表 + 清空入口。'
       };
       openSettings.addEventListener('click', function () { settingsBackdrop.removeAttribute('hidden'); });

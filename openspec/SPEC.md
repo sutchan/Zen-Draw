@@ -101,7 +101,9 @@ zen-draw/
 │   │   │   │   └── empty-state.tsx       # 空状态
 │   │   │   ├── settings-panel/           # 设置面板组件集
 │   │   │   │   ├── index.tsx             # 4 Tab 设置面板（抽取/外观/体验/历史）
-│   │   │   │   └── header-bar.tsx        # 面板标题栏
+│   │   │   │   ├── header-bar.tsx        # 面板标题栏
+│   │   │   │   ├── experience-settings.tsx  # 体验设置（音效/彩屑/减少动效/自动隐藏/密度/重置）
+│   │   │   │   └── custom-list-inline.tsx    # 名单模式内联编辑（外观 Tab 内嵌）
 │   │   │   └── __tests__/
 │   │   │       └── draw-button.test.tsx  # 按钮单元测试
 │   │   ├── number-roller.tsx      # 数字滚动动画组件
@@ -436,40 +438,63 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 ## 6. 状态管理
 
 ### 6.1 Reducer 状态结构
+
+设置字段统一收敛进嵌套的 `DrawSettings` 对象，运行时字段独立平铺；`status` 状态机替代旧的 `isDrawing` 布尔；`history` 仍属 `DrawState` 一部分。
+
 ```typescript
+type DrawStatus = "idle" | "drawing" | "result" | "error";
+
+interface DrawSettings {
+  min: number;
+  max: number;
+  count: number;
+  allowDuplicates: boolean;
+  autoHide: boolean;
+  duration: number;                // 动画时长（秒）
+  customList: string[];
+  useCustomList: boolean;
+  digits: number;
+  prefix: string;
+  suffix: string;
+  language: "zh" | "en";
+  soundEnabled: boolean;
+  density: "comfortable" | "compact";
+  confettiEnabled: boolean;
+  reduceMotion: boolean;
+}
+
 interface DrawState {
-  min: number;                      // 最小值
-  max: number;                      // 最大值
-  count: number;                    // 抽取数量
-  allowDuplicates: boolean;          // 允许重复
-  autoHide: boolean;                // 自动隐藏侧边栏
-  duration: number;                 // 动画时长（毫秒）
-  customList: string[];             // 自定义名单
-  useCustomList: boolean;           // 使用自定义名单
-  digits: number;                   // 补零位数
-  prefix: string;                   // 前缀
-  suffix: string;                   // 后缀
-  language: 'zh' | 'en';           // 语言
-  isDrawing: boolean;               // 是否正在抽取（派生状态）
-  history: HistoryEntry[];          // 历史记录（最多 100 条）
-  results: number[];                // 当前抽取结果
-  error: string | null;             // 错误信息（派生状态）
+  ...DrawSettings;                 // 设置字段平铺展开（便于 reducer 访问）
+  currentResults: string[];        // 当前抽取结果（字符串）
+  rollingValues: string[];         // 滚动中的临时值
+  status: DrawStatus;              // 状态机：idle/drawing/result/error
+  errorMessage: string;            // 错误信息
+  history: HistoryEntry[];         // 历史记录（最多 100 条）
+  isRolling: boolean;              // 是否正在滚动（派生自 status === "drawing"）
 }
 ```
 
+> 注：`isDrawing` / `results`（number[]） / `error` 等旧式平铺字段已由 `isRolling` / `currentResults`（string[]） / `errorMessage` 取代；`status` 状态机取代布尔标记。
+
 ### 6.2 Action 类型
-- `SET_FIELD<K>` — 更新单个字段（泛型约束）
-- `START_DRAW` / `STOP_DRAW` — 状态转换
-- `SET_RESULTS` / `SET_ERROR` — 结果/错误
-- `CLEAR_HISTORY` — 清空历史记录
-- `DISMISS_ERROR` — 清除错误信息
-- `RESET` — 重置到 idle
+
+每个设置字段对应独立的 `SET_*` Action，运行时流程由状态机驱动：
+
+- `START_DRAW` / `UPDATE_ROLLING` / `FINALIZE_DRAW` / `CANCEL` — 抽取流程与滚动更新
+- `SET_MIN` / `SET_MAX` / `SET_COUNT` / `SET_DURATION` / `SET_DIGITS` — 数值设置
+- `SET_PREFIX` / `SET_SUFFIX` / `SET_ALLOW_DUPLICATES` / `SET_AUTO_HIDE` — 文本与开关
+- `SET_USE_CUSTOM_LIST` / `SET_CUSTOM_LIST` — 自定义名单
+- `SET_LANGUAGE` / `SET_SOUND_ENABLED` / `SET_DENSITY` — 语言/音效/密度
+- `SET_CONFETTI_ENABLED` / `SET_REDUCE_MOTION` — 体验开关
+- `RESET_SETTINGS` — 重置所有设置到默认（保留当前语言偏好）
+- `CLEAR_HISTORY` / `DISMISS_ERROR` / `ERROR` — 历史、错误清除与写入
 
 ### 6.3 持久化（localStorage）
-所有 key 以 `zendraw-` 为前缀，共 13 组：
+所有 key 以 `zendraw-` 为前缀，共 15 组：
 `min`, `max`, `count`, `duplicates`, `autohide`, `duration`,
 `custom-list`, `use-custom`, `digits`, `prefix`, `suffix`,
-`language`, `history`
+`language`, `sound`, `density`, `confetti`, `reduce-motion`, `history`
+（注：`confetti` / `reduce-motion` / `sound` / `density` 为体验类新增键）
 
 跨标签同步: 通过 `window.addEventListener('storage', ...)` 实现。
 
