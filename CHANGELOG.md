@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.7.6] - 2026-08-11
+
+### refactor（设置模块消除字段列举重复）
+- **类型派生化**：`UseDrawReturn.settings` 由重复 15 字段声明改为 `Omit<DrawSettings, 运行时6字段>`，类型随 `DrawSettings` 自动对齐，新增设置项漏字段即编译报错
+- **快照单一来源**：`draw-helpers.ts` 新增纯函数 `toSettings(state)`，供 `use-draw-actions` 的 `currentSettings` 与（概念上）`initialSettings` 共用，消除 14 字段重复字面量
+- **持久化表驱动**：`use-draw.ts` 的 15 个 `if (state.x !== prev.x) setPersistedX(...)` 重构为 `[stateKey, setterKey][]` 映射表循环，新增设置项只需追加一行映射
+- **PERSIST_MAP 提升模块级**：消除 `useEffect` 每次渲染重建依赖导致的 `exhaustive-deps` 告警（`react-hooks` 规则）
+- **startDraw 依赖收敛**：`use-draw-actions.ts` 精简 `state` 解构至 `status/duration/soundEnabled` 实际使用者，依赖数组补齐 `duration`，消除两个 `exhaustive-deps` ERROR
+- 全仓库版本号统一至 v5.7.6（逻辑行为与公共 API 不变，纯内部结构优化）
+
 ## [5.7.5] - 2026-08-10
 
 ### fix（设置容器 UI 问题）

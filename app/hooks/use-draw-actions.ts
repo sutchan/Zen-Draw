@@ -1,4 +1,4 @@
-// hooks/use-draw-actions.ts v5.7.5 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
+// hooks/use-draw-actions.ts v5.7.6 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
 "use client";
 
 import * as React from "react";
@@ -7,6 +7,7 @@ import type { SoundType } from "@/hooks/use-sound";
 import {
   finalizeDraw,
   generateTemporaryResults,
+  toSettings,
   validateSettings,
 } from "./draw-helpers";
 import { parseFiniteNumber } from "@/lib/utils";
@@ -23,7 +24,7 @@ export function useDrawActions(
   animationRef: React.MutableRefObject<number | null>,
   onSoundRef: React.MutableRefObject<((type: SoundType) => void) | undefined>,
 ) {
-  const { status, min, max, count, allowDuplicates, autoHide, duration, customList, useCustomList, digits, prefix, suffix, language, soundEnabled, density, confettiEnabled, reduceMotion } = state;
+  const { status, duration, soundEnabled } = state;
 
   // 音效门控：开关关闭时静默
   const sound = React.useCallback(
@@ -36,15 +37,7 @@ export function useDrawActions(
   // --- 抽取核心动作 ---
 
   const startDraw = React.useCallback((): { ok: boolean; error?: string } => {
-    const currentSettings: DrawSettings = {
-      min, max, count,
-      allowDuplicates, autoHide,
-      duration, customList,
-      useCustomList, digits,
-      prefix, suffix, language,
-      soundEnabled, density,
-      confettiEnabled, reduceMotion,
-    };
+    const currentSettings: DrawSettings = toSettings(state);
 
     if (status === "drawing") {
       if (animationRef.current !== null) {
@@ -94,7 +87,7 @@ export function useDrawActions(
       }
     }, tickMs);
     return { ok: true };
-  }, [status, min, max, count, allowDuplicates, autoHide, duration, customList, useCustomList, digits, prefix, suffix, language, soundEnabled, density, confettiEnabled, reduceMotion, sound, dispatch, animationRef]);
+  }, [status, duration, state, sound, dispatch, animationRef]);
 
   const stopDraw = React.useCallback(() => {
     if (animationRef.current !== null) {

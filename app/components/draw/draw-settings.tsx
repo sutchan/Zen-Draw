@@ -1,4 +1,4 @@
-// components/draw/draw-settings.tsx v5.7.5 —— 抽取设置子组件（使用中央翻译系统）
+// components/draw/draw-settings.tsx v5.7.6 —— 抽取设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";

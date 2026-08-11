@@ -1,4 +1,4 @@
-// hooks/draw-types.ts v5.7.5 — 抽签模块类型定义
+// hooks/draw-types.ts v5.7.6 — 抽签模块类型定义
 
 export type DrawStatus = "idle" | "drawing" | "result" | "error";
 
@@ -115,24 +115,10 @@ export interface UseDrawReturn extends DrawState {
   results: string[];
   // 是否可以开始抽取（当前状态为 idle 或 result）
   canDraw: boolean;
-  // 设置的只读快照（供 SettingsPanel 组件使用）
-  settings: {
-    min: number;
-    max: number;
-    count: number;
-    duration: number;
-    allowDuplicates: boolean;
-    autoHide: boolean;
-    customList: string[];
-    useCustomList: boolean;
-    digits: number;
-    prefix: string;
-    suffix: string;
-    language: "zh" | "en";
-    soundEnabled: boolean;
-    density: Density;
-    confettiEnabled: boolean;
-    reduceMotion: boolean;
-  };
+  // 设置的只读快照（供 SettingsPanel 组件使用）；由 DrawSettings 派生，避免与运行时字段重复声明
+  settings: Omit<
+    DrawSettings,
+    "currentResults" | "rollingValues" | "status" | "errorMessage" | "history" | "isRolling"
+  >;
 }
 

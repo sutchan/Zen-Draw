@@ -1,4 +1,4 @@
-// hooks/use-draw-utils.ts v5.7.5 — 抽签动作相关的纯工具函数
+// hooks/use-draw-utils.ts v5.7.6 — 抽签动作相关的纯工具函数
 /** 将数值钳制在 [min, max] 区间 */
 export function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));

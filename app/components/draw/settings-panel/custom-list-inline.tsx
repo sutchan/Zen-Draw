@@ -1,4 +1,4 @@
-// components/draw/settings-panel/custom-list-inline.tsx v5.7.5 —— 自定义列表内联卡片
+// components/draw/settings-panel/custom-list-inline.tsx v5.7.6 —— 自定义列表内联卡片
 "use client";
 
 import * as React from "react";

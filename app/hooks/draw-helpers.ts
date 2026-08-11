@@ -1,4 +1,4 @@
-// hooks/draw-helpers.ts v5.7.5 — 抽取逻辑纯函数
+// hooks/draw-helpers.ts v5.7.6 — 抽取逻辑纯函数
 
 import { secureRandomInt } from "@/lib/utils";
 import type { DrawSettings } from "./draw-types";
@@ -167,4 +167,29 @@ export const DEFAULT_SETTINGS: DrawSettings = {
   confettiEnabled: true,
   reduceMotion: false,
 };
+
+/**
+ * 从完整运行态抽取「设置快照」：剥离运行时字段（结果/状态/历史等），
+ * 供 initialSettings 与 startDraw 的 currentSettings 共用，单一来源避免字段列举漂移。
+ */
+export function toSettings(state: DrawSettings): DrawSettings {
+  return {
+    min: state.min,
+    max: state.max,
+    count: state.count,
+    allowDuplicates: state.allowDuplicates,
+    autoHide: state.autoHide,
+    duration: state.duration,
+    customList: state.customList,
+    useCustomList: state.useCustomList,
+    digits: state.digits,
+    prefix: state.prefix,
+    suffix: state.suffix,
+    language: state.language,
+    soundEnabled: state.soundEnabled,
+    density: state.density,
+    confettiEnabled: state.confettiEnabled,
+    reduceMotion: state.reduceMotion,
+  };
+}
 

@@ -1,4 +1,4 @@
-// components/draw/history-list/history-card.tsx v5.7.5 —— 历史记录卡片
+// components/draw/history-list/history-card.tsx v5.7.6 —— 历史记录卡片
 "use client";
 
 import * as React from "react";

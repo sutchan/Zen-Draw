@@ -1,4 +1,4 @@
-// hooks/use-draw.ts v5.7.5 —— 统一管理抽奖流程状态与逻辑（重构拆分版）
+// hooks/use-draw.ts v5.7.6 —— 统一管理抽奖流程状态与逻辑（重构拆分版）
 "use client";
 
 import * as React from "react";
@@ -11,6 +11,26 @@ import { useDrawActions } from "./use-draw-actions";
 
 export type { DrawSettings } from "./draw-types";
 export type { HistoryEntry } from "./draw-types";
+
+// 设置字段 → 持久化 setter 的静态映射（不依赖渲染期值，置于模块级避免每次渲染重建）
+const PERSIST_MAP: Array<[keyof DrawSettings, keyof ReturnType<typeof usePersistedSettings>]> = [
+  ["min", "setPersistedMin"],
+  ["max", "setPersistedMax"],
+  ["count", "setPersistedCount"],
+  ["allowDuplicates", "setPersistedAllowDup"],
+  ["autoHide", "setPersistedAutoHide"],
+  ["duration", "setPersistedDuration"],
+  ["customList", "setPersistedCustomList"],
+  ["useCustomList", "setPersistedUseCustom"],
+  ["digits", "setPersistedDigits"],
+  ["prefix", "setPersistedPrefix"],
+  ["suffix", "setPersistedSuffix"],
+  ["language", "setPersistedLanguage"],
+  ["soundEnabled", "setPersistedSoundEnabled"],
+  ["density", "setPersistedDensity"],
+  ["confettiEnabled", "setPersistedConfetti"],
+  ["reduceMotion", "setPersistedReduceMotion"],
+];
 
 export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
   const persisted = usePersistedSettings();
@@ -55,22 +75,11 @@ export function useDraw(onSound?: (type: SoundType) => void): UseDrawReturn {
   React.useEffect(() => {
     const prev = prevPersistRef.current;
     prevPersistRef.current = state;
-    if (state.min !== prev.min) persisted.setPersistedMin(state.min);
-    if (state.max !== prev.max) persisted.setPersistedMax(state.max);
-    if (state.count !== prev.count) persisted.setPersistedCount(state.count);
-    if (state.allowDuplicates !== prev.allowDuplicates) persisted.setPersistedAllowDup(state.allowDuplicates);
-    if (state.autoHide !== prev.autoHide) persisted.setPersistedAutoHide(state.autoHide);
-    if (state.duration !== prev.duration) persisted.setPersistedDuration(state.duration);
-    if (state.customList !== prev.customList) persisted.setPersistedCustomList(state.customList);
-    if (state.useCustomList !== prev.useCustomList) persisted.setPersistedUseCustom(state.useCustomList);
-    if (state.digits !== prev.digits) persisted.setPersistedDigits(state.digits);
-    if (state.prefix !== prev.prefix) persisted.setPersistedPrefix(state.prefix);
-    if (state.suffix !== prev.suffix) persisted.setPersistedSuffix(state.suffix);
-    if (state.language !== prev.language) persisted.setPersistedLanguage(state.language);
-    if (state.soundEnabled !== prev.soundEnabled) persisted.setPersistedSoundEnabled(state.soundEnabled);
-    if (state.density !== prev.density) persisted.setPersistedDensity(state.density);
-    if (state.confettiEnabled !== prev.confettiEnabled) persisted.setPersistedConfetti(state.confettiEnabled);
-    if (state.reduceMotion !== prev.reduceMotion) persisted.setPersistedReduceMotion(state.reduceMotion);
+    for (const [field, setter] of PERSIST_MAP) {
+      if (state[field] !== prev[field]) {
+        (persisted[setter] as (v: never) => void)(state[field] as never);
+      }
+    }
     if (state.history !== prev.history) persisted.setPersistedHistory(state.history);
   }, [state, persisted]);
 

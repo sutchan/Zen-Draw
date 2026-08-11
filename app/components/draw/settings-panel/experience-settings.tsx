@@ -1,4 +1,4 @@
-// components/draw/settings-panel/experience-settings.tsx v5.7.5 —— 体验设置（音效/彩屑/减弱动效/密度/重置）
+// components/draw/settings-panel/experience-settings.tsx v5.7.6 —— 体验设置（音效/彩屑/减弱动效/密度/重置）
 "use client";
 
 import * as React from "react";
