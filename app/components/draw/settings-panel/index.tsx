@@ -1,8 +1,8 @@
-// components/draw/settings-panel/index.tsx v5.7.6 —— 设置面板（Tabs + 子设置区，无嵌套 Sheet）
+// components/draw/settings-panel/index.tsx v5.7.7 —— 设置面板（Tabs + 子设置区，无嵌套 Sheet）
 "use client";
 
 import * as React from "react";
-import { Settings, Trash2 } from "lucide-react";
+import { Settings } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
@@ -16,26 +16,8 @@ import { HeaderBar } from "@/components/draw/settings-panel/header-bar";
 import { CustomListInline } from "@/components/draw/settings-panel/custom-list-inline";
 import { ExperienceSettings } from "@/components/draw/settings-panel/experience-settings";
 
-export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" | "en"; onLanguageToggle: () => void }) {
-  const {
-    min, max, count,
-    duration,
-    allowDuplicates, autoHide, useCustomList,
-    customList,
-    digits, prefix, suffix,
-    soundEnabled, setSoundEnabled,
-    density, setDensity,
-    confettiEnabled, setConfettiEnabled,
-    reduceMotion, setReduceMotion,
-    resetSettings,
-    setMin, setMax, setCount,
-    setDuration,
-    setAllowDuplicates, setAutoHide, setUseCustomList,
-    setDigits, setPrefix, setSuffix,
-    setCustomList,
-    language, onLanguageToggle,
-    history, clearHistory,
-  } = settings;
+export function SettingsPanel(props: UseDrawReturn & { language: "zh" | "en"; onLanguageToggle: () => void }) {
+  const { language, onLanguageToggle, setCustomList, history, clearHistory } = props;
 
   const t = React.useMemo(() => createTranslator(language), [language]);
   const [customListDialogOpen, setCustomListDialogOpen] = React.useState(false);
@@ -91,25 +73,20 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
             <div className="flex-1 overflow-y-auto">
               <TabsContent id="tab-panel-draw" value="draw" className="px-6 py-6 pb-12 focus-visible:outline-none">
                 <DrawSettings
+                  settings={props}
                   language={language}
-                  min={min}
-                  max={max}
-                  count={count}
-                  duration={duration}
-                  allowDuplicates={allowDuplicates}
-                  useCustomList={useCustomList}
-                  onMin={setMin}
-                  onMax={setMax}
-                  onCount={setCount}
-                  onDuration={setDuration}
-                  onAllowDuplicates={setAllowDuplicates}
-                  onUseCustomList={setUseCustomList}
+                  onMin={props.setMin}
+                  onMax={props.setMax}
+                  onCount={props.setCount}
+                  onDuration={props.setDuration}
+                  onAllowDuplicates={props.setAllowDuplicates}
+                  onUseCustomList={props.setUseCustomList}
                 />
                 <div className="mt-5">
                   <CustomListInline
                     t={t}
-                    customList={customList}
-                    useCustomList={useCustomList}
+                    customList={props.customList}
+                    useCustomList={props.useCustomList}
                     onOpenDialog={() => setCustomListDialogOpen(true)}
                     onClearList={() => setCustomList([])}
                   />
@@ -118,50 +95,29 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
 
               <TabsContent id="tab-panel-appearance" value="appearance" className="px-6 py-6 pb-12 focus-visible:outline-none">
                 <AppearanceSettings
+                  settings={props}
                   language={language}
-                  digits={digits}
-                  prefix={prefix}
-                  suffix={suffix}
-                  useCustomList={useCustomList}
-                  onDigits={setDigits}
-                  onPrefix={setPrefix}
-                  onSuffix={setSuffix}
+                  onDigits={props.setDigits}
+                  onPrefix={props.setPrefix}
+                  onSuffix={props.setSuffix}
                   onLanguageChange={onLanguageToggle}
                 />
               </TabsContent>
 
               <TabsContent id="tab-panel-experience" value="experience" className="px-6 py-6 pb-12 focus-visible:outline-none">
                 <ExperienceSettings
+                  settings={props}
                   language={language}
-                  soundEnabled={soundEnabled}
-                  onSoundEnabled={setSoundEnabled}
-                  confettiEnabled={confettiEnabled}
-                  onConfettiEnabled={setConfettiEnabled}
-                  reduceMotion={reduceMotion}
-                  onReduceMotion={setReduceMotion}
-                  autoHide={autoHide}
-                  onAutoHide={setAutoHide}
-                  density={density}
-                  onDensity={setDensity}
-                  onReset={resetSettings}
+                  onSoundEnabled={props.setSoundEnabled}
+                  onConfettiEnabled={props.setConfettiEnabled}
+                  onReduceMotion={props.setReduceMotion}
+                  onAutoHide={props.setAutoHide}
+                  onDensity={props.setDensity}
+                  onReset={props.resetSettings}
                 />
               </TabsContent>
 
               <TabsContent id="tab-panel-history" value="history" className="px-6 py-6 pb-12 focus-visible:outline-none">
-                <div id="history-tab-header" className="flex items-center justify-between mb-4">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-                    {t("history")}
-                  </p>
-                  {history.length > 0 && (
-                    <button
-                      onClick={clearHistory}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                    >
-                      <Trash2 className="size-3.5" aria-hidden="true" />
-                      {t("clearHistory")}
-                    </button>
-                  )}
-                </div>
                 <HistoryList history={history} onClear={clearHistory} language={language} />
               </TabsContent>
             </div>
@@ -173,7 +129,7 @@ export function SettingsPanel({ ...settings }: UseDrawReturn & { language: "zh" 
         language={language}
         open={customListDialogOpen}
         onOpenChange={setCustomListDialogOpen}
-        customList={customList}
+        customList={props.customList}
         onCustomListChange={setCustomList}
       />
     </>

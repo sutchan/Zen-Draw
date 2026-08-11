@@ -1,4 +1,4 @@
-// components/draw/appearance-settings.tsx v5.7.6 —— 外观设置子组件（使用中央翻译系统）
+// components/draw/appearance-settings.tsx v5.7.7 —— 外观设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -14,25 +14,23 @@ import {
   ThemePresetGrid,
   FontFamilySelect,
 } from "@/components/draw/appearance-settings.parts";
+import type { DrawSettings } from "@/hooks/draw-types";
 
 export function AppearanceSettings({
   language,
-  digits, prefix, suffix,
-  useCustomList,
+  settings,
   onDigits, onPrefix, onSuffix,
   onLanguageChange,
 }: {
   language: "zh" | "en";
-  digits: number;
-  prefix: string;
-  suffix: string;
-  useCustomList: boolean;
+  settings: DrawSettings;
   onDigits: (value: number | string) => void;
   onPrefix: (value: string) => void;
   onSuffix: (value: string) => void;
   onLanguageChange: (lang: "zh" | "en") => void;
 }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
+  const { digits, prefix, suffix, useCustomList } = settings;
 
   const { theme, setTheme } = useTheme();
   const { preset, setPreset, font, setFont } = usePresetTheme();

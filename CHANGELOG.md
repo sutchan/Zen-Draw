@@ -1,4 +1,13 @@
-# Changelog
+﻿# Changelog
+
+## [5.7.7] - 2026-08-11
+
+### refactor（设置面板透传重构，消除字段解构爆炸）
+- **SettingsPanel 去解构**：`settings-panel/index.tsx` 不再解构 20+ 设置字段，改为整体接收 `UseDrawReturn`（即 `settings` 快照 + 全部 setter），整包透传给子组件
+- **子组件 props 化零为整**：`DrawSettings` / `AppearanceSettings` / `ExperienceSettings` 的 props 由散字段改为 `settings: DrawSettings` 子集对象，内部从 `settings` 取所需字段，新增设置项只需在组件内解构、无需改动调用处签名
+- **移除双重清除头**：history Tab 内冗余的「标题+清除按钮」头部删除，`HistoryList` 自身已含完整头部（含清除），消除重复 UI 与双清除按钮
+- **移除未用导入**：`Trash2` 不再使用已删除
+- 全仓库版本号统一至 v5.7.7（逻辑行为与公共 API 不变，纯内部结构优化）
 
 ## [5.7.6] - 2026-08-11
 

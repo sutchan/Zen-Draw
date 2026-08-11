@@ -1,4 +1,4 @@
-// app/hooks/use-mounted-reduced-motion.ts v5.7.6 —— 稳定化的 reduced-motion 钩子
+﻿// app/hooks/use-mounted-reduced-motion.ts v5.7.7 —— 稳定化的 reduced-motion 钩子
 //
 // 直接使用 motion 的 useReducedMotion() 会在 SSR（返回 null）与开启"减少动效"
 // 偏好的客户端（返回 true）首次渲染时产生 DOM 差异，触发 React #418 hydration

@@ -1,4 +1,4 @@
-// components/draw/settings-panel/experience-settings.tsx v5.7.6 —— 体验设置（音效/彩屑/减弱动效/密度/重置）
+// components/draw/settings-panel/experience-settings.tsx v5.7.7 —— 体验设置（音效/彩屑/减弱动效/密度/重置）
 "use client";
 
 import * as React from "react";
@@ -6,35 +6,29 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { createTranslator } from "@/lib/i18n";
+import type { DrawSettings } from "@/hooks/draw-types";
 
 export function ExperienceSettings({
   language,
-  soundEnabled,
+  settings,
   onSoundEnabled,
-  confettiEnabled,
   onConfettiEnabled,
-  reduceMotion,
   onReduceMotion,
-  autoHide,
   onAutoHide,
-  density,
   onDensity,
   onReset,
 }: {
   language: "zh" | "en";
-  soundEnabled: boolean;
+  settings: DrawSettings;
   onSoundEnabled: (value: boolean) => void;
-  confettiEnabled: boolean;
   onConfettiEnabled: (value: boolean) => void;
-  reduceMotion: boolean;
   onReduceMotion: (value: boolean) => void;
-  autoHide: boolean;
   onAutoHide: (value: boolean) => void;
-  density: "comfortable" | "compact";
   onDensity: (value: "comfortable" | "compact") => void;
   onReset: () => void;
 }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
+  const { soundEnabled, confettiEnabled, reduceMotion, autoHide, density } = settings;
 
   return (
     <div id="experience-settings" className="space-y-5 pt-2">

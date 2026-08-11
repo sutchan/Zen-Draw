@@ -1,4 +1,4 @@
-// components/draw/draw-settings.tsx v5.7.6 —— 抽取设置子组件（使用中央翻译系统）
+// components/draw/draw-settings.tsx v5.7.7 —— 抽取设置子组件（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -9,13 +9,11 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Card } from "@/components/ui/card";
 import { createTranslator } from "@/lib/i18n";
+import type { DrawSettings } from "@/hooks/draw-types";
 
 export function DrawSettings({
   language,
-  min, max,
-  count,
-  duration,
-  allowDuplicates, useCustomList,
+  settings,
   onMin, onMax,
   onCount,
   onDuration,
@@ -23,12 +21,7 @@ export function DrawSettings({
   onUseCustomList,
 }: {
   language: "zh" | "en";
-  min: number;
-  max: number;
-  count: number;
-  duration: number;
-  allowDuplicates: boolean;
-  useCustomList: boolean;
+  settings: DrawSettings;
   onMin: (value: number | string) => void;
   onMax: (value: number | string) => void;
   onCount: (value: number | string) => void;
@@ -37,6 +30,7 @@ export function DrawSettings({
   onUseCustomList: (value: boolean) => void;
 }) {
   const t = React.useMemo(() => createTranslator(language), [language]);
+  const { min, max, count, duration, allowDuplicates, useCustomList } = settings;
 
   return (
     <motion.div

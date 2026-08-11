@@ -1,4 +1,4 @@
-// components/theme-provider.tsx v5.7.6 — 主题提供者（修复 React 19 set-state-in-effect 警告）
+﻿// components/theme-provider.tsx v5.7.7 — 主题提供者（修复 React 19 set-state-in-effect 警告）
 // 负责：深浅模式切换、预设主题、字体族、用户偏好持久化
 "use client";
 
