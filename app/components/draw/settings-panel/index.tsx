@@ -73,7 +73,7 @@ export function SettingsPanel(props: UseDrawReturn & { language: "zh" | "en"; on
             <div className="flex-1 overflow-y-auto">
               <TabsContent id="tab-panel-draw" value="draw" className="px-6 py-6 pb-12 focus-visible:outline-none">
                 <DrawSettings
-                  settings={props}
+                  settings={props.settings}
                   language={language}
                   onMin={props.setMin}
                   onMax={props.setMax}
@@ -95,7 +95,7 @@ export function SettingsPanel(props: UseDrawReturn & { language: "zh" | "en"; on
 
               <TabsContent id="tab-panel-appearance" value="appearance" className="px-6 py-6 pb-12 focus-visible:outline-none">
                 <AppearanceSettings
-                  settings={props}
+                  settings={props.settings}
                   language={language}
                   onDigits={props.setDigits}
                   onPrefix={props.setPrefix}
@@ -106,7 +106,7 @@ export function SettingsPanel(props: UseDrawReturn & { language: "zh" | "en"; on
 
               <TabsContent id="tab-panel-experience" value="experience" className="px-6 py-6 pb-12 focus-visible:outline-none">
                 <ExperienceSettings
-                  settings={props}
+                  settings={props.settings}
                   language={language}
                   onSoundEnabled={props.setSoundEnabled}
                   onConfettiEnabled={props.setConfettiEnabled}
