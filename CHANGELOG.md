@@ -1,5 +1,19 @@
 ﻿# Changelog
 
+## [5.7.8] - 2026-08-13
+
+### test（核心逻辑补充单元测试，覆盖率大幅提升）
+- **draw-helpers 纯函数测试**：新增 `draw-helpers.test.ts`，覆盖 `formatNumber` / `validateSettings`（空列表、超量、范围、不重复越界等 8 个分支）/ `finalizeDraw` / `generateTemporaryResults` / `toSettings` 共 21 用例
+- **状态机测试**：新增 `draw-reducer.test.ts`，覆盖 13 个 action（设置更新、抽取生命周期、历史上限 100、重置保留语言、未知 action 默认分支）
+- **安全工具测试**：新增 `lib/__tests__/utils.test.ts`，覆盖 `secureRandomInt`（含大边界无偏差统计）、`secureRandomFloat`、`generateLocalId`、`parseFiniteNumber`、`sanitizeListInput`（控制字符过滤、截断、上限）
+- **通用工具测试**：新增 `use-draw-utils.test.ts`，覆盖 `clamp` 与 `sanitizeTextField`
+- 测试总量由 3 例提升至 56 例，覆盖抽签正确性核心路径
+
+### refactor（常量集中与超长文件拆分）
+- **魔法数字集中**：`draw-helpers.ts` 导出 `LIMITS`（MAX_COUNT / MAX_LIST_ITEMS / MAX_RANGE / MAX_DURATION / MAX_DIGITS），`use-draw-actions.ts` 动画时序提取为模块级 `ANIMATION`，消除散落字面量
+- **Hook 拆分**：`use-draw-actions.ts`（>200 行）的设置更新方法抽离至 `use-draw-settings-actions.ts`，`useDrawActions` 组合并保留原公开回调契约（无行为变更）
+- 全仓库版本号统一至 v5.7.8
+
 ## [5.7.7] - 2026-08-11
 
 ### refactor（设置面板透传重构，消除字段解构爆炸）

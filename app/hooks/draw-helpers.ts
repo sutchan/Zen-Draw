@@ -1,4 +1,4 @@
-﻿// hooks/draw-helpers.ts v5.7.7 — 抽取逻辑纯函数
+﻿// hooks/draw-helpers.ts v5.7.8 — 抽取逻辑纯函数
 
 import { secureRandomInt } from "@/lib/utils";
 import type { DrawSettings } from "./draw-types";
@@ -43,7 +43,7 @@ export function finalizeDraw(settings: {
   suffix: string;
 }): string[] {
   const { useCustomList, customList, count, allowDuplicates, min, max, digits, prefix, suffix } = settings;
-  const safeCount = Math.max(1, Math.min(1000, Number.isFinite(count) ? count : 1));
+  const safeCount = Math.max(1, Math.min(LIMITS.MAX_COUNT, Number.isFinite(count) ? count : 1));
 
   if (useCustomList && customList.length > 0) {
     if (allowDuplicates) {
@@ -90,7 +90,7 @@ export function generateTemporaryResults(settings: {
   suffix: string;
 }): string[] {
   const { useCustomList, customList, count, min, max, digits, prefix, suffix } = settings;
-  const safeCount = Math.max(1, Math.min(1000, Number.isFinite(count) ? count : 1));
+  const safeCount = Math.max(1, Math.min(LIMITS.MAX_COUNT, Number.isFinite(count) ? count : 1));
 
   if (useCustomList && customList.length > 0) {
     return Array.from({ length: safeCount }, () => customList[secureRandomInt(customList.length)] as string);
@@ -119,7 +119,7 @@ export function validateSettings(settings: {
     if (customList.length === 0) {
       return "errCustomListEmpty";
     }
-    if (customList.length > 1000) {
+    if (customList.length > LIMITS.MAX_LIST_ITEMS) {
       return "errCustomListTooMany";
     }
     if (!allowDuplicates && safeCount > customList.length) {
@@ -135,7 +135,7 @@ export function validateSettings(settings: {
   if (!Number.isFinite(safeMin) || !Number.isFinite(safeMax) || safeMin > safeMax) {
     return "minMaxError";
   }
-  if (safeRange <= 0 || safeRange > 10_000_000) {
+  if (safeRange <= 0 || safeRange > LIMITS.MAX_RANGE) {
     return "errRangeInvalid";
   }
   if (!allowDuplicates && safeCount > safeRange) {
@@ -143,6 +143,22 @@ export function validateSettings(settings: {
   }
   return null;
 }
+
+/**
+ * 全局约束常量：集中管理各处散落的魔法数字，便于统一约束与测试。
+ */
+export const LIMITS = {
+  /** 单次抽取结果数量上限 */
+  MAX_COUNT: 1000,
+  /** 自定义列表最大项数 */
+  MAX_LIST_ITEMS: 1000,
+  /** 数字范围最大跨度（max - min + 1） */
+  MAX_RANGE: 10_000_000,
+  /** 动画时长上限（秒） */
+  MAX_DURATION: 30,
+  /** 补零位数上限 */
+  MAX_DIGITS: 20,
+} as const;
 
 // ---------------------------------------------------------------------------
 // 默认设置

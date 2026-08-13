@@ -1,4 +1,4 @@
-﻿// hooks/use-draw-actions.ts v5.7.7 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
+﻿// hooks/use-draw-actions.ts v5.7.8 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
 "use client";
 
 import * as React from "react";
@@ -10,9 +10,18 @@ import {
   toSettings,
   validateSettings,
 } from "./draw-helpers";
-import { parseFiniteNumber } from "@/lib/utils";
 import { createTranslator } from "@/lib/i18n";
-import { clamp, sanitizeTextField } from "./use-draw-utils";
+import { useDrawSettingsActions } from "./use-draw-settings-actions";
+
+// 动画时序常量（集中魔法数字，模块级避免每次渲染重建）
+const ANIMATION = {
+  /** 动画最小总时长（ms） */
+  MIN_TOTAL_MS: 1000,
+  /** 单次嘀嗒间隔（ms） */
+  TICK_MS: 80,
+  /** 每隔几次嘀嗒播放一次滴答声 */
+  TICK_SOUND_EVERY: 3,
+} as const;
 
 /**
  * 抽取动作回调 Hook
@@ -61,8 +70,8 @@ export function useDrawActions(
     sound("start");
     dispatch({ type: "START_DRAW" });
 
-    const totalMs = Math.max(1000, duration * 1000);
-    const tickMs = 80;
+    const totalMs = Math.max(ANIMATION.MIN_TOTAL_MS, duration * 1000);
+    const tickMs = ANIMATION.TICK_MS;
     const totalTicks = Math.max(1, Math.floor(totalMs / tickMs));
     let ticks = 0;
 
@@ -72,8 +81,8 @@ export function useDrawActions(
         type: "UPDATE_ROLLING",
         values: generateTemporaryResults(currentSettings),
       });
-      // 每 3 次嘀嗒（约 240ms）播放一次滴答声
-      if (ticks % 3 === 0) {
+      // 每隔固定嘀嗒数播放一次滴答声
+      if (ticks % ANIMATION.TICK_SOUND_EVERY === 0) {
         sound("tick");
       }
       if (ticks >= totalTicks) {
@@ -98,96 +107,13 @@ export function useDrawActions(
     sound("stop");
   }, [dispatch, animationRef, sound]);
 
-  // --- 设置更新方法 ---
-
-  // 数值钳制：统一处理有限性校验与区间约束
-  const coerceNumber = (value: number | string, fallback: number, lo: number, hi: number): number => {
-    const n = typeof value === "number"
-      ? (Number.isFinite(value) ? value : fallback)
-      : parseFiniteNumber(value, fallback);
-    return clamp(n, lo, hi);
-  };
-
-  const setMin = React.useCallback((value: number | string) => {
-    dispatch({ type: "SET_MIN", value: coerceNumber(value, 0, -Infinity, Infinity) });
-  }, [dispatch]);
-  const setMax = React.useCallback((value: number | string) => {
-    dispatch({ type: "SET_MAX", value: coerceNumber(value, 0, -Infinity, Infinity) });
-  }, [dispatch]);
-  const setCount = React.useCallback((value: number | string) => {
-    dispatch({ type: "SET_COUNT", value: coerceNumber(value, 1, 1, 1000) });
-  }, [dispatch]);
-  const setDuration = React.useCallback((value: number | string) => {
-    dispatch({ type: "SET_DURATION", value: coerceNumber(value, 5, 1, 30) });
-  }, [dispatch]);
-  const setDigits = React.useCallback((value: number | string) => {
-    dispatch({ type: "SET_DIGITS", value: coerceNumber(value, 0, 0, 20) });
-  }, [dispatch]);
-
-  const setPrefix = React.useCallback((value: string) => {
-    dispatch({ type: "SET_PREFIX", value: sanitizeTextField(value) });
-  }, [dispatch]);
-
-  const setSuffix = React.useCallback((value: string) => {
-    dispatch({ type: "SET_SUFFIX", value: sanitizeTextField(value) });
-  }, [dispatch]);
-
-  const setAllowDuplicates = React.useCallback((value: boolean) => {
-    dispatch({ type: "SET_ALLOW_DUPLICATES", value });
-  }, [dispatch]);
-
-  const setAutoHide = React.useCallback((value: boolean) => {
-    dispatch({ type: "SET_AUTO_HIDE", value });
-  }, [dispatch]);
-
-  const setUseCustomList = React.useCallback((value: boolean) => {
-    dispatch({ type: "SET_USE_CUSTOM_LIST", value });
-  }, [dispatch]);
-
-  const setCustomList = React.useCallback((value: string[]) => {
-    dispatch({ type: "SET_CUSTOM_LIST", value });
-  }, [dispatch]);
-
-  const setLanguage = React.useCallback((value: "zh" | "en") => {
-    dispatch({ type: "SET_LANGUAGE", value });
-  }, [dispatch]);
-
-  const setSoundEnabled = React.useCallback((value: boolean) => {
-    dispatch({ type: "SET_SOUND_ENABLED", value });
-  }, [dispatch]);
-
-  const setDensity = React.useCallback((value: "comfortable" | "compact") => {
-    dispatch({ type: "SET_DENSITY", value });
-  }, [dispatch]);
-
-  const setConfettiEnabled = React.useCallback((value: boolean) => {
-    dispatch({ type: "SET_CONFETTI_ENABLED", value });
-  }, [dispatch]);
-
-  const setReduceMotion = React.useCallback((value: boolean) => {
-    dispatch({ type: "SET_REDUCE_MOTION", value });
-  }, [dispatch]);
-
-  const resetSettings = React.useCallback(() => {
-    dispatch({ type: "RESET_SETTINGS" });
-  }, [dispatch]);
-
-  const dismissError = React.useCallback(() => {
-    dispatch({ type: "DISMISS_ERROR" });
-  }, [dispatch]);
-
-  const clearHistory = React.useCallback(() => {
-    dispatch({ type: "CLEAR_HISTORY" });
-  }, [dispatch]);
+  // 设置更新方法统一由子模块派发，保持公开回调契约稳定
+  const settingsActions = useDrawSettingsActions(dispatch);
 
   return {
-    startDraw, stopDraw,
-    setMin, setMax, setCount, setDuration, setDigits,
-    setPrefix, setSuffix,
-    setAllowDuplicates, setAutoHide,
-    setUseCustomList, setCustomList, setLanguage,
-    setSoundEnabled, setDensity, setConfettiEnabled, setReduceMotion, resetSettings,
-    dismissError, clearHistory,
+    startDraw,
+    stopDraw,
+    ...settingsActions,
   };
 }
 
