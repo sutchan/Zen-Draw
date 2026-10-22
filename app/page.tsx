@@ -49,6 +49,7 @@ export default function HomePage() {
         e.preventDefault();
         const currentDraw = drawRef.current;
         if (currentDraw.status === "drawing") currentDraw.stopDraw();
+        else if (currentDraw.status === "result") currentDraw.reset();
         else if (currentDraw.canDraw) currentDraw.startDraw();
       }
     };
@@ -86,8 +87,10 @@ export default function HomePage() {
           <div id="action-area" className="mt-8 sm:mt-12">
             <DrawButton
               isDrawing={draw.status === "drawing"}
+              status={draw.status}
               onStart={draw.startDraw}
               onStop={draw.stopDraw}
+              onContinue={draw.reset}
               canDraw={draw.canDraw}
               language={lang}
             />

@@ -76,10 +76,18 @@ export const enTranslations: TranslationDict = {
   stopDraw: "Stop",
   startHint: "Click the button or press Space to start",
   stopHint: "Drawing — click to stop or press Space",
+  continueDraw: "Continue",
+  continueHint: "Results are kept — click to reset to the start",
   // 欢迎/错误
   welcomeHint: "Click the button below to start",
   errorTitle: "Draw Failed",
   errorMessage: "Please check your settings and try again, or refresh the page",
+  pageErrorTitle: "Something went wrong",
+  pageErrorDesc: "The app encountered an unexpected error. Try refreshing or go back home.",
+  retry: "Retry",
+  backHome: "Back to Home",
+  notFoundTitle: "Page Not Found",
+  notFoundDesc: "The page you visited does not exist. ZenDraw is a single-page app — just go back home.",
   // 结果
   resultLabel: "Result {0}: {1}",
   resultRegion: "Draw results",

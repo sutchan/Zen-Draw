@@ -1,4 +1,4 @@
-﻿// hooks/use-draw-actions.ts v5.7.8 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
+﻿// hooks/use-draw-actions.ts v5.7.9 — 抽取动作回调（startDraw/stopDraw/设置更新方法）
 "use client";
 
 import * as React from "react";
@@ -107,12 +107,22 @@ export function useDrawActions(
     sound("stop");
   }, [dispatch, animationRef, sound]);
 
+  // 结果态「继续抽取」：重置回欢迎（idle）状态，保留设置与历史
+  const reset = React.useCallback(() => {
+    if (animationRef.current !== null) {
+      window.clearInterval(animationRef.current);
+      animationRef.current = null;
+    }
+    dispatch({ type: "RESET" });
+  }, [dispatch, animationRef]);
+
   // 设置更新方法统一由子模块派发，保持公开回调契约稳定
   const settingsActions = useDrawSettingsActions(dispatch);
 
   return {
     startDraw,
     stopDraw,
+    reset,
     ...settingsActions,
   };
 }

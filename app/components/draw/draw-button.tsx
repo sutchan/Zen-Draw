@@ -6,12 +6,17 @@ import { motion } from "motion/react";
 import { useMountedReducedMotion } from "@/hooks/use-mounted-reduced-motion";
 import { cn } from "@/lib/utils";
 import { createTranslator } from "@/lib/i18n";
+import type { DrawStatus } from "@/hooks/draw-types";
 export interface DrawButtonProps {
   // 是否正在抽取中
   isDrawing: boolean;
   // 开始 / 停止 时回调
   onStart: () => void;
   onStop: () => void;
+  // 结果态「继续抽取」回调（重置到欢迎状态）
+  onContinue: () => void;
+  // 当前抽取状态（用于区分 idle / drawing / result 三态按钮文案）
+  status: DrawStatus;
   // 是否可用（设置不合法时禁用）
   canDraw: boolean;
   // 显示语言
@@ -22,18 +27,27 @@ export function DrawButton({
   isDrawing,
   onStart,
   onStop,
+  onContinue,
+  status,
   canDraw,
   language,
 }: DrawButtonProps) {
   const shouldReduceMotion = useMountedReducedMotion();
   const t = React.useMemo(() => createTranslator(language), [language]);
 
+  // 结果态：展示「继续抽取」并触发重置
+  const isResult = status === "result";
+
   // 处理点击
   const handleClick = React.useCallback(() => {
-    if (!canDraw && !isDrawing) return;
-    if (isDrawing) onStop();
-    else onStart();
-  }, [canDraw, isDrawing, onStart, onStop]);
+    if (isDrawing) {
+      onStop();
+    } else if (isResult) {
+      onContinue();
+    } else {
+      onStart();
+    }
+  }, [isDrawing, isResult, onStart, onStop, onContinue]);
 
   return (
     <motion.div
@@ -72,7 +86,9 @@ export function DrawButton({
         onClick={handleClick}
         disabled={!canDraw && !isDrawing}
         aria-pressed={isDrawing}
-        aria-label={isDrawing ? t("stopDraw") : t("startDraw")}
+        aria-label={
+          isDrawing ? t("stopDraw") : isResult ? t("continueDraw") : t("startDraw")
+        }
         data-testid="draw-button"
         className={cn(
           "relative z-10",
@@ -125,7 +141,7 @@ export function DrawButton({
             </svg>
           )}
           <span className="font-semibold">
-            {isDrawing ? t("stopDraw") : t("startDraw")}
+            {isDrawing ? t("stopDraw") : isResult ? t("continueDraw") : t("startDraw")}
           </span>
         </div>
       </motion.button>
@@ -137,7 +153,7 @@ export function DrawButton({
         transition={{ delay: 0.4, duration: 0.5 }}
         className="mt-4 text-xs text-muted-foreground text-center"
       >
-        {isDrawing ? t("stopHint") : t("startHint")}
+        {isDrawing ? t("stopHint") : isResult ? t("continueHint") : t("startHint")}
       </motion.p>
     </motion.div>
   );

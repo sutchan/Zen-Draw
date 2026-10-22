@@ -22,9 +22,11 @@ export type TranslationKey =
   // 主界面
   | "appTitle" | "appSubtitle" | "drawMainArea" | "drawDisplayArea"
   // 按钮
-  | "stopDraw" | "startHint" | "stopHint"
+  | "stopDraw" | "startHint" | "stopHint" | "continueDraw" | "continueHint"
   // 欢迎/错误
   | "welcomeHint" | "errorTitle" | "errorMessage"
+  | "pageErrorTitle" | "pageErrorDesc" | "retry" | "backHome"
+  | "notFoundTitle" | "notFoundDesc"
   // 结果
   | "resultLabel" | "resultRegion"
   // 惊艳体验升级包

@@ -76,10 +76,18 @@ export const zhTranslations: TranslationDict = {
   stopDraw: "停止",
   startHint: "按下按钮或空格键开始",
   stopHint: "抽取中 —— 点击停止或按空格键",
+  continueDraw: "继续抽取",
+  continueHint: "结果已保留，点击重置到初始状态",
   // 欢迎/错误
   welcomeHint: "点击下方按钮开始抽取",
   errorTitle: "抽取出错了",
   errorMessage: "请检查设置后重试，或刷新页面",
+  pageErrorTitle: "页面出错了",
+  pageErrorDesc: "应用遇到了意外错误。请尝试刷新页面或返回首页。",
+  retry: "重试",
+  backHome: "返回首页",
+  notFoundTitle: "页面未找到",
+  notFoundDesc: "您访问的页面不存在。ZenDraw 是一个单页应用，返回首页即可使用。",
   // 结果
   resultLabel: "结果 {0}: {1}",
   resultRegion: "抽取结果",

@@ -64,6 +64,7 @@ export type DrawAction =
   | { type: "FINALIZE_DRAW"; results: string[] }
   | { type: "CANCEL" }
   | { type: "ERROR"; message: string }
+  | { type: "RESET" }
   | { type: "SET_MIN"; value: number }
   | { type: "SET_MAX"; value: number }
   | { type: "SET_COUNT"; value: number }
@@ -88,6 +89,7 @@ export interface UseDrawReturn extends DrawState {
   // 操作方法
   startDraw: () => { ok: boolean; error?: string };
   stopDraw: () => void;
+  reset: () => void;
   dismissError: () => void;
   clearHistory: () => void;
   // 设置更新方法（带输入验证）

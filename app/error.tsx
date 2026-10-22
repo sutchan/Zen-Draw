@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import * as React from "react";
 import { Button } from "@/components/ui/button";
+import { createTranslator } from "@/lib/i18n";
+import { useStoredLanguage } from "@/hooks/use-stored-language";
 
 export default function Error({
   error,
@@ -10,9 +12,13 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
+  const lang = useStoredLanguage();
+
+  React.useEffect(() => {
     console.error("ZenDraw Error:", error);
   }, [error]);
+
+  const t = createTranslator(lang);
 
   return (
     <div id="error-page" className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">
@@ -29,25 +35,25 @@ export default function Error({
         >
           <circle cx="12" cy="12" r="10" />
           <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
+          <line x1="16" y1="16" x2="16.01" />
         </svg>
       </div>
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">出了点问题</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t("pageErrorTitle")}</h1>
         <p className="text-muted-foreground text-sm max-w-md">
-          应用遇到了意外错误。请尝试刷新页面或重置状态。
+          {t("pageErrorDesc")}
         </p>
       </div>
       <div className="flex gap-3">
         <Button onClick={reset} variant="default" className="rounded-full">
-          重试
+          {t("retry")}
         </Button>
         <Button
           onClick={() => (window.location.href = "/")}
           variant="outline"
           className="rounded-full"
         >
-          返回首页
+          {t("backHome")}
         </Button>
       </div>
     </div>

@@ -94,6 +94,18 @@ describe("drawReducer 抽取生命周期", () => {
     expect(s.errorMessage).toBe("坏了");
   });
 
+  it("RESET 从结果态回到 idle 并清空当前结果，保留设置与历史", () => {
+    const s = apply(init(), [
+      { type: "START_DRAW" },
+      { type: "FINALIZE_DRAW", results: ["42"] },
+      { type: "RESET" },
+    ]);
+    expect(s.status).toBe("idle");
+    expect(s.currentResults).toEqual([]);
+    expect(s.rollingValues).toEqual([]);
+    expect(s.history).toHaveLength(1);
+  });
+
   it("DISMISS_ERROR 回到 idle 并清空错误", () => {
     const s = apply(init(), [
       { type: "ERROR", message: "e" },

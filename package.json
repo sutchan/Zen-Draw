@@ -1,6 +1,6 @@
-﻿{
+{
   "name": "zen-draw",
-  "version": "5.7.8",
+  "version": "5.7.9",
   "type": "module",
   "private": true,
   "scripts": {

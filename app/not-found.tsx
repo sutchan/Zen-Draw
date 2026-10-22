@@ -1,6 +1,15 @@
+"use client";
+
+import * as React from "react";
 import Link from "next/link";
+import { createTranslator } from "@/lib/i18n";
+import { useStoredLanguage } from "@/hooks/use-stored-language";
 
 export default function NotFound() {
+  const lang = useStoredLanguage();
+
+  const t = createTranslator(lang);
+
   return (
     <div id="not-found-page" className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">
       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
@@ -21,16 +30,16 @@ export default function NotFound() {
         </svg>
       </div>
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">页面未找到</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t("notFoundTitle")}</h1>
         <p className="text-muted-foreground text-sm max-w-md">
-          您访问的页面不存在。ZenDraw 是一个单页应用，返回首页即可使用。
+          {t("notFoundDesc")}
         </p>
       </div>
       <Link
         href="/"
         className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90"
       >
-        返回首页
+        {t("backHome")}
       </Link>
     </div>
   );

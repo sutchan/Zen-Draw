@@ -1,5 +1,25 @@
 ﻿# Changelog
 
+## [5.7.9] - 2026-10-19
+
+### fix（设置面板 / 错误页 / 结果态 / 构建四连修复）
+- **设置面板空白修复**：`SettingsPanel` 移除自身未受控的内层 `<Sheet>` 包裹（内层 Sheet 默认 `open=false` 时其 `SheetContent` 返回 null，导致打开设置后内容区空白且齿轮按钮再开一层重复抽屉），改为直接渲染 `HeaderBar + Tabs` 作为 AppHeader 外层 Sheet 的内容
+- **错误页 / 404 页接入 i18n**：`app/error.tsx` 与 `app/not-found.tsx` 硬编码中文文案改为经 `createTranslator` 翻译；新增共享钩子 `use-stored-language.ts`（基于 `useSyncExternalStore`，服务端快照固定 "zh" 保证 hydration 一致，订阅 storage 事件支持跨标签页同步）；新增翻译键 `pageErrorTitle` / `pageErrorDesc` / `retry` / `backHome` / `notFoundTitle` / `notFoundDesc` / `continueDraw` / `continueHint`
+- **结果态按钮对齐 SPEC**：结果态按钮文案由「开始抽取」改为「继续抽取」，点击经新增的 `RESET` action 重置回欢迎态（清空 currentResults/rollingValues，保留设置与历史）；键盘空格在结果态同样触发重置
+- **package.json BOM 导致构建失败**：剥离首字节 UTF-8 BOM（`JSON.parse` 遇 BOM 直接抛 SyntaxError，生产构建完全无法进行）；源码 .ts/.tsx 以 BOM 开头为既定风格，package.json 绝不可带 BOM
+- **消除 effect 内 setState**：语言读取由 `useState + useEffect` 改为 `useSyncExternalStore` 惰性快照模式，消除 `react-hooks/set-state-in-effect` lint 错误（--max-warnings=0 下为 error）
+
+### test（测试适配与补充）
+- `draw-button.test.tsx` / `draw-reducer.test.ts` 适配 T3 新增 props 与 `RESET` action：结果态渲染「继续抽取」、结果态点击触发 `onContinue`、抽取中点击触发 `onStop`、`RESET` 从结果态回 idle 且保留历史
+- 新增 `use-stored-language.test.ts` 5 个用例：无值回退 "zh"、初始读取 "en"、storage 事件后同步、卸载后监听器移除、非法值回退 "zh"；测试总量 65 例
+
+### ci（质量门禁对齐本地标准）
+- `.github/workflows/ci.yml` quality-check job 增加 `npm test` 步骤（置于 lint 与 build 之间），测试回归可在 PR 拦截；lint 阈值由 `--max-warnings=20` 收紧为 `0`，与本地四连检标准一致
+
+### chore（版本统一与文档漂移修正）
+- `/_not-found` 产物体积核实结论：路由自身代码仅 123 B，103 kB First Load JS 中 102 kB 为全局共享基线（React/Next 运行时），构成健康无需优化
+- 全仓库版本号统一至 v5.7.9（`app/lib/version.ts` APP_VERSION、`package.json`、`metadata.json`、源码头注释）；修正 SPEC.md 与 README×2 停留于 v5.7.7 的既有漂移
+
 ## [5.7.8] - 2026-08-13
 
 ### test（核心逻辑补充单元测试，覆盖率大幅提升）

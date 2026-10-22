@@ -1,11 +1,8 @@
-// components/draw/settings-panel/index.tsx v5.7.7 —— 设置面板（Tabs + 子设置区，无嵌套 Sheet）
+// components/draw/settings-panel/index.tsx v5.7.9 —— 设置面板（Tabs + 子设置区，作为外层 Sheet 的内容）
 "use client";
 
 import * as React from "react";
-import { Settings } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { createTranslator } from "@/lib/i18n";
 import type { UseDrawReturn } from "@/hooks/draw-types";
 import { DrawSettings } from "@/components/draw/draw-settings";
@@ -23,107 +20,89 @@ export function SettingsPanel(props: UseDrawReturn & { language: "zh" | "en"; on
   const [customListDialogOpen, setCustomListDialogOpen] = React.useState(false);
 
   return (
-    <>
-      <Sheet>
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <SheetTrigger
-                className="size-10 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all flex items-center justify-center"
-                aria-label={t("settings")}
-              >
-                <Settings className="size-5" aria-hidden="true" />
-              </SheetTrigger>
-            }
-          />
-          <TooltipContent>{t("settings")}</TooltipContent>
-        </Tooltip>
+    <div className="flex flex-1 min-h-0 flex-col">
+      <HeaderBar language={language} onLanguageToggle={onLanguageToggle} />
 
-        <SheetContent id="settings-panel" side="right" className="w-full sm:w-[380px] p-0 bg-background/95 backdrop-blur-xl border-border/20 flex flex-col">
-          <HeaderBar language={language} onLanguageToggle={onLanguageToggle} />
+      <Tabs defaultValue="draw" className="flex flex-1 min-h-0 flex-col">
+        <TabsList className="w-full flex gap-1 p-2 bg-muted/30 rounded-none border-b border-border/20 m-0">
+          <TabsTrigger
+            value="draw"
+            className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
+          >
+            {t("drawSettings")}
+          </TabsTrigger>
+          <TabsTrigger
+            value="appearance"
+            className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
+          >
+            {t("appearance")}
+          </TabsTrigger>
+          <TabsTrigger
+            value="experience"
+            className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
+          >
+            {t("experience")}
+          </TabsTrigger>
+          <TabsTrigger
+            value="history"
+            className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
+          >
+            {t("history")}
+          </TabsTrigger>
+        </TabsList>
 
-          <Tabs defaultValue="draw" className="flex flex-1 min-h-0 flex-col">
-            <TabsList className="w-full flex gap-1 p-2 bg-muted/30 rounded-none border-b border-border/20 m-0">
-              <TabsTrigger
-                value="draw"
-                className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
-              >
-                {t("drawSettings")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="appearance"
-                className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
-              >
-                {t("appearance")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="experience"
-                className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
-              >
-                {t("experience")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="history"
-                className="flex-1 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm text-sm font-medium h-10"
-              >
-                {t("history")}
-              </TabsTrigger>
-            </TabsList>
-
-            <div className="flex-1 overflow-y-auto">
-              <TabsContent id="tab-panel-draw" value="draw" className="px-6 py-6 pb-12 focus-visible:outline-none">
-                <DrawSettings
-                  settings={props.settings}
-                  language={language}
-                  onMin={props.setMin}
-                  onMax={props.setMax}
-                  onCount={props.setCount}
-                  onDuration={props.setDuration}
-                  onAllowDuplicates={props.setAllowDuplicates}
-                  onUseCustomList={props.setUseCustomList}
-                />
-                <div className="mt-5">
-                  <CustomListInline
-                    t={t}
-                    customList={props.customList}
-                    useCustomList={props.useCustomList}
-                    onOpenDialog={() => setCustomListDialogOpen(true)}
-                    onClearList={() => setCustomList([])}
-                  />
-                </div>
-              </TabsContent>
-
-              <TabsContent id="tab-panel-appearance" value="appearance" className="px-6 py-6 pb-12 focus-visible:outline-none">
-                <AppearanceSettings
-                  settings={props.settings}
-                  language={language}
-                  onDigits={props.setDigits}
-                  onPrefix={props.setPrefix}
-                  onSuffix={props.setSuffix}
-                  onLanguageChange={onLanguageToggle}
-                />
-              </TabsContent>
-
-              <TabsContent id="tab-panel-experience" value="experience" className="px-6 py-6 pb-12 focus-visible:outline-none">
-                <ExperienceSettings
-                  settings={props.settings}
-                  language={language}
-                  onSoundEnabled={props.setSoundEnabled}
-                  onConfettiEnabled={props.setConfettiEnabled}
-                  onReduceMotion={props.setReduceMotion}
-                  onAutoHide={props.setAutoHide}
-                  onDensity={props.setDensity}
-                  onReset={props.resetSettings}
-                />
-              </TabsContent>
-
-              <TabsContent id="tab-panel-history" value="history" className="px-6 py-6 pb-12 focus-visible:outline-none">
-                <HistoryList history={history} onClear={clearHistory} language={language} />
-              </TabsContent>
+        <div className="flex-1 overflow-y-auto">
+          <TabsContent id="tab-panel-draw" value="draw" className="px-6 py-6 pb-12 focus-visible:outline-none">
+            <DrawSettings
+              settings={props.settings}
+              language={language}
+              onMin={props.setMin}
+              onMax={props.setMax}
+              onCount={props.setCount}
+              onDuration={props.setDuration}
+              onAllowDuplicates={props.setAllowDuplicates}
+              onUseCustomList={props.setUseCustomList}
+            />
+            <div className="mt-5">
+              <CustomListInline
+                t={t}
+                customList={props.customList}
+                useCustomList={props.useCustomList}
+                onOpenDialog={() => setCustomListDialogOpen(true)}
+                onClearList={() => setCustomList([])}
+              />
             </div>
-          </Tabs>
-        </SheetContent>
-      </Sheet>
+          </TabsContent>
+
+          <TabsContent id="tab-panel-appearance" value="appearance" className="px-6 py-6 pb-12 focus-visible:outline-none">
+            <AppearanceSettings
+              settings={props.settings}
+              language={language}
+              onDigits={props.setDigits}
+              onPrefix={props.setPrefix}
+              onSuffix={props.setSuffix}
+              onLanguageChange={onLanguageToggle}
+            />
+          </TabsContent>
+
+          <TabsContent id="tab-panel-experience" value="experience" className="px-6 py-6 pb-12 focus-visible:outline-none">
+            <ExperienceSettings
+              settings={props.settings}
+              language={language}
+              onSoundEnabled={props.setSoundEnabled}
+              onConfettiEnabled={props.setConfettiEnabled}
+              onReduceMotion={props.setReduceMotion}
+              onAutoHide={props.setAutoHide}
+              onDensity={props.setDensity}
+              onReset={props.resetSettings}
+            />
+          </TabsContent>
+
+          <TabsContent id="tab-panel-history" value="history" className="px-6 py-6 pb-12 focus-visible:outline-none">
+            <HistoryList history={history} onClear={clearHistory} language={language} />
+          </TabsContent>
+        </div>
+      </Tabs>
 
       <CustomListSettings
         language={language}
@@ -132,6 +111,6 @@ export function SettingsPanel(props: UseDrawReturn & { language: "zh" | "en"; on
         customList={props.customList}
         onCustomListChange={setCustomList}
       />
-    </>
+    </div>
   );
 }

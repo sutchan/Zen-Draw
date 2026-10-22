@@ -40,6 +40,16 @@ export function drawReducer(state: DrawState, action: DrawAction): DrawState {
       return { ...state, status: "idle", isRolling: false, rollingValues: [] };
     case "ERROR":
       return { ...state, status: "error", errorMessage: action.message, isRolling: false };
+    case "RESET":
+      // 结果态点击「继续抽取」：清空当前结果回到欢迎（idle）状态，保留设置与历史
+      return {
+        ...state,
+        status: "idle",
+        currentResults: [],
+        rollingValues: [],
+        errorMessage: "",
+        isRolling: false,
+      };
     case "DISMISS_ERROR":
       return { ...state, status: "idle", errorMessage: "" };
     case "SET_MIN":
