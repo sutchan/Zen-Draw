@@ -1,7 +1,23 @@
 import type {NextConfig} from 'next';
 
+// 构建标识：10 位 yymmddhhmm（2 位年份 + 月日时分），dev/build 启动时生成并注入客户端
+const BUILD_ID = (() => {
+  const now = new Date();
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return [
+    String(now.getFullYear()).slice(-2),
+    pad(now.getMonth() + 1),
+    pad(now.getDate()),
+    pad(now.getHours()),
+    pad(now.getMinutes()),
+  ].join('');
+})();
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_BUILD_ID: BUILD_ID,
+  },
   typescript: {
     // 保持严格的 TypeScript 检查
     ignoreBuildErrors: false,

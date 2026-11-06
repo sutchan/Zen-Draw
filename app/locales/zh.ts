@@ -1,13 +1,9 @@
-﻿// locales/zh.ts v5.7.7 — 中文翻译
+﻿// locales/zh.ts v5.7.9 — 中文翻译
 import type { TranslationDict } from "./types";
 
 export const zhTranslations: TranslationDict = {
-  title: "禅抽",
   settings: "设置",
   close: "关闭",
-  drawMode: "抽取模式",
-  modeNumber: "数字",
-  modeList: "名单",
   customList: "自定义列表",
   customListHint: "每行一个项目，作为抽取池使用",
   save: "保存",
@@ -19,12 +15,10 @@ export const zhTranslations: TranslationDict = {
   allowDupDesc: "开启后可在结果中出现相同的数字或名单项。",
   autoHide: "自动隐藏侧边栏",
   autoHideDesc: "空闲或抽取时自动隐藏控制面板。",
-  custom: "自定义名单",
   drawSettings: "抽取设置",
   appearance: "外观",
   drawDuration: "抽取时长（秒）",
   drawDurationDesc: "设置数字滚动动画的持续时间。",
-  theme: "主题",
   themeMode: "外观",
   themeLight: "浅色",
   themeDark: "深色",
@@ -47,7 +41,6 @@ export const zhTranslations: TranslationDict = {
   fontSerif: "衬线",
   useCustomList: "使用自定义名单",
   listNotEnabledHint: "名单已填写，但「使用自定义名单」未开启，当前仍为数字模式。",
-  export: "导出结果",
   minDigits: "最小位数（补零）",
   minDigitsDesc: "设为 0 则不补零。",
   listModeFormatNote: "自定义名单模式：数字格式不生效",
@@ -57,16 +50,13 @@ export const zhTranslations: TranslationDict = {
   historyDesc: "最近的抽签结果。",
   noHistory: "暂无历史记录。",
   ready: "准备就绪",
-  drawing: "抽取中…",
   startDraw: "开始抽取",
   minMaxError: "最小值不能大于最大值。",
   rangeError: "抽取的不重复数量不能超过可用范围。",
   clearHistory: "清空历史",
   switchLang: "切换语言",
   cancel: "取消",
-  import_: "导入",
   itemsLoaded: "项已加载",
-  noItems: "暂无项目",
   // 主界面
   appTitle: "真随机",
   appSubtitle: "真随机抽取工具",
@@ -96,13 +86,9 @@ export const zhTranslations: TranslationDict = {
   milestoneDraws: "第 {0} 次抽签 🎉",
   emptyStateHint: "第一次抽签，往往最有仪式感",
   // 主题
-  switchLight: "切换到浅色模式",
-  switchDark: "切换到深色模式",
   // 页脚
   footerInfo: "{0} 种主题 · {1} 种字体 · 本地存储",
   // 导入
-  importDesc: "每行一个项目，提交后将作为抽取池",
-  confirmImport: "确认导入",
   // 错误
   errCustomListEmpty: "请先在设置中导入自定义列表",
   errCustomListTooMany: "自定义列表项数过多，请减少到 1000 项以内",
@@ -125,10 +111,8 @@ export const zhTranslations: TranslationDict = {
   langZh: "中文",
   langEn: "English",
   clearList: "清空列表",
-  removeItem: "删除该项",
   editList: "编辑列表",
   listHintEmpty: "导入列表后，即可在此抽取姓名或内容",
-  colorPreview: "配色预览",
   duplicateItemsWarning: "已自动去除 {0} 个重复项",
 
   // 体验设置

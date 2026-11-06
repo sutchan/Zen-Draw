@@ -1,4 +1,4 @@
-﻿// components/draw/settings-panel/header-bar.tsx v5.7.7 —— 顶部标题栏（使用中央翻译系统）
+﻿// components/draw/settings-panel/header-bar.tsx v5.7.10 —— 顶部标题栏（使用中央翻译系统）
 "use client";
 
 import * as React from "react";
@@ -6,7 +6,6 @@ import { motion } from "motion/react";
 import { Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createTranslator } from "@/lib/i18n";
-import { APP_VERSION } from "@/lib/version";
 
 export function HeaderBar({ language, onLanguageToggle }: {
   language: "zh" | "en";
@@ -26,7 +25,6 @@ export function HeaderBar({ language, onLanguageToggle }: {
       </div>
       <div>
         <h1 className="text-base font-semibold tracking-tight leading-none">{t("appTitle")}</h1>
-        <span className="text-[10px] text-muted-foreground/60 font-mono">v{APP_VERSION}</span>
       </div>
       <Button
         variant="ghost"

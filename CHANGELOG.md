@@ -1,5 +1,27 @@
 ﻿# Changelog
 
+## [5.7.10] - 2026-11-06
+
+### feat（页脚版本与构建标识）
+- **构建期注入 build 编号**：`next.config.ts` 在 dev/build 启动时生成 10 位 `yymmddhhmm` 并注入 `NEXT_PUBLIC_BUILD_ID`；`app/lib/version.ts` 新增 `BUILD_ID`（10 位数字校验）与 `FOOTER_VERSION`，注入缺失时回退为仅展示版本号
+- **页脚唯一展示位**：`app/page.tsx` 页脚由 `v{APP_VERSION}` 改为 `FOOTER_VERSION`，格式为 `V主.次.修 · build yymmddhhmm`；移除设置面板 `HeaderBar` 内的版本号，头部组件不再展示版本号
+- **规范固化**：`openspec/SPEC.md` 新增 §5.1.2「页脚版本与构建标识规范」，项目长期记忆同步该约定
+
+### chore（版本同步）
+- 全项目版本展示位统一至 v5.7.10（`package.json` / `metadata.json` / README×2 / `APP_VERSION` / SPEC.md / CHANGELOG）
+
+## [5.7.9-cleanup] - 2026-10-22
+
+### chore（项目审查与冗余清理）
+- **删除 4 个零引用 shadcn 组件**：`app/components/ui/` 下 `alert.tsx` / `badge.tsx` / `checkbox.tsx` / `separator.tsx` 在整个 app 内外部引用数均为 0，属脚手架残留（合计 175 行）
+- **清理 16 个零消费 locale key**：`title` / `drawMode` / `modeNumber` / `modeList` / `custom` / `theme` / `export` / `import_` / `drawing` / `noItems` / `switchLight` / `switchDark` / `importDesc` / `confirmImport` / `removeItem` / `colorPreview` 经四路交叉验证（字面量调用 / 变量调用 / 主题映射值 / 校验错误键）确认无任何消费点，types/zh/en 三处同步移除
+- **根治设置字段列举漂移**：`draw-types.ts` 新增 `SETTINGS_FIELDS` 常量作为设置字段唯一登记处；`toSettings()` 改为遍历该常量组装快照；`use-draw.ts` 的 `initialSettings` 与 `settings` 快照均改为复用，消除同一批 16 字段在两处的手工列举；`validateSettings` 中的硬编码 `1000` 改用 `LIMITS.MAX_COUNT`
+- **清理旧记忆命名空间**：`.codebuddy/`（`.workbuddy/` 的旧命名空间）内 4 份历史工作日志先逐份迁移至现行目录并校验一致性后再删除，其独有的 4 项长期约定（200 行拆分 / 容器语义化 id / 提交信息格式 / 行尾归一化与安全红线）并入现行记忆；删除空目录 `scripts/`
+- **同步文件头版本注释**：39 个源文件头部版本注释由 v5.7.7 统一至 v5.7.9，与 `APP_VERSION` 对齐（行尾与 BOM 保持原状）
+
+### test（防回归）
+- **新增设置字段守卫测试** `app/hooks/__tests__/settings-fields.test.ts`：以 `Exclude<keyof DrawSettings, SETTINGS_FIELDS[number]>` 构造编译期守卫（新增设置项未登记到 `SETTINGS_FIELDS` 即编译报错），并断言字段集合与 `DEFAULT_SETTINGS` 键完全一致、无重复项、快照正确剥离运行时字段
+
 ## [5.7.9] - 2026-10-19
 
 ### fix（设置面板 / 错误页 / 结果态 / 构建四连修复）

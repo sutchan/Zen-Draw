@@ -1,13 +1,9 @@
-﻿// locales/en.ts v5.7.7 — 英文翻译
+﻿// locales/en.ts v5.7.9 — 英文翻译
 import type { TranslationDict } from "./types";
 
 export const enTranslations: TranslationDict = {
-  title: "ZenDraw",
   settings: "Settings",
   close: "Close",
-  drawMode: "Draw Mode",
-  modeNumber: "Numbers",
-  modeList: "List",
   customList: "Custom List",
   customListHint: "One item per line, used as the draw pool",
   save: "Save",
@@ -19,12 +15,10 @@ export const enTranslations: TranslationDict = {
   allowDupDesc: "When on, the same number or list item may appear multiple times.",
   autoHide: "Auto-hide UI",
   autoHideDesc: "Hide control panel automatically when idle or drawing.",
-  custom: "Custom List",
   drawSettings: "Draw Settings",
   appearance: "Appearance",
   drawDuration: "Draw Duration (s)",
   drawDurationDesc: "Set the duration of the rolling animation.",
-  theme: "Theme",
   themeMode: "Appearance",
   themeLight: "Light",
   themeDark: "Dark",
@@ -47,7 +41,6 @@ export const enTranslations: TranslationDict = {
   fontSerif: "Serif",
   useCustomList: "Use Custom List",
   listNotEnabledHint: "List is filled but \"Use Custom List\" is off — currently in number mode.",
-  export: "Export Results",
   minDigits: "Min Digits (Padding)",
   minDigitsDesc: "Set to 0 for no padding.",
   listModeFormatNote: "Custom list mode: number format is not applied",
@@ -57,16 +50,13 @@ export const enTranslations: TranslationDict = {
   historyDesc: "Recent results.",
   noHistory: "No history yet.",
   ready: "Ready to Draw",
-  drawing: "Drawing...",
   startDraw: "START DRAW",
   minMaxError: "Minimum value cannot be greater than maximum value.",
   rangeError: "Cannot draw more unique numbers than the available range.",
   clearHistory: "Clear History",
   switchLang: "Switch Language",
   cancel: "Cancel",
-  import_: "Import",
   itemsLoaded: "items loaded",
-  noItems: "No items",
   // 主界面
   appTitle: "ZenDraw",
   appSubtitle: "Truly random draw tool",
@@ -96,13 +86,9 @@ export const enTranslations: TranslationDict = {
   milestoneDraws: "Draw #{0} unlocked 🎉",
   emptyStateHint: "Your very first draw is the most ceremonial one",
   // 主题
-  switchLight: "Switch to light mode",
-  switchDark: "Switch to dark mode",
   // 页脚
   footerInfo: "{0} themes · {1} fonts · stored locally",
   // 导入
-  importDesc: "One item per line, will be used as the draw pool",
-  confirmImport: "Import",
   // 错误
   errCustomListEmpty: "Please import a custom list first",
   errCustomListTooMany: "Custom list is too large. Please reduce to 1000 items or fewer",
@@ -125,10 +111,8 @@ export const enTranslations: TranslationDict = {
   langZh: "中文",
   langEn: "English",
   clearList: "Clear List",
-  removeItem: "Remove item",
   editList: "Edit List",
   listHintEmpty: "Import a list, then draw names or items from it",
-  colorPreview: "Color Preview",
   duplicateItemsWarning: "Removed {0} duplicate entries",
 
   // Experience settings

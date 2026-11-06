@@ -1,4 +1,4 @@
-﻿// hooks/draw-types.ts v5.7.7 — 抽签模块类型定义
+﻿// hooks/draw-types.ts v5.7.9 — 抽签模块类型定义
 
 export type DrawStatus = "idle" | "drawing" | "result" | "error";
 
@@ -42,6 +42,32 @@ export interface DrawSettings {
   // 用户级减弱动效偏好
   reduceMotion: boolean;
 }
+
+/**
+ * 设置字段清单（单一事实来源）。
+ * 新增设置项时只需在此登记一次，即可被 settings 快照、持久化映射等派生逻辑复用，
+ * 避免在多处手工列举字段导致漂移。
+ */
+export const SETTINGS_FIELDS = [
+  "min",
+  "max",
+  "count",
+  "allowDuplicates",
+  "autoHide",
+  "duration",
+  "customList",
+  "useCustomList",
+  "digits",
+  "prefix",
+  "suffix",
+  "language",
+  "soundEnabled",
+  "density",
+  "confettiEnabled",
+  "reduceMotion",
+] as const satisfies readonly (keyof DrawSettings)[];
+
+export type SettingsField = (typeof SETTINGS_FIELDS)[number];
 
 export interface DrawState extends DrawSettings {
   // 当前显示中的结果

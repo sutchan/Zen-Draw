@@ -1,7 +1,7 @@
 ﻿// hooks/draw-helpers.ts v5.7.9 — 抽取逻辑纯函数
 
 import { secureRandomInt } from "@/lib/utils";
-import type { DrawSettings } from "./draw-types";
+import { SETTINGS_FIELDS, type DrawSettings } from "./draw-types";
 
 // 错误消息使用 TranslationKey 类型，由调用方通过 i18n 系统翻译
 export type ValidationErrorKey =
@@ -113,7 +113,7 @@ export function validateSettings(settings: {
   max: number;
 }): ValidationErrorKey | null {
   const { useCustomList, customList, count, allowDuplicates, min, max } = settings;
-  const safeCount = Math.max(1, Math.min(1000, Number.isFinite(count) ? count : 1));
+  const safeCount = Math.max(1, Math.min(LIMITS.MAX_COUNT, Number.isFinite(count) ? count : 1));
 
   if (useCustomList) {
     if (customList.length === 0) {
@@ -187,25 +187,14 @@ export const DEFAULT_SETTINGS: DrawSettings = {
 /**
  * 从完整运行态抽取「设置快照」：剥离运行时字段（结果/状态/历史等），
  * 供 initialSettings 与 startDraw 的 currentSettings 共用，单一来源避免字段列举漂移。
+ * 字段清单来自 SETTINGS_FIELDS，新增设置项无需改动本函数。
  */
 export function toSettings(state: DrawSettings): DrawSettings {
-  return {
-    min: state.min,
-    max: state.max,
-    count: state.count,
-    allowDuplicates: state.allowDuplicates,
-    autoHide: state.autoHide,
-    duration: state.duration,
-    customList: state.customList,
-    useCustomList: state.useCustomList,
-    digits: state.digits,
-    prefix: state.prefix,
-    suffix: state.suffix,
-    language: state.language,
-    soundEnabled: state.soundEnabled,
-    density: state.density,
-    confettiEnabled: state.confettiEnabled,
-    reduceMotion: state.reduceMotion,
-  };
+  const snapshot = {} as DrawSettings;
+  for (const field of SETTINGS_FIELDS) {
+    // 类型安全：field 属于 keyof DrawSettings，故索引赋值保持类型一致
+    (snapshot as unknown as Record<string, unknown>)[field] = state[field];
+  }
+  return snapshot;
 }
 

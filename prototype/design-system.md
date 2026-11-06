@@ -209,8 +209,7 @@
 Sheet (side="right", aria-modal="true", role="dialog")
 ├── HeaderBar
 │   ├── 应用标识（「抽」徽标 + 标题 ZenDraw｜禅抽）
-│   ├── 版本号（mono 小字，读 APP_VERSION）
-│   └── 语言切换按钮（右上，lucide Languages）
+│   └── 语言切换按钮（右上，lucide Languages；版本号统一在页脚展示）
 └── Tabs
     ├── 抽取 (draw)      ：范围 / 数量 / 时长 / 允许重复 / 自定义名单
     ├── 外观 (appearance)：主题预设 / 字体 / 语言 / 数字格式 / 实时预览
@@ -243,7 +242,7 @@ Sheet (side="right", aria-modal="true", role="dialog")
 | 规范项 | 代码侧事实 | 结论 |
 |--------|------------|------|
 | 右侧 Sheet + 4 Tabs(draw/appearance/experience/history) | `settings-panel/index.tsx` 一致 | ✅ |
-| HeaderBar（标识+版本+语言） | `header-bar.tsx` 读 `APP_VERSION`、右上语言键 | ✅ |
+| HeaderBar（标识+语言） | `header-bar.tsx` 仅标识与右上语言键；版本号按 SPEC §5.1.2 统一在页脚展示 | ✅ |
 | Esc / 遮罩关闭 | `sheet/index.tsx` Esc 绑定 + 遮罩 onClick | ✅ |
 | 宽度 26rem | `className="w-full sm:w-[26rem]"` | ✅ |
 | 自定义名单独立 Dialog | `custom-list-settings.tsx` base-ui Dialog | ✅ |

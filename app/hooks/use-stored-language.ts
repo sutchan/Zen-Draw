@@ -1,4 +1,4 @@
-﻿// app/hooks/use-stored-language.ts v5.7.7 —— 读取持久化语言偏好的钩子
+﻿// app/hooks/use-stored-language.ts v5.7.9 —— 读取持久化语言偏好的钩子
 //
 // error.tsx / not-found.tsx 位于错误边界，拿不到 useDraw 的 language，
 // 需要独立读取 localStorage 中的语言偏好（key: zendraw-language）。

@@ -99,3 +99,58 @@
 - **提交**：分两个 commit —— ① 代码与配置修复（含 CHANGELOG、ci.yml、版本号、READMEs、SPEC 等）；② 任务文档更新
 - **推送**：尝试 `git push origin main`；若远端鉴权不可用则保留本地提交并提示用户处理
 - **完成时间**：2026-10-22 15:1x
+
+---
+
+## 第四轮：项目审查与冗余清理（2026-10-22 16:14）
+
+> 本轮目标：全面审查项目，清理冗余文件与冗余代码。
+> 方法：自建引用图分析脚本（模块级 import 解析 + 导出符号消费点追踪 + locale key 消费点交叉验证），
+> 结论全部基于**实际代码**核实，不采信历史摘要。
+
+### C1 [P1] 删除 4 个零引用 shadcn 组件文件 ✅
+- **文件**：`app/components/ui/{alert,badge,checkbox,separator}.tsx`（已删除）
+- **判定依据**：自建引用图分析确认这 4 个文件在 `app/` 内**外部引用数均为 0**（`alert`/`badge`/`checkbox`/`separator` 的导入点全部为 0），属 shadcn 脚手架安装后未被使用的冗余。合计 175 行。
+- **风险排查**：删除后重跑 tsc / eslint / vitest / build 四连检，全绿，确认无隐式依赖。
+- **完成时间**：2026-10-22 16:00
+
+### C2 [P1] 清理 15 个零消费 locale key ✅
+- **文件**：`app/locales/{types,zh,en}.ts`
+- **判定依据**：对全部 128 个 TranslationKey 做**四路交叉验证**——① `t("key")` 字面量调用点；② `t(变量)` 标识符调用点；③ `THEME_PRESET_KEYS` 映射表值集合（`appearance-settings.parts.tsx`）；④ `validateSettings` 的 `return "key"` 错误键集合。四路均无命中者判定为零消费。
+- **清理清单**（16 项，其中 `drawing` 为状态字符串非 locale key）：`title` / `drawMode` / `modeNumber` / `modeList` / `custom` / `theme` / `export` / `import_` / `drawing` / `noItems` / `switchLight` / `switchDark` / `importDesc` / `confirmImport` / `removeItem` / `colorPreview`。
+- **过程修正**：首轮批量正则删除误伤了仍在使用的 `customList` / `customListHint`（正则把注释行与 key 行合并），已重写 `types.ts` 完整恢复并用一致性校验脚本确认 types/zh/en 三处 key 集合完全对齐（112 key）。
+- **完成时间**：2026-10-22 16:03
+
+### C3 [P1] 设置字段列举漂移根治 ✅
+- **问题**：`draw-helpers.ts` 早已提供 `toSettings()`（注释明写"单一来源避免字段列举漂移"），但 `use-draw.ts` 仍**手工列举同一批 16 个字段两处**（`initialSettings` 对象字面量 + `settings` memo 对象体），加新设置项时必然漏改。`validateSettings` 中还残留硬编码 `1000`（与 `LIMITS.MAX_COUNT` 同值但未引用）。
+- **修复**：
+  1. `draw-types.ts` 新增 `SETTINGS_FIELDS` 常量（`as const satisfies readonly (keyof DrawSettings)[]`）——设置字段的**唯一登记处**。
+  2. `toSettings()` 改为遍历 `SETTINGS_FIELDS` 组装，消除手工列举。
+  3. `use-draw.ts` 的 `initialSettings` 改为遍历 `SETTINGS_FIELDS` + `PERSISTED_BY_FIELD` 映射读取持久化值；`settings` memo 复用 `toSettings()`。
+  4. `validateSettings` 的硬编码 `1000` 改用 `LIMITS.MAX_COUNT`。
+- **关键坑（已记录）**：持久化字段名**不可**由设置字段名机械派生（`allowDuplicates` → `persistedAllowDup`、`useCustomList` → `persistedUseCustom` 均为缩写），故保留显式映射表 `PERSISTED_BY_FIELD` / `SETTER_BY_FIELD`；另 eslint `react-hooks/use-memo` 强制依赖数组为字面量、`exhaustive-deps` 要求引用 `state` 本身，最终采用"解构字段 + 字面量依赖 + `toSettings` 组装"的三方平衡方案，既消除重复列举又不破坏 settings 引用稳定性（避免抽取动画期间每 80ms 重建）。
+- **防回归**：新增 `app/hooks/__tests__/settings-fields.test.ts`——以 `Exclude<keyof DrawSettings, SETTINGS_FIELDS[number]>` 构造**编译期守卫**（新增设置项忘记登记即编译报错）+ 运行期断言（字段集合与 `DEFAULT_SETTINGS` 键完全一致、无重复、快照剥离运行时字段、逐字段取值一致）。4 个用例。
+- **完成时间**：2026-10-22 16:05
+
+### C4 [P2] 旧记忆命名空间与空目录清理 ✅
+- **问题**：`.codebuddy/` 是 `.workbuddy/` 的**旧命名空间**（工作区已迁移），内含 5 个 git 跟踪的记忆文件与 2 个临时日志（`push_err.txt` / `push_out.txt`）；`scripts/` 为**空目录**。
+- **安全处置**：`.codebuddy/memory/` 中 4 份历史工作日志（2026-06-29 / 08-09 / 08-10 / 08-11）在 `.workbuddy/memory/` 中**并无对应副本**，属不可再生的项目历史。故先**逐份复制迁移**并用 `diff` 校验一致性（4/4 完全一致）后，才用 `git rm -r` 删除旧目录（文件在 git 历史中仍可恢复）。
+- **信息补全**：`.codebuddy/memory/MEMORY.md` 含当前 `.workbuddy/memory/MEMORY.md` **缺失**的 4 项长期约定——「单文件超 200 行必须拆分」「容器语义化 id 约定」「提交信息格式规范」「行尾 CRLF 归一化 + 安全红线」，已迁入当前记忆文件（另补充「设置项字段单一来源」新约定）。
+- **完成时间**：2026-10-22 16:09
+
+### C5 [P2] 文件头版本注释漂移同步 ✅
+- **问题**：39 个源文件的头部版本注释停留在 `v5.7.7`，与 `APP_VERSION = 5.7.9` 漂移（上一轮版本提升时只同步了实际改动的 6 个文件）。
+- **修复**：统一同步至 `v5.7.9`。**行尾与 BOM 严格保持原状**（脚本按行读写、不触碰 `\r`，已抽样比对确认改动前后 CRLF/LF 分布完全一致；`types.ts` 因整文件重写后已手动还原 CRLF + BOM）。
+- **完成时间**：2026-10-22 16:10
+
+### 第四轮验证结果（2026-10-22 16:14）
+| 检查项 | 命令 | 结果 |
+|---|---|---|
+| 类型检查 | `tsc --noEmit` | ✅ 0 错误（还原 tsconfig 后复验仍 0 错误） |
+| Lint | `eslint . --max-warnings=0` | ✅ 0 错误 0 警告（全仓库） |
+| 单元测试 | `vitest run` | ✅ 7 文件 **69/69 通过**（较上轮 65 个新增 4 个字段守卫用例） |
+| 生产构建 | `next build`（临时 distDir `.next/verify3`） | ✅ EXIT_CODE=0，编译 57s，4 页静态生成；`/` 117 kB / 239 kB，`/_not-found` 123 B / 103 kB |
+
+- **构建后清理**：`next.config.ts` / `tsconfig.json` / `next-env.d.ts` 的临时或自动改动已 `git restore` 还原，工作树零临时痕迹。
+- **冗余复查**：清理后重跑引用图分析脚本，**零未引用模块残留**。
+- **净变化**：45 个文件，+160 / −333 行（净减 173 行）。

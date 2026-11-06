@@ -1,4 +1,4 @@
-﻿// page.tsx v5.7.7 —— 抽取主页面（状态编排 + 键盘快捷键）
+﻿// page.tsx v5.7.10 —— 抽取主页面（状态编排 + 键盘快捷键）
 "use client";
 
 import * as React from "react";
@@ -10,7 +10,7 @@ import { HistoryList } from "@/components/draw/history-list";
 import { DrawDisplay } from "@/components/draw/draw-display";
 import { AppHeader } from "@/components/layout/app-header";
 import { createTranslator } from "@/lib/i18n";
-import { APP_VERSION } from "@/lib/version";
+import { FOOTER_VERSION } from "@/lib/version";
 
 export default function HomePage() {
   const shouldReduceMotion = useMountedReducedMotion();
@@ -106,7 +106,7 @@ export default function HomePage() {
       <footer id="app-footer" className="py-6 text-center text-xs text-muted-foreground/70 border-t border-border/30">
         <p>{t("footerInfo", String(10), String(3))}</p>
         <p id="app-footer-version" className="mt-1 font-mono">
-          v{APP_VERSION}
+          {FOOTER_VERSION}
         </p>
       </footer>
     </div>
