@@ -139,3 +139,4 @@ dist
 /.husky
 *_err.txt
 *_out.txt
+*.tmp
