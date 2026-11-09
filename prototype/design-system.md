@@ -1,6 +1,7 @@
 ﻿# ZenDraw 设计系统规范（DESIGN-SYSTEM）
 
-> 适用产品：ZenDraw｜禅抽 v5.7.7
+> 适用产品：ZenDraw｜禅抽 v5.7.11（文档于 2026-11-09 与代码重新对齐）
+> 说明：本目录为静态设计稿，版本标注随产品版本同步；页脚 build 编号为应用构建期注入，原型不适用。
 > 定位：高保真可交互原型的设计令牌、组件库、交互与无障碍基准。
 > 配套原型：`index.html`（主流程 + 主题演示）、`prototypes.html`（状态机图示）、`wireframes.html`（组件库规范）。
 > 代码对应：`app/lib/version.ts` 的 `THEME_PRESETS`（由 `theme-provider.tsx` 消费）。
@@ -256,7 +257,7 @@ Sheet (side="right", aria-modal="true", role="dialog")
 |----------|------------|------|
 | 11 套主题（default/ocean/forest/sunset/purple/neon/sakura/midnight/retro/pixel/rose） | `THEME_PRESETS` 在 `theme-provider.tsx` 确有 11 套 | ✅ 一致 |
 | 主题机制 `.theme-<preset>` 类 + `.dark` 类 | `theme-provider.tsx` 写 `theme-*` 类、`next-themes` 写 `.dark` | ✅ 一致 |
-| 翻译键 117 | `app/locales` zh/en 各 117 键（对称） | ✅ 一致 |
+| 翻译键 110 | `app/locales` types/zh/en 各 110 键（实算对称） | ✅ 一致 |
 | 主流程 4 态 | `use-draw.ts` 状态机含 history | ✅ 一致 |
 | 设置 4 Tab（含 experience） | `settings-panel/index.tsx` Tabs 含 experience | ✅ 一致 |
 | 彩屑揭晓触发 | `ConfettiBurst` 在结果落定时渲染 | ✅ 一致 |

@@ -1,11 +1,11 @@
-﻿# ZenDraw | 禅抽 v5.7.10 — 项目规范文档
+﻿# ZenDraw | 禅抽 v5.7.11 — 项目规范文档
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.7.10
-- **上次更新**: 2026-11-06
+- **当前版本**: v5.7.11
+- **上次更新**: 2026-11-09
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、11 种主题配色、Web Audio API 音效、4 Tab 设置（抽取/外观/体验/历史）、彩屑庆祝、减弱动效与界面密度调节。
 - **许可证**: MIT License
 - **代码质量**: 严格 TypeScript (strict mode) + ESLint + CI/CD + 代码审查标准 + 安全头
@@ -20,21 +20,23 @@
 | 留白艺术 | 充足呼吸空间，降低视觉疲劳，增强内容层次感 |
 
 ### 1.3 技术栈
-| 类别 | 技术 | 版本 |
+| 类别 | 技术 | 版本（以 `package.json` 为准） |
 |------|------|--------|
 | 框架 | Next.js (App Router) | ^15.4.9 |
 | UI 库 | React / React DOM | ^19.2.1 |
-| 样式 | Tailwind CSS v4 + PostCSS | 4.1.11 |
+| 样式 | Tailwind CSS v4 + PostCSS | 4.1.11 / ^8.5.6 |
 | 动画 | Motion (ex-Framer Motion) | ^12.23.24 |
 | 图标 | Lucide React | ^0.553.0 |
 | 主题 | next-themes | ^0.4.6 |
 | 组件基础 | @base-ui/react | ^1.3.0 |
-| shadcn/ui CLI | shadcn | ^4.12.0 |
-| 工具函数 | clsx + class-variance-authority + tailwind-merge | latest |
-| 测试 | Vitest + @testing-library/react + jsdom | latest |
+| 工具函数 | clsx / class-variance-authority / tailwind-merge | ^2.1.1 / ^0.7.1 / ^3.5.0 |
+| 代码检查 | ESLint + eslint-config-next | 9.39.1 / 16.0.8 |
+| 测试 | Vitest + @testing-library/react + jsdom | ^3.0.0 / ^16.0.0 / ^26.0.0 |
 | 语言 | TypeScript (strict mode) | 5.9.3 |
 | 音效 | Web Audio API（自合成，无外部文件） | — |
 | 国际化 | 自建 i18n（createTranslator） | — |
+
+> 说明：`shadcn` CLI 不是运行时依赖，已从表中移除；`components.json` 仅保存组件生成配置。
 
 ### 1.4 字体配置
 | 名称 | 字体 | CSS 变量 |
@@ -72,13 +74,12 @@ zen-draw/
 │   ├── not-found.tsx              # ⭐ 404 页面 (v4.0)
 │   ├── style.css                  # 全局样式（Tailwind v4 + shadcn/ui + 11 主题）
 │   ├── components/
-│   │   ├── ui/                    # shadcn/ui v4 组件（base-nova 风格，共 18 个）
-│   │   │   ├── alert.tsx, badge.tsx, button.tsx, card.tsx
-│   │   │   ├── dialog.tsx, input.tsx, label.tsx
+│   │   ├── ui/                    # 基础组件（base-nova 风格，16 个 .tsx 文件）
+│   │   │   ├── button.tsx, card.tsx, dialog.tsx, input.tsx, label.tsx
 │   │   │   ├── select.tsx, select-scroll-buttons.tsx  # Select（拆分滚动按钮）
-│   │   │   ├── checkbox.tsx, tooltip.tsx, toast.tsx  # 缺口补齐组件
-│   │   │   ├── separator.tsx, slider.tsx, switch.tsx, tabs.tsx, textarea.tsx
-│   │   │   ├── sheet/             # 侧边抽屉（context/parts/index，拆分）
+│   │   │   ├── slider.tsx, switch.tsx, tabs.tsx, textarea.tsx
+│   │   │   ├── toast.tsx, tooltip.tsx
+│   │   │   └── sheet/            # 侧边抽屉（context/parts/index，拆分）
 │   │   ├── layout/                # 布局组件
 │   │   │   └── app-header.tsx            # 顶部导航栏（Logo + 主题切换 + 设置）
 │   │   ├── draw/                  # 抽签业务组件
@@ -102,37 +103,43 @@ zen-draw/
 │   │   │   ├── settings-panel/           # 设置面板组件集
 │   │   │   │   ├── index.tsx             # 4 Tab 设置面板（抽取/外观/体验/历史）
 │   │   │   │   ├── header-bar.tsx        # 面板标题栏
-│   │   │   │   ├── experience-settings.tsx  # 体验设置（音效/彩屑/减少动效/自动隐藏/密度/重置）
-│   │   │   │   └── custom-list-inline.tsx    # 名单模式内联编辑（外观 Tab 内嵌）
-│   │   │   └── __tests__/
-│   │   │       └── draw-button.test.tsx  # 按钮单元测试
+│   │   │   │   ├── experience-settings.tsx  # 体验设置（音效/彩屑/减弱动效/自动隐藏/密度/重置）
+│   │   │   │   └── custom-list-inline.tsx    # 名单模式内联编辑
+│   │   │   └── __tests__/draw-button.test.tsx  # 按钮单元测试
 │   │   ├── number-roller.tsx      # 数字滚动动画组件
 │   │   └── theme-provider.tsx     # 主题提供者（11 预设 + 3 字体 + 深浅色）
-│   ├── hooks/                     # 自定义 Hooks
-│   │   ├── draw-types.ts          # 类型定义
-│   │   ├── draw-helpers.ts        # 纯函数（抽签逻辑/验证/格式化）
-│   │   ├── draw-reducer.ts        # 状态 Reducer
+│   ├── hooks/                     # 自定义 Hooks（12 个）
+│   │   ├── draw-types.ts          # 类型定义 + SETTINGS_FIELDS 单一来源
+│   │   ├── draw-helpers.ts        # 纯函数（抽签逻辑/验证/格式化/LIMITS）
+│   │   ├── draw-reducer.ts        # 状态 Reducer（25 个 action）
 │   │   ├── use-draw.ts            # 主 Hook（状态管理入口）
-│   │   ├── use-draw-actions.ts    # 动作回调（start/stop/setters）
-│   │   ├── use-draw-persistence.ts# 持久化设置（13 组 localStorage）
+│   │   ├── use-draw-actions.ts    # 抽取动作回调
+│   │   ├── use-draw-settings-actions.ts  # 设置 setter 回调
+│   │   ├── use-draw-utils.ts      # 抽签动作工具函数
+│   │   ├── use-draw-persistence.ts# 持久化设置（17 组 localStorage）
 │   │   ├── use-local-storage.ts   # localStorage Hook（含跨标签同步）
-│   │   ├── use-sound.ts                   # Web Audio API 音效合成
-│   │   └── use-mounted-reduced-motion.ts  # 减少动效偏好 Hook
+│   │   ├── use-stored-language.ts # 语言偏好快照（错误页/404 页）
+│   │   ├── use-sound.ts           # Web Audio API 音效合成
+│   │   ├── use-mounted-reduced-motion.ts # 减少动效偏好 Hook
+│   │   └── __tests__/             # 5 个测试文件
 │   ├── lib/
 │   │   ├── utils.ts              # 工具函数（cn / secureRandomInt / sanitizeListInput）
-│   │   ├── version.ts            # 应用版本常量（单一来源）
-│   │   └── i18n.ts               # 国际化翻译工具（createTranslator）
+│   │   ├── version.ts            # APP_VERSION / BUILD_ID / FOOTER_VERSION
+│   │   ├── i18n.ts               # 国际化翻译工具（createTranslator）
+│   │   └── __tests__/utils.test.ts # 工具函数测试
 │   ├── locales/                  # 国际化数据
 │   │   ├── index.ts              # re-export
-│   │   ├── types.ts              # TranslationKey（117 键）
-│   │   ├── en.ts                 # 英文翻译
-│   │   └── zh.ts                 # 中文翻译
+│   │   ├── types.ts              # TranslationKey（110 键，实算）
+│   │   ├── en.ts                 # 英文翻译（110 键）
+│   │   └── zh.ts                 # 中文翻译（110 键）
 │   └── test/
 │       └── setup.ts              # 测试环境配置
-├── prototype/                    # 设计原型
-│   ├── index.html               # 高保真可交互原型（主流程 + 状态机）
-│   ├── prototypes.html          # 高保真视觉稿（多主题真实样式）
+├── prototype/                    # 设计原型（4 个 HTML + 令牌 + 规范）
+│   ├── index.html               # 高保真可交互原型（主流程 + 主题演示）
+│   ├── prototypes.html          # 状态机图示 + 真实联动
 │   ├── wireframes.html          # 组件库规范线框图
+│   ├── settings.html            # 设置选项高保真原型（4 Tab + 名单 Dialog）
+│   ├── tokens.css               # 设计令牌单一来源（四套原型共享）
 │   └── design-system.md         # 完整设计系统规范（令牌/组件库/交互/动效）
 ├── docs/design/                  # 设计参考文档
 │   ├── color-system.html
@@ -216,7 +223,7 @@ zen-draw/
 
 ---
 
-## 4. 设计系统规范 (v5.7.0)
+## 4. 设计系统规范（对齐 v5.7.11）
 
 ### 4.1 设计 Tokens — 色彩
 
@@ -338,6 +345,8 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 | 10 | `.theme-pixel` | Pixel | 像素游戏绿 | oklch(0.7 0.25 140) |
 | 11 | `.theme-rose` | Rose | 玫瑰粉调 | oklch(0.6 0.18 350) |
 
+> 说明：`default` 为 `:root` 基线，**无独立 `.theme-default` 类**；`app/style.css` 实际定义 10 个 `.theme-*` 覆盖类，连同默认态共 11 种预设。页脚主题数取自 `THEME_PRESETS.length`（11）、字体数取自 `FONT_FAMILIES.length`（3），不再硬编码。
+
 ### 4.6 动效规范
 
 | 场景 | 时长 | 缓动函数 | 说明 |
@@ -359,27 +368,25 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 
 ---
 
-## 5. shadcn/ui 组件库 (v4 base-nova)
+## 5. 基础组件库（base-nova 风格）
 
 ### 5.1 基础组件清单
 
+`app/components/ui/` 现存 **16 个 `.tsx` 文件**（13 个顶层 + `sheet/` 3 个），按逻辑组件计 14 个。2026-10-22 已删除 4 个零引用组件：`alert.tsx` / `badge.tsx` / `checkbox.tsx` / `separator.tsx`。
+
 | 组件 | 文件 | 使用 @base-ui/react |
 |------|------|-------------------|
-| Alert | `ui/alert.tsx` | 否（原生 div） |
-| Badge | `ui/badge.tsx` | 是（useRender） |
 | Button | `ui/button.tsx` | 是（ButtonPrimitive） |
 | Card | `ui/card.tsx` | 否（原生 div） |
 | Dialog | `ui/dialog.tsx` | 是（Dialog 系列） |
 | Input | `ui/input.tsx` | 否（原生 input） |
 | Label | `ui/label.tsx` | 否（原生 label） |
-| Select | `ui/select.tsx` | 是（SelectPrimitive） |
-| Separator | `ui/separator.tsx` | 是（Separator） |
-| Sheet | `ui/sheet.tsx` | 是（Drawer） |
+| Select | `ui/select.tsx` + `ui/select-scroll-buttons.tsx` | 是（SelectPrimitive） |
+| Sheet | `ui/sheet/`（context / index / parts） | 是（Drawer） |
 | Slider | `ui/slider.tsx` | 是（Slider） |
 | Switch | `ui/switch.tsx` | 是（Switch） |
 | Tabs | `ui/tabs.tsx` | 是（Tabs） |
 | Textarea | `ui/textarea.tsx` | 否（原生 textarea） |
-| Checkbox | `ui/checkbox.tsx` | 是（Checkbox） |
 | Tooltip | `ui/tooltip.tsx` | 是（Tooltip） |
 | Toast | `ui/toast.tsx` | 是（Toast 系列） |
 
@@ -503,13 +510,10 @@ interface DrawState {
 - `CLEAR_HISTORY` / `DISMISS_ERROR` / `ERROR` — 历史、错误清除与写入
 
 ### 6.3 持久化（localStorage）
-所有 key 以 `zendraw-` 为前缀，共 15 组：
-`min`, `max`, `count`, `duplicates`, `autohide`, `duration`,
-`custom-list`, `use-custom`, `digits`, `prefix`, `suffix`,
-`language`, `sound`, `density`, `confetti`, `reduce-motion`, `history`
-（注：`confetti` / `reduce-motion` / `sound` / `density` 为体验类新增键）
 
-跨标签同步: 通过 `window.addEventListener('storage', ...)` 实现。
+全部 key 以 `zendraw-` 为前缀，共 **19 个**：`usePersistedSettings()` 通过 `useLocalStorage` 管理 17 个（16 个设置字段 + `history`），`theme-provider.tsx` 另管理 2 个（`theme-preset` / `font-family`）。字段与 key 的映射见 §9，设置字段清单以 `SETTINGS_FIELDS` 为单一来源。
+
+跨标签同步：通过 `window.addEventListener('storage', ...)` 实现。
 
 ---
 
@@ -519,16 +523,21 @@ interface DrawState {
 - `en` — English
 - `zh` — 简体中文
 
-### 7.2 翻译键（117 个）
+### 7.2 翻译键（110 个，实算）
 
-翻译键由 `app/locales/types.ts` 中的 `TranslationKey` 联合类型强约束，`zh.ts` 与 `en.ts` 必须完全对齐（缺失或多余都会在编译期报错）。当前共 **117 个**键，涵盖：界面导航（title/settings/history/close）、范围与计数（minVal/maxVal/drawCount/allowDup/autoHide/custom/useCustomList）、外观（theme*/font*）、抽签流程（ready/drawing/startDraw/stopDraw/copy*）、名单导入与编辑（import*/confirmImport/itemsLoaded/clearList/editList/removeItem/duplicateItemsWarning）、错误提示（err*/minMaxError/rangeError）、体验设置（sound/density/confetti/reduceMotion/resetSettings）、抽取模式（drawMode/modeNumber/modeList）、密度与语言（density*/languageLabel/langZh/langEn）、无障碍（appTitle/resultRegion/welcomeHint）等。新增键须同步加入 `TranslationKey`、`zh.ts`、`en.ts` 三处。
+翻译键由 `app/locales/types.ts` 的 `TranslationKey` 联合类型强约束；`zh.ts` / `en.ts` 均标注为 `TranslationDict = Record<TranslationKey, string>`，缺失或多余键在编译期报错。实算结果：`types.ts` / `zh.ts` / `en.ts` 各 **110 个键**，三处完全对齐（另有 `Language = "en" | "zh"` 的 2 个字面量不属于翻译键）。
+
+覆盖分类：界面导航（settings/close/history）、范围与计数（minVal/maxVal/drawCount/allowDup/autoHideDesc）、外观（theme*/font*）、抽签流程（ready/startDraw/stopDraw/continueDraw/copy*）、名单导入（customList/itemsLoaded/clearList/editList/listPlaceholder）、错误提示（err*/minMaxError/rangeError）、体验设置（sound/density/confetti/reduceMotion/resetSettings）、语言（languageLabel/langZh/langEn）、错误页与 404（pageError*/notFound*/retry/backHome）、页脚（footerInfo）等。
+
+2026-10-22 清理了 16 个零消费键（`title` / `drawMode` / `modeNumber` / `modeList` / `custom` / `theme` / `export` / `import_` / `drawing` / `noItems` / `switchLight` / `switchDark` / `importDesc` / `confirmImport` / `removeItem` / `colorPreview`），文档不得再引用。新增键须同步加入 `TranslationKey`、`zh.ts`、`en.ts` 三处。
 
 ### 7.3 使用方式
 ```typescript
 import { createTranslator } from "@/lib/i18n";
 const t = React.useMemo(() => createTranslator(language), [language]);
-// 普通: t("title")
-// 参数: t("milestoneDraws", "10")  → 支持 {0} 占位符
+// 普通: t("settings")
+// 参数: t("footerInfo", String(THEME_PRESETS.length), String(FONT_FAMILIES.length))
+//       → 支持 {0} / {1} 位置占位符；缺失 key 回退为 key 本身
 ```
 
 ---
@@ -546,12 +555,15 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 }
 ```
 
-### 8.2 ESLint 规则（Flat Config）
-- **TypeScript**: no-explicit-any (warn), no-non-null-assertion (error), no-unused-vars (warn)
-- **React Hooks**: rules-of-hooks (error), exhaustive-deps (error)
-- **安全**: no-eval (error), no-new-func (error), no-restricted-syntax (warn Math.random)
-- **无障碍**: jsx-a11y (warn)
-- **代码质量**: no-console (warn), no-debugger (error), no-var (error), prefer-const (warn)
+### 8.2 ESLint 规则（Flat Config，`eslint.config.js`）
+- **基线**: `eslint-config-next` (16.0.8) + `typescript-eslint` strict (8.x) + `reportUnusedDisableDirectives`
+- **TypeScript**: `no-explicit-any` (warn)、`no-non-null-assertion` (error)、`no-unused-vars` (warn，忽略 `_` 前缀)
+- **React Hooks**: `rules-of-hooks` / `exhaustive-deps` (error)
+- **安全**: `no-eval` / `no-new-func` (error)、`no-restricted-syntax` (warn，拦截 `Math.random` 调用)
+- **无障碍**: jsx-a11y 系列 (warn)、`tabindex-no-positive` (error)
+- **代码质量**: `no-console`（warn，允许 warn/error）、`no-debugger` / `no-var` (error)、`prefer-const` (warn)、`unused-imports/no-unused-imports` (error)
+- **忽略范围**: `node_modules/`、`.next/`、配置文件、`app/components/ui/**`、`app/test/**`、`.github/**`
+- **门禁**: 本地与 CI 均执行 `eslint . --max-warnings=0`（零告警）
 
 ### 8.3 安全头（next.config.ts）
 | 头 | 值 |
@@ -561,7 +573,10 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 | X-Content-Type-Options | `nosniff` |
 | Referrer-Policy | `strict-origin-when-cross-origin` |
 | Permissions-Policy | `camera=(), microphone=(), geolocation=(), interest-cohort=()` |
+| X-DNS-Prefetch-Control | `on` |
 | Strict-Transport-Security | `max-age=63072000; includeSubDomains; preload` |
+
+> 共 8 条安全头，由 `next.config.ts` 的 `headers()` 统一注入；CSP 含 `connect-src 'self'`、`frame-ancestors 'none'`。
 
 ### 8.4 安全编码规范
 - **随机数**: 必须使用 `crypto.getRandomValues()` + 拒绝采样
@@ -574,11 +589,17 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 - `app/not-found.tsx` — 404 友好提示
 
 ### 8.6 CI/CD（GitHub Actions）
-每次 PR 自动运行：
-1. `npm run type-check` → 类型检查
-2. `npm run lint` → ESLint（最多 20 警告）
-3. `npm run build` → 构建验证
-4. `npm audit --audit-level=high` → 安全审计
+`.github/workflows/ci.yml` 在 push / PR 到 `main`、`master`、`develop` 时触发（Node 22 + `npm ci`），含两个作业：
+
+`quality-check`（四连检，任一失败即阻断）：
+1. `npm run type-check` → TypeScript 类型检查
+2. `npm run lint -- --max-warnings=0` → ESLint 零告警
+3. `npm test` → Vitest 单元测试
+4. `npm run build` → 生产构建验证
+
+`security-check`：`npm audit --audit-level=high`（当前 `continue-on-error: true`，不阻断）+ PR 时 `actions/dependency-review`。
+
+> 本地等价验证命令见 `docs/tasks.md` 元信息；构建环境红线见项目长期记忆。
 
 ---
 
@@ -590,17 +611,23 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 | zendraw-max | number | 100 | 最大值 |
 | zendraw-count | number | 1 | 抽取数量 |
 | zendraw-duplicates | boolean | true | 允许重复 |
-| zendraw-autohide | boolean | true | 自动隐藏 |
+| zendraw-autohide | boolean | true | 自动隐藏面板 |
 | zendraw-duration | number | 5 | 动画时长(秒) |
 | zendraw-custom-list | string[] | [] | 自定义名单 |
 | zendraw-use-custom | boolean | false | 启用自定义名单 |
-| zendraw-digits | number | 0 | 补零位数 |
+| zendraw-digits | number | 3 | 补零位数 |
 | zendraw-prefix | string | "" | 前缀 |
 | zendraw-suffix | string | "" | 后缀 |
 | zendraw-language | "zh"\|"en" | "zh" | 语言 |
-| zendraw-history | HistoryEntry[] | [] | 历史记录 |
-| zendraw-theme-preset | string | "default" | 配色方案 |
-| zendraw-font-family | string | "sans" | 字体 |
+| zendraw-sound | boolean | true | 音效 |
+| zendraw-density | "comfortable"\|"compact" | "comfortable" | 界面密度 |
+| zendraw-confetti | boolean | true | 结果彩屑 |
+| zendraw-reduce-motion | boolean | false | 减弱动效 |
+| zendraw-history | HistoryEntry[] | [] | 历史记录（≤ 100 条） |
+| zendraw-theme-preset | ThemePreset | "default" | 配色方案（11 种） |
+| zendraw-font-family | FontFamily | "sans" | 字体（3 种） |
+
+> 前 17 项由 `usePersistedSettings()` 管理，后 2 项由 `theme-provider.tsx` 管理；`custom-list` / `history` 带类型守卫防脏数据白屏。
 
 ---
 
@@ -609,11 +636,15 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 ### 10.1 原型文件
 | 文件 | 位置 | 说明 |
 |------|------|------|
-| 高保真原型 | `prototype/index.html` | 高保真可交互原型（主参考，真实数据 + 组件库规范 + 11 主题 + 完整交互） |
-| 视觉稿 | `prototype/prototypes.html` | 多主题真实样式视觉稿 |
-| 线框图 | `prototype/wireframes.html` | 组件库规范线框图 |
+| 主原型 | `prototype/index.html` | 高保真可交互原型（主流程 + 11 主题演示） |
+| 状态机原型 | `prototype/prototypes.html` | 状态机图示 + 真实联动 |
+| 组件库线框 | `prototype/wireframes.html` | 组件库规范线框图 |
+| 设置原型 | `prototype/settings.html` | 设置选项高保真原型（4 Tab + 名单 Dialog） |
+| 设计令牌 | `prototype/tokens.css` | 四套原型共享的令牌单一来源 |
 | 设计系统 | `prototype/design-system.md` | 完整设计系统文档（令牌/组件库/交互/动效） |
 | 设计参考 | `docs/design/`（color-system.html / motion.html / typography.html） | 色彩/动效/字体系统参考 |
+
+> 原型为静态设计稿，不参与应用构建；其版本标注随产品版本同步，但 build 编号（构建期注入）不适用。
 
 ### 10.2 代码与原型对齐清单
 | 特性 | 原型状态 | 代码状态 | 说明 |
@@ -630,7 +661,9 @@ const t = React.useMemo(() => createTranslator(language), [language]);
 | 键盘快捷键 | ✅ | ✅ | Space/Enter/Escape |
 | 音效系统 | — | ✅ | Web Audio API |
 | 错误边界 | ✅ | ✅ | error.tsx + not-found.tsx |
-| 安全头 | ✅ | ✅ | CSP + HSTS + 7 条 |
+| 安全头 | ✅ | ✅ | CSP + HSTS 等 8 条 |
+| 页脚 `V版本 · build` | — | ✅ | 应用页脚专属；原型静态稿不注入 build |
+| 110 翻译键（zh/en 对齐） | — | ✅ | `TranslationKey` 编译期强约束 |
 
 ---
 
@@ -670,15 +703,30 @@ export const viewport: Viewport = {
 
 ## 13. 版本历史
 
-> 详见 `CHANGELOG.md`。5.3.6 之后的完整迭代记录如下（与 CHANGELOG 同步）：
+> 以下为节选，完整记录以 `CHANGELOG.md` 为准（按版本倒序）。
+
+### v5.7.11 - 2026-11-09
+- 全量文档与代码对齐：目录结构、依赖版本、实算数字（110 键 / 16 组件 / 19 存储键）、接口契约、构建标识
+- 新增 §14「接口与数据契约（无服务端 API）」；页脚主题数改为取自 `THEME_PRESETS.length`（11）
+
+### v5.7.10 - 2026-11-06
+- 页脚版本与 build 编号规范（§5.1.2）：`next.config.ts` 注入 `NEXT_PUBLIC_BUILD_ID`，`version.ts` 组装 `FOOTER_VERSION`
+- 移除设置面板 HeaderBar 版本号；全项目版本展示位统一至 5.7.10
+
+### v5.7.9 - 2026-10-19 / 10-22 补充清理
+- 设置面板嵌套 Sheet 修复、错误页/404 页 i18n、结果态按钮对齐 SPEC、CI 补齐 `npm test` 并收紧 lint 至零告警
+- 补充清理：删除 4 个零引用 UI 组件与 16 个零消费翻译键；`SETTINGS_FIELDS` 单一来源 + 守卫测试；39 个源文件头注释统一
+
+### v5.7.8 - 2026-08-13
+- 核心逻辑单元测试补充（21 + 13 + 工具函数用例），魔法数字集中为 `LIMITS`，超长文件拆分
+
+### v5.7.5
+- 修复设置容器 UI 问题：抽取时长 Slider 下限由 0 改为 1；外观设置主题模式区块首屏渲染 disabled 占位
+- 全仓库版本号统一至 v5.7.5
 
 ### v5.7.4
 - 删除与代码严重脱节的 `CODE_REVIEW.md` 冗余文档；全仓库版本号统一至 v5.7.4
-- SPEC.md 目录树修正（hooks 缩进、移除 CODE_REVIEW.md）；翻译键数订正为 117；design-system.md 翻译键数订正为 117
-
-### v5.7.5
-- 修复设置容器 UI 问题：抽取时长 Slider 下限由 0 改为 1（与 setter clamp 下限一致，消除拖到 0 弹回 1 的跳动）；外观设置主题模式区块在首屏未挂载时渲染 disabled 占位 SelectTrigger（避免空白容器与布局跳动）
-- 全仓库版本号统一至 v5.7.5
+- SPEC.md 目录树修正（hooks 缩进、移除 CODE_REVIEW.md）
 
 ### v5.7.2
 - 为所有结构性/语义化容器补充 kebab-case 语义化 `id`（页面级、布局、设置面板、抽取展示、历史列表、特效）；SPEC.md 新增 §5.1.1 容器语义化 id 规范表
@@ -756,5 +804,52 @@ export const viewport: Viewport = {
 
 ---
 
-*本文档最后更新: 2026-07-02 · 与 prototype/ 和 app/ 代码保持对齐*
+## 14. 接口与数据契约（无服务端 API）
+
+本项目是纯客户端应用：`app/` 下**无 `api/` 目录、无 `route.ts`、无 Server Actions、无 middleware**，也没有任何 HTTP 端点或数据库；页面与组件均为 `"use client"`，状态由 `useReducer` + `localStorage` 管理。因此不存在对外 API 文档，下列为内部模块契约（实算自源码）。
+
+### 14.1 `app/lib/`
+
+| 导出 | 签名 | 说明 |
+|------|------|------|
+| `APP_VERSION` | `const APP_VERSION: "5.7.11"` | 版本单一来源，与 `package.json` 一致 |
+| `BUILD_ID` | `const BUILD_ID: string` | `NEXT_PUBLIC_BUILD_ID`，仅 10 位数字通过校验时非空 |
+| `FOOTER_VERSION` | `const FOOTER_VERSION: string` | `V{版本} · build {BUILD_ID}`；缺失时仅 `V{版本}` |
+| `createTranslator` | `(language: Language) => (key: TranslationKey, ...args: string[]) => string` | 缺失 key 回退 key 本身，支持 `{0}` / `{1}` 位置参数 |
+| `cn` | `(...inputs: ClassValue[]) => string` | 类名合并 |
+| `secureRandomInt` | `(max: number) => number` | `max <= 0` 返回 0；crypto 不可用时降级 |
+| `secureRandomFloat` | `(min: number, max: number) => number` | 安全随机浮点 |
+| `generateLocalId` | `() => string` | 本地唯一 ID |
+| `parseFiniteNumber` | `(input: string, fallback: number) => number` | 安全数值解析 |
+| `sanitizeListInput` | `(input: string) => string[]` | 单项 ≤ 200 字符、最多 1000 项、过滤控制字符 |
+
+### 14.2 `app/hooks/`
+
+| 导出 | 签名 | 说明 |
+|------|------|------|
+| `DrawSettings` | `interface`（16 字段） | 设置项；`SETTINGS_FIELDS` 为其键的单一来源 |
+| `SETTINGS_FIELDS` | `as const satisfies readonly (keyof DrawSettings)[]`（16 项） | 新增设置项必须登记，守卫测试会编译报错 |
+| `DrawState` | `extends DrawSettings` + 6 运行时字段 | `currentResults` / `rollingValues` / `status` / `errorMessage` / `history` / `isRolling` |
+| `DrawAction` | 判别联合（25 个变体） | 每个设置字段一个 `SET_*`，另有流程 action |
+| `LIMITS` | `MAX_COUNT=1000` / `MAX_LIST_ITEMS=1000` / `MAX_RANGE=10_000_000` / `MAX_DURATION=30` / `MAX_DIGITS=20` | 常量集中 |
+| `formatNumber` | `(n: number, digits: number, prefix: string, suffix: string) => string` | 补零与前后缀 |
+| `finalizeDraw` | `(settings: {...9 键}) => string[]` | 生成最终结果 |
+| `generateTemporaryResults` | `(settings: {...8 键}) => string[]` | 滚动中的临时值 |
+| `validateSettings` | `(settings: {...6 键}) => ValidationErrorKey \| null` | 返回翻译键，由调用方翻译 |
+| `toSettings` | `(state: DrawSettings) => DrawSettings` | 按字段清单复制设置快照 |
+| `createInitialState` | `(settings: DrawSettings) => DrawState` | Reducer 初始态 |
+| `drawReducer` | `(state: DrawState, action: DrawAction) => DrawState` | 25 个 case；历史上限 100 条 |
+| `usePersistedSettings` | `() => 17 对 value/setter` | 16 设置 + history，`zendraw-*` 键 |
+| `useDraw` | `(onSound?: (type: SoundType) => void) => UseDrawReturn` | 主 Hook，返回状态 + 动作 + `settings` 快照 |
+
+### 14.3 数据边界
+
+- 语言：`"zh" \| "en"`（110 个翻译键，`zh.ts` / `en.ts` 编译期对齐）。
+- 主题：`THEME_PRESETS` 11 项（`default` … `rose`）；字体：`FONT_FAMILIES` 3 项。
+- 历史：最多 100 条；名单：最多 1000 项；抽取数量：最多 1000。
+- 持久化：19 个 `zendraw-*` 键，见 §9；跨标签页通过 `storage` 事件同步。
+
+---
+
+*本文档最后更新: 2026-11-09 · 与 app/ 代码、package.json、prototype/ 保持对齐；完整变更见 CHANGELOG.md*
 

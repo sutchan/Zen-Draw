@@ -1,5 +1,29 @@
 ﻿# Changelog
 
+## [5.7.11] - 2026-11-09
+
+### docs（全量文档与代码对齐）
+- **README×2**：主题数 10→11（补 Rose）、重写项目结构树、技术栈依赖版本精确化、
+  补齐脚本表与四连检、新增「接口与数据（无服务端 API）」「近期变更」章节
+- **SPEC.md**：目录树删除 4 个已删组件并补齐 12 hooks / 7 测试文件 / settings.html；
+  UI 组件 18→16、翻译键 117→110（实算）、持久化 15→19 键、存储键对照表补全；
+  修正 §5.1 组件表、§7.2/§7.3 废弃翻译键、§8.2 ESLint 规则、§8.3 安全头、
+  §8.6 CI 门禁（0 警告 + npm test）；新增 §14「接口与数据契约」；§13 补 v5.7.6–v5.7.11
+- **prototype/**：5 份原型版本 v5.7.7→v5.7.11；移除 wireframes/settings 中
+  HeaderBar 版本号展示；design-system.md 翻译键 117→110 并同步适用产品版本
+- **docs/**：tasks.md 归档已完成的 L4 提交任务、补充待办（lock 恢复 / localStorage polyfill）；
+  tasks-done.md 加历史归档脚注；design/*.html 补统一头注释
+- **.github/**：审查标准单文件 300→200 行、移除不存在的 Prettier 描述、补 CI 四连检；
+  CODE_REVIEW_SETUP.md 门禁 20 警告→0；PUSH_GUIDE / FIXES_SUMMARY 标注为历史归档
+
+### fix（页脚主题数）
+- `app/page.tsx` 页脚 `footerInfo` 主题数由硬编码 10 改为 `THEME_PRESETS.length`（11），
+  与 11 个主题预设及文档一致
+
+### chore（版本同步）
+- 全项目版本展示位统一至 v5.7.11（package.json / metadata.json / README×2 /
+  `APP_VERSION` / SPEC / prototype / CHANGELOG）
+
 ## [5.7.10] - 2026-11-06
 
 ### feat（页脚版本与构建标识）
@@ -11,6 +35,8 @@
 - 全项目版本展示位统一至 v5.7.10（`package.json` / `metadata.json` / README×2 / `APP_VERSION` / SPEC.md / CHANGELOG）
 
 ## [5.7.9-cleanup] - 2026-10-22
+
+> 说明：本条为 5.7.9 的补充清理记录，**未单独发版**；标题沿用历史命名，非 SemVer 版本。
 
 ### chore（项目审查与冗余清理）
 - **删除 4 个零引用 shadcn 组件**：`app/components/ui/` 下 `alert.tsx` / `badge.tsx` / `checkbox.tsx` / `separator.tsx` 在整个 app 内外部引用数均为 0，属脚手架残留（合计 175 行）

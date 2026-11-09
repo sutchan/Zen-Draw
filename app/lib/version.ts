@@ -1,6 +1,6 @@
-﻿// app/lib/version.ts v5.7.10 —— 应用版本单一事实来源
+﻿// app/lib/version.ts v5.7.11 —— 应用版本单一事实来源
 // 与 package.json 的 version 字段保持一致；页脚等 UI 从此处读取，避免硬编码漂移。
-export const APP_VERSION = "5.7.10";
+export const APP_VERSION = "5.7.11";
 
 // 构建标识由 next.config.ts 在构建期注入（10 位 yymmddhhmm），非法或缺失时留空以便回退
 const RAW_BUILD_ID = process.env.NEXT_PUBLIC_BUILD_ID ?? "";

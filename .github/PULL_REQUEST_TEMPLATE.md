@@ -40,6 +40,10 @@
 - [ ] 无 `any` 类型（特殊情况需注明原因）
 - [ ] 无 `console.log` 残留（调试用 `console.warn` / `console.error` 可保留）
 - [ ] 无 `eslint-disable` 注释（特殊情况需在代码中注明原因）
+- [ ] 新增/更新测试并通过 `npm test`
+- [ ] 主要容器已补 kebab-case 语义化 `id`
+- [ ] 版本号、CHANGELOG 与全局展示位已同步
+- [ ] 页脚版本展示符合 `V版本 · build yymmddhhmm`，页眉无版本号
 
 ### 安全
 - [ ] 无直接使用 `Math.random()`（使用 `crypto.getRandomValues()` 替代）

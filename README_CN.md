@@ -1,138 +1,118 @@
-﻿# ZenDraw | 禅抽 v5.7.10
+﻿# ZenDraw | 禅抽 v5.7.11
 
 [English Version](./README.md)
 
-禅抽 (ZenDraw) 是一款采用 Apple 设计风格的专业全屏随机抽签应用。基于 Next.js、Tailwind CSS 和 Motion 构建，专为抽奖、课堂活动或任何需要随机选择的场景设计，提供极具冲击力的视觉呈现。
-
-## 设计理念
-
-本版本采用 Apple 设计风格，重新定义视觉体验：
-
-- **极简布局**：去除冗余元素，只保留核心功能入口
-- **大图展示**：突出显示抽奖结果，视觉冲击力更强
-- **充足留白**：呼吸空间让界面更优雅，阅读更舒适
-- **清晰层次**：明确的内容层级，信息结构一目了然
+禅抽 (ZenDraw) 是一款采用 Apple 设计风格的专业全屏随机抽签应用，基于 Next.js 15 App Router、React 19、Tailwind CSS v4 与 Motion 构建，适用于年会抽奖、课堂互动、抽签活动等场景。**纯客户端运行**：无后端、无 HTTP API、无数据库。
 
 ## 功能特性
 
-- **滚筒式抽签**：动态的随机滚筒动画效果，增加趣味性。
-- **全屏沉浸式显示**：超大字体配合灵动的动画效果，适合大屏展示。
-- **高度可自定义规则**：
-  - 自定义数值范围（最小值/最大值）。
-  - 设置抽取数量及是否允许重复。
-  - 自定义位数补零、前缀和后缀。
-- **自定义名单导入**：支持导入自定义名单（姓名、奖品等）进行抽取，而不仅限于数字。
-- **多语言支持**：支持中英文无缝切换。
-- **响应式设计**：针对桌面端、平板和手机端进行了深度优化。
-- **主题与字体**：提供 11 种配色方案（默认、海洋蓝、森林绿、落日橙、紫罗兰、霓虹、樱花粉、午夜蓝、复古棕、像素风、玫瑰粉）和字体样式（无衬线、等宽、衬线）供选择。
-- **深浅色模式**：完美支持系统主题及手动切换。
-- **历史记录与导出**：自动记录所有抽签结果并支持导出为文本文件。
-- **设置持久化**：所有用户设置自动保存到 localStorage。
-
-## 代码质量
-
-本项目遵循严格的代码质量标准：
-
-- **TypeScript 严格模式**：启用 `noUncheckedIndexedAccess`、`exactOptionalPropertyTypes` 等增强类型安全选项。
-- **ESLint 强化规则**：安全规则、无障碍规则 (jsx-a11y)、React 最佳实践强制检查。
-- **代码审查标准**：定义三级问题分类（🔴 必须修复、🟡 应该修复、💭 可选优化）的审查清单。
-- **CI/CD 流水线**：每次 PR 自动运行类型检查、Lint 检查、构建验证、安全审计。
-- **安全优先**：使用 `crypto.getRandomValues()` 保证随机数质量，输入验证，XSS 防护。
-
-详见 [代码审查标准](./.github/CODE_REVIEW_STANDARD.md)。
+- **滚筒式抽签**：字符级数字滚动 + 逐字定格，时长可配置（1–30 秒）。
+- **抽取规则**：数值范围（最小值/最大值，跨度 ≤ 10,000,000）、抽取数量（≤ 1000）、允许/禁止重复、位数补零、前缀/后缀。
+- **自定义名单**：导入姓名/奖品（≤ 1000 项，每项 ≤ 200 字符），自动去重，可导出为文本。
+- **密码学安全随机**：`crypto.getRandomValues()` + 拒绝采样消除模偏差；仅在 crypto 不可用时降级 `Math.random()`。
+- **主题与字体**：11 种配色（默认、海洋蓝、森林绿、落日橙、紫罗兰、霓虹、樱花粉、午夜蓝、复古棕、像素风、玫瑰红）× 3 种字体（无衬线 / 等宽 / 衬线），支持浅色 / 深色 / 跟随系统。
+- **体验设置**：Web Audio 音效、结果彩屑、减弱动效、界面密度、自动隐藏面板、重置全部设置。
+- **历史记录**：最多 100 条，支持点击复制与清空。
+- **双语支持**：简体中文 / English，110 个翻译键，编译期强制对齐。
+- **设置持久化**：19 个 `zendraw-*` localStorage 键，支持跨标签页同步。
+- **无障碍**：结构性容器带 kebab-case 语义化 `id`、ARIA 标签、键盘快捷键（Space / Escape）、错误页与 404 页接入 i18n。
+- **构建标识**：页脚展示 `V5.7.11 · build yymmddhhmm`，build 编号为 `next.config.ts` 构建期注入的 10 位时间戳；注入缺失时仅展示版本号。
 
 ## 技术栈
 
-- **框架**: Next.js 15 (App Router)
-- **样式**: Tailwind CSS v4
-- **动画**: Motion (原 Framer Motion)
-- **图标**: Lucide React
-- **主题**: next-themes
-- **UI 组件**: shadcn/ui
-- **语言**: TypeScript (严格模式)
+| 层级 | 依赖 | 版本 |
+|---|---|---|
+| 框架 | Next.js (App Router) | ^15.4.9 |
+| UI | React / React DOM | ^19.2.1 |
+| 样式 | Tailwind CSS v4 + @tailwindcss/postcss | 4.1.11 |
+| 动画 | motion | ^12.23.24 |
+| 图标 | lucide-react | ^0.553.0 |
+| 主题 | next-themes | ^0.4.6 |
+| 组件基础 | @base-ui/react | ^1.3.0 |
+| 语言 | TypeScript（严格模式） | 5.9.3 |
+| Lint | ESLint + eslint-config-next | 9.39.1 / 16.0.8 |
+| 测试 | Vitest + @testing-library/react + jsdom | ^3.0.0 / ^16.0.0 / ^26.0.0 |
 
 ## 安装与运行
 
-1. 克隆仓库。
-2. 安装依赖：
-   ```bash
-   npm install
-   ```
-3. 启动开发服务器：
-   ```bash
-   npm run dev
-   ```
+```bash
+npm install       # CI 在存在 package-lock.json 时使用 npm ci
+npm run dev       # http://localhost:3000
+```
+
+质量门禁（与 `.github/workflows/ci.yml` 一致，Node 22）：
+
+```bash
+npm run type-check
+npm run lint -- --max-warnings=0
+npm test
+npm run build
+```
 
 ## 可用脚本
 
 | 命令 | 描述 |
-|------|------|
+|---|---|
 | `npm run dev` | 启动开发服务器 |
-| `npm run build` | 构建生产版本 |
+| `npm run build` | 构建生产版本（`output: 'standalone'`） |
 | `npm run start` | 启动生产服务器 |
-| `npm run lint` | 运行 ESLint 检查 |
-| `npm run lint:fix` | 自动修复 ESLint 错误 |
-| `npm run type-check` | TypeScript 类型检查 |
-| `npm run test` | 运行测试 |
-| `npm run test:watch` | 监听模式运行测试 |
+| `npm run lint` / `lint:fix` | ESLint 检查 / 自动修复 |
+| `npm run type-check` | `tsc --noEmit` 类型检查 |
+| `npm test` / `test:watch` / `test:coverage` | Vitest 运行 / 监听 / 覆盖率 |
+| `npm run clean` | 清理 Next.js 缓存（`next clean`） |
 
 ## 项目结构
 
 ```
 app/
-├── layout.tsx              # 根布局 (lang="zh-CN")
-├── page.tsx                # 主页面（状态编排 + 键盘快捷键）
-├── style.css               # 全局样式
+├── layout.tsx / page.tsx / error.tsx / not-found.tsx / style.css
 ├── components/
-│   ├── layout/             # 布局组件
-│   │   └── app-header.tsx  # 顶部导航栏（Logo + 主题切换 + 设置）
-│   ├── draw/               # 抽签功能组件
-│   │   ├── draw-button.tsx  # 抽取按钮
-│   │   ├── draw-settings.tsx# 抽取参数设置
-│   │   ├── appearance-settings.tsx  # 外观设置
-│   │   ├── custom-list-settings.tsx # 自定义名单
-│   │   ├── draw-display/   # 结果展示（拆分）
-│   │   ├── history-list/   # 历史记录（拆分）
-│   │   └── settings-panel/ # 设置侧边栏（拆分）
-│   ├── number-roller.tsx   # 数字滚动动画
-│   ├── theme-provider.tsx  # 主题提供者
-│   └── ui/                 # shadcn/ui 组件
-│       ├── sheet/          # 侧边抽屉（context/parts/index，拆分）
-│       ├── select.tsx      # 选择器 + select-scroll-buttons.tsx（拆分）
-│       └── ...             # alert、slider、switch、tabs、textarea 等
-├── hooks/                  # 自定义 React Hooks
-│   ├── draw-types.ts       # 类型定义
-│   ├── draw-helpers.ts     # 纯函数逻辑
-│   ├── draw-reducer.ts     # 状态 reducer
-│   ├── use-draw.ts         # 主 Hook
-│   ├── use-draw-actions.ts # 动作回调
-│   ├── use-draw-persistence.ts # 持久化
-│   ├── use-local-storage.ts# 本地存储
-│   └── use-sound.ts        # 音效合成
-├── lib/                    # 工具函数
-└── locales/                # 国际化翻译
+│   ├── layout/app-header.tsx
+│   ├── ui/                 # 16 个 .tsx 文件（13 个顶层 + sheet/{context,index,parts}）
+│   ├── draw/
+│   │   ├── draw-button.tsx / draw-settings.tsx / custom-list-settings.tsx
+│   │   ├── appearance-settings.tsx + appearance-settings.parts.tsx
+│   │   ├── draw-display/   # 欢迎/错误/结果卡与网格/彩屑/庆祝光晕
+│   │   ├── history-list/   # 列表、历史卡、空状态
+│   │   └── settings-panel/ # 4 Tab 面板、标题栏、体验设置、名单内联编辑
+│   └── number-roller.tsx / theme-provider.tsx
+├── hooks/                  # 12 个 hook：draw-types、draw-helpers、draw-reducer、
+│                           # use-draw、use-draw-actions、use-draw-settings-actions、
+│                           # use-draw-utils、use-draw-persistence、use-local-storage、
+│                           # use-sound、use-stored-language、use-mounted-reduced-motion
+├── lib/                    # version.ts / i18n.ts / utils.ts
+├── locales/                # types.ts（TranslationKey）、zh.ts、en.ts、index.ts
+├── test/setup.ts            # Vitest 环境配置
+└── **/__tests__/            # 7 个测试文件、69 个用例
+prototype/                   # 4 个 HTML 原型 + tokens.css + design-system.md
+docs/design/                 # color-system.html / motion.html / typography.html
+docs/tasks.md / tasks-done.md
+openspec/SPEC.md             # 权威项目规范
+.github/                     # CI 工作流、审查标准、PR 模板
 ```
+
+## 接口与数据
+
+本项目为**纯客户端应用**：不存在 Route Handler、Server Actions、middleware 或任何 HTTP 端点，状态全部由 `useReducer` + `localStorage` 管理。内部模块接口（函数签名、参数、返回值）见 `openspec/SPEC.md` §14，19 个持久化键见 §9，因此无需单独的 API 参考文档。
+
+## 近期变更
+
+- v5.7.11 — 全量文档与代码对齐（目录结构、依赖版本、实算数字、接口契约、构建标识）。
+- v5.7.10 — 页脚改为 `V{版本} · build yymmddhhmm`；构建期注入 build 编号；移除设置面板标题栏版本号。
+- v5.7.9 — 设置面板嵌套 Sheet 修复、4 Tab 布局、错误页/404 页接入 i18n、`SETTINGS_FIELDS` 单一来源；清理 16 个死翻译键与 4 个零引用 UI 组件。
+
+完整历史见 [CHANGELOG.md](./CHANGELOG.md)。
 
 ## 贡献指南
 
-提交 Pull Request 前，请阅读 [代码审查标准](./.github/CODE_REVIEW_STANDARD.md) 和 [PR 模板](./.github/PULL_REQUEST_TEMPLATE.md)。
-
-### PR 提交流程
-
-1. 从 `main` 分支创建功能分支
-2. 填写 PR 模板中的自查清单
-3. 确保所有 CI 检查通过
-4. 请求代码所有者审查
-5. 处理审查反馈
+提交 PR 前请阅读 [代码审查标准](./.github/CODE_REVIEW_STANDARD.md) 与 [PR 模板](./.github/PULL_REQUEST_TEMPLATE.md)：从 `main` 创建功能分支、填写自查清单、确保 CI 通过、请求代码所有者审查。源码单文件 ≤ 200 行，主要容器使用 kebab-case 语义化 `id`，每次变更升级 patch 版本号。
 
 ## 安全说明
 
-- 随机数生成使用 `crypto.getRandomValues()` 保证密码学质量
-- 所有用户输入均经过验证和脱敏处理
-- 客户端代码不存储敏感信息
-- 定期运行 `npm audit` 进行依赖安全审计
+- 随机数使用 `crypto.getRandomValues()`；名单与前缀/后缀做输入净化。
+- 无 `dangerouslySetInnerHTML`、无 `eval`；`next.config.ts` 配置 CSP、HSTS 等 8 条安全头。
+- 所有数据仅存浏览器，代码与日志不含密钥。
 
 ## 开源协议
 
 MIT License
-

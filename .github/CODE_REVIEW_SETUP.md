@@ -1,5 +1,7 @@
 # 代码审查体系搭建总结
 
+> 历史归档（2026-06 搭建记录，2026-11-09 校正门禁描述）。当前 CI 以 `.github/workflows/ci.yml` 为准。
+
 ## ✅ 已完成的配置
 
 ### 1. PR 提交流程模板
@@ -35,7 +37,8 @@
 
 **检查项**:
 - TypeScript 类型检查（`npm run type-check`）
-- ESLint 检查（最多 20 个警告）
+- ESLint 检查（`--max-warnings=0` 零告警）
+- 单元测试（`npm test`）
 - 构建检查（`npm run build`）
 - 安全审计（`npm audit`）
 - 依赖漏洞扫描（dependency-review）

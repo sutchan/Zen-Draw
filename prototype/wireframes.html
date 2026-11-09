@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<!-- prototype/wireframes.html v5.7.7 —— 组件库规范（与 index/prototypes 共享 tokens.css） -->
+<!-- prototype/wireframes.html v5.7.11 —— 组件库规范（与 index/prototypes 共享 tokens.css） -->
 <html lang="zh-CN" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZenDraw｜禅抽 · 组件库规范 v5.7.7</title>
+  <title>ZenDraw｜禅抽 · 组件库规范 v5.7.11</title>
   <link rel="stylesheet" href="tokens.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -184,7 +184,7 @@
       <h2>设置容器 Settings Container（右侧抽屉 + Tabs）</h2>
       <p class="intro" style="margin-bottom:var(--space-4)">
         应用全局设置入口为<strong>右侧滑入抽屉</strong>，由顶部导航的齿轮按钮触发。结构固定为：
-        <strong>HeaderBar（应用标识 + 版本号 + 语言切换）</strong> → <strong>Tabs（抽取 / 外观 / 体验 / 历史）</strong>。
+        <strong>HeaderBar（应用标识 + 语言切换；版本号按 SPEC §5.1.2 统一在应用页脚展示）</strong> → <strong>Tabs（抽取 / 外观 / 体验 / 历史）</strong>。
         下方按钮可预览真实抽屉（含 Tab 切换、Esc 关闭、遮罩点击关闭）。
       </p>
       <div class="grid">
@@ -218,7 +218,7 @@
             <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:var(--color-fg);color:var(--color-bg);display:flex;align-items:center;justify-content:center;font-weight:700">抽</div>
             <div style="flex:1">
               <div style="font-weight:600">ZenDraw｜禅抽</div>
-              <div style="font-size:10px;color:var(--color-muted)">v5.7.7</div>
+              <!-- 版本号按应用页脚规范不再在此展示 -->
             </div>
             <button class="switch" role="switch" aria-checked="false" tabindex="0" data-switch aria-label="界面语言">
               <span class="track" aria-hidden="true"></span><span>EN</span>
@@ -250,7 +250,7 @@
     </section>
   </main>
 
-  <footer>ZenDraw｜禅抽 v5.7.7 · 组件库规范 · 设计令牌见 tokens.css</footer>
+  <footer>ZenDraw｜禅抽 v5.7.11 · 组件库规范 · 设计令牌见 tokens.css</footer>
 
   <script>
     (function () {
