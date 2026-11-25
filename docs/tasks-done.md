@@ -155,3 +155,34 @@
 - **构建后清理**：`next.config.ts` / `tsconfig.json` / `next-env.d.ts` 的临时或自动改动已 `git restore` 还原，工作树零临时痕迹。
 - **冗余复查**：清理后重跑引用图分析脚本，**零未引用模块残留**。
 - **净变化**：45 个文件，+160 / −333 行（净减 173 行）。
+
+---
+
+## 2026-11-23 收尾轮（v5.7.13）
+
+### L6 [P1] 测试环境 localStorage polyfill ✅
+- **问题**：本机 Node v26.4.0 下 jsdom 未提供 `window.localStorage`，`use-stored-language.test.ts` 5 例全部失败（69 例中 64 通过）；CI（Node 22）不受影响。
+- **修复**：`app/test/setup.ts` 注入 Map 实现的 localStorage polyfill（`getItem/setItem/removeItem/clear/key/length`），仅在 `window.localStorage` 缺失时生效，对 CI 环境无行为影响；补头注释 v5.7.13。
+- **完成时间**：2026-11-23 23:35
+
+### L7 [P1] package-lock.json 恢复与同步 ✅
+- **问题**：lock 曾被外部删除（2026-11-09 已恢复至 HEAD），且其 `version` 字段长期停在 5.0.0，与 `package.json` 脱节。
+- **修复**：`npm install --package-lock-only` 同步 lock 元数据；最终 `pkg=lock.top=lock.root=5.7.13` 完全一致，CI `npm ci` 恢复。
+- **附记**：本轮发现 `node_modules` 中 `agent-base` / `http-proxy-agent`（jsdom@26.1.0 依赖链）入口文件被 IDE Safe-Delete 护栏改名为 `.DELETE.*` 挂起，导致 vitest 全部收集失败；已恢复重命名修复依赖完整性。
+- **完成时间**：2026-11-23 23:35
+
+### L8 [P3] 一次性过程文档去留 ✅
+- **决策**：删除 `.github/PUSH_GUIDE.md` 与 `.github/FIXES_SUMMARY.md`（内容已过时且此前已标注历史归档；git 历史可恢复）。
+- **同步**：`openspec/SPEC.md` §2 目录树移除这两个文件条目。
+- **完成时间**：2026-11-23 23:35
+
+### 本轮验证结果（2026-11-23 23:35）
+| 检查项 | 命令 | 结果 |
+|---|---|---|
+| 类型检查 | `tsc --noEmit` | ✅ 0 错误 |
+| Lint | `eslint . --max-warnings=0` | ✅ 0 错误 0 警告（全仓库） |
+| 单元测试 | `vitest run` | ✅ 7 文件 **69/69 通过**（polyfill 后 5 例失败消除） |
+| 生产构建 | `next build` | ⏸ 受 `.next` 清理红线限制（L3），交由 CI 验证 |
+
+- **版本同步**：全展示位统一至 v5.7.13（package.json / metadata / version.ts / README×2 / SPEC / CHANGELOG / prototype×6 / docs/design×3），lock 同步一致；CHANGELOG 新增 `[5.7.13]` 小节。
+

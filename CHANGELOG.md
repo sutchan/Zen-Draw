@@ -1,5 +1,45 @@
 ﻿# Changelog
 
+## [5.7.14] - 2026-11-25
+
+### docs（系统性文档标准化）
+- 新增 7 份模块化文档：`docs/README.md`（索引）、`overview.md`（背景/目标/技术栈/架构）、
+  `deployment.md`（依赖/配置/多环境/验证）、`features.md`（模块+业务流程图）、
+  `user-guide.md`（角色/流程/步骤）、`faq.md`（故障排除）、`optimization.md`（O1–O8 优化建议）
+- 新增 `docs/openapi.yaml`（OpenAPI 3.1 契约：`paths: {}` 真实声明无 HTTP API，
+  `components.schemas` 定义内部数据结构、ValidationErrorKey 错误码与返回示例）
+- `docs/api.md` 修正 3 处与源码不符的签名（`formatNumber` 4 位置参数、
+  `validateSettings` 返回 `ValidationErrorKey | null`、`useDraw` 返回 `UseDrawReturn`），
+  补充错误码定义表与内部模块调用示例
+- `docs/tasks.md` 统一任务来源：D1–D3（文档待办）、V1–V3（待验证细节）、O1–O8 与 L3，
+  按优先级排序并明确责任人与计划完成时间
+
+### chore（版本同步）
+- 代码展示位统一至 v5.7.14，与已完成的文档版本标注对齐；lock 元数据同步
+
+## [5.7.13] - 2026-11-23
+
+### fix（测试环境修复）
+- **localStorage polyfill（L6）**：`app/test/setup.ts` 为 Node 26 下 jsdom 缺失的
+  `window.localStorage` 注入 Map 实现，`use-stored-language.test.ts` 5 例恢复通过
+
+### chore（依赖与文档治理）
+- **package-lock.json 同步（L7）**：lock `version` 字段由 5.0.0 同步至 5.7.13，与
+  `package.json` 一致；`npm ci` 门禁恢复
+- **删除一次性过程文档（L8）**：移除 `.github/PUSH_GUIDE.md` 与
+  `.github/FIXES_SUMMARY.md`（内容已过时，git 历史可恢复）
+- SPEC §2 目录树同步删除上述两个文件；任务文档 L6/L7/L8 归档至 `docs/tasks-done.md`
+
+## [5.7.12] - 2026-11-22
+
+### docs（规范与记忆文档整理）
+- **SPEC.md 新增 §0「文档说明与规范总则」**：文档定位、规范优先级（用户指令 > SPEC > prototype > 记忆）、适用范围与约束力度、术语统一表、数据准确性与版本同步清单
+- **修正与代码不符的规格**：头部组件（无固定高度、无主题切换）、设置面板宽度 380px→420px、状态结构「嵌套→平铺」、已删 Checkbox 引用；历史条目过时数字加注
+- **记忆文档重构**：`.workbuddy/memory/MEMORY.md` 按主题分 6 节，新增实算基线、时效/可信度标注、11 份日志索引与跨文档引用关系；外部规则记忆改为指向 SPEC §5.1.2 的索引，消除条款副本
+
+### chore（版本同步）
+- 全项目版本展示位统一至 v5.7.12；按「仅改动文件刷新头注释」规则，其余源文件头注释保持 v5.7.11
+
 ## [5.7.11] - 2026-11-09
 
 ### docs（全量文档与代码对齐）

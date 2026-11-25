@@ -1,4 +1,4 @@
-﻿# ZenDraw | 禅抽 v5.7.11
+﻿# ZenDraw | 禅抽 v5.7.14
 
 [中文版本](./README_CN.md)
 
@@ -16,7 +16,7 @@ ZenDraw is a professional, full-screen random draw application with Apple-inspir
 - **Bilingual**: Simplified Chinese / English, 110 translation keys with compile-time parity.
 - **Settings persistence**: 19 `zendraw-*` localStorage keys with cross-tab sync.
 - **Accessibility**: semantic containers with kebab-case ids, ARIA labels, keyboard shortcuts (Space / Escape), i18n error & 404 pages.
-- **Build identity**: the footer shows `V5.7.11 · build yymmddhhmm` — a 10-digit build id injected by `next.config.ts` (falls back to the version alone when missing).
+- **Build identity**: the footer shows `V5.7.14 · build yymmddhhmm` — a 10-digit build id injected by `next.config.ts` (falls back to the version alone when missing).
 
 ## Tech Stack
 

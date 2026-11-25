@@ -1,4 +1,4 @@
-﻿# ZenDraw | 禅抽 v5.7.11
+﻿# ZenDraw | 禅抽 v5.7.14
 
 [English Version](./README.md)
 
@@ -16,7 +16,7 @@
 - **双语支持**：简体中文 / English，110 个翻译键，编译期强制对齐。
 - **设置持久化**：19 个 `zendraw-*` localStorage 键，支持跨标签页同步。
 - **无障碍**：结构性容器带 kebab-case 语义化 `id`、ARIA 标签、键盘快捷键（Space / Escape）、错误页与 404 页接入 i18n。
-- **构建标识**：页脚展示 `V5.7.11 · build yymmddhhmm`，build 编号为 `next.config.ts` 构建期注入的 10 位时间戳；注入缺失时仅展示版本号。
+- **构建标识**：页脚展示 `V5.7.14 · build yymmddhhmm`，build 编号为 `next.config.ts` 构建期注入的 10 位时间戳；注入缺失时仅展示版本号。
 
 ## 技术栈
 

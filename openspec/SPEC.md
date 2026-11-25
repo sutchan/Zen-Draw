@@ -1,11 +1,52 @@
-﻿# ZenDraw | 禅抽 v5.7.11 — 项目规范文档
+﻿# ZenDraw | 禅抽 v5.7.14 — 项目规范文档
+
+## 0. 文档说明与规范总则
+
+### 0.1 文档定位
+本文档是产品与代码的**权威规范**。`.workbuddy/memory/MEMORY.md` 记录决策背景与历史结论，`prototype/` 为设计参考，`docs/tasks*.md` 为任务进度；三者不得与本文档冲突。
+
+### 0.2 规范优先级（冲突时从高到低）
+1. 用户显式指令（当轮要求 / 全局用户规则）
+2. 本文档（`openspec/SPEC.md`）
+3. `prototype/design-system.md` 与 `prototype/tokens.css`（设计令牌与组件视觉）
+4. `.workbuddy/memory/MEMORY.md`（历史决策与背景，非规范）
+
+### 0.3 适用范围与约束力度
+| 范围 | 约束力度 | 说明 |
+|------|----------|------|
+| `app/`（源码） | 强制 | 结构、状态、i18n、安全、语义化 id、版本展示按本文档实现 |
+| `next.config.ts` / `package.json` 等配置 | 强制 | 构建注入、依赖版本与版本单一来源 |
+| `prototype/` | 参考 | 静态设计稿不参与构建；版本标注随产品同步，build 编号不适用 |
+| `docs/` / `.github/` | 参考 | 任务跟踪与协作流程，不定义产品行为 |
+
+### 0.4 术语统一
+| 统一术语 | 避免混用 |
+|----------|----------|
+| 抽取 / 抽签 | 抽奖、随机选择 |
+| 设置面板（Sheet） | 侧边栏、抽屉 |
+| 主题预设 | 配色方案、主题配色 |
+| 设置字段 | 设置项、偏好字段 |
+| 基础组件（shadcn/ui 风格，@base-ui/react 实现） | base-nova 风格、Radix 组件 |
+| 页脚 / 头部组件 | 底部栏、顶栏 |
+| build 编号（构建标识） | 构建时间戳、构建版本号 |
+
+### 0.5 数据准确性与变更规则
+- 文档中的**统计数字**（翻译键、组件数、存储键、测试文件数等）必须脚本实算，禁止沿用历史值；实算基准见 `.workbuddy/memory/MEMORY.md`「实算基线」。
+- 版本号单一来源为 `app/lib/version.ts` 的 `APP_VERSION`，与 `package.json` 一致；每次修改按 §0.6 同步全局展示位。
+- 源文件头注释 `// path vX.Y.Z` **仅更新本次改动的文件**，禁止全仓批量刷写。
+- 新增或修改规范须同步更新 §13 版本历史与 `CHANGELOG.md`。
+
+### 0.6 版本同步清单
+`package.json` → `metadata.json` → `README.md` / `README_CN.md` → `app/lib/version.ts` → `docs/tasks.md` → 本文档（标题 / §1.1 / §13 / §14.1）→ `CHANGELOG.md` → 本次改动文件的头注释。
+
+---
 
 ## 1. 项目概述
 
 ### 1.1 项目信息
 - **项目名称**: ZenDraw | 禅抽
-- **当前版本**: v5.7.11
-- **上次更新**: 2026-11-09
+- **当前版本**: v5.7.14
+- **上次更新**: 2026-11-25
 - **描述**: 一款采用 Apple 设计风格的专业全屏随机抽签应用，适用于年会抽奖、课堂互动、抽签活动等场景。极简设计、密码学安全随机、11 种主题配色、Web Audio API 音效、4 Tab 设置（抽取/外观/体验/历史）、彩屑庆祝、减弱动效与界面密度调节。
 - **许可证**: MIT License
 - **代码质量**: 严格 TypeScript (strict mode) + ESLint + CI/CD + 代码审查标准 + 安全头
@@ -70,11 +111,11 @@ zen-draw/
 ├── app/                           # Next.js App Router
 │   ├── layout.tsx                 # 根布局（SEO metadata + 字体加载）
 │   ├── page.tsx                   # 主页面（状态编排 + 键盘快捷键）
-│   ├── error.tsx                  # ⭐ 全局错误边界 (v4.0)
-│   ├── not-found.tsx              # ⭐ 404 页面 (v4.0)
+│   ├── error.tsx                  # 全局错误边界
+│   ├── not-found.tsx              # 404 页面
 │   ├── style.css                  # 全局样式（Tailwind v4 + shadcn/ui + 11 主题）
 │   ├── components/
-│   │   ├── ui/                    # 基础组件（base-nova 风格，16 个 .tsx 文件）
+│   │   ├── ui/                    # 基础组件（shadcn/ui 风格，16 个 .tsx 文件）
 │   │   │   ├── button.tsx, card.tsx, dialog.tsx, input.tsx, label.tsx
 │   │   │   ├── select.tsx, select-scroll-buttons.tsx  # Select（拆分滚动按钮）
 │   │   │   ├── slider.tsx, switch.tsx, tabs.tsx, textarea.tsx
@@ -149,9 +190,7 @@ zen-draw/
 │   ├── CODEOWNERS
 │   ├── CODE_REVIEW_SETUP.md
 │   ├── CODE_REVIEW_STANDARD.md
-│   ├── FIXES_SUMMARY.md
 │   ├── PULL_REQUEST_TEMPLATE.md
-│   ├── PUSH_GUIDE.md
 │   └── workflows/
 │       └── ci.yml
 ├── openspec/
@@ -201,14 +240,14 @@ zen-draw/
 
 ### 3.2 界面功能
 
-#### 3.2.1 顶部导航栏
-- **高度**: 56px (`h-14`)
-- **背景**: `bg-background/80 backdrop-blur-xl` 毛玻璃半透明
-- **布局**: 左（Logo + 名称） 中（弹性空间） 右（主题切换 + 设置开关）
+#### 3.2.1 头部组件（AppHeader）
+- **容器**: `sticky top-0 z-30`，`bg-background/80 backdrop-blur-md` 毛玻璃半透明；无固定高度类，由内容撑开
+- **内容**: `max-w-6xl px-4 py-3`；左（品牌标识 + 标题 + 副标题），右（设置开关 `Settings2`）；主题切换在设置面板「外观」Tab，不在头部
 - **分隔线**: `border-b border-border/50`
+- **版本展示**: 头部组件不展示版本号（见 §5.1.2）
 
-#### 3.2.2 设置面板（Sheet 侧边栏）
-- **布局**: 右滑入，`w-full`（移动端） / `sm:w-[380px]`（桌面）
+#### 3.2.2 设置面板（Sheet）
+- **布局**: 右滑入，`w-full`（移动端） / `sm:w-[420px]`（桌面）
 - **4 个 Tabs 切换**: 抽取 / 外观 / 体验 / 历史
 - **抽取设置**: 抽取模式（数字 / 列表）、范围（min/max）、个数、重复、自动隐藏、动画时长、自定义名单（开关 + 导入对话框 + 导出 txt）
 - **外观设置**: 深浅模式（light/dark/system）、11 种配色方案、3 种字体、数字格式（位数补零 / 前缀 / 后缀）
@@ -223,7 +262,7 @@ zen-draw/
 
 ---
 
-## 4. 设计系统规范（对齐 v5.7.11）
+## 4. 设计系统规范
 
 ### 4.1 设计 Tokens — 色彩
 
@@ -296,7 +335,7 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 | 设备 | 断点 | 布局变化 |
 |------|------|----------|
 | 移动端 | < 768px | 全屏侧边栏、单列布局 |
-| 平板/桌面 | ≥ 768px | 380px 侧边栏宽度、双列布局 |
+| 平板/桌面 | ≥ 768px | 420px 设置面板宽度、双列布局 |
 | 大屏 | ≥ 1200px | 更大留白 |
 
 #### 4.3.3 圆角系统
@@ -368,7 +407,7 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 
 ---
 
-## 5. 基础组件库（base-nova 风格）
+## 5. 基础组件库（shadcn/ui 风格，@base-ui/react 实现）
 
 ### 5.1 基础组件清单
 
@@ -392,7 +431,7 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 
 #### 5.1.1 容器语义化 id 规范
 
-为便于调试与端到端测试，所有**结构性/语义化容器**须带 kebab-case 语义化 `id`（DOM 调试锚点）；UI 基础原子组件（Button/Input/Label/Switch/Slider/Checkbox/Textarea/Tooltip/Toast 等可复用控件）**不加**（由其父容器承载）。
+为便于调试与端到端测试，所有**结构性/语义化容器**须带 kebab-case 语义化 `id`（DOM 调试锚点）；UI 基础原子组件（Button/Input/Label/Switch/Slider/Textarea/Tooltip/Toast 等可复用控件）**不加**（由其父容器承载）。
 
 | 容器 | id |
 |------|----|
@@ -459,7 +498,7 @@ Dark 模式透明度：sm 0.3 / md 0.35 / lg 0.45 / xl 0.5。
 
 ### 6.1 Reducer 状态结构
 
-设置字段统一收敛进嵌套的 `DrawSettings` 对象，运行时字段独立平铺；`status` 状态机替代旧的 `isDrawing` 布尔；`history` 仍属 `DrawState` 一部分。
+设置字段定义在 `DrawSettings` 接口（16 字段，单一来源为 `SETTINGS_FIELDS`）；`DrawState extends DrawSettings` 将这些字段**平铺展开**后附加 6 个运行时字段；`status` 状态机替代旧的 `isDrawing` 布尔。
 
 ```typescript
 type DrawStatus = "idle" | "drawing" | "result" | "error";
@@ -705,6 +744,11 @@ export const viewport: Viewport = {
 
 > 以下为节选，完整记录以 `CHANGELOG.md` 为准（按版本倒序）。
 
+### v5.7.12 - 2026-11-22
+- 新增 §0「文档说明与规范总则」：文档定位、规范优先级、适用范围、术语表、数据准确性与版本同步清单
+- 修正与代码不符的规格：头部组件（无固定高度、无主题切换）、设置面板宽度 380px→420px、状态结构「嵌套→平铺」
+- 记忆文档按主题重构索引并标注时效与可信度；跨文档引用统一指向本文档
+
 ### v5.7.11 - 2026-11-09
 - 全量文档与代码对齐：目录结构、依赖版本、实算数字（110 键 / 16 组件 / 19 存储键）、接口契约、构建标识
 - 新增 §14「接口与数据契约（无服务端 API）」；页脚主题数改为取自 `THEME_PRESETS.length`（11）
@@ -748,7 +792,7 @@ export const viewport: Viewport = {
 - 修正「允许重复」错用文案、补 `speechRate`、`exportList` 等键
 
 ### v5.3.7
-- SPEC.md 组件表补 Checkbox/Tooltip/Toast；目录树补 `use-mounted-reduced-motion.ts`，ui 组件列举完整（共 18 个）；style.css 注释主题数 10→11
+- SPEC.md 组件表补 Checkbox/Tooltip/Toast；目录树补 `use-mounted-reduced-motion.ts`，ui 组件列举完整（当时 18 个，当前 16 个见 §5.1）；style.css 注释主题数 10→11
 
 ### v5.3.6
 - 修复页脚版本展示 bug（`APP_VERSION` 5.3.3→5.3.6）；SPEC.md 主题数 10→11（补 Rose）、翻译键 71→110、原型目录结构对齐；新增 CHANGELOG 5.3.6
@@ -812,7 +856,7 @@ export const viewport: Viewport = {
 
 | 导出 | 签名 | 说明 |
 |------|------|------|
-| `APP_VERSION` | `const APP_VERSION: "5.7.11"` | 版本单一来源，与 `package.json` 一致 |
+| `APP_VERSION` | `const APP_VERSION: "5.7.14"` | 版本单一来源，与 `package.json` 一致 |
 | `BUILD_ID` | `const BUILD_ID: string` | `NEXT_PUBLIC_BUILD_ID`，仅 10 位数字通过校验时非空 |
 | `FOOTER_VERSION` | `const FOOTER_VERSION: string` | `V{版本} · build {BUILD_ID}`；缺失时仅 `V{版本}` |
 | `createTranslator` | `(language: Language) => (key: TranslationKey, ...args: string[]) => string` | 缺失 key 回退 key 本身，支持 `{0}` / `{1}` 位置参数 |
@@ -851,5 +895,5 @@ export const viewport: Viewport = {
 
 ---
 
-*本文档最后更新: 2026-11-09 · 与 app/ 代码、package.json、prototype/ 保持对齐；完整变更见 CHANGELOG.md*
+*本文档最后更新: 2026-11-22 · 与 app/ 代码、package.json、prototype/ 保持对齐；完整变更见 CHANGELOG.md*
 

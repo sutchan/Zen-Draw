@@ -1,0 +1,140 @@
+openapi: 3.1.0
+info:
+  title: ZenDraw｜禅抽 — 内部数据契约（非 HTTP API）
+  version: 5.7.14
+  summary: 纯客户端应用的模块间数据契约；paths 为空是真实状态，不是遗漏。
+  description: |
+    ZenDraw 是纯客户端抽签应用：无服务端、无数据库、无 HTTP API、无 Server Actions。
+    因此本文件不包含任何可调用的 HTTP 端点（paths 为空对象），也不编造虚构接口。
+
+    本文件遵循 OpenAPI 3.1 规范，以 components.schemas 描述模块间传递的数据结构、
+    校验错误码与返回格式，供契约测试、代码生成工具与二次开发者参考。
+    权威运行时签名以 openspec/SPEC.md §14 与 app/ 源码为准。
+  license:
+    name: MIT
+servers: []
+paths: {}
+components:
+  schemas:
+    DrawStatus:
+      type: string
+      enum: [idle, drawing, result, error]
+      description: 抽取状态机的四个状态（app/hooks/draw-types.ts）
+    Language:
+      type: string
+      enum: [zh, en]
+      description: 当前支持语言；简体中文为默认，繁中支持见 docs/optimization.md O1
+    Density:
+      type: string
+      enum: [comfortable, compact]
+      description: 结果显示密度
+    ThemePreset:
+      type: string
+      enum: [default, ocean, forest, sunset, purple, neon, sakura, midnight, retro, pixel, rose]
+      description: 11 个配色预设；CSS 中 default 走 :root，其余 10 个为覆盖类
+    FontFamily:
+      type: string
+      enum: [sans, mono, serif]
+    ValidationErrorKey:
+      type: string
+      enum:
+        - errCustomListEmpty
+        - errCustomListTooMany
+        - errCustomListRange
+        - minMaxError
+        - errRangeInvalid
+        - rangeError
+      description: |
+        validateSettings 的错误码（TranslationKey 子集），不是 HTTP 状态码。
+        调用方通过 createTranslator 翻译为用户可见文案；成功时返回 null。
+    DrawSettings:
+      type: object
+      description: 16 个设置字段（SETTINGS_FIELDS 单一登记处）
+      required:
+        - min
+        - max
+        - count
+        - allowDuplicates
+        - autoHide
+        - duration
+        - customList
+        - useCustomList
+        - digits
+        - prefix
+        - suffix
+        - language
+        - soundEnabled
+        - density
+        - confettiEnabled
+        - reduceMotion
+      properties:
+        min: { type: integer, minimum: -10000000, maximum: 10000000, default: 1 }
+        max: { type: integer, minimum: -10000000, maximum: 10000000, default: 100 }
+        count: { type: integer, minimum: 1, maximum: 1000, default: 1, description: 单次抽取数量上限 MAX_COUNT }
+        allowDuplicates: { type: boolean, default: true }
+        autoHide: { type: boolean, default: true, description: 开始抽取后自动收起设置面板 }
+        duration: { type: integer, minimum: 1, maximum: 30, default: 5, description: 滚动动画秒数，MAX_DURATION=30 }
+        customList: { type: array, items: { type: string }, maxItems: 1000, default: [] }
+        useCustomList: { type: boolean, default: false }
+        digits: { type: integer, minimum: 0, maximum: 20, default: 3, description: 补零位数，MAX_DIGITS=20 }
+        prefix: { type: string, default: "" }
+        suffix: { type: string, default: "" }
+        language: { $ref: '#/components/schemas/Language', default: zh }
+        soundEnabled: { type: boolean, default: true }
+        density: { $ref: '#/components/schemas/Density', default: comfortable }
+        confettiEnabled: { type: boolean, default: true }
+        reduceMotion: { type: boolean, default: false }
+    HistoryEntry:
+      type: object
+      required: [id, timestamp, results]
+      properties:
+        id: { type: string, format: uuid, description: crypto.randomUUID() }
+        timestamp: { type: string, format: date-time, description: ISO 8601 }
+        results: { type: array, items: { type: string }, description: 单次抽取的结果列表 }
+    DrawState:
+      allOf:
+        - $ref: '#/components/schemas/DrawSettings'
+        - type: object
+          required: [currentResults, rollingValues, status, errorMessage, history, isRolling]
+          properties:
+            currentResults: { type: array, items: { type: string } }
+            rollingValues: { type: array, items: { type: string }, description: 动画中的临时值 }
+            status: { $ref: '#/components/schemas/DrawStatus' }
+            errorMessage: { type: string, description: 错误翻译键（由调用方翻译） }
+            history:
+              type: array
+              maxItems: 100
+              items: { $ref: '#/components/schemas/HistoryEntry' }
+            isRolling: { type: boolean }
+    ValidationResult:
+      description: validateSettings 的返回值；null 表示校验通过
+      oneOf:
+        - $ref: '#/components/schemas/ValidationErrorKey'
+        - type: 'null'
+    DrawResult:
+      description: startDraw() 的返回格式
+      type: object
+      required: [ok]
+      properties:
+        ok: { type: boolean }
+        error: { type: string, description: 失败时的错误翻译键；ok=true 时不存在 }
+    BuildIdentity:
+      description: 页脚版本与构建标识（next.config.ts 构建期注入）
+      type: object
+      required: [APP_VERSION, BUILD_ID, FOOTER_VERSION]
+      properties:
+        APP_VERSION: { type: string, example: '5.7.14' }
+        BUILD_ID: { type: string, pattern: '^\\d{10}$', description: '10 位 yymmddhhmm；缺失时为空串' }
+        FOOTER_VERSION: { type: string, example: 'V5.7.14 · build 2611251030' }
+  examples:
+    SuccessfulDraw:
+      summary: finalizeDraw 返回格式（数字模式，补零 3 位）
+      value: ['007', '042']
+    ValidationFailure:
+      summary: validateSettings 返回错误码（最小值大于最大值）
+      value: minMaxError
+    HistoryEntrySample:
+      value:
+        id: 9f1c0f9e-4a5b-4c2d-9a3f-1b2c3d4e5f60
+        timestamp: '2026-11-25T10:30:00.000Z'
+        results: ['007']
